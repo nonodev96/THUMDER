@@ -98,6 +98,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.Make_GitHub_Release.outputs.upload_url }}
-          asset_path: "./release/${{ matrix.artifact_name }}"
+          asset_path: "./${{ matrix.artifact_name }}"
           asset_name: "${{ matrix.asset_name }}"
           asset_content_type: ${{ matrix.asset_content_type }}
