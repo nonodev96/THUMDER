@@ -1,0 +1,103 @@
+name: Build/release
+
+on: push
+
+jobs:
+  Make_GitHub_Release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.step_version.outputs.version }}
+      upload_url: ${{ steps.step_upload_url.outputs.upload_url }}
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          
+      - name: Read package.json
+        uses: tyankatsu0105/read-package-version-actions@v1
+        id: package_version
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ steps.package_version.outputs.version }}"
+          release_name: Pre-Release v${{ steps.package_version.outputs.version }}
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
+          draft: false
+          prerelease: true
+
+      - id: step_version
+        run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
+        
+      - id: step_upload_url
+        run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
+
+
+  release:
+    needs: Make_GitHub_Release
+    name: Build And Upload Release
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            asset_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            asset_content_type: application/zip
+          - os: windows-latest
+            artifact_name: "Ongaku ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            asset_name: "Ongaku ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            asset_content_type: application/exe
+          - os: macos-latest
+            artifact_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_content_type: application/x-apple-diskimage
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Read package.json
+        uses: tyankatsu0105/read-package-version-actions@v1
+        id: package_version
+        
+      - name: Context
+        env:
+          RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
+        run: |
+          echo "$RUNNER_CONTEXT"
+          echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
+          echo "Upload URL ${{ needs.Make_GitHub_Release.outputs.upload_url }}"
+      
+      - run: npm install
+      - run: npm run postinstall
+      - run: npm run electron:build
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.Make_GitHub_Release.outputs.upload_url }}
+          asset_path: "./release/${{ matrix.artifact_name }}"
+          asset_name: "${{ matrix.asset_name }}"
+          asset_content_type: ${{ matrix.asset_content_type }}
