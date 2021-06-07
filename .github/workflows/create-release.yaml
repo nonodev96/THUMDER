@@ -43,12 +43,16 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
             asset_content_type: application/zip
           - os: windows-latest
-            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            # by electron-builder  |
+            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
             asset_content_type: application/exe
           - os: macos-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
             asset_content_type: application/x-apple-diskimage
 
     steps:
@@ -83,5 +87,5 @@ jobs:
           gh release upload "v${{ steps.package_version.outputs.version }}" "${{ env.FILES }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.artifact_name }}"
+          FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.asset_name }}"
 
