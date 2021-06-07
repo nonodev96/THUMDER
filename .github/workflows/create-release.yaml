@@ -43,12 +43,12 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
-            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
             # by electron-builder  |
             artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe
           - os: macos-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
