@@ -24,29 +24,14 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        run: |
+          gh release create "${{ env.VERSION }}" -n "${{ env.MESSAGE }}" -t "${{ env.NAME }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: "v${{ steps.package_version.outputs.version }}"
-          name: Release v${{ steps.package_version.outputs.version }}
-          draft: false
+          VERSION: "v${{ steps.package_version.outputs.version }}"
+          MESSAGE: "Release v${{ steps.package_version.outputs.version }}"
+          NAME: "Release v${{ steps.package_version.outputs.version }}"
 
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: "v${{ steps.package_version.outputs.version }}"
-#          release_name: Pre-Release v${{ steps.package_version.outputs.version }}
-#          body: |
-#            Changes in this Release
-#            - First Change
-#            - Second Change
-#          draft: false
-#          prerelease: true
-#
       - id: step_version
         run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
 
@@ -63,15 +48,12 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
-            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
             artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe
           - os: macos-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
             asset_content_type: application/x-apple-diskimage
 
     steps:
@@ -102,22 +84,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            ${{ needs.Make_GitHub_Release.outputs.upload_url }}
+        id: upload_release_asset
+        run: |
+          gh release upload "v${{ steps.package_version.outputs.version }}" ${{ env.FILES }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: nonodev96/THUMDER
+          FILES: "./${{ needs.Make_GitHub_Release.outputs.upload_url }}#${{ matrix.artifact_name }}"
 
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ needs.Make_GitHub_Release.outputs.upload_url }}
-#          asset_path: "./${{ matrix.artifact_name }}"
-#          asset_name: "${{ matrix.asset_name }}"
-#          asset_content_type: ${{ matrix.asset_content_type }}
