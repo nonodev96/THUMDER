@@ -55,14 +55,14 @@ jobs:
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
-          - os: windows-latest
-            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_content_type: application/exe
-          - os: macos-latest
-            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_content_type: application/x-apple-diskimage
+#          - os: windows-latest
+#            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+#            asset_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+#            asset_content_type: application/exe
+#          - os: macos-latest
+#            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+#            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+#            asset_content_type: application/x-apple-diskimage
 
     steps:
       - name: Check out Git repository
@@ -98,6 +98,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.Make_GitHub_Release.outputs.upload_url }}
-          asset_path: "./${{ matrix.artifact_name }}"
-          asset_name: "${{ matrix.asset_name }}"
-          asset_content_type: ${{ matrix.asset_content_type }}
+#          asset_path: "./${{ matrix.artifact_name }}"
+#          asset_name: "${{ matrix.asset_name }}"
+#          asset_content_type: ${{ matrix.asset_content_type }}
