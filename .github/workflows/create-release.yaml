@@ -8,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.step_version.outputs.version }}
-      upload_url: ${{ steps.step_upload_url.outputs.upload_url }}
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v2
@@ -29,15 +28,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: "v${{ steps.package_version.outputs.version }}"
-          MESSAGE: "Release v${{ steps.package_version.outputs.version }}"
-          NAME: "Release v${{ steps.package_version.outputs.version }}"
+          MESSAGE: "Message Release v${{ steps.package_version.outputs.version }}"
+          NAME: "Name Release v${{ steps.package_version.outputs.version }}"
 
       - id: step_version
         run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
-
-      - id: step_upload_url
-        run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
-
 
   release:
     needs: Make_GitHub_Release
@@ -47,7 +42,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
             artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
@@ -75,7 +70,6 @@ jobs:
         run: |
           echo "$RUNNER_CONTEXT"
           echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
-          echo "Upload URL ${{ needs.Make_GitHub_Release.outputs.upload_url }}"
 
       - run: npm install
       - run: npm run postinstall
@@ -89,5 +83,5 @@ jobs:
           gh release upload "v${{ steps.package_version.outputs.version }}" ${{ env.FILES }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILES: "./${{ needs.Make_GitHub_Release.outputs.upload_url }}#${{ matrix.artifact_name }}"
+          FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.artifact_name }}"
 
