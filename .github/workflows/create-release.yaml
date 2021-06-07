@@ -28,8 +28,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: "v${{ steps.package_version.outputs.version }}"
-          MESSAGE: "Message Release v${{ steps.package_version.outputs.version }}"
-          NAME: "Name Release v${{ steps.package_version.outputs.version }}"
+          MESSAGE: "Release v${{ steps.package_version.outputs.version }}"
+          NAME: "Release v${{ steps.package_version.outputs.version }}"
 
       - id: step_version
         run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
@@ -42,10 +42,10 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
-            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe
           - os: macos-latest
             artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
@@ -80,7 +80,7 @@ jobs:
       - name: Upload Release Asset
         id: upload_release_asset
         run: |
-          gh release upload "v${{ steps.package_version.outputs.version }}" ${{ env.FILES }}
+          gh release upload "v${{ steps.package_version.outputs.version }}" "${{ env.FILES }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.artifact_name }}"
