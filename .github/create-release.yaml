@@ -17,11 +17,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12
-          
+
       - name: Read package.json
         uses: tyankatsu0105/read-package-version-actions@v1
         id: package_version
-      
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -39,7 +39,7 @@ jobs:
 
       - id: step_version
         run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
-        
+
       - id: step_upload_url
         run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
 
@@ -52,16 +52,16 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
-            asset_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
-            artifact_name: "Ongaku ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_name: "Ongaku ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            artifact_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            asset_name: "thumder ${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe
           - os: macos-latest
-            artifact_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_name: "Ongaku-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            artifact_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_name: "thumder-${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
             asset_content_type: application/x-apple-diskimage
 
     steps:
@@ -76,7 +76,7 @@ jobs:
       - name: Read package.json
         uses: tyankatsu0105/read-package-version-actions@v1
         id: package_version
-        
+
       - name: Context
         env:
           RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
@@ -84,15 +84,15 @@ jobs:
           echo "$RUNNER_CONTEXT"
           echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
           echo "Upload URL ${{ needs.Make_GitHub_Release.outputs.upload_url }}"
-      
+
       - run: npm install
       - run: npm run postinstall
       - run: npm run electron:build
-        env: 
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Upload Release Asset
-        id: upload-release-asset 
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

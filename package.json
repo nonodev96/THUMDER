@@ -1,11 +1,11 @@
 {
-  "name": "angular-electron",
-  "version": "8.0.6",
-  "description": "Angular 10 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "name": "thumder",
+  "version": "1.0.0",
+  "description": "TFG - THUMDER (THe UltiMate Dlx EmulatoR): emulador multiplataforma DLX con fines didácticos",
+  "homepage": "https://github.com/nonodev96/THUMDER",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Antonio Mudarra Machuca",
+    "email": "nonodev96@gmail.com"
   },
   "keywords": [
     "angular",
