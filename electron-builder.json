@@ -1,5 +1,6 @@
 {
   "productName": "thumder",
+  "artifactName": "${productName}-v${version}.${ext}",
   "directories": {
     "output": "release/"
   },
