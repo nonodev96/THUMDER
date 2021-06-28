@@ -1,0 +1,16 @@
+º<div class="ide">
+  <div class="ide-main">
+
+    <div class="ide-monaco-editor-container">
+      <ngx-monaco-editor class="monaco-editor"
+                         [options]="editorOptions_thumder"
+                         [(ngModel)]="code_asm"
+                         (onInit)="onInitEditor($event)"></ngx-monaco-editor>
+    </div>
+    <div class="ide-console"></div>
+
+  </div>
+  <div class="ide-sidebar">
+    ...sidebar content...
+  </div>
+</div>

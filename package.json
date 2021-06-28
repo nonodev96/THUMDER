@@ -95,5 +95,15 @@
   },
   "engines": {
     "node": ">=10.13.0"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "5.15.3",
+    "@popperjs/core": "2.9.1",
+    "@tailwindcss/forms": "0.2.1",
+    "chart.js": "2.9.4",
+    "monaco-editor": "0.25.2",
+    "ngx-monaco-editor": "9.0.0",
+    "rxjs": "6.6.6",
+    "tailwindcss": "2.0.4"
   }
 }
