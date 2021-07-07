@@ -1,19 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+import { HttpClient } from "@angular/common/http";
+import { XtermComponent } from "../xterm/xterm.component";
 
 
 @Component({
-  selector: 'monaco-editor-component',
+  selector: 'thumder-monaco-editor',
   templateUrl: './monaco-editor.component.html',
   styleUrls: ['./monaco-editor.component.scss']
 })
 export class MonacoEditorComponent implements OnInit {
 
-  editorOptions_thumder = {theme: 'thumderTheme', language: 'thumderLanguage'};
+  editorOptions_thumder = {
+    theme: 'thumderTheme',
+    language: 'thumderLanguage'
+  };
   code_asm: string = ``;
   editor: IStandaloneCodeEditor;
-
 
   private httpClient: HttpClient;
 
@@ -31,22 +34,34 @@ export class MonacoEditorComponent implements OnInit {
   public onInitEditor($event: any) {
     console.log($event);
     this.editor = $event;
+    this.editor.layout();
 
     this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_S, function () {
       alert('SAVE pressed!');
     });
 
+    this.editor.onDidChangeCursorSelection((e) => {
+      console.log(this.editor.getModel().getValueInRange(e.selection))
+    });
 
-    this.editor.deltaDecorations([], [
-      {
+    this.editor.onDidChangeModelDecorations((e) => {
+
+    });
+
+    this.editor.deltaDecorations([], [{
         range: new monaco.Range(3, 1, 3, 1),
         options: {
           isWholeLine: true,
           className: 'myContentClass',
-          glyphMarginClassName: 'myGlyphMarginClass'
+          glyphMarginClassName: 'fas fa-angle-double-right'
         }
       }]
     );
   }
+
+  newEvent($event) {
+    console.log($event)
+  }
+
 
 }

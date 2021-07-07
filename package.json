@@ -1,6 +1,6 @@
 {
   "name": "thumder",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "TFG - THUMDER (THe UltiMate Dlx EmulatoR): emulador multiplataforma DLX con fines didácticos",
   "homepage": "https://github.com/nonodev96/THUMDER",
   "author": {
@@ -103,7 +103,16 @@
     "chart.js": "2.9.4",
     "monaco-editor": "0.25.2",
     "ngx-monaco-editor": "9.0.0",
+    "pixi.js": "6.0.4",
     "rxjs": "6.6.6",
-    "tailwindcss": "2.0.4"
+    "string-to-argv": "1.0.0",
+    "tailwindcss": "2.0.4",
+    "xterm": "4.13.0",
+    "xterm-addon-attach": "0.6.0",
+    "xterm-addon-fit": "0.5.0",
+    "xterm-addon-ligatures": "0.5.0",
+    "xterm-addon-search": "0.8.0",
+    "xterm-addon-web-links": "0.4.0",
+    "xterm-addon-webgl": "0.11.1"
   }
 }

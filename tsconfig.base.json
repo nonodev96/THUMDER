@@ -7,6 +7,12 @@
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "mini-signals": [
+        "../node_modules/mini-signals/index.js"
+      ]
+    },
     "experimentalDecorators": true,
     "target": "es5",
     "typeRoots": [

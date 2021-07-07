@@ -8,5 +8,10 @@
       "TITLE": "Detail page !",
       "BACK_TO_HOME": "Back to Home"
     }
+  },
+  "VIEWS": {
+    "FORGOT_PASSWORD": {
+      "SEND_ME_A_NEW_PASSWORD": "Send me a new password"
+    }
   }
 }

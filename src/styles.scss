@@ -7,30 +7,14 @@ html, body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.ide {
-  display: flex;
-  flex-direction: row;
-
-  .ide-main {
-    display: flex;
-    flex-direction: column;
-    flex: 3;
-
-    .ide-monaco-editor-container {
-      .monaco-editor {
-        height: calc(100vh - 100px);
-        width: 100%;
-      }
-    }
-    .ide-console{
-
-    }
-  }
-  .ide-sidebar{
-
-  }
+#ide-monaco-editor-container {
+  min-height: 400px;
 }
 
+.monaco-editor {
+  height: 100%;
+  width: 100%;
+}
 
 .myContentClass {
   background: aquamarine;
