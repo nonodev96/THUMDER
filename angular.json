@@ -17,7 +17,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "allowedCommonJsDependencies": [
-              "chart.js"
+              "chart.js",
+              "mini-signals"
             ],
             "assets": [
               "src/assets",
@@ -39,6 +40,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "node_modules/xterm/css/xterm.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "src/assets/styles/tailwind.css"
             ],

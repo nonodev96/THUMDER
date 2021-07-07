@@ -38,6 +38,7 @@ import { TablesComponent } from "./views/admin/tables/tables.component";
 // auth views
 import { LoginComponent } from "./views/auth/login/login.component";
 import { RegisterComponent } from "./views/auth/register/register.component";
+import { ForgotPasswordComponent } from "./views/auth/forgot-password/forgot-passwordComponent";
 
 // no layouts views
 import { IndexComponent } from "./views/index/index.component";
@@ -67,6 +68,10 @@ import { NotificationDropdownComponent } from "./components/dropdowns/notificati
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { UserDropdownComponent } from "./components/dropdowns/user-dropdown/user-dropdown.component";
 
+import { PipelinePixiComponent } from './components/pipeline-pixi/pipeline-pixi.component';
+import { XtermComponent } from './components/xterm/xterm.component';
+import { IDEComponent } from "./views/ide/ide.component";
+
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -81,8 +86,14 @@ export function myMonacoLoad() {
   (window as any).monaco.languages.setMonarchTokensProvider('thumderLanguage', {
     tokenizer: {
       root: [
-        [/.*:/, "custom-function"],
-        [/;.*/, "custom-comment"],
+        [/(r[0-9]{1,2}|R[0-9]{1,2})/, "custom-register.integer"],
+        [/(f[0-9]{1,2}|F[0-9]{1,2})/, "custom-register.float"],
+        [/(d0|d2|d4|d6|d8|d10|d12|d14|d16|d18|d20|d22|d24|d26|d28|d30|D0|D2|D4|D6|D8|D10|D12|D14|D16|D18|D20|D22|D24|D26|D28|D30)/, "custom-register.decimal"],
+        [/(pc|imar|ir|a|ahi|b|bhi|bta|alu|aluhi|fpsr|dmar|sdr|sdrhi|ldr|ldrhi|PC|IMAR|IR|A|AHI|B|BHI|BTA|ALU|ALUHI|FPSR|DMAR|SDR|SDRHI|LDR|LDRHI)/, "custom-register.words"],
+        [/^\.(data|text|word)/, "custom-words"],
+        [/#[0-9]+/, "custom-numbers"],
+        [/^\S+:$/, "custom-function"],
+        [/(;|(^|\s)#\s).*$/, "custom-comment.line"],
         [/\(.*\)/, "custom-iterator"],
       ]
     }
@@ -95,9 +106,15 @@ export function myMonacoLoad() {
     base: 'vs',
     inherit: false,
     rules: [
-      {token: 'custom-comment', foreground: '008800'},
-      {token: 'custom-function', foreground: '880000'},
-      {token: 'custom-iterator', foreground: 'ffa500'},
+      {foreground: 'a08000', token: 'custom-register.integer' },
+      {foreground: 'a08400', token: 'custom-register.float' },
+      {foreground: 'a08800', token: 'custom-register.decimal' },
+      // {foreground: '008800', token: 'custom-register.words' },
+      {foreground: '008800', token: 'custom-comment.line' },
+      {foreground: '990000', token: 'custom-function' },
+      {foreground: '686868', token: 'custom-numbers' },
+      {foreground: 'ffa500', token: 'custom-iterator' },
+      {foreground: 'ffa500', token: 'custom-words' },
     ]
   });
 
@@ -233,6 +250,7 @@ export function myMonacoLoad() {
 
 const monacoConfig: NgxMonacoEditorConfig = {
   defaultOptions: {
+    automaticLayout: true,
     scrollBeyondLastLine: false,
     glyphMargin: true
   },
@@ -273,10 +291,12 @@ const monacoConfig: NgxMonacoEditorConfig = {
     TablesComponent,
     LoginComponent,
     RegisterComponent,
+    ForgotPasswordComponent,
     IndexComponent,
     LandingComponent,
     ProfileComponent,
 
+    IDEComponent
   ],
   imports: [
     BrowserModule,
@@ -297,6 +317,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MonacoEditorModule.forRoot(monacoConfig) // use forRoot() in main app module only.
   ],
   providers: [AppComponent, UtilityService],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {
