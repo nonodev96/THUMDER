@@ -71,6 +71,8 @@ import { UserDropdownComponent } from "./components/dropdowns/user-dropdown/user
 import { PipelinePixiComponent } from './components/pipeline-pixi/pipeline-pixi.component';
 import { XtermComponent } from './components/xterm/xterm.component';
 import { IDEComponent } from "./views/ide/ide.component";
+import { ModalsComponent } from './components/modals/modals.component';
+import { TreeViewerComponent } from './components/finder/tree-viewer/tree-viewer.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -90,7 +92,7 @@ export function myMonacoLoad() {
         [/(f[0-9]{1,2}|F[0-9]{1,2})/, "custom-register.float"],
         [/(d0|d2|d4|d6|d8|d10|d12|d14|d16|d18|d20|d22|d24|d26|d28|d30|D0|D2|D4|D6|D8|D10|D12|D14|D16|D18|D20|D22|D24|D26|D28|D30)/, "custom-register.decimal"],
         [/(pc|imar|ir|a|ahi|b|bhi|bta|alu|aluhi|fpsr|dmar|sdr|sdrhi|ldr|ldrhi|PC|IMAR|IR|A|AHI|B|BHI|BTA|ALU|ALUHI|FPSR|DMAR|SDR|SDRHI|LDR|LDRHI)/, "custom-register.words"],
-        [/^\.(data|text|word)/, "custom-words"],
+        [/\.(data|text|word|space)/, "custom-words"],
         [/#[0-9]+/, "custom-numbers"],
         [/^\S+:$/, "custom-function"],
         [/(;|(^|\s)#\s).*$/, "custom-comment.line"],
@@ -296,7 +298,11 @@ const monacoConfig: NgxMonacoEditorConfig = {
     LandingComponent,
     ProfileComponent,
 
-    IDEComponent
+    IDEComponent,
+
+    ModalsComponent,
+
+    TreeViewerComponent
   ],
   imports: [
     BrowserModule,

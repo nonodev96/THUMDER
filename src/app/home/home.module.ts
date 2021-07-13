@@ -18,7 +18,8 @@ import { XtermComponent } from "../components/xterm/xterm.component";
     XtermComponent
   ],
   exports: [
-    MonacoEditorComponent
+    MonacoEditorComponent,
+    XtermComponent
   ],
   imports: [
     CommonModule,

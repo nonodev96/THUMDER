@@ -1,18 +1,28 @@
 <app-index-navbar></app-index-navbar>
-<div id="ide">
-  <div id="ide-main" class="flex flex-wrap">
-    <div id="ide-monaco-editor-container" class="w-10/12">
-      <thumder-monaco-editor></thumder-monaco-editor>
-    </div>
-    <div id="ide-sidebar" class="w-2/12">
-      Hello world!
-    </div>
-  </div>
 
-  <div id="ide-console" class="flex flex-wrap">
-    <div class="w-full">
-      <thumder-xterm></thumder-xterm>
+<div class="container px-4 mx-auto">
+  <div id="ide">
+
+    <div id="ide-main" class="flex flex-wrap">
+      <div id="ide-monaco-editor-container" class="w-10/12">
+        <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
+      </div>
+      <div id="ide-sidebar" class="w-2/12">
+        <button class="w-full h-12 px-6 mt-0 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800" (click)="iter()">Iterator</button>
+        <button class="w-full h-12 px-6 mt-4 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800" (click)="toggleModal()">Toggle Modal</button>
+      </div>
     </div>
+
+    <div id="ide-console" class="flex flex-wrap">
+      <div class="w-12/12">
+        <thumder-xterm #xtermComponent></thumder-xterm>
+      </div>
+    </div>
+
+    <thumder-modals #modalsComponent>
+      <h1>Hello world!</h1>
+    </thumder-modals>
   </div>
 </div>
-<app-footer></app-footer>
+
+<!--<app-footer></app-footer>-->

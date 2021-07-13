@@ -11,12 +11,14 @@ import { XtermComponent } from "../xterm/xterm.component";
 })
 export class MonacoEditorComponent implements OnInit {
 
+  editor: IStandaloneCodeEditor;
   editorOptions_thumder = {
     theme: 'thumderTheme',
     language: 'thumderLanguage'
   };
   code_asm: string = ``;
-  editor: IStandaloneCodeEditor;
+  oldDecoration: string[] = [];
+  i = 0;
 
   private httpClient: HttpClient;
 
@@ -32,7 +34,6 @@ export class MonacoEditorComponent implements OnInit {
   }
 
   public onInitEditor($event: any) {
-    console.log($event);
     this.editor = $event;
     this.editor.layout();
 
@@ -41,15 +42,19 @@ export class MonacoEditorComponent implements OnInit {
     });
 
     this.editor.onDidChangeCursorSelection((e) => {
-      console.log(this.editor.getModel().getValueInRange(e.selection))
+
     });
 
     this.editor.onDidChangeModelDecorations((e) => {
 
     });
+  }
 
-    this.editor.deltaDecorations([], [{
-        range: new monaco.Range(3, 1, 3, 1),
+  addNewDecorator() {
+    this.oldDecoration = this.editor.deltaDecorations(this.oldDecoration, []);
+
+    this.oldDecoration = this.editor.deltaDecorations(this.oldDecoration, [{
+        range: new monaco.Range(this.i, 1, this.i, 1),
         options: {
           isWholeLine: true,
           className: 'myContentClass',
@@ -57,11 +62,7 @@ export class MonacoEditorComponent implements OnInit {
         }
       }]
     );
+    this.i++;
   }
-
-  newEvent($event) {
-    console.log($event)
-  }
-
 
 }

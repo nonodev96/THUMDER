@@ -6,39 +6,22 @@
       <h1 class="title">
         {{ 'PAGES.HOME.TITLE' | translate }}
       </h1>
-      <a routerLink="/detail">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a>
+      <a [routerLink]="['/detail']">{{ 'PAGES.HOME.GO_TO_DETAIL' | translate }}</a>
 
-    </div>
-  </div>
-  <hr>
+      <button (click)="log()"
+              class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-xs px-4 py-2 rounded-full outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              type="button">
+        Log
+      </button>
 
-  <div id="ide">
-    <div id="ide-main" class="flex flex-wrap">
-      <div id="ide-monaco-editor-container" class="w-10/12">
-        <thumder-monaco-editor></thumder-monaco-editor>
-      </div>
-      <div id="ide-sidebar" class="w-2/12">
-        Hello world!
-      </div>
-    </div>
+      <button (click)="getSelected()"
+              class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-xs px-4 py-2 rounded-full outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+              type="button">
+        Get Selected
+      </button>
 
-    <div id="ide-console" class="flex flex-wrap">
-      <div class="w-full">
-        <thumder-xterm [data]="'pepe'"></thumder-xterm>
-      </div>
     </div>
   </div>
 
 </div>
 
-
-<button (click)="log()"
-        class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-xs px-4 py-2 rounded-full outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-        type="button">
-  Log
-</button>
-<button (click)="getSelected()"
-        class="text-red-500 bg-transparent border border-solid border-red-500 hover:bg-red-500 hover:text-white active:bg-red-600 font-bold uppercase text-xs px-4 py-2 rounded-full outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-        type="button">
-  Get Selected
-</button>
