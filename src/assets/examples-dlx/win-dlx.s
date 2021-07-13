@@ -72,31 +72,32 @@ saltoDerecha:
 	LW R12, ADYACENTES(R6)
 	OR R10, R0, R29
 	J condicionMinimo
+
 cuerpoMinimo:
 	ADD R6, R6, R28
 	LW R14, ADYACENTES(R6)
 	SLT R13, R14, R12
 	BEQZ R13, seguirMinimo
 	ADD R12, R14, R0
+
 seguirMinimo:
 	ADD R10, R10, R29
+
 condicionMinimo:
 	SLT R11, R10, R5
 	BNEZ R11, cuerpoMinimo
-
 	SW MATRESUL(R2), R12
 
-
 Fin:
-	ADDI R2,R2,4
-	SEQI R23,R18,7
-	BNEZ R23,SALTO2
-	ADDI R18,R18,1
+	ADDI R2, R2, 4
+	SEQI R23, R18, 7
+	BNEZ R23, SALTO2
+	ADDI R18, R18, 1
 	J SALTO1
 
 SALTO2:
-	SUBI R18,R0,0
-	ADDI R17,R17,1
+	SUBI R18, R0, 0
+	ADDI R17, R17, 1
 
 SALTO1:
 	; Compruebo si he acabado
