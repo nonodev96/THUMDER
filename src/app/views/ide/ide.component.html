@@ -1,28 +1,87 @@
-<app-index-navbar></app-index-navbar>
+<div class="wrapper">
+  <app-auth-navbar></app-auth-navbar>
+  <app-aside></app-aside>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Blank Page</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Blank Page</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-<div class="container px-4 mx-auto">
-  <div id="ide">
+    <!-- Main content -->
+    <section class="content">
 
-    <div id="ide-main" class="flex flex-wrap">
-      <div id="ide-monaco-editor-container" class="w-10/12">
-        <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
+      <!-- Default box -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Title</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
+                    title="Collapse">
+              <i class="fas fa-minus"></i></button>
+            <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fas fa-times"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+
+
+          <div id="ide">
+
+            <div id="ide-main" class="flex flex-wrap">
+              <div id="ide-monaco-editor-container" class="w-10/12">
+                <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
+              </div>
+              <div id="ide-sidebar" class="w-2/12">
+                <button
+                  class="w-full h-12 px-6 mt-0 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
+                  (click)="iter()">Iterator
+                </button>
+                <button
+                  class="w-full h-12 px-6 mt-4 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
+                  (click)="toggleModal()">Toggle Modal
+                </button>
+              </div>
+            </div>
+
+            <div id="ide-console" class="flex flex-wrap">
+              <div class="w-12/12">
+                <thumder-xterm #xtermComponent></thumder-xterm>
+              </div>
+            </div>
+
+            <thumder-modals #modalsComponent>
+              <h1>Hello world!</h1>
+            </thumder-modals>
+          </div>
+
+
+        </div>
+        <!-- /.card-body -->
+        <div class="card-footer">
+          Footer
+        </div>
+        <!-- /.card-footer-->
       </div>
-      <div id="ide-sidebar" class="w-2/12">
-        <button class="w-full h-12 px-6 mt-0 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800" (click)="iter()">Iterator</button>
-        <button class="w-full h-12 px-6 mt-4 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800" (click)="toggleModal()">Toggle Modal</button>
-      </div>
-    </div>
+      <!-- /.card -->
 
-    <div id="ide-console" class="flex flex-wrap">
-      <div class="w-12/12">
-        <thumder-xterm #xtermComponent></thumder-xterm>
-      </div>
-    </div>
-
-    <thumder-modals #modalsComponent>
-      <h1>Hello world!</h1>
-    </thumder-modals>
+    </section>
+    <!-- /.content -->
   </div>
-</div>
+  <!-- /.content-wrapper -->
 
-<!--<app-footer></app-footer>-->
+  <app-footer></app-footer>
+</div>

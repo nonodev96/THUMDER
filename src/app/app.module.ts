@@ -5,8 +5,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './__core/core.module';
+import { SharedModule } from './__shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -14,65 +14,45 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { HomeModule } from './home/home.module';
-import { DetailModule } from './detail/detail.module';
+
 
 import { AppComponent } from './app.component';
-import { UtilityService } from "./core/utility.service";
+import { UtilityService } from "./__core/utility.service";
 
-import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 
 
-// layouts
-import { AdminComponent } from "./layouts/admin/admin.component";
-import { AuthComponent } from "./layouts/auth/auth.component";
+// _layouts
+import { AdminComponent } from "./_layouts/admin/admin.component";
+import { AuthComponent } from "./_layouts/auth/auth.component";
 
 // admin views
-import { DashboardComponent } from "./views/admin/dashboard/dashboard.component";
-import { MapsComponent } from "./views/admin/maps/maps.component";
-import { SettingsComponent } from "./views/admin/settings/settings.component";
-import { TablesComponent } from "./views/admin/tables/tables.component";
 
 // auth views
 import { LoginComponent } from "./views/auth/login/login.component";
 import { RegisterComponent } from "./views/auth/register/register.component";
 import { ForgotPasswordComponent } from "./views/auth/forgot-password/forgot-passwordComponent";
 
-// no layouts views
+// no _layouts views
 import { IndexComponent } from "./views/index/index.component";
 import { LandingComponent } from "./views/landing/landing.component";
 import { ProfileComponent } from "./views/profile/profile.component";
 
 import { AdminNavbarComponent } from "./components/navbars/admin-navbar/admin-navbar.component";
 import { AuthNavbarComponent } from "./components/navbars/auth-navbar/auth-navbar.component";
-import { CardBarChartComponent } from "./components/cards/card-bar-chart/card-bar-chart.component";
-import { CardLineChartComponent } from "./components/cards/card-line-chart/card-line-chart.component";
-import { CardPageVisitsComponent } from "./components/cards/card-page-visits/card-page-visits.component";
-import { CardProfileComponent } from "./components/cards/card-profile/card-profile.component";
-import { CardSettingsComponent } from "./components/cards/card-settings/card-settings.component";
-import { CardSocialTrafficComponent } from "./components/cards/card-social-traffic/card-social-traffic.component";
-import { CardStatsComponent } from "./components/cards/card-stats/card-stats.component";
-import { CardTableComponent } from "./components/cards/card-table/card-table.component";
+
 import { FooterAdminComponent } from "./components/footers/footer-admin/footer-admin.component";
 import { FooterComponent } from "./components/footers/footer/footer.component";
-import { FooterSmallComponent } from "./components/footers/footer-small/footer-small.component";
-import { HeaderStatsComponent } from "./components/headers/header-stats/header-stats.component";
-import { IndexNavbarComponent } from "./components/navbars/index-navbar/index-navbar.component";
-import { MapExampleComponent } from "./components/maps/map-example/map-example.component";
-import { IndexDropdownComponent } from "./components/dropdowns/index-dropdown/index-dropdown.component";
-import { TableDropdownComponent } from "./components/dropdowns/table-dropdown/table-dropdown.component";
-import { PagesDropdownComponent } from "./components/dropdowns/pages-dropdown/pages-dropdown.component";
-import { NotificationDropdownComponent } from "./components/dropdowns/notification-dropdown/notification-dropdown.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
-import { UserDropdownComponent } from "./components/dropdowns/user-dropdown/user-dropdown.component";
 
 import { PipelinePixiComponent } from './components/pipeline-pixi/pipeline-pixi.component';
 import { XtermComponent } from './components/xterm/xterm.component';
 import { IDEComponent } from "./views/ide/ide.component";
-import { ModalsComponent } from './components/modals/modals.component';
-import { TreeViewerComponent } from './components/finder/tree-viewer/tree-viewer.component';
+import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
+import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
+import { FileManagerComponent } from './components/navigations/file-manager/file-manager.component';
+import { AsideComponent } from './components/aside/aside.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -108,15 +88,15 @@ export function myMonacoLoad() {
     base: 'vs',
     inherit: false,
     rules: [
-      {foreground: 'a08000', token: 'custom-register.integer' },
-      {foreground: 'a08400', token: 'custom-register.float' },
-      {foreground: 'a08800', token: 'custom-register.decimal' },
+      {foreground: 'a08000', token: 'custom-register.integer'},
+      {foreground: 'a08400', token: 'custom-register.float'},
+      {foreground: 'a08800', token: 'custom-register.decimal'},
       // {foreground: '008800', token: 'custom-register.words' },
-      {foreground: '008800', token: 'custom-comment.line' },
-      {foreground: '990000', token: 'custom-function' },
-      {foreground: '686868', token: 'custom-numbers' },
-      {foreground: 'ffa500', token: 'custom-iterator' },
-      {foreground: 'ffa500', token: 'custom-words' },
+      {foreground: '008800', token: 'custom-comment.line'},
+      {foreground: '990000', token: 'custom-function'},
+      {foreground: '686868', token: 'custom-numbers'},
+      {foreground: 'ffa500', token: 'custom-iterator'},
+      {foreground: 'ffa500', token: 'custom-words'},
     ]
   });
 
@@ -263,34 +243,16 @@ const monacoConfig: NgxMonacoEditorConfig = {
   declarations: [
     AppComponent,
 
-    DashboardComponent,
-    CardBarChartComponent,
-    CardLineChartComponent,
-    IndexDropdownComponent,
-    PagesDropdownComponent,
-    TableDropdownComponent,
-    NotificationDropdownComponent,
-    UserDropdownComponent,
     SidebarComponent,
     FooterComponent,
-    FooterSmallComponent,
     FooterAdminComponent,
-    CardPageVisitsComponent,
-    CardProfileComponent,
-    CardSettingsComponent,
-    CardSocialTrafficComponent,
-    CardStatsComponent,
-    CardTableComponent,
-    HeaderStatsComponent,
-    MapExampleComponent,
+
     AuthNavbarComponent,
     AdminNavbarComponent,
-    IndexNavbarComponent,
+
     AdminComponent,
     AuthComponent,
-    MapsComponent,
-    SettingsComponent,
-    TablesComponent,
+
     LoginComponent,
     RegisterComponent,
     ForgotPasswordComponent,
@@ -299,10 +261,10 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ProfileComponent,
 
     IDEComponent,
-
-    ModalsComponent,
-
-    TreeViewerComponent
+    MonacoEditorComponent,
+    XtermComponent,
+    FileManagerComponent,
+    AsideComponent,
   ],
   imports: [
     BrowserModule,
@@ -310,8 +272,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     HttpClientModule,
     CoreModule,
     SharedModule,
-    HomeModule,
-    DetailModule,
+
     AppRoutingModule,
     TranslateModule.forRoot({
       loader: {
@@ -320,7 +281,14 @@ const monacoConfig: NgxMonacoEditorConfig = {
         deps: [HttpClient]
       }
     }),
-    MonacoEditorModule.forRoot(monacoConfig) // use forRoot() in main app module only.
+    MonacoEditorModule.forRoot(monacoConfig),
+
+
+    DxToolbarModule,
+    DxListModule,
+    DxFileManagerModule,
+    DxPopupModule,
+    // use forRoot() in main app module only.
   ],
   providers: [AppComponent, UtilityService],
   exports: [],

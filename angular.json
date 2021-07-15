@@ -17,6 +17,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "allowedCommonJsDependencies": [
+              "admin-lte/plugins/chart.js/Chart.js'",
               "chart.js",
               "mini-signals"
             ],
@@ -41,11 +42,25 @@
             "styles": [
               "src/styles.scss",
               "node_modules/xterm/css/xterm.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-              "node_modules/tailwindcss/dist/tailwind.min.css",
-              "src/assets/styles/tailwind.css"
+              "node_modules/devextreme/dist/css/dx.light.css",
+              "src/assets/styles/dx.generic.custom-scheme-thumder.css",
+//              "src/assets/styles/bootstrap/css/bootstrap.min.css",
+              "node_modules/admin-lte/plugins/fontawesome-free/css/all.css",
+              "node_modules/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.css",
+              "node_modules/admin-lte/dist/css/adminlte.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "node_modules/admin-lte/plugins/jquery/jquery.js",
+              "node_modules/admin-lte/plugins/bootstrap/js/bootstrap.bundle.js",
+              "node_modules/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.js",
+              "node_modules/admin-lte/dist/js/adminlte.js",
+              "node_modules/admin-lte/dist/js/demo.js",
+              "node_modules/admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js",
+              "node_modules/admin-lte/plugins/raphael/raphael.js",
+              "node_modules/admin-lte/plugins/jquery-mapael/jquery.mapael.js",
+              "node_modules/admin-lte/plugins/jquery-mapael/maps/usa_states.min.js",
+              "node_modules/admin-lte/plugins/chart.js/Chart.js"
+            ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js"
             }
@@ -66,22 +81,49 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.dev.ts"
                 }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
+                }
               ]
             },
             "web": {
               "optimization": false,
-              "outputHashing": "all",
-              "sourceMap": true,
+              "outputHashing": "none",
+              "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
+              "showCircularDependencies": false,
+              "aot": true,
+              "extractLicenses": false,
+              "statsJson": false,
+              "progress": false,
+              "vendorChunk": true,
               "buildOptimizer": false,
+
+//              "optimization": false,
+//              "outputHashing": "all",
+//              "sourceMap": true,
+//              "extractCss": true,
+//              "namedChunks": false,
+//              "aot": false,
+//              "extractLicenses": true,
+//              "vendorChunk": false,
+//              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.web.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
                 }
               ]
             },
@@ -99,6 +141,13 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
                 }
               ]
             }
