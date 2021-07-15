@@ -1,26 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PageNotFoundComponent } from './shared/components';
+import { PageNotFoundComponent } from './__shared/components';
 
-import { HomeRoutingModule } from './home/home-routing.module';
-import { DetailRoutingModule } from './detail/detail-routing.module';
-
-// layouts
-import { AdminComponent } from "./layouts/admin/admin.component";
-import { AuthComponent } from "./layouts/auth/auth.component";
+// _layouts
+import { AdminComponent } from "./_layouts/admin/admin.component";
+import { AuthComponent } from "./_layouts/auth/auth.component";
 
 // admin views
-import { DashboardComponent } from "./views/admin/dashboard/dashboard.component";
-import { MapsComponent } from "./views/admin/maps/maps.component";
-import { SettingsComponent } from "./views/admin/settings/settings.component";
-import { TablesComponent } from "./views/admin/tables/tables.component";
 
 // auth views
 import { LoginComponent } from "./views/auth/login/login.component";
 import { RegisterComponent } from "./views/auth/register/register.component";
 import { ForgotPasswordComponent } from "./views/auth/forgot-password/forgot-passwordComponent";
 
-// no layouts views
+// no _layouts views
 import { IndexComponent } from "./views/index/index.component";
 import { LandingComponent } from "./views/landing/landing.component";
 import { ProfileComponent } from "./views/profile/profile.component";
@@ -38,10 +31,6 @@ const routes: Routes = [
     path: "admin",
     component: AdminComponent,
     children: [
-      {path: "dashboard", component: DashboardComponent},
-      {path: "settings", component: SettingsComponent},
-      {path: "tables", component: TablesComponent},
-      {path: "maps", component: MapsComponent},
       {path: "", redirectTo: "dashboard", pathMatch: "full"},
     ],
   },
@@ -79,8 +68,6 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes),
-    HomeRoutingModule,
-    DetailRoutingModule
   ],
   exports: [RouterModule]
 })

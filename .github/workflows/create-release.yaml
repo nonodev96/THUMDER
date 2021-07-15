@@ -88,4 +88,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.asset_name }}"
-
+          NODE_OPTIONS: "--max-old-space-size=4096"

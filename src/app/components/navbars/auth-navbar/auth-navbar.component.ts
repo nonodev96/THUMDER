@@ -8,9 +8,11 @@ import { AppComponent } from "../../../app.component";
 export class AuthNavbarComponent implements OnInit {
   navbarOpen = false;
 
-  constructor(private app: AppComponent) {}
+  constructor(private app: AppComponent) {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   setNavbarOpen() {
     this.navbarOpen = !this.navbarOpen;
