@@ -1,11 +1,48 @@
-<div>
-<!--  <app-sidebar></app-sidebar>-->
-  <div class="relative md:ml-64 bg-blueGray-100">
-<!--    <app-admin-navbar></app-admin-navbar>-->
-<!--    <app-header-stats></app-header-stats>-->
-    <div class="px-4 md:px-10 mx-auto w-full -m-24">
-      <router-outlet></router-outlet>
-      <app-footer-admin></app-footer-admin>
+<div class="wrapper">
+  <!-- Navbar -->
+  <app-admin-navbar></app-admin-navbar>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <app-aside-left></app-aside-left>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Dashboard v2</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v2</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
     </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+
+
+      <!-- THIS IS THE IMPORTANT -->
+      <router-outlet></router-outlet>
+
+
+    </section>
+    <!-- /.content -->
   </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Control Sidebar -->
+  <app-aside-right></app-aside-right>
+  <!-- /.control-sidebar -->
+
+  <!-- Main Footer -->
+  <app-footer></app-footer>
 </div>

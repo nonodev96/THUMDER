@@ -1,5 +1,6 @@
 <dx-file-manager id="fileManager"
                  [fileSystemProvider]="remoteProvider"
+                 [height]="height()"
                  currentPath="Widescreen"
                  (onSelectedFileOpened)="displayImagePopup($event)">
 

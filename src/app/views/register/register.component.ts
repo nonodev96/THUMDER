@@ -10,6 +10,7 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.document.body.className = "dx-viewport";
     this.document.body.classList.add('register-page')
   }
 }

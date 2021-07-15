@@ -13,7 +13,7 @@ export class FileManagerComponent implements OnInit {
 
   constructor() {
     this.remoteProvider = new RemoteFileSystemProvider({
-      endpointUrl: "https://js.devexpress.com/Demos/Mvc/api/file-manager-file-system-images"
+      endpointUrl: "https://js.devexpress.com/Demos/Mvc/api/file-manager-file-system-images",
     });
   }
 
@@ -25,4 +25,7 @@ export class FileManagerComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  height(): number | Function | string {
+    return window.innerHeight / 1.25;
+  }
 }
