@@ -44,7 +44,7 @@
               "node_modules/xterm/css/xterm.css",
               "node_modules/devextreme/dist/css/dx.light.css",
               "src/assets/styles/dx.generic.custom-scheme-thumder.css",
-//              "src/assets/styles/bootstrap/css/bootstrap.min.css",
+              //              "src/assets/styles/bootstrap/css/bootstrap.min.css",
               "node_modules/admin-lte/plugins/fontawesome-free/css/all.css",
               "node_modules/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.css",
               "node_modules/admin-lte/dist/css/adminlte.css"
@@ -103,29 +103,22 @@
               "progress": false,
               "vendorChunk": true,
               "buildOptimizer": false,
-
-//              "optimization": false,
-//              "outputHashing": "all",
-//              "sourceMap": true,
-//              "extractCss": true,
-//              "namedChunks": false,
-//              "aot": false,
-//              "extractLicenses": true,
-//              "vendorChunk": false,
-//              "buildOptimizer": false,
+              //              "optimization": false,
+              //              "outputHashing": "all",
+              //              "sourceMap": true,
+              //              "extractCss": true,
+              //              "namedChunks": false,
+              //              "aot": false,
+              //              "extractLicenses": true,
+              //              "vendorChunk": false,
+              //              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.web.ts"
                 }
               ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "5mb"
-                }
-              ]
+              "budgets": []
             },
             "production": {
               "optimization": true,
