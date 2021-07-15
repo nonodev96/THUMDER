@@ -14,8 +14,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-
-
 import { AppComponent } from './app.component';
 import { UtilityService } from "./__core/utility.service";
 
@@ -27,32 +25,38 @@ import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { AdminComponent } from "./_layouts/admin/admin.component";
 import { AuthComponent } from "./_layouts/auth/auth.component";
 
-// admin views
+// _admin views
 
-// auth views
-import { LoginComponent } from "./views/auth/login/login.component";
-import { RegisterComponent } from "./views/auth/register/register.component";
-import { ForgotPasswordComponent } from "./views/auth/forgot-password/forgot-passwordComponent";
+// _auth views
+import { FileManagerComponent } from './views/_auth/file-manager/file-manager.component';
+import { IDEComponent } from "./views/_auth/ide/ide.component";
+import { ProfileComponent } from "./views/_auth/profile/profile.component";
 
 // no _layouts views
-import { IndexComponent } from "./views/index/index.component";
+import { LoginComponent } from "./views/login/login.component";
+import { RegisterComponent } from "./views/register/register.component";
+import { ForgotPasswordComponent } from "./views/forgot-password/forgot-passwordComponent";
+
+// Index
+import { IndexComponent } from "./views/_index/index.component";
+
+
 import { LandingComponent } from "./views/landing/landing.component";
-import { ProfileComponent } from "./views/profile/profile.component";
 
 import { AdminNavbarComponent } from "./components/navbars/admin-navbar/admin-navbar.component";
 import { AuthNavbarComponent } from "./components/navbars/auth-navbar/auth-navbar.component";
-
 import { FooterAdminComponent } from "./components/footers/footer-admin/footer-admin.component";
 import { FooterComponent } from "./components/footers/footer/footer.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 
 import { PipelinePixiComponent } from './components/pipeline-pixi/pipeline-pixi.component';
-import { XtermComponent } from './components/xterm/xterm.component';
-import { IDEComponent } from "./views/ide/ide.component";
 import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
+import { XtermComponent } from './components/xterm/xterm.component';
+
+import { AsideLeftComponent } from './components/aside/aside-left/aside-left.component';
+import { AsideRightComponent } from './components/aside/aside-right/aside-right.component';
+
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
-import { FileManagerComponent } from './components/navigations/file-manager/file-manager.component';
-import { AsideComponent } from './components/aside/aside.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -264,7 +268,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MonacoEditorComponent,
     XtermComponent,
     FileManagerComponent,
-    AsideComponent,
+    AsideLeftComponent,
+    AsideRightComponent,
   ],
   imports: [
     BrowserModule,

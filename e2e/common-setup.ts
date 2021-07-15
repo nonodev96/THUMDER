@@ -16,7 +16,7 @@ export default function setup(): void {
       //     |__ ...
       //     |__ main.js
       //     |__ package.json
-      //     |__ index.html
+      //     |__ _index.html
       //     |__ ...
       //     |__ test
       //        |__ spec.js  <- You are here! ~ Well you should be.

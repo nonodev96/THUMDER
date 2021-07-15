@@ -1,0 +1,108 @@
+<div class="wrapper">
+  <!-- Navbar -->
+  <app-auth-navbar></app-auth-navbar>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <app-aside-left></app-aside-left>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Dashboard v2</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard v2</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <section class="content">
+
+      <ul>
+        <li><a [routerLink]="['/']">dashboard</a></li>
+        <li><a [routerLink]="['/auth/profile']">auth/profile</a></li>
+        <li><a [routerLink]="['/auth/ide']">IDE</a></li>
+        <li><a [routerLink]="['/auth/file-manager']">File manager</a></li>
+        <li><a [routerLink]="['/login']">Login</a></li>
+        <li><a [routerLink]="['/register']">Register</a></li>
+        <li><a [routerLink]="['/forgot-password']">Forgot password</a></li>
+        <li><a [routerLink]="['']"></a></li>
+        <li><a [routerLink]="['']"></a></li>
+        <li><a [routerLink]="['']"></a></li>
+        <li><a [routerLink]="['']"></a></li>
+        <li><a [routerLink]="['']"></a></li>
+        <li><a [routerLink]="['']"></a></li>
+      </ul>
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Control Sidebar -->
+  <app-aside-right></app-aside-right>
+  <!-- /.control-sidebar -->
+
+  <!-- Main Footer -->
+  <app-footer></app-footer>
+</div>
+
+<!--<div class="container">-->
+<!--  <div class="row">-->
+<!--    <div class="col-lg-12">-->
+<!--      <app-file-manager></app-file-manager>-->
+<!--      &lt;!&ndash;<dx-toolbar>-->
+<!--        <dxi-item location="before"-->
+<!--                  widget="dxButton"-->
+<!--                  [options]="backButtonOptions">-->
+<!--        </dxi-item>-->
+<!--        <dxi-item location="before"-->
+<!--                  widget="dxButton"-->
+<!--                  locateInMenu="auto"-->
+<!--                  [options]="refreshButtonOptions">-->
+<!--        </dxi-item>-->
+<!--        <dxi-item location="center"-->
+<!--                  widget="dxButton"-->
+<!--                  locateInMenu="never">-->
+<!--          <div *dxTemplate>-->
+<!--            <div class='toolbar-label'><b>Tom's Club</b> Products</div>-->
+<!--          </div>-->
+<!--        </dxi-item>-->
+<!--        <dxi-item location="after"-->
+<!--                  widget="dxSelectBox"-->
+<!--                  locateInMenu="auto"-->
+<!--                  [options]="selectBoxOptions">-->
+<!--        </dxi-item>-->
+<!--        <dxi-item location="after"-->
+<!--                  widget="dxButton"-->
+<!--                  locateInMenu="auto"-->
+<!--                  [options]="addButtonOptions">-->
+<!--        </dxi-item>-->
+<!--        <dxi-item widget="dxButton"-->
+<!--                  locateInMenu="always"-->
+<!--                  [options]="saveButtonOptions">-->
+<!--        </dxi-item>-->
+<!--        <dxi-item widget="dxButton"-->
+<!--                  locateInMenu="always"-->
+<!--                  [options]="printButtonOptions">-->
+<!--        </dxi-item>-->
+<!--        <dxi-item widget="dxButton"-->
+<!--                  locateInMenu="always"-->
+<!--                  [options]="settingsButtonOptions">-->
+<!--        </dxi-item>-->
+<!--      </dx-toolbar>-->
+<!--      <dx-list id="products" [dataSource]="productsStore">-->
+<!--      </dx-list>&ndash;&gt;-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
