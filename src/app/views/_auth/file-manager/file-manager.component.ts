@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import RemoteFileSystemProvider from "devextreme/file_management/remote_provider";
+import {DOCUMENT} from "@angular/common";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-file-manager',
@@ -11,21 +13,29 @@ export class FileManagerComponent implements OnInit {
   imageItemToDisplay: any = {};
   popupVisible = false;
 
-  constructor() {
+  constructor(@Inject(DOCUMENT) private document: Document, private router: Router) {
     this.remoteProvider = new RemoteFileSystemProvider({
       endpointUrl: "https://js.devexpress.com/Demos/Mvc/api/file-manager-file-system-images",
     });
   }
 
-  displayImagePopup(e) {
-    this.imageItemToDisplay = e.file;
+  onSelectedFileOpened($event) {
+    this.imageItemToDisplay = $event.file;
     this.popupVisible = true;
+    this.router.navigateByUrl('/auth/ide').then(r => {
+      console.log(r)
+    });
   }
 
   ngOnInit(): void {
+    this.document.body.classList.add('login-page')
   }
 
   height(): number | Function | string {
     return window.innerHeight / 1.25;
+  }
+
+  onContextMenuItemClick($event: any) {
+    console.log($event)
   }
 }

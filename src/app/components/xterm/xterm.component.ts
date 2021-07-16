@@ -31,7 +31,6 @@ export class XtermComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log(this.terminalDiv)
     this.terminal.open(this.terminalDiv.nativeElement);
     // this.terminal.loadAddon(new AttachAddon());
     // this.terminal.loadAddon(new WebLinksAddon(handler));
