@@ -26,17 +26,7 @@
               {
                 "glob": "**/*",
                 "input": "node_modules/monaco-editor",
-                "output": "assets/monaco-editor"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/monaco-editor/min-maps",
-                "output": "assets/min-maps"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-monaco-editor/assets/monaco",
-                "output": "assets/monaco/"
+                "output": "assets/monaco-editor/"
               }
             ],
             "styles": [
@@ -56,8 +46,6 @@
               "node_modules/admin-lte/dist/js/demo.js",
               "node_modules/admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js",
               "node_modules/admin-lte/plugins/raphael/raphael.js",
-              "node_modules/admin-lte/plugins/jquery-mapael/jquery.mapael.js",
-              "node_modules/admin-lte/plugins/jquery-mapael/maps/usa_states.min.js",
               "node_modules/admin-lte/plugins/chart.js/Chart.js"
             ],
             "customWebpackConfig": {

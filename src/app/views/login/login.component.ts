@@ -10,7 +10,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.document.body.className = "dx-viewport";
     this.document.body.classList.add('login-page')
   }
 }

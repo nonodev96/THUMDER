@@ -2,7 +2,8 @@
                  [fileSystemProvider]="remoteProvider"
                  [height]="height()"
                  currentPath="Widescreen"
-                 (onSelectedFileOpened)="displayImagePopup($event)">
+                 (onContextMenuItemClick)="onContextMenuItemClick($event)"
+                 (onSelectedFileOpened)="onSelectedFileOpened($event)">
 
   <dxo-permissions
     create="true"

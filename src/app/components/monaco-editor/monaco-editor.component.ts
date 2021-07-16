@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import { HttpClient } from "@angular/common/http";
 import { XtermComponent } from "../xterm/xterm.component";
+import {MonacoEditorLoaderService} from "@materia-ui/ngx-monaco-editor";
+import {filter, take} from "rxjs/operators";
+import MonacoConfig from "../../../monaco-config";
 
 
 @Component({
@@ -16,18 +19,28 @@ export class MonacoEditorComponent implements OnInit {
     theme: 'thumderTheme',
     language: 'thumderLanguage'
   };
+  // editorOptions_thumder = {theme: 'vs-dark', language: 'javascript'};
+
   code_asm: string = ``;
   oldDecoration: string[] = [];
   i = 0;
 
   private httpClient: HttpClient;
 
-  constructor(http: HttpClient) {
+  constructor(http: HttpClient, private monacoLoaderService: MonacoEditorLoaderService) {
     this.httpClient = http;
+    this.monacoLoaderService.isMonacoLoaded$
+      .pipe(
+        filter(isLoaded => !!isLoaded),
+        take(1)
+      )
+      .subscribe(() => {
+        this.registerMonacoCustomTheme();
+      });
   }
 
   ngOnInit(): void {
-    this.httpClient.get('/assets/examples-dlx/win-dlx.s', {responseType: 'text'})
+    this.httpClient.get('assets/examples-dlx/win-dlx.s', {responseType: 'text'})
       .subscribe(data => {
         this.code_asm = data;
       });
@@ -65,4 +78,7 @@ export class MonacoEditorComponent implements OnInit {
     this.i++;
   }
 
+  private registerMonacoCustomTheme() {
+    MonacoConfig.onMonacoLoad();
+  }
 }
