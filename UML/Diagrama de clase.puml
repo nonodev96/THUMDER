@@ -1,0 +1,73 @@
+@startuml
+'https://plantuml.com/class-diagram
+' TODO
+
+
+package Core <<Node>> {
+  abstract class Services
+  class Electron_Service
+  class WebSocketMachine_Service
+
+  class Machine
+}
+
+Services <|-left- Electron_Service
+Services <|-down- WebSocketMachine_Service
+Machine o-right- WebSocketMachine_Service
+
+
+package Layout <<Node>> {
+
+  package Admin <<Folder>> {
+    class AdminView
+  }
+
+  package Auth <<Folder>> {
+   class AuthView
+  }
+
+}
+
+package View <<Node>> {
+
+  class ViewModule
+
+  package _Admin <<Folder>> {
+
+    package _Auth <<Folder>> #DDDDDD {
+      class Docs
+      class FileManager
+      class IDE
+      class Profile
+    }
+
+  }
+
+  package Externs <<Folder>> #DDDDDD  {
+   class Index
+   class Login
+   class Register
+   class ForgotPassword
+  }
+}
+
+package Component <<Frame>> {
+  class Footers
+  class Headers
+  class Modals
+  class Monaco-editor
+  class Navbars
+  class Pipeline-pixi
+  class Sidebar
+  class Xterm
+}
+
+package foo5 <<Cloud>> {
+  class Class5
+}
+
+package foo6 <<Database>> {
+  class Class6
+}
+
+@enduml

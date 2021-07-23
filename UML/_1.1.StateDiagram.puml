@@ -1,0 +1,29 @@
+@startuml
+(*) --> "Iniciar"
+
+if "Cuenta" then
+  --> [No Tienes cuenta] "Crear una cuenta"
+else
+  --> [Si Tienes cuenta] "Iniciar sesión"
+endif
+
+--> === B1 ===
+--> "Parallel Activity 1"
+--> === B2 ===
+
+
+===B1=== --> "Parallel Activity 2"
+--> === B2 ===
+
+===B1=== --> "Parallel Activity 3"
+--> === B2 ===
+
+===B1=== --> "Parallel Activity 4"
+--> === B2 ===
+
+
+
+--> (*)
+
+
+@enduml

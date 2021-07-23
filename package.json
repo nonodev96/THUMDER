@@ -18,7 +18,11 @@
     "sass",
     "windows",
     "mac",
-    "linux"
+    "linux",
+    "dlx",
+    "windlx",
+    "DLX-simulator",
+    "simulator"
   ],
   "main": "main.js",
   "private": true,

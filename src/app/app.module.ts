@@ -57,6 +57,7 @@ import { AsideRightComponent } from './components/aside/aside-right/aside-right.
 
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
 import MonacoConfig from "../monaco-config";
+import { DocsComponent } from './views/_auth/docs/docs.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -86,10 +87,13 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
     IDEComponent,
     MonacoEditorComponent,
+    PipelinePixiComponent,
     XtermComponent,
     FileManagerComponent,
+
     AsideLeftComponent,
     AsideRightComponent,
+    DocsComponent,
   ],
   imports: [
     BrowserModule,

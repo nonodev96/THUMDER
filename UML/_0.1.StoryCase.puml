@@ -1,0 +1,33 @@
+@startuml
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+
+left to right direction
+
+package Admin {
+  actor "Admin" as admin
+}
+
+package Auth {
+  actor "User" as user
+}
+
+rectangle THUMDER-Client {
+  usecase "Crear una cuenta" as UC01
+  usecase "Iniciar sesión" as UC02
+  usecase "Crear Ficheros" as UC1
+  usecase "Modificar Ficheros" as UC2
+  usecase "Eliminar Ficheros" as UC3
+  usecase "Ejecutar Ficheros" as UC4
+  usecase "Simular" as UC5
+  usecase "Debug" as UC6
+}
+admin --> UC01
+admin --> UC02
+user --> UC02
+user --> UC1
+user --> UC2
+user --> UC3
+user --> UC4
+user --> UC5
+user --> UC6
+@enduml
