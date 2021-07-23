@@ -1,0 +1,56 @@
+@startgantt
+'language ko
+printscale daily zoom 1.5
+saturday are closed
+sunday are closed
+
+Project starts the 1st of june 2021
+
+-- Planteamiento del proyeto --
+[Desarrollar la planificación] starts 2021-07-01 and lasts 3 days
+'[Test prototype] lasts 3 days and starts 7 days before [Desarrollar la planificación]'s end
+then [Gantt] lasts 2 days
+then [Story Case] lasts 3 days
+then [State Diagram] lasts 3 days
+then [UML] lasts 7 days
+then [Presentación] is deleted
+'[Presentación] happens at [UML]'s end
+
+note bottom
+  Diagrama de clase
+  Diagrama de casos de uso
+  Diagrama de secuencia
+  Diagrama de actividad
+  Diagrama de Despliegue
+  Diagrama de componentes
+  Diagrama de máquina de estado
+  Diagrama de paquete
+end note
+
+
+-- Desarrollo del proyeto --
+
+[Mockups] starts 2021-08-01 and lasts 3 days
+[Wireframes] lasts 3 days and starts 1 days before [Mockups]'s end
+
+[Pre release v1 prototype] starts 2021-08-06 and lasts 1 days
+note bottom
+  Generar la versión de prueba
+  de los diseños y prototipos
+end note
+
+
+
+
+
+
+2021-07-19 to 2021-07-23 are named [End's committee]
+2021-07-19 to 2021-07-23 are colored in salmon
+
+
+-- Reuniones --
+
+[Reunión 1] starts 2021-06-10
+[Reunión 2] starts 2021-07-20
+
+@endgantt

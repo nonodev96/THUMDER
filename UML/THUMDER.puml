@@ -1,0 +1,200 @@
+@startuml
+class CoreModule
+class Int32 {
+    -_value: number
+    +value: number
+    +value: number
+}
+class Float32 {
+    -_value: number
+    +value: number
+    +value: number
+}
+class Double64 {
+    -_value: number
+    +value: number
+    +value: number
+}
+class Registers {
+    +PC: Int32
+    +IMAR: Int32
+    +IR: Int32
+    +A: Int32
+    +AHI: Int32
+    +B: Int32
+    +BHI: Int32
+    +BTA: Int32
+    +ALU: Int32
+    +ALUHI: Int32
+    +FPSR: Int32
+    +DMAR: Int32
+    +SDR: Int32
+    +SDRHI: Int32
+    +LDR: Int32
+    +LDRHI: Int32
+    +R: Int32[]
+    +F: Float32[]
+    +D: Double64[]
+    +code: Int32[]
+    +memory: Int32[]
+}
+class MachineService {
+    -registers: Registers
+    +someBusinessLogic(): void
+    -{static} instance: MachineService
+    +{static} getInstance(): MachineService
+}
+class ElectronService {
+    +ipcRenderer: Electron.IpcRenderer
+    +webFrame: Electron.WebFrame
+    +remote: Electron.Remote
+    +childProcess: typeof childProcess
+    +fs: typeof fs
+    +isElectron: boolean
+}
+class ProductType {
+    +id: number
+    +text: string
+}
+class Product {
+    +text: string
+    +type: number
+}
+class TestsService {
+    +getProductTypes(): ProductType[]
+    +getProducts(): Product[]
+}
+class UtilityService {
+    +TestingFunction(): void
+}
+class PageNotFoundComponent implements OnInit {
+    +ngOnInit(): void
+}
+class WebviewDirective
+class SharedModule
+class AdminComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class AuthComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class LoginComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class RegisterComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class ForgotPasswordComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class IndexComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class LandingComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class ProfileComponent implements OnInit {
+    -document: Document
+    +ngOnInit(): void
+}
+class PipelinePixiComponent implements OnInit, AfterViewInit {
+    +widthBox: number
+    +widthArrowActivate: number
+    +pixiContainer: any
+    +pApp: Application
+    +ngOnInit(): void
+    +ngAfterViewInit(): void
+    +bezierArrow(start?: number[], cpXY2?: number[], to?: number[]): Graphics
+}
+class XtermComponent implements OnInit, AfterViewInit {
+    +terminalDiv: ElementRef<any>
+    +data: string
+    +newEvent: EventEmitter
+    +terminal: Terminal
+    +ngOnInit(): void
+    +ngAfterViewInit(): void
+    +write(text: string): void
+}
+class MonacoEditorComponent implements OnInit {
+    +editor: IStandaloneCodeEditor
+    +editorOptions_thumder: { theme: string; language: string; }
+    +code_asm: string
+    +oldDecoration: string[]
+    +i: number
+    -httpClient: HttpClient
+    -monacoLoaderService: MonacoEditorLoaderService
+    +ngOnInit(): void
+    +onInitEditor($event: any): void
+    +addNewDecorator(): void
+    -registerMonacoCustomTheme(): void
+}
+class IDEComponent implements OnInit {
+    +monacoEditorComponent: MonacoEditorComponent
+    +xtermComponent: XtermComponent
+    -document: Document
+    +ngOnInit(): void
+    +iter(): void
+    +toggleModal(): void
+}
+class FileManagerComponent implements OnInit {
+    +remoteProvider: RemoteFileSystemProvider
+    +imageItemToDisplay: any
+    +popupVisible: boolean
+    -document: Document
+    -router: Router
+    +onSelectedFileOpened($event: any): void
+    +ngOnInit(): void
+    +height(): string | number | Function
+    +onContextMenuItemClick($event: any): void
+}
+class AppRoutingModule
+class AppComponent {
+    -document: Document
+    -electronService: ElectronService
+    -translate: TranslateService
+    -router: Router
+    +change(lang: string): void
+}
+class AdminNavbarComponent implements OnInit {
+    +ngOnInit(): void
+}
+class AuthNavbarComponent implements OnInit {
+    +navbarOpen: boolean
+    -app: AppComponent
+    +ngOnInit(): void
+    +setNavbarOpen(): void
+    +changeToSpain(): void
+    +changeToEnglish(): void
+}
+class FooterAdminComponent implements OnInit {
+    +date: number
+    +ngOnInit(): void
+}
+class FooterComponent implements OnInit {
+    +date: number
+    +version: any
+    +ngOnInit(): void
+}
+class SidebarComponent implements OnInit {
+    +collapseShow: string
+    +ngOnInit(): void
+    +toggleCollapseShow(classes: any): void
+}
+class AsideLeftComponent implements OnInit {
+    +ngOnInit(): void
+}
+class AsideRightComponent implements OnInit {
+    +ngOnInit(): void
+}
+class DocsComponent implements OnInit {
+    +ngOnInit(): void
+}
+class AppModule
+@enduml
