@@ -25,20 +25,42 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <li class="nav-header">EXAMPLES</li>
+        <li class="nav-header">Admin</li>
         <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
             <p>
-              Pages
+              Controller
               <i class="fas fa-angle-left right"></i>
             </p>
           </a>
           <ul class="nav nav-treeview">
+
             <li class="nav-item">
               <a [routerLink]="['/admin']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Admin Layout</p>
+                <p>Admin</p>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+        <li class="nav-header">Auth</li>
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <p>
+              Components
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+
+            <li class="nav-item">
+              <a [routerLink]="['/admin']" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Admin</p>
               </a>
             </li>
             <li class="nav-item">
@@ -59,6 +81,21 @@
                 <p>Profile</p>
               </a>
             </li>
+
+          </ul>
+        </li>
+
+        <li class="nav-header">Externs</li>
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <p>
+              Pages
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+
             <li class="nav-item">
               <a [routerLink]="['/login']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -77,6 +114,7 @@
                 <p>Forgot password</p>
               </a>
             </li>
+
           </ul>
         </li>
       </ul>

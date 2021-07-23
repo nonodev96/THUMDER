@@ -1,49 +1,48 @@
 <!-- Default box -->
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">Title</h3>
-
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip"
-              title="Collapse">
-        <i class="fas fa-minus"></i></button>
-      <button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-        <i class="fas fa-times"></i></button>
-    </div>
+    <h3 class="card-title">Editor</h3>
   </div>
+
   <div class="card-body">
-
-
     <div id="ide">
-      <div id="ide-main" class="flex flex-wrap">
-        <div id="ide-monaco-editor-container" class="w-10/12">
+      <div id="ide-main">
+        <div id="ide-monaco-editor-container">
           <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
         </div>
-        <div id="ide-sidebar" class="w-2/12">
+        <div id="ide-sidebar">
           <button
-            class="w-full h-12 px-6 mt-0 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
             (click)="iter()">Iterator
           </button>
           <button
-            class="w-full h-12 px-6 mt-4 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
             (click)="toggleModal()">Toggle Modal
           </button>
         </div>
       </div>
 
-      <div id="ide-console" class="flex flex-wrap">
-        <div class="w-12/12">
-          <thumder-xterm #xtermComponent></thumder-xterm>
-        </div>
-      </div>
+
     </div>
-
-
   </div>
-  <!-- /.card-body -->
+
   <div class="card-footer">
     Footer
   </div>
-  <!-- /.card-footer-->
 </div>
 <!-- /.card -->
+
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Xterm</h3>
+  </div>
+
+  <div class="card-body">
+    <div id="ide-console" >
+      <thumder-xterm #xtermComponent></thumder-xterm>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    Footer
+  </div>
+</div>

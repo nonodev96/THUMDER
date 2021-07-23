@@ -21,8 +21,8 @@ import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 
 
 // _layouts
-import { AdminComponent } from "./_layouts/admin/admin.component";
-import { AuthComponent } from "./_layouts/auth/auth.component";
+import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
+import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 
 // _admin views
 
@@ -42,22 +42,11 @@ import { IndexComponent } from "./views/_index/index.component";
 
 import { LandingComponent } from "./views/landing/landing.component";
 
-import { AdminNavbarComponent } from "./components/navbars/admin-navbar/admin-navbar.component";
-import { AuthNavbarComponent } from "./components/navbars/auth-navbar/auth-navbar.component";
-import { FooterAdminComponent } from "./components/footers/footer-admin/footer-admin.component";
-import { FooterComponent } from "./components/footers/footer/footer.component";
-import { SidebarComponent } from "./components/sidebar/sidebar.component";
-
-import { PipelinePixiComponent } from './components/pipeline-pixi/pipeline-pixi.component';
-import { MonacoEditorComponent } from './components/monaco-editor/monaco-editor.component';
-import { XtermComponent } from './components/xterm/xterm.component';
-
-import { AsideLeftComponent } from './components/aside/aside-left/aside-left.component';
-import { AsideRightComponent } from './components/aside/aside-right/aside-right.component';
 
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
 import MonacoConfig from "../monaco-config";
 import { DocsComponent } from './views/_auth/docs/docs.component';
+import { ComponentsModule } from "./components/components.module";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -68,15 +57,10 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   declarations: [
     AppComponent,
 
-    SidebarComponent,
-    FooterComponent,
-    FooterAdminComponent,
 
-    AuthNavbarComponent,
-    AdminNavbarComponent,
 
-    AdminComponent,
-    AuthComponent,
+    LayoutAdminComponent,
+    LayoutAuthComponent,
 
     LoginComponent,
     RegisterComponent,
@@ -86,21 +70,21 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ProfileComponent,
 
     IDEComponent,
-    MonacoEditorComponent,
-    PipelinePixiComponent,
-    XtermComponent,
+
     FileManagerComponent,
 
-    AsideLeftComponent,
-    AsideRightComponent,
     DocsComponent,
   ],
   imports: [
+
+    CoreModule,
+    SharedModule,
+    ComponentsModule,
+
+
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    CoreModule,
-    SharedModule,
 
     AppRoutingModule,
     TranslateModule.forRoot({
@@ -115,8 +99,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
     DxToolbarModule,
     DxListModule,
-    DxFileManagerModule,
     DxPopupModule,
+    DxFileManagerModule,
     // use forRoot() in main app module only.
   ],
   providers: [
@@ -124,7 +108,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     UtilityService,
   ],
   exports: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule {
 }
