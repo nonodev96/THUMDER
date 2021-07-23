@@ -3,8 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './__shared/components';
 
 // _layouts
-import { AdminComponent } from "./_layouts/admin/admin.component";
-import { AuthComponent } from "./_layouts/auth/auth.component";
+import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
+import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 
 // _admin views
 
@@ -30,7 +30,7 @@ const routes: Routes = [
   // _admin views
   {
     path: "admin",
-    component: AdminComponent,
+    component: LayoutAdminComponent,
     children: [
       {path: "", redirectTo: "dashboard", pathMatch: "full"},
     ],
@@ -38,12 +38,13 @@ const routes: Routes = [
   // _auth views
   {
     path: "auth",
-    component: AuthComponent,
+    component: LayoutAuthComponent,
+    data: {breadcrumb: 'Home'},
     children: [
       {path: "", redirectTo: "login", pathMatch: "full"},
-      {path: "file-manager", component: FileManagerComponent},
-      {path: "ide", component: IDEComponent},
-      {path: "profile", component: ProfileComponent},
+      {path: "file-manager", component: FileManagerComponent, data: {breadcrumb: 'File Manager'}},
+      {path: "ide", component: IDEComponent, data: {breadcrumb: 'IDE'}},
+      {path: "profile", component: ProfileComponent, data: {breadcrumb: 'Profile'}},
     ],
   },
   {path: "login", component: LoginComponent},

@@ -2,10 +2,10 @@ import {Component, Inject, OnInit} from "@angular/core";
 import {DOCUMENT} from "@angular/common";
 
 @Component({
-  selector: "app-auth",
-  templateUrl: "./auth.component.html",
+  selector: "app-admin",
+  templateUrl: "./layout-admin.component.html",
 })
-export class AuthComponent implements OnInit {
+export class LayoutAdminComponent implements OnInit {
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
 

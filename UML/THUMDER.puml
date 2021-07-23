@@ -2,18 +2,18 @@
 class CoreModule
 class Int32 {
     -_value: number
-    +value: number
-    +value: number
+    +value(): number
+    +value(data): number
 }
 class Float32 {
     -_value: number
-    +value: number
-    +value: number
+    +value(): number
+    +value(data): number
 }
 class Double64 {
     -_value: number
-    +value: number
-    +value: number
+    +value(): number
+    +value(data): number
 }
 class Registers {
     +PC: Int32
