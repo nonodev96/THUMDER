@@ -1,9 +1,14 @@
 import 'reflect-metadata';
 import '../polyfills';
 
+import { AppConfig } from '../environments/environment';
+import { AngularFireModule } from "@angular/fire";
+import { AngularFireAuthModule } from "@angular/fire/auth";
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { BrowserModule } from '@angular/platform-browser';
+
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './__core/core.module';
 import { SharedModule } from './__shared/shared.module';
@@ -84,6 +89,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
 
     AppRoutingModule,
@@ -102,6 +108,10 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     DxPopupModule,
     DxFileManagerModule,
     // use forRoot() in main app module only.
+
+    AngularFireModule.initializeApp(AppConfig.firebase),
+    AngularFirestoreModule,
+    AngularFireAuthModule,
   ],
   providers: [
     AppComponent,

@@ -43,7 +43,7 @@
               "node_modules/admin-lte/plugins/bootstrap/js/bootstrap.bundle.js",
               "node_modules/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.js",
               "node_modules/admin-lte/dist/js/adminlte.js",
-              "node_modules/admin-lte/dist/js/demo.js",
+//              "node_modules/admin-lte/dist/js/demo.js",
               "node_modules/admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js",
               "node_modules/admin-lte/plugins/raphael/raphael.js",
               "node_modules/admin-lte/plugins/chart.js/Chart.js"

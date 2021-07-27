@@ -1,33 +1,48 @@
 @startuml
+'https://plantuml.com/es/use-case-diagram
 '!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+skinparam defaultTextAlignment center
+skinparam linetype polyline
+skinparam linetype ortho
 
 left to right direction
 
-package Admin {
-  actor "Admin" as admin
-}
-
-package Auth {
-  actor "User" as user
-}
-
+actor "User" as user
 rectangle THUMDER-Client {
-  usecase "Crear una cuenta" as UC01
-  usecase "Iniciar sesión" as UC02
-  usecase "Crear Ficheros" as UC1
-  usecase "Modificar Ficheros" as UC2
-  usecase "Eliminar Ficheros" as UC3
-  usecase "Ejecutar Ficheros" as UC4
-  usecase "Simular" as UC5
-  usecase "Debug" as UC6
+  usecase "<<Story Case>>\nCrear una cuenta" as C_UC1
+  usecase "<<Story Case>>\nIniciar sesión" as C_UC2
+  usecase "<<Story Case>>\nCrear Ficheros" as C_UC3
+  usecase "<<Story Case>>\nModificar Ficheros" as C_UC4
+  usecase "<<Story Case>>\nEliminar Ficheros" as C_UC5
+'  usecase "<<Story Case>>\nEjecutar Ficheros" as C_UC6
+  usecase "<<Story Case>>\nSimular" as C_UC7
+'  usecase "<<Story Case>>\nDebug" as C_UC8
+  usecase "<<Story Case>>\nMostrar estado maquina" as C_UC9
+  usecase "<<Story Case>>\nAlterar estado maquina" as C_UC10
 }
-admin --> UC01
-admin --> UC02
-user --> UC02
-user --> UC1
-user --> UC2
-user --> UC3
-user --> UC4
-user --> UC5
-user --> UC6
+/'
+rectangle THUMDER-Server {
+  usecase "Recibir" as S_UC00
+  usecase "Analizar" as S_UC01
+  usecase "Simular" as S_UC02
+  usecase "Responder" as S_UC03
+}
+'/
+
+'admin --> UC01
+'admin --> UC02
+user --> C_UC1
+user --> C_UC2
+user --> C_UC3
+user --> C_UC4
+user --> C_UC5
+'user --> C_UC6
+user --> C_UC7
+'user --> C_UC8
+user --> C_UC9
+user --> C_UC10
+
 @enduml
