@@ -1,0 +1,35 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+'Iniciar Sesión
+
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+|Cliente|
+
+  start
+
+  partition Initialization {
+    :Iniciar la aplicación;
+  }
+
+|Aplicación|
+
+  partition "Iniciar la sesión" {
+    :Acceder al inicio de sesión;
+    if (Seleccionar tipo de autetificación) then (Github)
+      :Acceder al inicio de sesión de Github;
+    else (Email)
+      :Acceder al inicio de sesión con Email;
+    endif
+
+    repeat
+      :Inicio de sesión;
+      :Introducir parametros;
+    repeat while (Parametros correctos && Comprobar inicio de sesión) is (false)
+  }
+  stop
+
+@enduml

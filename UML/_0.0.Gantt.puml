@@ -1,10 +1,15 @@
 @startgantt
-'language ko
-printscale daily zoom 1.5
+'https://plantuml.com/es/gantt-diagram
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+printscale daily zoom 2
+
 saturday are closed
 sunday are closed
 
-Project starts the 1st of june 2021
+Project starts the 1st of july 2021
 
 -- Planteamiento del proyeto --
 [Desarrollar la planificación] starts 2021-07-01 and lasts 3 days
@@ -12,8 +17,8 @@ Project starts the 1st of june 2021
 then [Gantt] lasts 2 days
 then [Story Case] lasts 3 days
 then [State Diagram] lasts 3 days
-then [UML] lasts 7 days
-then [Presentación] is deleted
+then [UML] lasts 6 days
+'then [Presentación] is deleted
 '[Presentación] happens at [UML]'s end
 
 note bottom
@@ -50,7 +55,7 @@ end note
 
 -- Reuniones --
 
-[Reunión 1] starts 2021-06-10
+'[Reunión 1] starts 2021-06-10
 [Reunión 2] starts 2021-07-20
 
 @endgantt

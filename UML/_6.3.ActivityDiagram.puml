@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+
+'Iniciar Sesión
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+|Cliente|
+
+
+|Cliente|
+
+  start
+  partition Initialization {
+    :Iniciar la aplicación;
+  }
+
+  |Aplicación|
+
+  :Iniciar la sesión *;
+
+  partition "Gestionar los ficheros" {
+    :Acceder al gestor de ficheros;
+
+    switch (Seleccionar opción)
+
+    case ( Subir fichero )
+      :Subir fichero;
+    case ( crear fichero )
+      :Crear fichero;
+    case ( Crear carpeta )
+      :Crear carpeta;
+    endswitch
+  }
+  stop
+
+
+
+@enduml

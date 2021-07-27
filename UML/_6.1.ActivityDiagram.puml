@@ -1,0 +1,32 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+'Crear una cuenta
+
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+|Cliente|
+
+  start
+  :Iniciar la aplicación;
+
+  |Aplicación|
+  :Acceder al registro;
+  if (Seleccionar tipo de autetificación) then (Github)
+    :Acceder al registro de Github;
+  else (Email)
+    :Acceder al registro con email;
+  endif
+
+|Aplicación|
+
+  repeat
+    :Registro;
+    :Introducir parametros;
+  repeat while (Parametros correctos && Comprobar registro) is (false)
+
+  stop
+
+@enduml

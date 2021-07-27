@@ -1,4 +1,6 @@
 @startuml
+skinparam linetype polyline
+skinparam linetype ortho
 (*) --> "Iniciar"
 
 if "Cuenta" then
