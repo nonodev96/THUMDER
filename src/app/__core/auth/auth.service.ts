@@ -3,9 +3,8 @@ import { User } from "../interfaces";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from "@angular/router";
-import firebase from 'firebase/app';
+import firebase from 'firebase'
 import UserCredential = firebase.auth.UserCredential;
-import GoogleAuthProvider = firebase.auth.GoogleAuthProvider;
 import { AppConfig } from "../../../environments/environment";
 
 @Injectable({
@@ -39,14 +38,12 @@ export class AuthService {
   // Sign in with email/password
   SignIn(email, password) {
     return this.afAuth.signInWithEmailAndPassword(email, password)
-      .then(
-        async (userCredential) => {
-          this.ngZone.run(() => {
-            this.router.navigate(['/']);
-          });
-          await this.SetUserData(userCredential);
-        }
-      ).catch((error) => {
+      .then(async (userCredential) => {
+        await this.SetUserData(userCredential);
+        this.ngZone.run(() => {
+          this.router.navigate(['/']);
+        });
+      }).catch((error) => {
         window.alert(error.message)
       })
   }
@@ -54,14 +51,12 @@ export class AuthService {
   // Sign up with email/password
   SignUp(email, password) {
     return this.afAuth.createUserWithEmailAndPassword(email, password)
-      .then(
-        async (userCredential) => {
-          /* Call the SendVerificationMail(userCredential) function when new user sign
-          up and returns promise */
-          await this.SendVerificationMail(userCredential);
-          await this.SetUserData(userCredential);
-        }
-      ).catch((error) => {
+      .then(async (userCredential) => {
+        /* Call the SendVerificationMail(userCredential) function when new user sign
+        up and returns promise */
+        await this.SendVerificationMail(userCredential);
+        await this.SetUserData(userCredential);
+      }).catch((error) => {
         window.alert(error.message)
       })
   }
@@ -69,11 +64,9 @@ export class AuthService {
   // Send email verification when new user sign up
   SendVerificationMail(userCredential: UserCredential) {
     return userCredential.user.sendEmailVerification()
-      .then(
-        async () => {
-          await this.router.navigate(['verify-email-address']);
-        }
-      )
+      .then(async () => {
+        await this.router.navigate(['/verify-email-address']);
+      })
   }
 
   // Reset Forgot password
@@ -89,7 +82,7 @@ export class AuthService {
   // Returns true when user is logged in and email is verified
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user'));
-    return (user !== null && user.emailVerified !== false);
+    return (user !== null /*&& user.emailVerified !== false*/);
   }
 
   // Sign in with Google
@@ -103,18 +96,48 @@ export class AuthService {
   }
 
   // Auth logic to run auth providers
-  private AuthLogin(provider) {
-    return this.afAuth.signInWithPopup(provider)
-      .then(
-        async (userCredential) => {
-          this.ngZone.run(() => {
-            this.router.navigate(['']);
-          })
-          await this.SetUserData(userCredential);
-        }
-      ).catch((error) => {
+  AuthLoginAnonymously(): Promise<void> {
+    return this.afAuth.signInAnonymously()
+      .then(async (userCredential) => {
+
+        await this.SetUserData(userCredential);
+        this.ngZone.run(() => {
+          this.router.navigate(['/']);
+        })
+
+      }).catch((error) => {
         window.alert(error)
       })
+  }
+
+  // Auth logic to run auth providers
+  private AuthLogin(provider): Promise<void> {
+    return this.afAuth.signInWithRedirect(provider)
+      .then(async () => {
+        console.log('Entra en signInWithRedirect')
+
+
+      }).catch((error) => {
+        window.alert(error)
+      })
+  }
+
+  public AuthCheckLoginRedirect(): Promise<boolean> {
+    return new Promise(((resolve, reject) => {
+
+      firebase.auth().getRedirectResult()
+        .then(async (userCredential) => {
+          if (userCredential.user !== null) {
+            console.log('Entra en getRedirectResult', userCredential)
+            await this.SetUserData(userCredential);
+            this.ngZone.run(() => {
+              this.router.navigate(['/']);
+            })
+          }
+          resolve(true)
+        })
+
+    }));
   }
 
   /* Setting up user data when sign in with username/password,
@@ -139,7 +162,7 @@ export class AuthService {
     return this.afAuth.signOut().then(
       async () => {
         localStorage.removeItem('user');
-        await this.router.navigate(['sign-in']);
+        await this.router.navigate(['/login']);
       }
     )
   }

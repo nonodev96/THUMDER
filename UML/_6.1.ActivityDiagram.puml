@@ -10,12 +10,13 @@ skinparam conditionStyle inside
 |Cliente|
 
   start
-  :Iniciar la aplicación;
+  :Iniciar la aplicación *;
 
-  |Aplicación|
+partition "Crear Cuenta" {
+ |Aplicación|
   :Acceder al registro;
-  if (Seleccionar tipo de autetificación) then (Github)
-    :Acceder al registro de Github;
+  if (Seleccionar tipo de autetificación) then (OAuth)
+    :Acceder al registro de OAuth;
   else (Email)
     :Acceder al registro con email;
   endif
@@ -26,7 +27,7 @@ skinparam conditionStyle inside
     :Registro;
     :Introducir parametros;
   repeat while (Parametros correctos && Comprobar registro) is (false)
-
+}
   stop
 
 @enduml

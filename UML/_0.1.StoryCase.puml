@@ -18,10 +18,10 @@ rectangle THUMDER-Client {
   usecase "<<Story Case>>\nModificar Ficheros" as C_UC4
   usecase "<<Story Case>>\nEliminar Ficheros" as C_UC5
 '  usecase "<<Story Case>>\nEjecutar Ficheros" as C_UC6
-  usecase "<<Story Case>>\nSimular" as C_UC7
+  usecase "<<Story Case>>\nSimular" as C_UC6
 '  usecase "<<Story Case>>\nDebug" as C_UC8
-  usecase "<<Story Case>>\nMostrar estado maquina" as C_UC9
-  usecase "<<Story Case>>\nAlterar estado maquina" as C_UC10
+  usecase "<<Story Case>>\nMostrar estado maquina" as C_UC7
+  usecase "<<Story Case>>\nAlterar estado maquina" as C_UC8
 }
 /'
 rectangle THUMDER-Server {
@@ -39,10 +39,10 @@ user --> C_UC2
 user --> C_UC3
 user --> C_UC4
 user --> C_UC5
-'user --> C_UC6
+user --> C_UC6
 user --> C_UC7
-'user --> C_UC8
-user --> C_UC9
-user --> C_UC10
+user --> C_UC8
+'user --> C_UC9
+'user --> C_UC10
 
 @enduml

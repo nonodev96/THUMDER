@@ -13,9 +13,7 @@ skinparam conditionStyle inside
 |Cliente|
 
   start
-  partition Initialization {
-    :Iniciar la aplicación;
-  }
+  :Iniciar la aplicación;
 
   |Aplicación|
 

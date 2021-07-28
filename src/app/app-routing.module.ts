@@ -21,6 +21,8 @@ import { PipelinePixiComponent } from "./components/pipeline-pixi/pipeline-pixi.
 import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
 import { IDEComponent } from "./views/_auth/ide/ide.component";
 import { FileManagerComponent } from "./views/_auth/file-manager/file-manager.component";
+import { AuthGuard } from "./__shared/guard/auth.guard";
+import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
 
 const routes: Routes = [
   {
@@ -39,6 +41,7 @@ const routes: Routes = [
   {
     path: "auth",
     component: LayoutAuthComponent,
+    canActivate: [AuthGuard],
     data: {breadcrumb: 'Home'},
     children: [
       {path: "", redirectTo: "login", pathMatch: "full"},
@@ -47,9 +50,21 @@ const routes: Routes = [
       {path: "profile", component: ProfileComponent, data: {breadcrumb: 'Profile'}},
     ],
   },
-  {path: "login", component: LoginComponent},
-  {path: "register", component: RegisterComponent},
-  {path: "forgot-password", component: ForgotPasswordComponent},
+  {
+    path: "login",
+    component: LoginComponent,
+    canActivate: [NoAuthGuard]
+  },
+  {
+    path: "register",
+    component: RegisterComponent,
+    canActivate: [NoAuthGuard]
+  },
+  {
+    path: "forgot-password",
+    component: ForgotPasswordComponent,
+    canActivate: [NoAuthGuard]
+  },
   // no layout views
   {path: "landing", component: LandingComponent},
 
