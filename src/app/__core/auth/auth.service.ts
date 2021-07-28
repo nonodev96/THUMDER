@@ -1,11 +1,12 @@
-import {Injectable, NgZone} from '@angular/core';
-import {User} from "../interfaces";
-import {AngularFireAuth} from "@angular/fire/auth";
-import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
-import {Router} from "@angular/router";
-import {AppConfig} from "../../../environments/environment";
-import firebase from "firebase/app";
+import { Injectable, NgZone } from '@angular/core';
+import { User } from "../interfaces";
+import { AngularFireAuth } from "@angular/fire/auth";
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { ElectronService } from "../services";
+import { Router } from "@angular/router";
+import firebase from 'firebase'
 import 'firebase/auth'
+import UserCredential = firebase.auth.UserCredential;
 import GoogleAuthProvider = firebase.auth.GoogleAuthProvider;
 import GithubAuthProvider = firebase.auth.GithubAuthProvider;
 
@@ -14,14 +15,14 @@ import GithubAuthProvider = firebase.auth.GithubAuthProvider;
 })
 
 export class AuthService {
-  isServer: boolean = AppConfig.server;
   userData: User; // Save logged in user data
 
   constructor(
     public afs: AngularFirestore,   // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
+    public ngZone: NgZone,          // NgZone service to remove outside scope warning
     public router: Router,
-    public ngZone: NgZone // NgZone service to remove outside scope warning
+    public electronService: ElectronService
   ) {
     /* Saving user data in localstorage when
     logged in and setting up null when logged out */
@@ -64,7 +65,7 @@ export class AuthService {
   }
 
   // Send email verification when new user sign up
-  SendVerificationMail(userCredential) {
+  SendVerificationMail(userCredential: UserCredential) {
     return userCredential.user.sendEmailVerification()
       .then(async () => {
         await this.router.navigate(['/verify-email-address']);
@@ -114,25 +115,34 @@ export class AuthService {
 
   // Auth logic to run auth providers
   private AuthLogin(provider): Promise<void> {
-    return this.afAuth.signInWithRedirect(provider)
-      .then(() => {
+    return this.afAuth.signInWithPopup(provider)
+      .then(async (userCredential) => {
+
         console.log('Entra en signInWithRedirect')
-      }).catch((error) => {
-        window.alert(error)
+        await this.SetUserData(userCredential);
+        this.ngZone.run(() => {
+          this.router.navigate(['/']);
+        })
+
       })
   }
 
   public AuthCheckLoginRedirect(): Promise<boolean> {
-    return new Promise(((resolve) => {
-
-      this.afAuth.getRedirectResult()
-        .then(async (userCredential) => {
-          if (userCredential.user !== null) {
-            console.log('Entra en getRedirectResult', userCredential)
-            await this.SetUserData(userCredential);
-          }
-          resolve(true)
-        })
+    return new Promise(((resolve, reject) => {
+      // Si es la versión web esperamos una promesa por si se recibe los datos de un inicio de sesión
+      if (!this.electronService.isElectronApp) {
+        firebase.auth().getRedirectResult()
+          .then(async (userCredential) => {
+            if (userCredential.user !== null) {
+              console.log('Entra en getRedirectResult', userCredential)
+              await this.SetUserData(userCredential);
+              this.ngZone.run(() => {
+                this.router.navigate(['/']);
+              })
+            }
+            resolve(true)
+          })
+        }
 
     }));
   }
@@ -140,7 +150,7 @@ export class AuthService {
   /* Setting up user data when sign in with username/password,
   sign up with username/password and sign in with social auth
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(userCredential) {
+  SetUserData(userCredential: UserCredential) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userCredential.user.uid}`);
     const userData: User = {
       uid: userCredential.user.uid,

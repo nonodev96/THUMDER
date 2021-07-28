@@ -33,3 +33,11 @@ html, body {
 .myGlyphMarginClass {
   background: red;
 }
+
+.like-pre::first-line {
+  line-height: 0;
+}
+
+.like-pre {
+  white-space: pre-line;
+}

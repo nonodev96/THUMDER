@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "../../__core/auth/auth.service";
+import { ElectronService } from "../../__core/services";
 
 
 @Component({
@@ -28,6 +29,7 @@ export class LoginComponent implements OnInit {
   }
 
   constructor(@Inject(DOCUMENT) private document: Document,
+              public electronService: ElectronService,
               public authService: AuthService,
               public formBuilder: FormBuilder) {
     this.loginForm = this.formBuilder.group({
@@ -43,14 +45,28 @@ export class LoginComponent implements OnInit {
         Validators.maxLength(30)
       ])),
     }, {});
-    this.showSpinner = true;
-    this.authService.AuthCheckLoginRedirect().then((finish) => {
-      this.showSpinner = !finish;
-    })
+    this.showSpinner = false;
   }
 
   ngOnInit(): void {
     this.document.body.classList.add('login-page')
   }
 
+  GoogleAuth() {
+    this.showSpinner = true;
+    this.authService.GoogleAuth().then((value) => {
+      this.showSpinner = false;
+    }).catch(() => {
+      this.showSpinner = false;
+    })
+  }
+
+  GithubAuth() {
+    this.showSpinner = true;
+    this.authService.GithubAuth().then((value) => {
+      this.showSpinner = false;
+    }).catch(() => {
+      this.showSpinner = false;
+    })
+  }
 }

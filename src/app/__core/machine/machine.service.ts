@@ -39,12 +39,15 @@ export class MachineService {
 
   private static instance: MachineService;
   private registers: Registers;
+  private memory: WeakMap<Number, Number>;
 
   /**
    * The Singleton's constructor should always be private to prevent direct
    * construction calls with the `new` operator.
    */
   private constructor() {
+    this.registers = new Registers()
+    this.memory = new WeakMap<Number, Number>();
   }
 
   /**
