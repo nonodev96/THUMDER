@@ -23,6 +23,7 @@ import { IDEComponent } from "./views/_auth/ide/ide.component";
 import { FileManagerComponent } from "./views/_auth/file-manager/file-manager.component";
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
+import { DocsComponent } from "./views/_auth/docs/docs.component";
 
 const routes: Routes = [
   {
@@ -48,6 +49,7 @@ const routes: Routes = [
       {path: "file-manager", component: FileManagerComponent, data: {breadcrumb: 'File Manager'}},
       {path: "ide", component: IDEComponent, data: {breadcrumb: 'IDE'}},
       {path: "profile", component: ProfileComponent, data: {breadcrumb: 'Profile'}},
+      {path: "documentation", component: DocsComponent, data: {breadcrumb: 'Documentation'}},
     ],
   },
   {

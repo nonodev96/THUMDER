@@ -19,7 +19,7 @@ type MenuItem = {
 };
 
 @Component({
-  selector: "app-breadcrumb",
+  selector: "thumder-breadcrumb",
   templateUrl: "./breadcrumb.component.html",
   styleUrls: ["./breadcrumb.component.scss"]
 })

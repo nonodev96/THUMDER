@@ -19,7 +19,7 @@ export class AppComponent {
   ) {
     this.translate.setDefaultLang('sp');
 
-    if (electronService.isElectron) {
+    if (ElectronService.isElectronApp) {
       console.log(process.env);
       // window.$ = require('jquery');
       console.log('Run in electron');

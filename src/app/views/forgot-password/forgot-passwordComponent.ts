@@ -7,7 +7,9 @@ import { AuthService } from "../../__core/auth/auth.service";
   templateUrl: "./forgot-password.component.html",
 })
 export class ForgotPasswordComponent implements OnInit {
-  constructor(@Inject(DOCUMENT) private document: Document, public authService: AuthService) {
+
+  constructor(@Inject(DOCUMENT) private document: Document,
+              public authService: AuthService) {
   }
 
   ngOnInit(): void {

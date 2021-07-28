@@ -1,6 +1,6 @@
 <div class="login-box">
   <div class="login-logo">
-    <h2><b>Admin</b>LTE</h2>
+    <h2>THUMDER</h2>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -62,15 +62,17 @@
         </div>
       </form>
 
-      <div class="social-auth-links text-center mb-3">
-        <p>- OR -</p>
-        <a class="btn btn-block btn-danger" (click)="authService.GoogleAuth()">
-          <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-        </a>
-        <a class="btn btn-block btn-primary" (click)="authService.GithubAuth()">
-          <i class="fab fa-github mr-2"></i> Sign in using Github
-        </a>
-      </div>
+      <ng-container *ngIf="!electronService.isElectronApp">
+        <div class="social-auth-links text-center mb-3">
+          <p>- OR -</p>
+          <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
+            <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+          </a>
+          <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
+            <i class="fab fa-github mr-2"></i> Sign in using Github
+          </a>
+        </div>
+      </ng-container>
       <!-- /.social-_auth-links -->
 
       <p class="mb-1">
@@ -81,6 +83,7 @@
       </p>
     </div>
     <!-- /.login-card-body -->
+
     <ng-container *ngIf="showSpinner">
       <div class="overlay">
         <i class="fas fa-2x fa-sync-alt fa-spin"></i>

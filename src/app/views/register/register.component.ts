@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { AuthService } from "../../__core/auth/auth.service";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { ElectronService } from "../../__core/services";
 
 @Component({
   selector: "app-register",
@@ -9,6 +10,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms"
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
+  showSpinner: boolean;
 
   error_messages = {
     'fname': [
@@ -37,6 +39,7 @@ export class RegisterComponent implements OnInit {
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService,
+              public electronService: ElectronService,
               public formBuilder: FormBuilder) {
     this.registerForm = this.formBuilder.group({
       first_name: new FormControl('', Validators.compose([
@@ -61,18 +64,36 @@ export class RegisterComponent implements OnInit {
         Validators.maxLength(30)
       ])),
     }, {
-      validators: this.password.bind(this)
+      validators: this.checkPassword.bind(this)
     });
+    this.showSpinner = false;
   }
 
   ngOnInit(): void {
     this.document.body.classList.add('register-page')
   }
 
-  password(formGroup: FormGroup) {
+  checkPassword(formGroup: FormGroup) {
     const {value: password} = formGroup.get('password');
     const {value: confirmPassword} = formGroup.get('confirm_password');
     return password === confirmPassword ? null : {passwordNotMatch: true};
   }
 
+  GoogleAuth() {
+    this.showSpinner = true;
+    this.authService.GoogleAuth().then((value) => {
+      this.showSpinner = false;
+    }).catch(() => {
+      this.showSpinner = false;
+    })
+  }
+
+  GithubAuth() {
+    this.showSpinner = true;
+    this.authService.GithubAuth().then((value) => {
+      this.showSpinner = false;
+    }).catch(() => {
+      this.showSpinner = false;
+    })
+  }
 }
