@@ -62,19 +62,17 @@
       </form>
 
 
-      <ng-container *ngIf="authService.isServer">
-        <div class="social-auth-links text-center">
-          <p>- OR -</p>
-          <a class="btn btn-block btn-danger" (click)="authService.GoogleAuth()">
-            <i class="fab fa-google-plus mr-2"></i>
-            Sign up using Google+
-          </a>
-          <a class="btn btn-block btn-primary" (click)="authService.GithubAuth()">
-            <i class="fab fa-github mr-2"></i>
-            Sign up using Github
-          </a>
-        </div>
-      </ng-container>
+      <div class="social-auth-links text-center">
+        <p>- OR -</p>
+        <a class="btn btn-block btn-danger" (click)="authService.GoogleAuth()">
+          <i class="fab fa-google-plus mr-2"></i>
+          Sign up using Google+
+        </a>
+        <a class="btn btn-block btn-primary" (click)="authService.GithubAuth()">
+          <i class="fab fa-github mr-2"></i>
+          Sign up using Github
+        </a>
+      </div>
 
       <a [routerLink]="['/login']" class="text-center">I already have a membership</a>
     </div>

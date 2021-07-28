@@ -1,11 +1,13 @@
-import { Injectable, NgZone } from '@angular/core';
-import { User } from "../interfaces";
-import { AngularFireAuth } from "@angular/fire/auth";
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Router } from "@angular/router";
-import firebase from 'firebase'
-import UserCredential = firebase.auth.UserCredential;
-import { AppConfig } from "../../../environments/environment";
+import {Injectable, NgZone} from '@angular/core';
+import {User} from "../interfaces";
+import {AngularFireAuth} from "@angular/fire/auth";
+import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
+import {Router} from "@angular/router";
+import {AppConfig} from "../../../environments/environment";
+import firebase from "firebase/app";
+import 'firebase/auth'
+import GoogleAuthProvider = firebase.auth.GoogleAuthProvider;
+import GithubAuthProvider = firebase.auth.GithubAuthProvider;
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +64,7 @@ export class AuthService {
   }
 
   // Send email verification when new user sign up
-  SendVerificationMail(userCredential: UserCredential) {
+  SendVerificationMail(userCredential) {
     return userCredential.user.sendEmailVerification()
       .then(async () => {
         await this.router.navigate(['/verify-email-address']);
@@ -87,12 +89,12 @@ export class AuthService {
 
   // Sign in with Google
   GoogleAuth(): Promise<void> {
-    return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
+    return this.AuthLogin(new GoogleAuthProvider());
   }
 
   // Sign in with Google
   GithubAuth(): Promise<void> {
-    return this.AuthLogin(new firebase.auth.GithubAuthProvider());
+    return this.AuthLogin(new GithubAuthProvider());
   }
 
   // Auth logic to run auth providers
@@ -113,26 +115,21 @@ export class AuthService {
   // Auth logic to run auth providers
   private AuthLogin(provider): Promise<void> {
     return this.afAuth.signInWithRedirect(provider)
-      .then(async () => {
+      .then(() => {
         console.log('Entra en signInWithRedirect')
-
-
       }).catch((error) => {
         window.alert(error)
       })
   }
 
   public AuthCheckLoginRedirect(): Promise<boolean> {
-    return new Promise(((resolve, reject) => {
+    return new Promise(((resolve) => {
 
-      firebase.auth().getRedirectResult()
+      this.afAuth.getRedirectResult()
         .then(async (userCredential) => {
           if (userCredential.user !== null) {
             console.log('Entra en getRedirectResult', userCredential)
             await this.SetUserData(userCredential);
-            this.ngZone.run(() => {
-              this.router.navigate(['/']);
-            })
           }
           resolve(true)
         })
@@ -143,7 +140,7 @@ export class AuthService {
   /* Setting up user data when sign in with username/password,
   sign up with username/password and sign in with social auth
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-  SetUserData(userCredential: UserCredential) {
+  SetUserData(userCredential) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userCredential.user.uid}`);
     const userData: User = {
       uid: userCredential.user.uid,
