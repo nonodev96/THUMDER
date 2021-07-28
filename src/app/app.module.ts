@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import '../polyfills';
 
 import { AppConfig } from '../environments/environment';
+import { RouterModule } from "@angular/router";
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -12,6 +13,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './__core/core.module';
 import { SharedModule } from './__shared/shared.module';
+import { AuthGuard } from './__shared/guard/auth.guard';
+import { NoAuthGuard } from './__shared/guard/no-auth.guard';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -63,7 +66,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AppComponent,
 
 
-
     LayoutAdminComponent,
     LayoutAuthComponent,
 
@@ -91,6 +93,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    RouterModule,
 
     AppRoutingModule,
     TranslateModule.forRoot({
@@ -115,6 +118,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   ],
   providers: [
     AppComponent,
+    AuthGuard,
+    NoAuthGuard,
     UtilityService,
   ],
   exports: [],

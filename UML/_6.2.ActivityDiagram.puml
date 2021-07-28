@@ -11,9 +11,7 @@ skinparam conditionStyle inside
 
   start
 
-  partition Initialization {
-    :Iniciar la aplicación;
-  }
+  :Iniciar la aplicación *;
 
 |Aplicación|
 

@@ -10,6 +10,7 @@ import { AuthService } from "../../__core/auth/auth.service";
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  showSpinner: boolean;
 
 
   error_messages = {
@@ -42,6 +43,10 @@ export class LoginComponent implements OnInit {
         Validators.maxLength(30)
       ])),
     }, {});
+    this.showSpinner = true;
+    this.authService.AuthCheckLoginRedirect().then((finish) => {
+      this.showSpinner = !finish;
+    })
   }
 
   ngOnInit(): void {

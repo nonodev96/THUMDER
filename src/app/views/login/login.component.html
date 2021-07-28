@@ -83,5 +83,10 @@
       </p>
     </div>
     <!-- /.login-card-body -->
+    <ng-container *ngIf="showSpinner">
+      <div class="overlay">
+        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+      </div>
+    </ng-container>
   </div>
 </div>

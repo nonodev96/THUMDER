@@ -6,11 +6,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { PageNotFoundComponent } from './components/';
 import { WebviewDirective } from './directives/';
 import { FormsModule } from '@angular/forms';
+import { AuthDirective } from "./directives/auth/auth.directive";
 
 @NgModule({
   declarations: [
     PageNotFoundComponent,
-    WebviewDirective
+    WebviewDirective,
+    AuthDirective
   ],
   imports: [
     CommonModule,

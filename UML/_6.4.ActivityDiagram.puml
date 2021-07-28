@@ -11,9 +11,7 @@ skinparam conditionStyle inside
 |Cliente|
 
   start
-  partition Initialization {
-    :Iniciar la aplicación;
-  }
+  :Iniciar la aplicación *;
 
   |Aplicación|
 
@@ -25,7 +23,8 @@ skinparam conditionStyle inside
     :Seleccionar fichero;
     :Cargar fichero;
     note right
-      << Calling the method ""notification(message)""
+      << Calling the method
+      ""LaunchDefaultToast(message)""
       ====
       Al cargar un fichero se lanzara un evento
       que mostrara una notificación cuando el fichero

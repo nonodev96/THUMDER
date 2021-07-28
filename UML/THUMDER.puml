@@ -8,6 +8,8 @@ skinparam defaultFontName consolas
 'scale max 1080 width
 'scale max 720 height
 '3508 x 2480
+'skinparam dpi 300
+
 
 skinparam linetype polyline
 skinparam linetype ortho
