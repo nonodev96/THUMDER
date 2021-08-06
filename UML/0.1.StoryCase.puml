@@ -9,18 +9,22 @@ skinparam linetype polyline
 skinparam linetype ortho
 
 left to right direction
-
+'https://www.freeprojectz.com/uml-diagram/chat-application-system-sequence-diagram
 actor "User" as user
 rectangle THUMDER-Client {
   usecase "<<Story Case>>\nCrear una cuenta" as C_UC1
   usecase "<<Story Case>>\nIniciar sesión" as C_UC2
-  usecase "<<Story Case>>\nCrear Ficheros" as C_UC3
-  usecase "<<Story Case>>\nModificar Ficheros" as C_UC4
-  usecase "<<Story Case>>\nEliminar Ficheros" as C_UC5
+  usecase "<<Story Case>>\nCrear Carpeta" as C_UC3
+  usecase "<<Story Case>>\nCrear Fichero" as C_UC3.1
+  usecase "<<Story Case>>\nModificar Carpeta" as C_UC4
+  usecase "<<Story Case>>\nModificar Fichero"" as C_UC4.1
+  usecase "<<Story Case>>\nEliminar Carpeta" as C_UC5
+  usecase "<<Story Case>>\nEliminar Fichero" as C_UC5.1
 '  usecase "<<Story Case>>\nEjecutar Ficheros" as C_UC6
   usecase "<<Story Case>>\nSimular" as C_UC6
 '  usecase "<<Story Case>>\nDebug" as C_UC8
   usecase "<<Story Case>>\nMostrar estado maquina" as C_UC7
+  usecase "<<Story Case>>\nActualizar estado maquina" as C_UC7.1
   usecase "<<Story Case>>\nAlterar estado maquina" as C_UC8
 }
 /'
@@ -37,10 +41,14 @@ rectangle THUMDER-Server {
 user --> C_UC1
 user --> C_UC2
 user --> C_UC3
+C_UC3 --> C_UC3.1
 user --> C_UC4
+C_UC4 --> C_UC4.1
 user --> C_UC5
+C_UC5 --> C_UC5.1
 user --> C_UC6
 user --> C_UC7
+C_UC7 --> C_UC7.1
 user --> C_UC8
 'user --> C_UC9
 'user --> C_UC10

@@ -7,12 +7,14 @@ import { PageNotFoundComponent } from './components/';
 import { WebviewDirective } from './directives/';
 import { FormsModule } from '@angular/forms';
 import { AuthDirective } from "./directives/auth/auth.directive";
+import { HexadecimalPipe } from "./pipes/numbers/hexadecimal.pipe";
 
 @NgModule({
   declarations: [
     PageNotFoundComponent,
     WebviewDirective,
-    AuthDirective
+    AuthDirective,
+    HexadecimalPipe
   ],
   imports: [
     CommonModule,
@@ -22,7 +24,8 @@ import { AuthDirective } from "./directives/auth/auth.directive";
   exports: [
     TranslateModule,
     WebviewDirective,
-    FormsModule
+    FormsModule,
+    HexadecimalPipe
   ]
 })
 export class SharedModule {

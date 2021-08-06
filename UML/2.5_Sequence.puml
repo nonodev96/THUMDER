@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+/'
+Action : Elementos que representas los eventos a los que responden los agentes para completar las tareas de la ontología.
+Predicate : Elementos que representan las respuestas a los eventos para completar las tareas de la ontología.
+'/
+'autonumber
+skinparam defaultFontName consolas
+skinparam sequenceMessageAlign center
+
+=== "Authentication" ==
+Client -> Server:   1 REQUEST (AuthenticationRequest)
+Client <-- Server:  2.1 ACCEPT-REQUEST (AuthenticationResponse)
+Client <-- Server:  2.2 REJECT-REQUEST (AuthenticationResponse)
+
+=== "Request Delete a folder" ==
+'...5 minutes latter...
+Client -> Server:   3 REQUEST (DeleteFolderRequest)
+Client <-- Server:  4.1 ACCEPT-REQUEST (DeleteFolderResponse)
+Client <-- Server:  4.2 REJECT-REQUEST (DeleteFolderResponse)
+
+@enduml

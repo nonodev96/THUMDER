@@ -26,12 +26,12 @@ html, body {
   position: relative !important;
 }
 
-.myContentClass {
+.debugLine {
   background: aquamarine;
 }
 
-.myGlyphMarginClass {
-  background: red;
+.color-red {
+  color: red;
 }
 
 .like-pre::first-line {

@@ -3,12 +3,31 @@
   <div class="card-header">
     <h3 class="card-title">Editor</h3>
     <div class="card-tools">
+      <ng-container *ngIf="enableDebugger">
+        <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
+          <i class="fas fa-circle"></i>
+        </button>
+        <button type="button" class="btn btn-tool" (click)="debugNextLine()">
+          <i class="fas fa-angle-right"></i>
+        </button>
+        <button type="button" class="btn btn-tool" (click)="debugNextLineWithTag()">
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+      </ng-container>
+      <button type="button" class="btn btn-tool" (click)="toggleDebugger()">
+        <i class="fas fa-bug"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="play()">
+        <i class="fas fa-play"></i>
+      </button>
+<!--
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
         <i class="fas fa-minus"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
       </button>
+-->
     </div>
   </div>
 
@@ -19,12 +38,8 @@
           <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
         </div>
         <div id="ide-sidebar">
-          <button
-            (click)="iter()">Iterator
-          </button>
-          <button
-            (click)="toggleModal()">Toggle Modal
-          </button>
+          <button (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>
+          <button (click)="getListOfTags()">Get List Of Tags</button>
         </div>
       </div>
 

@@ -19,7 +19,8 @@
             "allowedCommonJsDependencies": [
               "admin-lte/plugins/chart.js/Chart.js",
               "chart.js",
-              "mini-signals"
+              "mini-signals",
+              "@firebase/app-check"
             ],
             "assets": [
               "src/assets",
@@ -80,7 +81,7 @@
             "web": {
               "optimization": false,
               "outputHashing": "none",
-              "sourceMap": false,
+              "sourceMap": true,
               "extractCss": true,
               "namedChunks": true,
               "showCircularDependencies": false,

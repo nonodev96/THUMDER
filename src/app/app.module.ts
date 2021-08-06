@@ -55,6 +55,8 @@ import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } fro
 import MonacoConfig from "../monaco-config";
 import { DocsComponent } from './views/_auth/docs/docs.component';
 import { ComponentsModule } from "./components/components.module";
+import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
+import { HexadecimalPipe } from "./__shared/pipes/numbers/hexadecimal.pipe";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -104,6 +106,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     }),
     MonacoEditorModule,
+    TableVirtualScrollModule,
 
 
     DxToolbarModule,

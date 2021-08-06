@@ -68,7 +68,7 @@ export class AuthService {
   SendVerificationMail(userCredential: UserCredential) {
     return userCredential.user.sendEmailVerification()
       .then(async () => {
-        await this.router.navigate(['/verify-email-address']);
+        await this.router.navigate(['/']);
       })
   }
 

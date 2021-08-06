@@ -13,12 +13,9 @@ export class RegisterComponent implements OnInit {
   showSpinner: boolean;
 
   error_messages = {
-    'fname': [
+    'first_name': [
       {type: 'required', message: 'First Name is required.'},
     ],
-    // 'lname': [
-    //   {type: 'required', message: 'Last Name is required.'}
-    // ],
     'email': [
       {type: 'required', message: 'Email is required.'},
       {type: 'minlength', message: 'Email length.'},
@@ -79,21 +76,25 @@ export class RegisterComponent implements OnInit {
     return password === confirmPassword ? null : {passwordNotMatch: true};
   }
 
-  GoogleAuth() {
+  async GoogleAuth() {
     this.showSpinner = true;
-    this.authService.GoogleAuth().then((value) => {
+    try {
+      await this.authService.GoogleAuth()
+    } catch (e) {
+      console.error(e)
+    } finally {
       this.showSpinner = false;
-    }).catch(() => {
-      this.showSpinner = false;
-    })
+    }
   }
 
-  GithubAuth() {
+  async GithubAuth() {
     this.showSpinner = true;
-    this.authService.GithubAuth().then((value) => {
+    try {
+      await this.authService.GithubAuth()
+    } catch (e) {
+      console.error(e)
+    } finally {
       this.showSpinner = false;
-    }).catch(() => {
-      this.showSpinner = false;
-    })
+    }
   }
 }

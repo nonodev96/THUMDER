@@ -52,21 +52,25 @@ export class LoginComponent implements OnInit {
     this.document.body.classList.add('login-page')
   }
 
-  GoogleAuth() {
+  async GoogleAuth() {
     this.showSpinner = true;
-    this.authService.GoogleAuth().then((value) => {
+    try {
+      await this.authService.GoogleAuth()
+    } catch (e) {
+      console.error(e)
+    } finally {
       this.showSpinner = false;
-    }).catch(() => {
-      this.showSpinner = false;
-    })
+    }
   }
 
-  GithubAuth() {
+  async GithubAuth() {
     this.showSpinner = true;
-    this.authService.GithubAuth().then((value) => {
+    try {
+      await this.authService.GithubAuth()
+    } catch (e) {
+      console.error(e)
+    } finally {
       this.showSpinner = false;
-    }).catch(() => {
-      this.showSpinner = false;
-    })
+    }
   }
 }

@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+/'
+Action : Elementos que representas los eventos a los que responden los agentes para completar las tareas de la ontología.
+Predicate : Elementos que representan las respuestas a los eventos para completar las tareas de la ontología.
+'/
+'autonumber
+skinparam defaultFontName consolas
+skinparam sequenceMessageAlign center
+
+=== "Authentication" ==
+Client -> Server:   1 REQUEST (AuthenticationRequest)
+Client <-- Server:  2.1 ACCEPT-REQUEST (AuthenticationResponse)
+Client <-- Server:  2.2 REJECT-REQUEST (AuthenticationResponse)
+
+=== "Request Modify a file" ==
+Client -> Server:   3 REQUEST (ModifyFileRequest)
+note right
+  Send hash of file and file
+end note
+Client <-- Server:  4.1 ACCEPT-REQUEST (ModifyFileResponse)
+Client <-- Server:  4.2 REJECT-REQUEST (ModifyFileResponse)
+note left
+  Get hash of file
+end note
+
+...Cada vez que guarde o se salga de la sección...
+
+@enduml
