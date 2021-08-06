@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+/'
+Action : Elementos que representas los eventos a los que responden los agentes para completar las tareas de la ontología.
+Predicate : Elementos que representan las respuestas a los eventos para completar las tareas de la ontología.
+'/
+'autonumber
+skinparam defaultFontName consolas
+skinparam sequenceMessageAlign center
+
+=== "Authentication" ==
+Client ->  Server: REQUEST (AuthenticationRequest)
+Client <-- Server: ACCEPT-REQUEST (AuthenticationResponse)
+Client <-- Server: REJECT-REQUEST (AuthenticationResponse)
+
+=== "Show status machine" ==
+
+Client ->  Server: REQUEST (GetStatusMachine)
+Client <-- Server: ACCEPT-REQUEST (SendStatusMachine)
+Client <-- Server: REJECT-REQUEST (SendStatusMachine)
+
+
+@enduml

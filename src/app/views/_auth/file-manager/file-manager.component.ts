@@ -13,6 +13,28 @@ export class FileManagerComponent implements OnInit {
   imageItemToDisplay: any = {};
   popupVisible = false;
 
+  fileItems = [{
+    name: "Documents",
+    isDirectory: true,
+    items: [{
+      name: "Projects",
+      isDirectory: true,
+      items: [{
+        name: "About.rtf",
+        isDirectory: false,
+        size: 1024
+      }, {
+        name: "Passwords.rtf",
+        isDirectory: false,
+        size: 2048
+      }]
+    },{
+      name: "About.xml",
+      isDirectory: false,
+      size: 1024
+    }]
+  }];
+
   constructor(@Inject(DOCUMENT) private document: Document, private router: Router) {
     this.remoteProvider = new RemoteFileSystemProvider({
       endpointUrl: "https://js.devexpress.com/Demos/Mvc/api/file-manager-file-system-images",

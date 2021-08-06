@@ -1,7 +1,7 @@
-import {Component, Inject, OnInit, ViewChild} from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
 import { XtermComponent } from "../../../components/xterm/xterm.component";
-import {DOCUMENT} from "@angular/common";
+import { DOCUMENT } from "@angular/common";
 
 
 @Component({
@@ -12,6 +12,7 @@ export class IDEComponent implements OnInit {
 
   @ViewChild(MonacoEditorComponent) monacoEditorComponent: MonacoEditorComponent;
   @ViewChild(XtermComponent) xtermComponent: XtermComponent;
+  enableDebugger = false;
 
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
@@ -19,10 +20,29 @@ export class IDEComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  iter() {
-    this.monacoEditorComponent.addNewDecorator();
+  toggleDebuggerTag() {
+    this.monacoEditorComponent.toggleDebuggerTag();
   }
 
-  toggleModal() {
+  getListOfTags() {
+    this.monacoEditorComponent.getListOfTags();
+  }
+
+  toggleDebugger() {
+    this.enableDebugger = !this.enableDebugger;
+
+  }
+
+  debugNextLine() {
+    this.monacoEditorComponent.debugNextLine()
+
+  }
+
+  debugNextLineWithTag() {
+    this.monacoEditorComponent.debugNextLineWithTag()
+  }
+
+  play() {
+
   }
 }

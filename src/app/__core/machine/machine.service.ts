@@ -39,7 +39,7 @@ export class MachineService {
 
   private static instance: MachineService;
   private registers: Registers;
-  private memory: WeakMap<Number, Number>;
+  public memory: Map<number, number>;
 
   /**
    * The Singleton's constructor should always be private to prevent direct
@@ -47,7 +47,13 @@ export class MachineService {
    */
   private constructor() {
     this.registers = new Registers()
-    this.memory = new WeakMap<Number, Number>();
+    this.memory = new Map<number, number>();
+
+    const bigArray = Array.from({length: 1000}, (v, i) => i);
+
+    for (const item of bigArray) {
+      this.memory.set(Number(item), Number(item));
+    }
   }
 
   /**

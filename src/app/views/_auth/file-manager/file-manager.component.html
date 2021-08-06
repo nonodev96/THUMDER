@@ -1,5 +1,5 @@
 <dx-file-manager id="fileManager"
-                 [fileSystemProvider]="remoteProvider"
+                 [fileSystemProvider]="fileItems"
                  [height]="height()"
                  currentPath="Widescreen"
                  (onContextMenuItemClick)="onContextMenuItemClick($event)"
@@ -15,7 +15,7 @@
     download="true">
   </dxo-permissions>
 </dx-file-manager>
-
+<!--
 <dx-popup id="photo-popup"
           maxHeight="600"
           closeOnOutsideClick="true"
@@ -25,3 +25,4 @@
     <img src="{{imageItemToDisplay.dataItem.url}}" class="photo-popup-image" alt=""/>
   </div>
 </dx-popup>
+-->

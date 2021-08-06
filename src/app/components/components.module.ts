@@ -18,8 +18,12 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { DxFileManagerModule } from "devextreme-angular";
+import { MemoryComponent } from './memory/memory.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
+import { MatTableModule } from "@angular/material/table";
 
-
+import { SharedModule } from "../__shared/shared.module";
 
 
 @NgModule({
@@ -42,8 +46,7 @@ import { DxFileManagerModule } from "devextreme-angular";
     // xTerm
     XtermComponent,
     BreadcrumbComponent,
-
-
+    MemoryComponent,
 
 
   ],
@@ -52,11 +55,15 @@ import { DxFileManagerModule } from "devextreme-angular";
     RouterModule,
     FormsModule,
     BrowserModule,
+    ScrollingModule,
 
     // npm
     MonacoEditorModule,
     DxFileManagerModule,
+    TableVirtualScrollModule,
+    MatTableModule,
 
+    SharedModule
   ],
   exports: [
     // Aside
