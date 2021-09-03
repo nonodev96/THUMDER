@@ -4,9 +4,9 @@ import { AuthService } from "../../__core/auth/auth.service";
 
 @Component({
   selector: "app-forgot-password",
-  templateUrl: "./forgot-password.component.html",
+  templateUrl: "./forgot-password.view.html",
 })
-export class ForgotPasswordComponent implements OnInit {
+export class ForgotPasswordView implements OnInit {
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService) {

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PipelinePixiComponent } from './pipeline-pixi.component';
+import { FileManagerView } from './file-manager.view';
 
-describe('PipelinePixiComponent', () => {
-  let component: PipelinePixiComponent;
-  let fixture: ComponentFixture<PipelinePixiComponent>;
+describe('FileManagerComponent', () => {
+  let component: FileManagerView;
+  let fixture: ComponentFixture<FileManagerView>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PipelinePixiComponent ]
+      declarations: [ FileManagerView ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PipelinePixiComponent);
+    fixture = TestBed.createComponent(FileManagerView);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -6,9 +6,9 @@ import { DOCUMENT } from "@angular/common";
 
 @Component({
   selector: "app-ide",
-  templateUrl: "./ide.component.html",
+  templateUrl: "./ide.view.html",
 })
-export class IDEComponent implements OnInit {
+export class IDEView implements OnInit {
 
   @ViewChild(MonacoEditorComponent) monacoEditorComponent: MonacoEditorComponent;
   @ViewChild(XtermComponent) xtermComponent: XtermComponent;

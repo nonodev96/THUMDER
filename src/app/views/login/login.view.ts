@@ -7,9 +7,9 @@ import { ElectronService } from "../../__core/services";
 
 @Component({
   selector: "app-login",
-  templateUrl: "./login.component.html",
+  templateUrl: "./login.view.html",
 })
-export class LoginComponent implements OnInit {
+export class LoginView implements OnInit {
   loginForm: FormGroup;
   showSpinner: boolean;
 

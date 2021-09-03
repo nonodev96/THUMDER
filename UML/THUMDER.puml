@@ -325,17 +325,17 @@ ThumderModule ..> "@Angular"
 'MonacoEditorComponent .down.> OnInit
 'AdminNavbarComponent .down.> OnInit
 'AuthNavbarComponent .down.> OnInit
-'FileManagerComponent .down.> OnInit
-'LoginComponent .down.> OnInit
-'RegisterComponent .down.> OnInit
-'IndexComponent .down.> OnInit
-'ForgotPasswordComponent .down.> OnInit
+'FileManagerView .down.> OnInit
+'LoginView .down.> OnInit
+'RegisterView .down.> OnInit
+'IndexView .down.> OnInit
+'ForgotPasswordView .down.> OnInit
 'LandingComponent .down.> OnInit
 'ProfileComponent .down.> OnInit
 'IDEComponent .down.> OnInit
 'FileManagerViewComponent .down.> OnInit
 'SidebarComponent .down.> OnInit
-'DocsComponent .down.> OnInit
+'DocsView .down.> OnInit
 
 
 @enduml

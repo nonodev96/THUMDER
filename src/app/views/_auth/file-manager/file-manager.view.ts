@@ -1,14 +1,15 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import RemoteFileSystemProvider from "devextreme/file_management/remote_provider";
-import {DOCUMENT} from "@angular/common";
-import {Router} from "@angular/router";
+import { DOCUMENT } from "@angular/common";
+import { Router } from "@angular/router";
+import { TasksService } from "../../../__core/services/tasks/tasks.service";
 
 @Component({
   selector: 'app-file-manager',
-  templateUrl: './file-manager.component.html',
-  styleUrls: ['./file-manager.component.scss']
+  templateUrl: './file-manager.view.html',
+  styleUrls: ['./file-manager.view.scss']
 })
-export class FileManagerComponent implements OnInit {
+export class FileManagerView implements OnInit {
   remoteProvider: RemoteFileSystemProvider;
   imageItemToDisplay: any = {};
   popupVisible = false;
@@ -28,14 +29,18 @@ export class FileManagerComponent implements OnInit {
         isDirectory: false,
         size: 2048
       }]
-    },{
+    }, {
       name: "About.xml",
       isDirectory: false,
       size: 1024
     }]
   }];
 
-  constructor(@Inject(DOCUMENT) private document: Document, private router: Router) {
+  coreAgents
+
+  constructor(@Inject(DOCUMENT) private document: Document,
+              private router: Router,
+              private tasksService: TasksService) {
     this.remoteProvider = new RemoteFileSystemProvider({
       endpointUrl: "https://js.devexpress.com/Demos/Mvc/api/file-manager-file-system-images",
     });
@@ -47,6 +52,10 @@ export class FileManagerComponent implements OnInit {
     this.router.navigateByUrl('/auth/ide').then(r => {
       console.log(r)
     });
+  }
+
+  createNewFile() {
+    this.tasksService.createNewFile()
   }
 
   ngOnInit(): void {

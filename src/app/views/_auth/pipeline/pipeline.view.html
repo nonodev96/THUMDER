@@ -1,0 +1,80 @@
+<!-- Default box -->
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Pipeline</h3>
+    <div class="card-tools">
+
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.moveBottom()">
+        <i class="fas fa-arrow-up"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.moveTop()">
+        <i class="fas fa-arrow-down"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.moveRight()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.moveLeft()">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.reset()">
+        <i class="fas fa-redo-alt"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.nextStep()">
+        <i class="fas fa-angle-right"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="this.pixiPipelineComponent.nextStepX10()">
+        <i class="fas fa-angle-double-right"></i>
+      </button>
+
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+
+    <thumder-pipeline-pixi></thumder-pipeline-pixi>
+
+  </div>
+
+<!--  <div class="card-footer">-->
+<!--    Footer-->
+<!--  </div>-->
+</div>
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Manual</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <h2>Short cuts</h2>
+    <ol>
+      <li><strong>r</strong>: Reset</li>
+      <li><strong>n</strong>: Next step</li>
+      <li><strong>m</strong>: Next step x10</li>
+      <li>Move
+        <ol>
+          <li><strong>i</strong>: Move top</li>
+          <li><strong>k</strong>: Move down</li>
+          <li><strong>j</strong>: Move left</li>
+          <li><strong>l</strong>: Move right</li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+
+</div>

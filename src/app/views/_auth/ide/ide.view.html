@@ -3,6 +3,7 @@
   <div class="card-header">
     <h3 class="card-title">Editor</h3>
     <div class="card-tools">
+
       <ng-container *ngIf="enableDebugger">
         <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
           <i class="fas fa-circle"></i>
@@ -14,20 +15,21 @@
           <i class="fas fa-angle-double-right"></i>
         </button>
       </ng-container>
+
       <button type="button" class="btn btn-tool" (click)="toggleDebugger()">
         <i class="fas fa-bug"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="play()">
         <i class="fas fa-play"></i>
       </button>
-<!--
+
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
         <i class="fas fa-minus"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
       </button>
--->
+
     </div>
   </div>
 

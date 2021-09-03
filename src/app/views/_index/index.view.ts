@@ -3,9 +3,9 @@ import { DOCUMENT } from "@angular/common";
 
 @Component({
   selector: "app-index",
-  templateUrl: "./index.component.html",
+  templateUrl: "./index.view.html",
 })
-export class IndexComponent implements OnInit {
+export class IndexView implements OnInit {
 
   constructor(@Inject(DOCUMENT) private document: Document) {
   }

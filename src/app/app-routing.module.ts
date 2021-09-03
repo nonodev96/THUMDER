@@ -9,27 +9,28 @@ import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 // _admin views
 
 // _auth views
-import { LoginComponent } from "./views/login/login.component";
-import { RegisterComponent } from "./views/register/register.component";
-import { ForgotPasswordComponent } from "./views/forgot-password/forgot-passwordComponent";
+import { LoginView } from "./views/login/login.view";
+import { RegisterView } from "./views/register/register.view";
+import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
 
 // no _layouts views
-import { IndexComponent } from "./views/_index/index.component";
-import { LandingComponent } from "./views/landing/landing.component";
-import { ProfileComponent } from "./views/_auth/profile/profile.component";
-import { PipelinePixiComponent } from "./components/pipeline-pixi/pipeline-pixi.component";
+import { IndexView } from "./views/_index/index.view";
+import { LandingView } from "./views/landing/landing.view";
+import { ProfileView } from "./views/_auth/profile/profile.view";
+import { PixiPipelineComponent } from "./components/pixi-pipeline/pixi-pipeline.component";
 import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
-import { IDEComponent } from "./views/_auth/ide/ide.component";
-import { FileManagerComponent } from "./views/_auth/file-manager/file-manager.component";
+import { IDEView } from "./views/_auth/ide/ide.view";
+import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
-import { DocsComponent } from "./views/_auth/docs/docs.component";
+import { DocsView } from "./views/_auth/docs/docs.view";
 import { MemoryComponent } from "./components/memory/memory.component";
+import { PipelineView } from "./views/_auth/pipeline/pipeline.view";
 
 const routes: Routes = [
   {
     path: '',
-    component: IndexComponent
+    component: IndexView
   },
   // _admin views
   {
@@ -47,30 +48,31 @@ const routes: Routes = [
     data: {breadcrumb: 'Home'},
     children: [
       {path: "", redirectTo: "login", pathMatch: "full"},
-      {path: "file-manager", component: FileManagerComponent, data: {breadcrumb: 'File Manager'}},
-      {path: "ide", component: IDEComponent, data: {breadcrumb: 'IDE'}},
+      {path: "file-manager", component: FileManagerView, data: {breadcrumb: 'File Manager'}},
+      {path: "ide", component: IDEView, data: {breadcrumb: 'IDE'}},
+      {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
       {path: "memory", component: MemoryComponent, data: {breadcrumb: 'Memory'}},
-      {path: "profile", component: ProfileComponent, data: {breadcrumb: 'Profile'}},
-      {path: "documentation", component: DocsComponent, data: {breadcrumb: 'Documentation'}},
+      {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
+      {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
     ],
   },
   {
     path: "login",
-    component: LoginComponent,
+    component: LoginView,
     canActivate: [NoAuthGuard]
   },
   {
     path: "register",
-    component: RegisterComponent,
+    component: RegisterView,
     canActivate: [NoAuthGuard]
   },
   {
     path: "forgot-password",
-    component: ForgotPasswordComponent,
+    component: ForgotPasswordView,
     canActivate: [NoAuthGuard]
   },
   // no layout views
-  {path: "landing", component: LandingComponent},
+  {path: "landing", component: LandingView},
 
   {
     path: 'monaco',
@@ -78,7 +80,7 @@ const routes: Routes = [
   },
   {
     path: 'pixi',
-    component: PipelinePixiComponent
+    component: PixiPipelineComponent
   },
   {
     path: '**',
