@@ -25,7 +25,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { UtilityService } from "./__core/utility.service";
 
-import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { MONACO_PATH, MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 
 
 // _layouts
@@ -35,33 +35,44 @@ import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 // _admin views
 
 // _auth views
-import { FileManagerComponent } from './views/_auth/file-manager/file-manager.component';
-import { IDEComponent } from "./views/_auth/ide/ide.component";
-import { ProfileComponent } from "./views/_auth/profile/profile.component";
+import { FileManagerView } from './views/_auth/file-manager/file-manager.view';
+import { IDEView } from "./views/_auth/ide/ide.view";
+import { ProfileView } from "./views/_auth/profile/profile.view";
 
 // no _layouts views
-import { LoginComponent } from "./views/login/login.component";
-import { RegisterComponent } from "./views/register/register.component";
-import { ForgotPasswordComponent } from "./views/forgot-password/forgot-passwordComponent";
+import { LoginView } from "./views/login/login.view";
+import { RegisterView } from "./views/register/register.view";
+import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
 
 // Index
-import { IndexComponent } from "./views/_index/index.component";
+import { IndexView } from "./views/_index/index.view";
 
 
-import { LandingComponent } from "./views/landing/landing.component";
+import { LandingView } from "./views/landing/landing.view";
 
 
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
-import MonacoConfig from "../monaco-config";
-import { DocsComponent } from './views/_auth/docs/docs.component';
+import { DocsView } from './views/_auth/docs/docs.view';
 import { ComponentsModule } from "./components/components.module";
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { HexadecimalPipe } from "./__shared/pipes/numbers/hexadecimal.pipe";
+// import { SocketProviderConnect } from "./__core/services/SocketProviderConnect";
+import { CookieService } from "ngx-cookie-service";
+import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
+import { PipelineView } from "./views/_auth/pipeline/pipeline.view";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
+const socketIoConfig: SocketIoConfig = {
+  url: 'http://localhost:3000',
+  options: {
+    transports: ['websocket']
+  }
+};
+
 
 @NgModule({
   declarations: [
@@ -71,25 +82,25 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     LayoutAdminComponent,
     LayoutAuthComponent,
 
-    LoginComponent,
-    RegisterComponent,
-    ForgotPasswordComponent,
-    IndexComponent,
-    LandingComponent,
-    ProfileComponent,
+    LoginView,
+    RegisterView,
+    ForgotPasswordView,
+    IndexView,
+    LandingView,
+    ProfileView,
 
-    IDEComponent,
+    IDEView,
+    PipelineView,
 
-    FileManagerComponent,
+    FileManagerView,
 
-    DocsComponent,
+    DocsView,
   ],
   imports: [
 
     CoreModule,
     SharedModule,
     ComponentsModule,
-
 
     BrowserModule,
     FormsModule,
@@ -98,6 +109,8 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     RouterModule,
 
     AppRoutingModule,
+
+    SocketIoModule.forRoot(socketIoConfig),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -120,10 +133,16 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AngularFireAuthModule,
   ],
   providers: [
+    {
+      provide: MONACO_PATH,
+      useValue: 'https://unpkg.com/monaco-editor@0.26.1/min/vs'
+    },
     AppComponent,
     AuthGuard,
     NoAuthGuard,
     UtilityService,
+    // SocketProviderConnect,
+    CookieService
   ],
   exports: [],
   bootstrap: [

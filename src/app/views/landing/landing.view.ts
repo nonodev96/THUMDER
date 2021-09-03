@@ -3,9 +3,9 @@ import {DOCUMENT} from "@angular/common";
 
 @Component({
   selector: "app-landing",
-  templateUrl: "./landing.component.html",
+  templateUrl: "./landing.view.html",
 })
-export class LandingComponent implements OnInit {
+export class LandingView implements OnInit {
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
 

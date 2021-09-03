@@ -4,9 +4,9 @@ import { AuthService } from "../../../__core/auth/auth.service";
 
 @Component({
   selector: "app-profile",
-  templateUrl: "./profile.component.html",
+  templateUrl: "./profile.view.html",
 })
-export class ProfileComponent implements OnInit {
+export class ProfileView implements OnInit {
   constructor(@Inject(DOCUMENT) private document: Document, public authService: AuthService) {
   }
 

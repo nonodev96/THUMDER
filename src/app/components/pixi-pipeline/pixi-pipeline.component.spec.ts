@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DocsComponent } from './docs.component';
+import { PixiPipelineComponent } from './pixi-pipeline.component';
 
-describe('DocsComponent', () => {
-  let component: DocsComponent;
-  let fixture: ComponentFixture<DocsComponent>;
+describe('PipelinePixiComponent', () => {
+  let component: PixiPipelineComponent;
+  let fixture: ComponentFixture<PixiPipelineComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DocsComponent ]
+      declarations: [ PixiPipelineComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DocsComponent);
+    fixture = TestBed.createComponent(PixiPipelineComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

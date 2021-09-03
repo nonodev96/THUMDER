@@ -1,6 +1,6 @@
 {
   "name": "thumder",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "TFG - THUMDER (THe UltiMate Dlx EmulatoR): emulador multiplataforma DLX con fines didácticos",
   "homepage": "https://github.com/nonodev96/THUMDER",
   "author": {
@@ -27,6 +27,7 @@
   "main": "main.js",
   "private": true,
   "scripts": {
+    "ws:server": "node ../THUMDER_Ontology/example/server/dist/main.js",
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
@@ -118,9 +119,14 @@
     "jquery": "3.6.0",
     "monaco-editor": "0.26.1",
     "ng-table-virtual-scroll": "1.3.7",
-    "pixi.js": "6.1.0",
+    "ngx-cookie-service": "12.0.3",
+    "ngx-socket-io": "4.1.0",
+    "pixi.js": "6.1.2",
+    "pixi.js-keyboard": "^1.1.6",
+    "pixi.js-mouse": "^1.1.6",
     "rxjs": "6.6.6",
     "string-to-argv": "1.0.0",
+    "thumder-ontology": "1.0.9",
     "xterm": "4.13.0",
     "xterm-addon-attach": "0.6.0",
     "xterm-addon-fit": "0.5.0",

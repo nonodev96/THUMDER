@@ -12,7 +12,7 @@ import { FooterAdminComponent } from "./footers/footer-admin/footer-admin.compon
 import { MonacoEditorComponent } from "./monaco-editor/monaco-editor.component";
 import { AdminNavbarComponent } from "./navbars/admin-navbar/admin-navbar.component";
 import { AuthNavbarComponent } from "./navbars/auth-navbar/auth-navbar.component";
-import { PipelinePixiComponent } from "./pipeline-pixi/pipeline-pixi.component";
+import { PixiPipelineComponent } from "./pixi-pipeline/pixi-pipeline.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
@@ -40,7 +40,7 @@ import { SharedModule } from "../__shared/shared.module";
     AdminNavbarComponent,
     AuthNavbarComponent,
     // Pipeline
-    PipelinePixiComponent,
+    PixiPipelineComponent,
     // Sidebar
     SidebarComponent,
     // xTerm
@@ -78,7 +78,7 @@ import { SharedModule } from "../__shared/shared.module";
     AdminNavbarComponent,
     AuthNavbarComponent,
     // Pipeline
-    PipelinePixiComponent,
+    PixiPipelineComponent,
     // Sidebar
     SidebarComponent,
     // xTerm

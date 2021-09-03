@@ -1,0 +1,42 @@
+@startuml{README_AgentAction.png}
+'!include config.skinparam
+'https://plantuml.com/class-diagram
+
+/'
+Concept: Elementos que representan la información necesaria para representar los diferentes tipos de comunicación de la ontología.
+AgentAction: Elementos que representas los eventos a los que responden los agentes para completar la comunicación de la ontología.
+Predicate: Elementos que representan las respuestas a los eventos para completar la comunicación de la ontología.
+'/
+
+package "AgentAction" #DDDDDD {
+    interface AgentAction
+    '  class AuthenticationRequest
+    '  abstract class Request  extends AuthenticationRequest implements AgentAction
+    '  class MakeFolderRequest implements AgentAction
+    '  class MakeFileRequest extends MakeFolderRequest
+    '  class ModifyFolderRequest implements AgentAction
+    '  class ModifyFileRequest extends ModifyFolderRequest
+    '  class DeleteFolderRequest implements AgentAction
+    '  class DeleteFileRequest extends DeleteFolderRequest
+    '  class TreeFileManagerRequest implements AgentAction
+    '  class InstructionRequest implements AgentAction
+    '  class StatusMachineRequest implements AgentAction
+
+    class ProposeSimulation implements AgentAction
+    class RequestInstruction implements AgentAction
+    class RequestInstructionExecute extends RequestInstruction
+    class RequestInstructionDebug extends RequestInstruction
+    class InformSimulation implements AgentAction
+
+    abstract class FileManagerAction implements AgentAction
+    class CreateFolder extends FileManagerAction
+    class CreateFile extends CreateFolder
+    class ModifyFolder extends FileManagerAction
+    class ModifyFile extends ModifyFolder
+    class DeleteFolder extends FileManagerAction
+    class DeleteFile extends DeleteFolder
+    class ShowFolder extends FileManagerAction
+    class ShowFile extends ShowFolder
+}
+
+@enduml
