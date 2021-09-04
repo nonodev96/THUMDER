@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PixiPipelineComponent } from './pixi-pipeline.component';
 
-describe('PipelinePixiComponent', () => {
+describe('PixiPipelineComponent', () => {
   let component: PixiPipelineComponent;
   let fixture: ComponentFixture<PixiPipelineComponent>;
 

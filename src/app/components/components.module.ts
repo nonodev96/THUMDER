@@ -12,7 +12,7 @@ import { FooterAdminComponent } from "./footers/footer-admin/footer-admin.compon
 import { MonacoEditorComponent } from "./monaco-editor/monaco-editor.component";
 import { AdminNavbarComponent } from "./navbars/admin-navbar/admin-navbar.component";
 import { AuthNavbarComponent } from "./navbars/auth-navbar/auth-navbar.component";
-import { PixiPipelineComponent } from "./pixi-pipeline/pixi-pipeline.component";
+import { PixiCycleClockDiagramComponent } from "./pixi-cycle-clock-diagram/pixi-cycle-clock-diagram.component";
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
@@ -24,6 +24,7 @@ import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { MatTableModule } from "@angular/material/table";
 
 import { SharedModule } from "../__shared/shared.module";
+import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
 
 
 @NgModule({
@@ -39,8 +40,10 @@ import { SharedModule } from "../__shared/shared.module";
     // Navbar
     AdminNavbarComponent,
     AuthNavbarComponent,
-    // Pipeline
+    // Pixi
+    PixiCycleClockDiagramComponent,
     PixiPipelineComponent,
+
     // Sidebar
     SidebarComponent,
     // xTerm
@@ -78,12 +81,13 @@ import { SharedModule } from "../__shared/shared.module";
     AdminNavbarComponent,
     AuthNavbarComponent,
     // Pipeline
-    PixiPipelineComponent,
+    PixiCycleClockDiagramComponent,
     // Sidebar
     SidebarComponent,
     // xTerm
     XtermComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    PixiPipelineComponent
   ]
 })
 export class ComponentsModule {

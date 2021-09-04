@@ -30,7 +30,7 @@ const styleFontTextSteps = new PIXI.TextStyle({
   // dropShadowDistance: 6,
 });
 
-export const defaultPipe = {
+export const defaultCycle = {
   IF: 1,
   IF_stall: 0,
   ID: 1,
@@ -59,7 +59,7 @@ export type CellPosition = {
   step: number
 }
 
-export type Pipe = {
+export type CycleType = {
   IF?: number,
   IF_stall?: number,
   ID?: number,
@@ -72,7 +72,7 @@ export type Pipe = {
   WB_stall?: number
 };
 
-export class PixiJSPipeline extends PIXI.Container {
+export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   table: PixiJSTable;
 
   tableSteps: PixiJSTable;
@@ -163,7 +163,7 @@ export class PixiJSPipeline extends PIXI.Container {
     this.borderTitle.endFill();
     this.borderTitle.zIndex = 10;
 
-    const text = new PIXI.Text('Pipeline', {
+    const text = new PIXI.Text('Cycle clock', {
       fontFamily: 'Arial',
       fontSize: 30,
       fill: 'white',
@@ -188,32 +188,32 @@ export class PixiJSPipeline extends PIXI.Container {
     this.borderTop.zIndex = 4;
   }
 
-  public addInstruction(text: string, pipe: Pipe = defaultPipe, stepsToWait = 0) {
+  public addInstruction(text: string, cycle: CycleType = defaultCycle, stepsToWait = 0) {
     this.drawInstruction(text);
 
     for (let i = 0; i < this.stepToStart + stepsToWait; i++) {
-      this.drawPipe('', 0xCCCCCC, 0xBBBBBB, {
+      this.drawCycle('', 0xCCCCCC, 0xBBBBBB, {
         instruction: this.instruction,
         step: i,
       });
     }
 
-    for (let i = 0; i < (pipe.IF_stall ?? defaultPipe.IF_stall); i++) this.drawPipe('💣', 0xFFFF00);
-    for (let i = 0; i < (pipe.IF ?? defaultPipe.IF); i++) this.drawPipe('IF', 0xFFFF00);
-    this.stepToStart += (pipe.IF_stall ?? defaultPipe.IF_stall);
-    this.stepToStart += (pipe.IF ?? defaultPipe.IF);
+    for (let i = 0; i < (cycle.IF_stall ?? defaultCycle.IF_stall); i++) this.drawCycle('💣', 0xFFFF00);
+    for (let i = 0; i < (cycle.IF ?? defaultCycle.IF); i++) this.drawCycle('IF', 0xFFFF00);
+    this.stepToStart += (cycle.IF_stall ?? defaultCycle.IF_stall);
+    this.stepToStart += (cycle.IF ?? defaultCycle.IF);
 
-    for (let i = 0; i < (pipe.ID_stall ?? defaultPipe.ID_stall); i++) this.drawPipe('💣', 0xFF9900);
-    for (let i = 0; i < (pipe.ID ?? defaultPipe.ID); i++) this.drawPipe('ID', 0xFF9900);
+    for (let i = 0; i < (cycle.ID_stall ?? defaultCycle.ID_stall); i++) this.drawCycle('💣', 0xFF9900);
+    for (let i = 0; i < (cycle.ID ?? defaultCycle.ID); i++) this.drawCycle('ID', 0xFF9900);
 
-    for (let i = 0; i < (pipe.intEX_stall ?? defaultPipe.intEX_stall); i++) this.drawPipe('💣', 0xFF0000);
-    for (let i = 0; i < (pipe.intEX ?? defaultPipe.intEX); i++) this.drawPipe('intEX', 0xFF0000);
+    for (let i = 0; i < (cycle.intEX_stall ?? defaultCycle.intEX_stall); i++) this.drawCycle('💣', 0xFF0000);
+    for (let i = 0; i < (cycle.intEX ?? defaultCycle.intEX); i++) this.drawCycle('intEX', 0xFF0000);
 
-    for (let i = 0; i < (pipe.MEM_stall ?? defaultPipe.MEM_stall); i++) this.drawPipe('💣', 0x00FF00);
-    for (let i = 0; i < (pipe.MEM ?? defaultPipe.MEM); i++) this.drawPipe('MEM', 0x00FF00);
+    for (let i = 0; i < (cycle.MEM_stall ?? defaultCycle.MEM_stall); i++) this.drawCycle('💣', 0x00FF00);
+    for (let i = 0; i < (cycle.MEM ?? defaultCycle.MEM); i++) this.drawCycle('MEM', 0x00FF00);
 
-    for (let i = 0; i < (pipe.WB_stall ?? defaultPipe.WB_stall); i++) this.drawPipe('💣', 0xFF00FF);
-    for (let i = 0; i < (pipe.WB ?? defaultPipe.WB); i++) this.drawPipe('WB', 0xFF00FF);
+    for (let i = 0; i < (cycle.WB_stall ?? defaultCycle.WB_stall); i++) this.drawCycle('💣', 0xFF00FF);
+    for (let i = 0; i < (cycle.WB ?? defaultCycle.WB); i++) this.drawCycle('WB', 0xFF00FF);
 
     this.table.addRow();
     this.instruction++;
@@ -285,7 +285,7 @@ export class PixiJSPipeline extends PIXI.Container {
     this.tableSteps.addCell(rectangle);
   }
 
-  private drawPipe(code: '' | '💣' | 'ID' | 'IF' | 'intEX' | 'MEM' | 'WB' | 'TEST' | null = null, colorLineStyle = 0xCCCCCC, colorFill = 0xBBBBBB, cellAt: CellPosition | null = null) {
+  private drawCycle(code: '' | '💣' | 'ID' | 'IF' | 'intEX' | 'MEM' | 'WB' | 'TEST' | null = null, colorLineStyle = 0xCCCCCC, colorFill = 0xBBBBBB, cellAt: CellPosition | null = null) {
     const rectangle = new PIXI.Graphics();
     rectangle.lineStyle(2.5, colorLineStyle, 1);
     rectangle.beginFill(colorFill);
