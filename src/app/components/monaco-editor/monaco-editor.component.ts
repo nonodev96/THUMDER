@@ -5,8 +5,8 @@ import MonacoConfig from "../../../monaco-config";
 import { filter, take } from "rxjs/operators";
 import { MonacoEditorConstructionOptions, MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { editor } from "monaco-editor";
-import IEditorOption = editor.IEditorOption;
+// import { editor } from "monaco-editor";
+// import IEditorOption = editor.IEditorOption;
 
 
 @Component({

@@ -6,26 +6,28 @@ import { PageNotFoundComponent } from './__shared/components';
 import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
 import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 
+// components
+import { MemoryComponent } from "./components/memory/memory.component";
+import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
+
 // _admin views
 
 // _auth views
 import { LoginView } from "./views/login/login.view";
 import { RegisterView } from "./views/register/register.view";
 import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
+import { DocsView } from "./views/_auth/docs/docs.view";
+import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
+import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
+import { IDEView } from "./views/_auth/ide/ide.view";
+import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
+import { ProfileView } from "./views/_auth/profile/profile.view";
 
 // no _layouts views
 import { IndexView } from "./views/_index/index.view";
 import { LandingView } from "./views/landing/landing.view";
-import { ProfileView } from "./views/_auth/profile/profile.view";
-import { PixiPipelineComponent } from "./components/pixi-pipeline/pixi-pipeline.component";
-import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
-import { IDEView } from "./views/_auth/ide/ide.view";
-import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
-import { DocsView } from "./views/_auth/docs/docs.view";
-import { MemoryComponent } from "./components/memory/memory.component";
-import { PipelineView } from "./views/_auth/pipeline/pipeline.view";
 
 const routes: Routes = [
   {
@@ -51,6 +53,7 @@ const routes: Routes = [
       {path: "file-manager", component: FileManagerView, data: {breadcrumb: 'File Manager'}},
       {path: "ide", component: IDEView, data: {breadcrumb: 'IDE'}},
       {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
+      {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Pipeline'}},
       {path: "memory", component: MemoryComponent, data: {breadcrumb: 'Memory'}},
       {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
@@ -77,10 +80,6 @@ const routes: Routes = [
   {
     path: 'monaco',
     component: MonacoEditorComponent
-  },
-  {
-    path: 'pixi',
-    component: PixiPipelineComponent
   },
   {
     path: '**',

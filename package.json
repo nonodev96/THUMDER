@@ -80,7 +80,7 @@
     "conventional-changelog-cli": "2.1.0",
     "core-js": "3.6.5",
     "cross-env": "7.0.2",
-    "electron": "10.1.2",
+    "electron": "10.2.0",
     "electron-builder": "22.8.1",
     "electron-reload": "1.5.0",
     "eslint": "7.10.0",

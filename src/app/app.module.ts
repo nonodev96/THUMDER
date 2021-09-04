@@ -59,7 +59,8 @@ import { HexadecimalPipe } from "./__shared/pipes/numbers/hexadecimal.pipe";
 // import { SocketProviderConnect } from "./__core/services/SocketProviderConnect";
 import { CookieService } from "ngx-cookie-service";
 import { SocketIoConfig, SocketIoModule } from "ngx-socket-io";
-import { PipelineView } from "./views/_auth/pipeline/pipeline.view";
+import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
+import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -90,6 +91,7 @@ const socketIoConfig: SocketIoConfig = {
     ProfileView,
 
     IDEView,
+    CycleClockDiagramView,
     PipelineView,
 
     FileManagerView,
@@ -133,10 +135,10 @@ const socketIoConfig: SocketIoConfig = {
     AngularFireAuthModule,
   ],
   providers: [
-    {
-      provide: MONACO_PATH,
-      useValue: 'https://unpkg.com/monaco-editor@0.26.1/min/vs'
-    },
+    // {
+    //   provide: MONACO_PATH,
+    //   useValue: 'https://unpkg.com/browse/monaco-editor@0.26.1/min/vs/'
+    // },
     AppComponent,
     AuthGuard,
     NoAuthGuard,
