@@ -30,7 +30,7 @@ const styleFontTextSteps = new PIXI.TextStyle({
   // dropShadowDistance: 6,
 });
 
-export const defaultCycle = {
+export const DEFAULT_CYCLE = {
   IF: 1,
   IF_stall: 0,
   ID: 1,
@@ -188,7 +188,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.borderTop.zIndex = 4;
   }
 
-  public addInstruction(text: string, cycle: CycleType = defaultCycle, stepsToWait = 0) {
+  public addInstruction(text: string, cycle: CycleType = DEFAULT_CYCLE, stepsToWait = 0) {
     this.drawInstruction(text);
 
     for (let i = 0; i < this.stepToStart + stepsToWait; i++) {
@@ -198,22 +198,22 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
       });
     }
 
-    for (let i = 0; i < (cycle.IF_stall ?? defaultCycle.IF_stall); i++) this.drawCycle('💣', 0xFFFF00);
-    for (let i = 0; i < (cycle.IF ?? defaultCycle.IF); i++) this.drawCycle('IF', 0xFFFF00);
-    this.stepToStart += (cycle.IF_stall ?? defaultCycle.IF_stall);
-    this.stepToStart += (cycle.IF ?? defaultCycle.IF);
+    for (let i = 0; i < (cycle.IF_stall ?? DEFAULT_CYCLE.IF_stall); i++) this.drawCycle('💣', 0xFFFF00);
+    for (let i = 0; i < (cycle.IF ?? DEFAULT_CYCLE.IF); i++) this.drawCycle('IF', 0xFFFF00);
+    this.stepToStart += (cycle.IF_stall ?? DEFAULT_CYCLE.IF_stall);
+    this.stepToStart += (cycle.IF ?? DEFAULT_CYCLE.IF);
 
-    for (let i = 0; i < (cycle.ID_stall ?? defaultCycle.ID_stall); i++) this.drawCycle('💣', 0xFF9900);
-    for (let i = 0; i < (cycle.ID ?? defaultCycle.ID); i++) this.drawCycle('ID', 0xFF9900);
+    for (let i = 0; i < (cycle.ID_stall ?? DEFAULT_CYCLE.ID_stall); i++) this.drawCycle('💣', 0xFF9900);
+    for (let i = 0; i < (cycle.ID ?? DEFAULT_CYCLE.ID); i++) this.drawCycle('ID', 0xFF9900);
 
-    for (let i = 0; i < (cycle.intEX_stall ?? defaultCycle.intEX_stall); i++) this.drawCycle('💣', 0xFF0000);
-    for (let i = 0; i < (cycle.intEX ?? defaultCycle.intEX); i++) this.drawCycle('intEX', 0xFF0000);
+    for (let i = 0; i < (cycle.intEX_stall ?? DEFAULT_CYCLE.intEX_stall); i++) this.drawCycle('💣', 0xFF0000);
+    for (let i = 0; i < (cycle.intEX ?? DEFAULT_CYCLE.intEX); i++) this.drawCycle('intEX', 0xFF0000);
 
-    for (let i = 0; i < (cycle.MEM_stall ?? defaultCycle.MEM_stall); i++) this.drawCycle('💣', 0x00FF00);
-    for (let i = 0; i < (cycle.MEM ?? defaultCycle.MEM); i++) this.drawCycle('MEM', 0x00FF00);
+    for (let i = 0; i < (cycle.MEM_stall ?? DEFAULT_CYCLE.MEM_stall); i++) this.drawCycle('💣', 0x00FF00);
+    for (let i = 0; i < (cycle.MEM ?? DEFAULT_CYCLE.MEM); i++) this.drawCycle('MEM', 0x00FF00);
 
-    for (let i = 0; i < (cycle.WB_stall ?? defaultCycle.WB_stall); i++) this.drawCycle('💣', 0xFF00FF);
-    for (let i = 0; i < (cycle.WB ?? defaultCycle.WB); i++) this.drawCycle('WB', 0xFF00FF);
+    for (let i = 0; i < (cycle.WB_stall ?? DEFAULT_CYCLE.WB_stall); i++) this.drawCycle('💣', 0xFF00FF);
+    for (let i = 0; i < (cycle.WB ?? DEFAULT_CYCLE.WB); i++) this.drawCycle('WB', 0xFF00FF);
 
     this.table.addRow();
     this.instruction++;

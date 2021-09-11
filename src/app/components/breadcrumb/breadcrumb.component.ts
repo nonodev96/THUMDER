@@ -11,7 +11,7 @@ import {
   Data
 } from "@angular/router";
 import { filter } from "rxjs/operators";
-import { Util } from "../../Util";
+import { Utils } from "../../Utils";
 
 type MenuItem = {
   label: Data,
@@ -51,7 +51,7 @@ export class BreadcrumbComponent {
         }
 
         const label = child.snapshot.data;
-        if (!Util.isNullOrUndefined(label)) {
+        if (!Utils.isNullOrUndefined(label)) {
           breadcrumbs.push({label, url});
         }
 
