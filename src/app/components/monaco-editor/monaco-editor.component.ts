@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { XtermComponent } from "../xterm/xterm.component";
 import MonacoConfig from "../../../monaco-config";
@@ -58,6 +58,9 @@ export class MonacoEditorComponent implements OnInit {
     this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_S, function () {
       alert('SAVE pressed!');
     });
+    this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_D, () => {
+      this.toggleDebuggerTag();
+    });
 
     this.editor.onDidChangeCursorSelection((e) => {
 
@@ -68,14 +71,18 @@ export class MonacoEditorComponent implements OnInit {
     });
   }
 
+  /*
+   * Controllers
+   */
 
-  toggleDebuggerTag() {
-    const line = this.editor.getPosition().lineNumber
+
+  public toggleDebuggerTag() {
+    const line = this.editor.getPosition().lineNumber ?? 1;
     // this.oldDecoration = this.editor.deltaDecorations(this.oldDecoration, []);
-    const decorations = this.editor.getModel().getLineDecorations(line)
+    const decorations = this.editor.getModel().getLineDecorations(line);
 
     if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
-      this.oldDecorationDebugTag = this.editor.deltaDecorations(this.oldDecorationDebugTag, [])
+      this.oldDecorationDebugTag = this.editor.deltaDecorations(this.oldDecorationDebugTag, []);
     } else {
       this.oldDecorationDebugTag = this.editor.deltaDecorations([], [...decorations, {
           range: new monaco.Range(line, 1, line, 1),
@@ -91,7 +98,7 @@ export class MonacoEditorComponent implements OnInit {
   /**
    * Devuelve una lista de las lineas marcadas con la tag de debug
    */
-  getListOfTags(): { line: number, content: string }[] {
+  public getListOfTags(): { line: number, content: string }[] {
     const vectorOfInstructions: { line: number, content: string }[] = []
     const lineCount = this.editor.getModel().getLineCount()
 
@@ -111,7 +118,7 @@ export class MonacoEditorComponent implements OnInit {
   /**
    * Itera linea por linea a traves del documento
    */
-  debugNextLine() {
+  public debugNextLine() {
     const lineCount = this.editor.getModel().getLineCount()
     this.iteratorLine = this.iteratorLine % lineCount === 0 ? 1 : this.iteratorLine + 1;
     this.printLine(this.iteratorLine)
@@ -120,7 +127,7 @@ export class MonacoEditorComponent implements OnInit {
   /**
    * Este método busca las lineas marcadas como debug y va iterando en ellas
    */
-  debugNextLineWithTag() {
+  public debugNextLineWithTag() {
     const listOfTags = this.getListOfTags();
     const listOfTags_filter = listOfTags.filter(value => value.line > this.iteratorLine)
     this.iteratorLine = listOfTags_filter.length > 0 ? listOfTags_filter.shift().line : 1;
@@ -129,6 +136,7 @@ export class MonacoEditorComponent implements OnInit {
 
   /**
    * Este método pinta una linea en concreto de rojo
+   *
    * @param line
    * @private
    */

@@ -25,7 +25,7 @@ export class IDEView implements OnInit {
   }
 
   getListOfTags() {
-    this.monacoEditorComponent.getListOfTags();
+    console.log(this.monacoEditorComponent.getListOfTags());
   }
 
   toggleDebugger() {

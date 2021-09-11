@@ -40,8 +40,8 @@
           <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
         </div>
         <div id="ide-sidebar">
-          <button (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>
-          <button (click)="getListOfTags()">Get List Of Tags</button>
+          <!--          <button (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>-->
+          <!--          <button (click)="getListOfTags()">Get List Of Tags</button>-->
         </div>
       </div>
 
@@ -50,7 +50,8 @@
   </div>
 
   <div class="card-footer">
-    Footer
+    <button type="button" class="btn btn-success" (click)="getListOfTags()">Get List Of Tags</button>
+    <button type="button" class="btn btn-success" (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>
   </div>
 </div>
 <!-- /.card -->

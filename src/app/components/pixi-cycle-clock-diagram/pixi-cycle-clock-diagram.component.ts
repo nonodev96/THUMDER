@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { ArrowDirection, CycleType, PixiTHUMDER_CycleClockDiagram, defaultCycle } from "./PixiTHUMDER_CycleClockDiagram";
+import { ArrowDirection, PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 
 @Component({
   selector: 'thumder-pixi-cycle-clock-diagram',
@@ -27,10 +27,10 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
     });
 
     this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-    this.cycleClockDiagram.addInstruction("hello");
-    this.cycleClockDiagram.addInstruction("hello");
-    this.cycleClockDiagram.addInstruction("hello");
-    this.cycleClockDiagram.addInstruction("hello");
+    this.cycleClockDiagram.addInstruction("inst 1");
+    this.cycleClockDiagram.addInstruction("inst 2");
+    this.cycleClockDiagram.addInstruction("inst 3");
+    this.cycleClockDiagram.addInstruction("inst 4");
 
     this.pApp.stage.addChild(this.cycleClockDiagram.draw());
   }
@@ -45,7 +45,8 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    // event.target.innerWidth;
+    event.preventDefault();
+    event.stopPropagation();
     this.resize();
   }
 
