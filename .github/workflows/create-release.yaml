@@ -27,7 +27,7 @@ jobs:
       - name: Create Release
         id: create_release
         run: |
-          gh release create "${{ env.VERSION }}" -n "${{ env.MESSAGE }}" -t "${{ env.NAME }}"
+          gh release create "${{ env.VERSION }}" -n "${{ env.MESSAGE }}" -t "${{ env.NAME }}" -p
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: "v${{ steps.package_version.outputs.version }}"
