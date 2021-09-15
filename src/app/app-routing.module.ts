@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
+import { PublicRoutes } from "./types";
+
 import { PageNotFoundComponent } from './__shared/components';
 
 // _layouts
@@ -28,6 +31,10 @@ import { IndexView } from "./views/_index/index.view";
 import { LandingView } from "./views/landing/landing.view";
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
+import { DebugView } from "./views/debug/debug-view";
+
+
+
 
 const routes: Routes = [
   {
@@ -73,6 +80,11 @@ const routes: Routes = [
     path: "forgot-password",
     component: ForgotPasswordView,
     canActivate: [NoAuthGuard]
+  },
+  {
+    path: "debug",
+    component: DebugView,
+    canActivate: []
   },
   // no layout views
   {path: "landing", component: LandingView},

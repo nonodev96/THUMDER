@@ -1,11 +1,20 @@
 {
+  "CONFIG": {
+    "LANG": "Idioma"
+  },
+  "TOAST": {
+    "ACCESS_DENIED": "Acceso denegado",
+    "LOGIN_FALSE": "Necesitas iniciar sesión",
+    "TITLE_SERVER_DOWN": "Error en el socket",
+    "MESSAGE_SERVER_DOWN": "El servidor está desconectado"
+  },
   "PAGES": {
     "HOME": {
-      "TITLE": "App funciona !",
+      "TITLE": "App funciona!",
       "GO_TO_DETAIL": "Ir al detalle"
     },
     "DETAIL": {
-      "TITLE": "Página en detalle !",
+      "TITLE": "Página en detalle!",
       "BACK_TO_HOME": "Volver a la página home"
     }
   },

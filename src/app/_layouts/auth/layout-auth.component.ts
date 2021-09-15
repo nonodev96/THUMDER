@@ -9,19 +9,12 @@ import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
   templateUrl: "./layout-auth.component.html",
 })
 export class LayoutAuthComponent implements OnInit {
-  constructor(@Inject(DOCUMENT) private document: Document, private toast: ToastrService) {
+  constructor(@Inject(DOCUMENT)
+              private document: Document) {
   }
 
   ngOnInit(): void {
     this.document.body.className = "dx-viewport";
   }
 
-  showToast() {
-    const config: Partial<IndividualConfig> = {
-      progressBar: true,
-      progressAnimation: 'decreasing',
-      closeButton: true
-    }
-    this.toast.success('Hello world!', 'Toastr fun!', config);
-  }
 }

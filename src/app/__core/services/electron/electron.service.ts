@@ -18,7 +18,6 @@ export class ElectronService {
 
   private _electron: any;
 
-
   constructor() {
     // Conditional imports
     if (ElectronService.isElectron()) {
@@ -30,7 +29,6 @@ export class ElectronService {
       this.fs = window.require('fs');
     }
   }
-
 
   private get electron(): any {
     if (!this._electron) {
@@ -47,9 +45,9 @@ export class ElectronService {
     return window && window.process && window.process.type;
   }
 
-  public static isServer(): boolean {
+  public static get isServer(): boolean {
     let location_href = window.location.href;
-    let localhost = 'http://localhost:4200/';
+    let localhost = '//localhost';
     return location_href.includes(localhost);
   }
 
@@ -92,5 +90,17 @@ export class ElectronService {
 
   public get shell(): Electron.Shell {
     return this.electron ? this.electron.shell : null;
+  }
+
+  public static get debug(): Object {
+    return {
+      'isElectronApp': ElectronService.isElectronApp,
+      'isServer': ElectronService.isServer,
+      'isMacOS': ElectronService.isMacOS,
+      'isWindows': ElectronService.isWindows,
+      'isLinux': ElectronService.isLinux,
+      'isX86': ElectronService.isX86,
+      'isX64': ElectronService.isX64
+    };
   }
 }

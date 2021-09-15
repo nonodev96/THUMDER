@@ -1,9 +1,9 @@
-<ng-container *ngIf="menuItemsLoaded|async">
+<ng-container *ngIf="menuItemsLoaded | async">
   <ol class="breadcrumb float-sm-right">
-    <ng-container *ngFor="let item of menuItems; let i=index">
-      <li
-        [ngClass]="{'breadcrumb-item': true, 'active': menuItems.length == i && i != 0}">{{item.label['breadcrumb']}}</li>
-      <!--    <span>{{item|json}}</span>-->
+    <ng-container *ngFor="let item of menuItems; let i = index">
+      <li [ngClass]="{'breadcrumb-item': true, 'active': menuItems.length == i && i != 0}">
+        {{item.label['breadcrumb']}}
+      </li>
     </ng-container>
   </ol>
 </ng-container>

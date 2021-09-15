@@ -3,6 +3,8 @@ import { FileSystemStorageService } from './file-system-storage.service';
 import FileSystemItem from 'devextreme/file_management/file_system_item';
 import UploadInfo from 'devextreme/file_management/upload_info';
 import { Utils } from '../../../Utils';
+import { SocketProviderConnectService } from "../socket-provider-connect.service";
+import { TasksService } from "../tasks/tasks.service";
 
 export class FileItem extends FileSystemItem {
   // items: FileItem[];
@@ -21,7 +23,8 @@ export class FileSystemService {
   // disk: Map<string, FileItem[]>;
   items: FileItem[] = [];
 
-  constructor(private serviceStorage: FileSystemStorageService) {
+  constructor(private serviceStorage: FileSystemStorageService,
+              private tasksService: TasksService) {
     const documents = new FileItem('', true, []);
     documents.name = 'Documents';
     documents.key = Utils.uuidv4();
@@ -65,29 +68,37 @@ export class FileSystemService {
     });
   }
 
-  createFile(item: FileSystemItem, extension: string): boolean {
-    const {path, pathKeys} = item;
-    const newItem = new FileSystemItem(path, false, pathKeys);
-    newItem.key = Utils.uuidv4();
-    newItem.name = 'New file - ' + newItem.key + extension;
-    const index = this.items.push(newItem);
-    // return true if can insert
-    return index > -1;
+  async createFile(item: FileSystemItem, extension: string): Promise<boolean> {
+    return new Promise(async (resolve) => {
+      const {path, pathKeys} = item;
+      const newItem = new FileSystemItem(path, false, pathKeys);
+      newItem.key = Utils.uuidv4();
+      newItem.name = 'New file - ' + newItem.key + extension;
+      const index = this.items.push(newItem);
+      // return true if can insert
+      if (index > -1) {
+        const response = await this.tasksService.createNewFile()
+      }
+      resolve(index > -1);
+    })
   }
 
-  updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: 'navPane' | 'itemView'): boolean {
-    let items;
-    if (viewArea === 'navPane') {
-      items = [directory];
-    } else {
-      items = selectedItems;
-    }
-    items.forEach((item) => {
-      if (item.dataItem) {
-        item.dataItem.category = newCategory;
+  updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: 'navPane' | 'itemView'): Promise<boolean> {
+    return new Promise(resolve => {
+      let items;
+      if (viewArea === 'navPane') {
+        items = [directory];
+      } else {
+        items = selectedItems;
       }
-    });
-    return items.length > 0;
+      items.forEach((item) => {
+        if (item.dataItem) {
+          item.dataItem.category = newCategory;
+        }
+      });
+
+      resolve(items.length > 0);
+    })
   }
 
   renameItem(item: FileSystemItem, name: string): PromiseLike<FileItem> | any {

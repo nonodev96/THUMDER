@@ -27,7 +27,7 @@
   "main": "main.js",
   "private": true,
   "scripts": {
-    "ws:server": "node ../THUMDER_Ontology/example/server/dist/main.js",
+    "ws:server": "node ../THUMDER-ontology/example/server/dist/main.js",
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
