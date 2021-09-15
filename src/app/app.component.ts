@@ -4,10 +4,8 @@ import { NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from '@ngx-translate/core';
 
 import { ElectronService } from './__core/services';
-import { SocketProviderConnectService } from "./__core/services/socket-provider-connect.service";
 
 import { DEFAULT_LANG } from "./CONSTAST";
-import { TasksService } from "./__core/services/tasks/tasks.service";
 
 @Component({
   selector: 'app-root',
@@ -24,7 +22,11 @@ export class AppComponent {
     private translate: TranslateService,
     private router: Router
   ) {
-    this.lang = localStorage.getItem('lang') ?? DEFAULT_LANG
+    if (localStorage.getItem('lang') === null) {
+      localStorage.setItem('lang', DEFAULT_LANG)
+    }
+    this.lang = localStorage.getItem('lang')
+
     this.translate.setDefaultLang(this.lang);
 
     console.log("ElectronService.debug: ", ElectronService.debug)

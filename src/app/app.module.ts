@@ -72,6 +72,8 @@ import { RegisterView } from "./views/register/register.view";
 
 // Index
 import { IndexView } from "./views/_index/index.view";
+import { RegistersView } from './views/_auth/registers/registers.view';
+import { CodeView } from './views/_auth/code/code.view';
 
 
 // AoT requires an exported function for factories
@@ -104,6 +106,9 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     DocsView,
 
     DebugView,
+
+    RegistersView,
+    CodeView,
   ],
   imports: [
 

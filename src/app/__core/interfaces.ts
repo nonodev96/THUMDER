@@ -1,5 +1,5 @@
 export class Int32 {
-  private _value: number;
+  private _value: number = 0;
 
   get value(): number {
     return this._value;
@@ -12,7 +12,7 @@ export class Int32 {
 }
 
 export class Float32 {
-  private _value: number;
+  private _value: number = 0;
 
   get value(): number {
     return this._value;
@@ -25,7 +25,7 @@ export class Float32 {
 }
 
 export class Double64 {
-  private _value: number;
+  private _value: number = 0;
 
   get value(): number {
     return this._value;

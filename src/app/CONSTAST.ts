@@ -96,6 +96,18 @@ export const PUBLIC_ROUTES: PublicRoutes = {
           data: {breadcrumb: 'Memory'}
         },
         {
+          path: "code",
+          routerLink: '/auth/code',
+          displayName: 'Code',
+          data: {breadcrumb: 'Code'}
+        },
+        {
+          path: "registers",
+          routerLink: '/auth/registers',
+          displayName: 'Registers',
+          data: {breadcrumb: 'Registers'}
+        },
+        {
           path: "profile",
           routerLink: '/auth/profile',
           displayName: 'Profile',

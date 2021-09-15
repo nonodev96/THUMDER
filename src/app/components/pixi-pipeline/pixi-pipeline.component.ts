@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { PixiTHUMER_Pipeline } from "./PixiTHUMER_Pipeline";
+import { MachineService } from "../../__core/machine/machine.service";
 
 @Component({
   selector: 'thumder-pixi-pipeline',
@@ -12,9 +13,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
   @ViewChild('pixiContainer') pixiContainer;
   public pApp: PIXI.Application;
 
-  public pipeline: PixiTHUMER_Pipeline;
-
-  constructor() {
+  constructor(private machine: MachineService) {
     let width = 1600;
     let height = 900;
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -26,8 +25,8 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
       resolution: 1,
     });
 
-    this.pipeline = new PixiTHUMER_Pipeline()
-    this.pApp.stage.addChild(this.pipeline.draw());
+    this.machine.pipeline = new PixiTHUMER_Pipeline()
+    this.pApp.stage.addChild(this.machine.pipeline.draw());
   }
 
   ngOnInit(): void {
@@ -51,28 +50,28 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     switch (event.key) {
       case '1':
-        this.pipeline.update_IF_text("Prueba")
+        this.machine.pipeline.update_IF_text("Prueba")
         break;
       case '2':
-        this.pipeline.update_ID_text("Prueba")
+        this.machine.pipeline.update_ID_text("Prueba")
         break;
       case '3':
-        this.pipeline.update_intEX_text("Prueba")
+        this.machine.pipeline.update_intEX_text("Prueba")
         break;
       case '4':
-        this.pipeline.update_faddEX_text("Prueba")
+        this.machine.pipeline.update_faddEX_text("Prueba")
         break;
       case '5':
-        this.pipeline.update_fmultEX_text("Prueba")
+        this.machine.pipeline.update_fmultEX_text("Prueba")
         break;
       case '6':
-        this.pipeline.update_fdivEX_text("Prueba")
+        this.machine.pipeline.update_fdivEX_text("Prueba")
         break;
       case '7':
-        this.pipeline.update_MEM_text("Prueba")
+        this.machine.pipeline.update_MEM_text("Prueba")
         break;
       case '8':
-        this.pipeline.update_WB_text("Prueba")
+        this.machine.pipeline.update_WB_text("Prueba")
         break;
     }
   }
