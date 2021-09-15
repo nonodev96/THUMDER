@@ -8,7 +8,4 @@ export class UtilityService {
   constructor() {
   }
 
-  TestingFunction() {
-  }
-
 }

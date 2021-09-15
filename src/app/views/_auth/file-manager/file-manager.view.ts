@@ -78,9 +78,6 @@ export class FileManagerView implements OnInit {
       ],
       onItemClick: this.onContextMenuItemClick.bind(this)
     };
-    this.tasksService.getSubjectCreateNewFile().subscribe((value) => {
-      console.log("value", value)
-    })
   }
 
   ngOnInit(): void {
@@ -130,7 +127,7 @@ export class FileManagerView implements OnInit {
     console.log($event);
   }
 
-  onContextMenuItemClick($event) {
+  async onContextMenuItemClick($event) {
     const {itemData, viewArea, fileSystemItem} = $event
     let updated = false;
     const extension = itemData.options ? itemData.options.extension : undefined;
@@ -138,10 +135,10 @@ export class FileManagerView implements OnInit {
 
     const directory = fileSystemItem || this.fileManager.instance.getCurrentDirectory();
     if (extension) {
-      updated = this.fileSystemService.createFile(directory, extension);
+      updated = await this.fileSystemService.createFile(directory, extension);
     } else if (category !== undefined) {
       const selectedItems = this.fileManager.instance.getSelectedItems();
-      updated = this.fileSystemService.updateCategory(directory, selectedItems, category, viewArea);
+      updated = await this.fileSystemService.updateCategory(directory, selectedItems, category, viewArea);
     }
     if (updated) {
       this.fileManager.instance.refresh().then(() => {
@@ -155,5 +152,9 @@ export class FileManagerView implements OnInit {
 
   log() {
     console.log(this.fileItems)
+  }
+
+  debug() {
+    this.tasksService.debug()
   }
 }

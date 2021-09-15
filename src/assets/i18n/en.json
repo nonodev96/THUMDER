@@ -1,4 +1,13 @@
 {
+  "CONFIG": {
+    "LANG": "Language"
+  },
+  "TOAST": {
+    "ACCESS_DENIED": "Access denied",
+    "LOGIN_FALSE": "You need to login",
+    "TITLE_SERVER_DOWN": "Error in socket",
+    "MESSAGE_SERVER_DOWN": "The server is down"
+  },
   "PAGES": {
     "HOME": {
       "TITLE": "App works !",

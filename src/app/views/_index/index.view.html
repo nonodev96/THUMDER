@@ -13,7 +13,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Dashboard v2</h1>
+            <h1 class="m-0 text-dark">{{ 'PAGES.HOME.TITLE' | translate }}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -29,22 +29,21 @@
     <!-- Main content -->
     <section class="content">
 
-      <ul>
-        <li><a [routerLink]="['/']">dashboard</a></li>
-        <li><a [routerLink]="['/auth/profile']">auth/profile</a></li>
-        <li><a [routerLink]="['/auth/ide']">IDE</a></li>
-        <li><a [routerLink]="['/auth/file-manager']">File manager</a></li>
-        <li><a [routerLink]="['/auth/cycle-clock-diagram']"> Cycle Clock Diagram </a></li>
-        <li><a [routerLink]="['/auth/pipeline']"> Pipeline </a></li>
-        <li><a [routerLink]="['/login']">Login</a></li>
-        <li><a [routerLink]="['/register']">Register</a></li>
-        <li><a [routerLink]="['/forgot-password']">Forgot password</a></li>
-        <li><a [routerLink]="['']"></a></li>
-        <li><a [routerLink]="['']"></a></li>
-        <li><a [routerLink]="['']"></a></li>
-        <li><a [routerLink]="['']"></a></li>
-        <li><a [routerLink]="['']"></a></li>
-      </ul>
+      <ng-container [ngTemplateOutlet]="recursiveMenu" [ngTemplateOutletContext]="{ $implicit: [PRIVATE_ROUTES] }">
+      </ng-container>
+      <ng-template #recursiveMenu let-menus>
+        <ul>
+          <li *ngFor="let menu of menus;">
+            <a href="{{ menu.routerLink }}" title="{{menu.displayName}}" (click)="onItemSelected($event, menu)">
+              {{menu.displayName}} </a>
+            <ng-template [ngIf]="menu.children">
+              <ng-container [ngTemplateOutlet]="recursiveMenu"
+                            [ngTemplateOutletContext]="{ $implicit: menu.children }"></ng-container>
+            </ng-template>
+          </li>
+        </ul>
+      </ng-template>
+
     </section>
     <!-- /.content -->
   </div>

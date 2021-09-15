@@ -14,23 +14,20 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0 text-dark">{{ 'PAGES.HOME.TITLE' | translate }}</h1>
-          </div><!-- /.col -->
+          </div>
           <div class="col-sm-6">
-
 
             <thumder-breadcrumb></thumder-breadcrumb>
 
-          </div><!-- /.col -->
+          </div>
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+    </div><!-- /.content-header -->
 
 
     <!-- Main content -->
     <section class="content">
 
-      <button (click)="showToast()">Show Toast</button>
       <!-- THIS IS THE IMPORTANT -->
       <router-outlet></router-outlet>
 
