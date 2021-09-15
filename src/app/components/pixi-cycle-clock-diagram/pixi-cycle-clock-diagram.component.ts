@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { ArrowDirection, PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
+import { ArrowDirection } from "./PixiTHUMDER_CycleClockDiagram";
+import { MachineService } from "../../__core/machine/machine.service";
 
 @Component({
   selector: 'thumder-pixi-cycle-clock-diagram',
@@ -10,13 +11,11 @@ import { ArrowDirection, PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_Cyc
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
 
   @ViewChild('pixiContainer') pixiContainer;
-  public pApp: PIXI.Application;
+  pApp: PIXI.Application;
 
-  public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
-
-  constructor() {
-    let width = 1600;
-    let height = 900;
+  constructor(private machine: MachineService) {
+    const width = 1600;
+    const height = 900;
     PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
     PIXI.settings.SORTABLE_CHILDREN = true;
     this.pApp = new PIXI.Application({
@@ -26,13 +25,12 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
       resolution: 1,
     });
 
-    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-    this.cycleClockDiagram.addInstruction("inst 1");
-    this.cycleClockDiagram.addInstruction("inst 2");
-    this.cycleClockDiagram.addInstruction("inst 3");
-    this.cycleClockDiagram.addInstruction("inst 4");
+    this.machine.cycleClockDiagram.addInstruction("inst 1");
+    this.machine.cycleClockDiagram.addInstruction("inst 2");
+    this.machine.cycleClockDiagram.addInstruction("inst 3");
+    this.machine.cycleClockDiagram.addInstruction("inst 4");
 
-    this.pApp.stage.addChild(this.cycleClockDiagram.draw());
+    this.pApp.stage.addChild(this.machine.cycleClockDiagram.draw());
   }
 
   ngOnInit(): void {
@@ -44,7 +42,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event) {
+  onResize(event: any) {
     event.preventDefault();
     event.stopPropagation();
     this.resize();
@@ -56,19 +54,19 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     switch (event.key) {
       case 'i':
-        this.cycleClockDiagram.moveBottom();
+        this.machine.cycleClockDiagram.moveBottom();
         break;
       case 'k':
-        this.cycleClockDiagram.moveTop();
+        this.machine.cycleClockDiagram.moveTop();
         break;
       case 'j':
-        this.cycleClockDiagram.moveRight();
+        this.machine.cycleClockDiagram.moveRight();
         break;
       case 'l':
-        this.cycleClockDiagram.moveLeft();
+        this.machine.cycleClockDiagram.moveLeft();
         break;
       case 'n':
-        this.cycleClockDiagram.nextStep();
+        this.machine.cycleClockDiagram.nextStep();
         break;
       case 'm':
         this.nextStepX10()
@@ -79,46 +77,46 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public moveBottom() {
-    this.cycleClockDiagram.moveBottom();
+  moveBottom() {
+    this.machine.cycleClockDiagram.moveBottom();
   }
 
-  public moveTop() {
-    this.cycleClockDiagram.moveTop();
+  moveTop() {
+    this.machine.cycleClockDiagram.moveTop();
   }
 
-  public moveRight() {
-    this.cycleClockDiagram.moveRight();
+  moveRight() {
+    this.machine.cycleClockDiagram.moveRight();
   }
 
-  public moveLeft() {
-    this.cycleClockDiagram.moveLeft();
+  moveLeft() {
+    this.machine.cycleClockDiagram.moveLeft();
   }
 
-  public nextStep() {
-    this.cycleClockDiagram.nextStep();
+  nextStep() {
+    this.machine.cycleClockDiagram.nextStep();
   }
 
-  public nextStepX10() {
+  nextStepX10() {
     for (let i = 0; i < 10; i++) {
-      this.cycleClockDiagram.nextStep();
+      this.machine.cycleClockDiagram.nextStep();
     }
   }
 
-  public addArrow(instructionArrow: ArrowDirection) {
-    this.cycleClockDiagram.addArrow(instructionArrow);
+  addArrow(instructionArrow: ArrowDirection) {
+    this.machine.cycleClockDiagram.addArrow(instructionArrow);
   }
 
-  public reset() {
-    this.cycleClockDiagram.reset();
+  reset() {
+    this.machine.cycleClockDiagram.reset();
   }
 
   private resize() {
-    let width = this.pixiContainer.nativeElement.offsetWidth;
+    const width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
     height = height === 0 ? 900 : height
     this.pApp.renderer.resize(width, height);
-    this.cycleClockDiagram.borderTop.width = width;
-    this.cycleClockDiagram.borderLeft.height = height;
+    this.machine.cycleClockDiagram.borderTop.width = width;
+    this.machine.cycleClockDiagram.borderLeft.height = height;
   }
 }

@@ -19,11 +19,10 @@ export class MemoryComponent implements OnInit {
 
   dataSource = new TableVirtualScrollDataSource(DATA);
 
-  constructor(public machineService: MachineService) {
+  constructor(public machine: MachineService) {
   }
 
   ngOnInit(): void {
-    this.machineService.memory.set(1, 3)
   }
 
 }

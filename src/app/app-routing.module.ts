@@ -32,8 +32,8 @@ import { LandingView } from "./views/landing/landing.view";
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
 import { DebugView } from "./views/debug/debug-view";
-
-
+import { CodeView } from "./views/_auth/code/code.view";
+import { RegistersView } from "./views/_auth/registers/registers.view";
 
 
 const routes: Routes = [
@@ -62,6 +62,8 @@ const routes: Routes = [
       {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
       {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Pipeline'}},
       {path: "memory", component: MemoryComponent, data: {breadcrumb: 'Memory'}},
+      {path: "code", component: CodeView, data: {breadcrumb: 'Code'}},
+      {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
       {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
     ],

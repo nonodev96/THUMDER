@@ -43,12 +43,12 @@
 
               <ng-container matColumnDef="decimal">
                 <th *matHeaderCellDef>Name</th>
-                <td *matCellDef="let element">{{machineService.memory.get(element.id)}}</td>
+                <td *matCellDef="let element">{{machine.memory[element.id].value}}</td>
               </ng-container>
 
               <ng-container matColumnDef="hexadecimal">
                 <th *matHeaderCellDef>Name 2</th>
-                <td *matCellDef="let element">{{ (machineService.memory.get(element.id) | hexadecimal | uppercase) }}</td>
+                <td *matCellDef="let element">{{ (machine.memory[element.id].value | hexadecimal | uppercase) }}</td>
               </ng-container>
 
             </table>
