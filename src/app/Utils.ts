@@ -1,4 +1,40 @@
+import { MachineService } from "./__core/machine/machine.service";
+
 export namespace Utils {
+
+  export function initSynchronousFactory() {
+    return () => {
+      console.log('initSynchronousFactory');
+      // run initialization code here
+    };
+  }
+
+  export function initLongRunningFactory() {
+    return () => {
+      return new Promise((resolve) => {
+        console.log('initLongRunningFactory - started');
+        setTimeout(() => {
+          console.log('initLongRunningFactory - completed');
+          resolve();
+        }, 5000);
+      });
+    };
+  }
+
+  export function initWithDependencyFactory(service: Object) {
+    return () => {
+      console.log('initWithDependencyFactory - started');
+      return service
+    };
+  }
+
+  export function initServicesFactory(service: Object | any) {
+    return async () => {
+      console.log('initServicesFactory - started');
+      const config = await service.loadConfiguration();
+      console.log('initServicesFactory - completed');
+    };
+  }
 
   export function isNullOrUndefined(object: any): boolean {
     return object == null || false;

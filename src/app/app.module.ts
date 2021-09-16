@@ -5,6 +5,9 @@ import { RouterModule } from "@angular/router";
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { MatTableModule } from "@angular/material/table";
+import { MatSortModule } from "@angular/material/sort";
+import { ScrollingModule } from "@angular/cdk/scrolling";
 
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -27,8 +30,6 @@ import { CookieService } from "ngx-cookie-service";
 
 // Services
 import { UtilityService } from "./__core/utility.service";
-import { TasksService } from './__core/services/tasks/tasks.service';
-import { SocketProviderConnectService } from "./__core/services/socket-provider-connect.service";
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -74,6 +75,9 @@ import { RegisterView } from "./views/register/register.view";
 import { IndexView } from "./views/_index/index.view";
 import { RegistersView } from './views/_auth/registers/registers.view';
 import { CodeView } from './views/_auth/code/code.view';
+import { MachineService } from "./__core/machine/machine.service";
+import { Utils } from "./Utils";
+import { MemoryView } from './views/_auth/memory/memory.view';
 
 
 // AoT requires an exported function for factories
@@ -95,20 +99,19 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ForgotPasswordView,
     IndexView,
     LandingView,
-    ProfileView,
 
+
+    CodeView,
+    DocsView,
+    FileManagerView,
     IDEView,
+    MemoryView,
     CycleClockDiagramView,
     PipelineView,
-
-    FileManagerView,
-
-    DocsView,
+    ProfileView,
+    RegistersView,
 
     DebugView,
-
-    RegistersView,
-    CodeView,
   ],
   imports: [
 
@@ -134,7 +137,6 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       }
     }),
     MonacoEditorModule,
-    TableVirtualScrollModule,
 
 
     DxToolbarModule,
@@ -147,6 +149,11 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AngularFireModule.initializeApp(AppConfig.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
+
+    MatSortModule,
+    MatTableModule,
+    ScrollingModule,
+    TableVirtualScrollModule
   ],
   providers: [
     // {
@@ -157,7 +164,14 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     AuthGuard,
     NoAuthGuard,
     UtilityService,
-    CookieService
+    CookieService,
+    MachineService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: Utils.initServicesFactory,
+      deps: [MachineService],
+      multi: true
+    }
   ],
   exports: [],
   bootstrap: [

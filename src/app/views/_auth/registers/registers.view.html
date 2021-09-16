@@ -1,96 +1,265 @@
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Fixed Header Table</h3>
-
-        <div class="card-tools">
-          <div class="input-group input-group-sm" style="width: 150px;">
-            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-            <div class="input-group-append">
-              <button type="submit" class="btn btn-default">
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <!-- /.card-header -->
-      <div class="card-body table-responsive p-0" style="height: 500px;">
-        <div class="row">
-          <div class="col-6">
-            <table class="table table-head-fixed text-nowrap">
-              <thead>
-              <tr>
-                <th>Registers</th>
-                <th>Value</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let key of list_first_registers">
-                <td>{{key}}</td>
-                <td>{{machine.registers[key].value | hexadecimal | uppercase | leftPadFilter: 32}}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col-6">
-            <table class="table table-head-fixed text-nowrap">
-              <thead>
-              <tr>
-                <th>D</th>
-                <th>D-Value</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let key of this.machine.registers.D; let i=index">
-                <td>D-{{i}}</td>
-                <td>0x{{ machine.registers.D[i].value | hexadecimal | uppercase | leftPadFilter: 64 }}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-6">
-            <table class="table table-head-fixed text-nowrap">
-              <thead>
-              <tr>
-                <th>D</th>
-                <th>D-Value</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let key of this.machine.registers.R; let i=index">
-                <td>R-{{i}}</td>
-                <td>0x{{ machine.registers.R[i].value | hexadecimal | uppercase | leftPadFilter: 32 }}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="col-6">
-            <table class="table table-head-fixed text-nowrap">
-              <thead>
-              <tr>
-                <th>F</th>
-                <th>F-Value</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let key of this.machine.registers.F; let i=index">
-                <td>F-{{i}}</td>
-                <td>0x{{ machine.registers.F[i].value | hexadecimal | uppercase | leftPadFilter: 32 }}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-      <!-- /.card-body -->
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Registers Control</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" (click)="test()">
+        <i class="fas fa-bug"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="refresh()">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="remove">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-    <!-- /.card -->
+  </div>
+  <!-- /.card-header -->
+  <!--
+  <div class="card-body">
+     <div class="form-inline">
+       <div class="input-group" data-widget="sidebar-search">
+         <input class="form-control" type="search" placeholder="Search" aria-label="Search"
+                (keyup)="applyFilter($any($event.target).value)">
+         <div class="input-group-append">
+           <button class="btn btn-sidebar">
+             <i class="fas fa-search fa-fw"></i>
+           </button>
+         </div>
+       </div>
+     </div>
+  </div>
+  -->
+
+  <div class="card-body">
+    <cdk-virtual-scroll-viewport tvsItemSize="48"
+                                 headerHeight="56"
+                                 style="height: 400px;"
+                                 class="wrapper-table mat-elevation-z2">
+      <table mat-table matSort [dataSource]="dataSource" [ngClass]="'table-layout'">
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <ng-container matColumnDef="Register">
+          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ element }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Decimal">
+          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ machine.registers[element].value }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Hexadecimal">
+          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ (machine.registers[element].value | hexadecimal | uppercase) }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Binary">
+          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <td mat-cell class="width-70" *matCellDef="let element">
+            0x{{ (machine.registers[element].value | binary | leftPadFilter: 32) }}
+          </td>
+        </ng-container>
+      </table>
+    </cdk-virtual-scroll-viewport>
   </div>
 </div>
+
+<div class="card collapsed-card">
+  <div class="card-header">
+    <h3 class="card-title">Registers Integer</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <cdk-virtual-scroll-viewport tvsItemSize="48"
+                                 headerHeight="56"
+                                 style="height: 400px;"
+                                 class="wrapper-table mat-elevation-z2">
+      <table mat-table matSort [dataSource]="dataSourceR" [ngClass]="'table-layout'">
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <ng-container matColumnDef="Register">
+          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            R-{{ element }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Decimal">
+          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ machine.registers.R[element].value }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Hexadecimal">
+          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ (machine.registers.R[element].value | hexadecimal | uppercase) }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Binary">
+          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <td mat-cell class="width-70" *matCellDef="let element">
+            0x{{ (machine.registers.R[element].value | binary | leftPadFilter: 32) }}
+          </td>
+        </ng-container>
+      </table>
+
+    </cdk-virtual-scroll-viewport>
+  </div>
+</div>
+
+<div class="card collapsed-card">
+  <div class="card-header">
+    <h3 class="card-title">Registers Float</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <cdk-virtual-scroll-viewport tvsItemSize="48"
+                                 headerHeight="56"
+                                 style="height: 400px;"
+                                 class="wrapper-table mat-elevation-z2">
+      <table mat-table matSort [dataSource]="dataSourceF" [ngClass]="'table-layout'">
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <ng-container matColumnDef="Register">
+          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            F-{{ element }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Decimal">
+          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ machine.registers.F[element].value }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Hexadecimal">
+          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ (machine.registers.F[element].value | hexadecimal | uppercase) }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Binary">
+          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <td mat-cell class="width-70" *matCellDef="let element">
+            0x{{ (machine.registers.F[element].value | binary | leftPadFilter: 32) }}
+          </td>
+        </ng-container>
+      </table>
+
+    </cdk-virtual-scroll-viewport>
+  </div>
+</div>
+
+<div class="card collapsed-card">
+  <div class="card-header">
+    <h3 class="card-title">Registers Double</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <cdk-virtual-scroll-viewport tvsItemSize="48"
+                                 headerHeight="56"
+                                 style="height: 400px;"
+                                 class="wrapper-table mat-elevation-z2">
+      <table mat-table matSort [dataSource]="dataSourceD" [ngClass]="'table-layout'">
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <ng-container matColumnDef="Register">
+          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            D-{{ element }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Decimal">
+          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ machine.registers.D[element].value }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Hexadecimal">
+          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ (machine.registers.D[element].value | hexadecimal | uppercase) }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Binary">
+          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <td mat-cell class="width-70" *matCellDef="let element">
+            0x{{ (machine.registers.D[element].value | binary | leftPadFilter: 64) }}
+          </td>
+        </ng-container>
+      </table>
+
+    </cdk-virtual-scroll-viewport>
+  </div>
+</div>
+
+<!--
+<div class="card collapsed-card">
+
+  <div class="card-header">
+    <h3 class="card-title">Registers Double</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body table-responsive p-0" style="height: 500px;">
+    <table class="table table-head-fixed text-nowrap">
+      <thead>
+      <tr>
+        <th class="width-10">D</th>
+        <th class="width-10">D-Value B(10)</th>
+        <th class="width-10">D-Value B(16)</th>
+        <th class="width-70">D-Value B(2)</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let key of this.machine.registers.D; let i=index">
+        <td>D-{{i}}</td>
+        <td>{{ machine.registers.D[i].value }}</td>
+        <td>{{ machine.registers.D[i].value | hexadecimal | uppercase }}</td>
+        <td>0x{{ machine.registers.D[i].value | binary | leftPadFilter: 64 }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+-->

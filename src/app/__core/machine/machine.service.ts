@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Double64, Float32, Int32} from "../interfaces";
-import {PixiTHUMER_Pipeline} from "../../components/pixi-pipeline/PixiTHUMER_Pipeline";
-import {PixiTHUMDER_CycleClockDiagram} from "../../components/pixi-cycle-clock-diagram/PixiTHUMDER_CycleClockDiagram";
+import { Injectable } from '@angular/core';
+import { Double64, Float32, Int32 } from "../interfaces";
+import { PixiTHUMER_Pipeline } from "../../components/pixi-pipeline/PixiTHUMER_Pipeline";
+import { PixiTHUMDER_CycleClockDiagram } from "../../components/pixi-cycle-clock-diagram/PixiTHUMDER_CycleClockDiagram";
 
 
 class Registers {
@@ -80,7 +80,11 @@ export class MachineService {
    * The Singleton's constructor should always be private to prevent direct
    * construction calls with the `new` operator.
    */
-  private constructor() {
+  constructor() {
+    this.loadConfiguration()
+  }
+
+  public loadConfiguration() {
     this.registers = new Registers()
     // this.memory = new Map<number, number>();
     this.memory = Array<Int32>(32736)
