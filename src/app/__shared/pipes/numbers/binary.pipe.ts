@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'hexadecimal'
+  name: 'binary'
 })
 export class BinaryPipe implements PipeTransform {
 
