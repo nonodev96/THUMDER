@@ -18,7 +18,7 @@ import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { DxFileManagerModule } from "devextreme-angular";
-import { MemoryComponent } from './memory/memory.component';
+// import { MemoryComponent } from './memory/memory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { MatTableModule } from "@angular/material/table";
@@ -49,7 +49,7 @@ import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
     // xTerm
     XtermComponent,
     BreadcrumbComponent,
-    MemoryComponent,
+    // MemoryComponent,
 
 
   ],
