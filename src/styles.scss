@@ -50,6 +50,23 @@ html, body {
   width: 70%;
 }
 
+.full-width-table {
+  width: 100%;
+}
+.mat-column-Register {
+  width: 20% !important;
+}
+.mat-column-Decimal {
+  width: 20% !important;
+}
+.mat-column-Hexadecimal {
+  width: 20% !important;
+}
+.mat-column-Binary {
+  width: 40% !important;
+}
+
+
 .wrapper-table {
   height: 300px;
 }
@@ -57,4 +74,5 @@ html, body {
 .table-layout {
   width: 100%;
   table-layout: fixed;
+  font-family: monospace;
 }
