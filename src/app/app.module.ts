@@ -78,9 +78,13 @@ import { CodeView } from './views/_auth/code/code.view';
 import { MachineService } from "./__core/machine/machine.service";
 import { Utils } from "./Utils";
 import { MemoryView } from './views/_auth/memory/memory.view';
-
-
 // AoT requires an exported function for factories
+
+import * as PIXI from "pixi.js";
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
+PIXI.settings.SORTABLE_CHILDREN = true;
+
+
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }

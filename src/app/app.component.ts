@@ -26,20 +26,8 @@ export class AppComponent {
       localStorage.setItem('lang', DEFAULT_LANG)
     }
     this.lang = localStorage.getItem('lang')
-
     this.translate.setDefaultLang(this.lang);
-
     console.log("ElectronService.debug: ", ElectronService.debug)
-    if (ElectronService.isElectronApp) {
-      console.log('Run in electron');
-      // window.$ = require('jquery');
-      // console.log(process.env);
-      // console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
-      // console.log('NodeJS childProcess', this.electronService.childProcess);
-    }
-    if (ElectronService.isServer) {
-      console.log('Run in browser');
-    }
 
     // clean the route class when you travel and end de navigation
     router.events.subscribe((route) => {
