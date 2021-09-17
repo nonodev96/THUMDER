@@ -16,8 +16,6 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
   constructor(private machine: MachineService) {
     let width = 1600;
     let height = 900;
-    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-    PIXI.settings.SORTABLE_CHILDREN = true;
     this.pApp = new PIXI.Application({
       width: width,
       height: height,

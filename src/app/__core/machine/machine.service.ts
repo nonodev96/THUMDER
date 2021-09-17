@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Double64, Float32, Int32 } from "../interfaces";
-import { PixiTHUMER_Pipeline } from "../../components/pixi-pipeline/PixiTHUMER_Pipeline";
-import { PixiTHUMDER_CycleClockDiagram } from "../../components/pixi-cycle-clock-diagram/PixiTHUMDER_CycleClockDiagram";
+import {Injectable} from '@angular/core';
+import {Double64, Float32, Int32} from "../interfaces";
+import {PixiTHUMER_Pipeline} from "../../components/pixi-pipeline/PixiTHUMER_Pipeline";
+import {PixiTHUMDER_CycleClockDiagram} from "../../components/pixi-cycle-clock-diagram/PixiTHUMDER_CycleClockDiagram";
 
 
 class Registers {
@@ -50,15 +50,12 @@ class Registers {
     this.R = Array<Int32>(32)
     this.F = Array<Float32>(32)
     this.D = Array<Double64>(16)
-    const i32 = new Int32()
-    const f32 = new Float32()
-    const d64 = new Double64()
     for (let i = 0; i < 32; i++) {
-      this.R[i] = i32;
-      this.F[i] = f32;
+      this.R[i] = new Int32();
+      this.F[i] = new Float32();
     }
     for (let i = 0; i < 16; i++) {
-      this.D[i] = d64;
+      this.D[i] = new Double64();
     }
   }
 }
@@ -81,12 +78,7 @@ export class MachineService {
    * construction calls with the `new` operator.
    */
   constructor() {
-    this.loadConfiguration()
-  }
-
-  public loadConfiguration() {
     this.registers = new Registers()
-    // this.memory = new Map<number, number>();
     this.memory = Array<Int32>(32736)
     this.code = Array<Int32>(32764);
 
@@ -99,6 +91,25 @@ export class MachineService {
       i32.value = item
       this.memory.push(i32);
     }
+  }
+
+  public loadConfiguration(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.registers = new Registers()
+      this.memory = Array<Int32>(32736)
+      this.code = Array<Int32>(32764);
+
+      this.pipeline = new PixiTHUMER_Pipeline()
+      this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram()
+
+      const bigArray = Array.from({length: 1000}, (v, i) => i);
+      const i32 = new Int32()
+      for (const item of bigArray) {
+        i32.value = item
+        this.memory.push(i32);
+      }
+      resolve(true)
+    })
   }
 
   /**

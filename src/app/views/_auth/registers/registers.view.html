@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" id="registers_Control_id">
   <div class="card-header">
     <h3 class="card-title">Registers Control</h3>
     <div class="card-tools">
@@ -19,23 +19,6 @@
       </button>
     </div>
   </div>
-  <!-- /.card-header -->
-  <!--
-  <div class="card-body">
-     <div class="form-inline">
-       <div class="input-group" data-widget="sidebar-search">
-         <input class="form-control" type="search" placeholder="Search" aria-label="Search"
-                (keyup)="applyFilter($any($event.target).value)">
-         <div class="input-group-append">
-           <button class="btn btn-sidebar">
-             <i class="fas fa-search fa-fw"></i>
-           </button>
-         </div>
-       </div>
-     </div>
-  </div>
-  -->
-
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
@@ -73,12 +56,15 @@
   </div>
 </div>
 
-<div class="card">
+<div class="card" id="registers_R_id">
   <div class="card-header">
     <h3 class="card-title">Registers Integer</h3>
     <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl" (click)="prepareModal('R')">
+        <i class="fas fa-edit"></i>
+      </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-plus"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -124,10 +110,13 @@
   </div>
 </div>
 
-<div class="card">
+<div class="card" id="registers_F_id">
   <div class="card-header">
     <h3 class="card-title">Registers Float</h3>
     <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl" (click)="prepareModal('F')">
+        <i class="fas fa-edit"></i>
+      </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
         <i class="fas fa-minus"></i>
       </button>
@@ -175,10 +164,13 @@
   </div>
 </div>
 
-<div class="card">
+<div class="card" id="registers_D_id">
   <div class="card-header">
     <h3 class="card-title">Registers Double</h3>
     <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl" (click)="prepareModal('D')">
+        <i class="fas fa-edit"></i>
+      </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
         <i class="fas fa-minus"></i>
       </button>
@@ -263,3 +255,50 @@
   </div>
 </div>
 -->
+
+
+<div class="modal fade" id="modal-RegistersControl" tabindex="-1" role="dialog"
+     aria-labelledby="modalTitle-Control" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle-Control">Edit Register {{registerToEdit}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="">
+
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- select -->
+              <div class="form-group">
+                <label>Select Register Integer {{registerToEdit}}</label>
+                <select class="form-control" (change)="selectOption($event.target)">
+                  <ng-template ngFor let-item [ngForOf]="createRange(dataRegisters[registerToEdit].registers)" let-currentElementIndex="index">
+                    <option [value]="currentElementIndex">{{registerToEdit}} {{currentElementIndex}}</option>
+                  </ng-template>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="itemSelectedEditId">Register {{registerToEdit}}-{{itemSelected}}</label>
+                <input type="number" class="form-control" id="itemSelectedEditId" placeholder="Enter Value"
+                       value="{{ this.machine.registers[registerToEdit][itemSelected].value }}">
+              </div>
+              <p>Hexadecimal: <strong>{{ (machine.registers[registerToEdit][itemSelected].value | hexadecimal | uppercase) }}</strong></p>
+              <p>Binary: <strong>0x{{ (machine.registers[registerToEdit][itemSelected].value | binary | leftPadFilter: dataRegisters[registerToEdit].size) }}</strong></p>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

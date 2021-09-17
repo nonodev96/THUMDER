@@ -12,9 +12,7 @@ export namespace Utils {
   export function initLongRunningFactory() {
     return () => {
       return new Promise((resolve) => {
-        console.log('initLongRunningFactory - started');
         setTimeout(() => {
-          console.log('initLongRunningFactory - completed');
           resolve();
         }, 5000);
       });
@@ -28,11 +26,11 @@ export namespace Utils {
     };
   }
 
-  export function initServicesFactory(service: Object | any) {
+  export function initServicesFactory(service: MachineService | any) {
     return async () => {
-      console.log('initServicesFactory - started');
-      const config = await service.loadConfiguration();
-      console.log('initServicesFactory - completed');
+      // console.log('initServicesFactory - started')
+      const finish = await service.loadConfiguration();
+      // console.log('initServicesFactory - completed ', finish)
     };
   }
 

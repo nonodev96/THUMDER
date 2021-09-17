@@ -16,8 +16,6 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
   constructor(private machine: MachineService) {
     const width = 1600;
     const height = 900;
-    PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-    PIXI.settings.SORTABLE_CHILDREN = true;
     this.pApp = new PIXI.Application({
       width: width,
       height: height,
