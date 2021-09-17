@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {MachineService} from "../../../__core/machine/machine.service";
 
 @Component({
   selector: 'app-memory',
@@ -7,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MemoryView implements OnInit {
 
-  constructor() {
+  constructor(public machine: MachineService) {
   }
 
   ngOnInit(): void {
+    this.machine.registers.R[1].value = -2147483646
+  }
+
+  change() {
+    this.machine.registers.R[1].value--;
   }
 
 }
