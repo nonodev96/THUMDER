@@ -6,4 +6,6 @@ interface NodeModule {
 interface Window {
   process: any;
   require: any;
+  jQuery: any;
+  $: any;
 }

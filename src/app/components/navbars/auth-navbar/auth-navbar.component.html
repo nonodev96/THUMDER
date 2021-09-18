@@ -54,7 +54,20 @@
 
       </ul>
     </li>
+    <ng-container *ngIf="authService.isLoggedIn">
 
+      <li class="nav-item d-none d-sm-inline-block">
+        <button class="nav-link" (click)="next()">
+          <i class="fas fa-angle-right"></i>
+        </button>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <button class="nav-link" (click)="end()">
+          <i class="fas fa-angle-double-right"></i>
+        </button>
+      </li>
+
+    </ng-container>
   </ul>
 
   <!-- SEARCH FORM -->

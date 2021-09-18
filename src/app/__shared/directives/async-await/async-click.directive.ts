@@ -1,29 +1,89 @@
-import { Directive, HostBinding, HostListener, Input } from '@angular/core';
-import { from, Observable } from "rxjs";
-import { take } from "rxjs/operators";
+import {
+  Directive,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  Renderer2,
+  ElementRef
+} from '@angular/core';
+
+import { Subscription, Observable } from 'rxjs';
+
+const noop = () => {
+};
 
 @Directive({
-  selector: 'a[appAsyncAwait]'
+  selector: '[asyncClick]'
 })
-export class AsyncAwaitDirective {
+export class AsyncClickDirective implements OnChanges, OnDestroy {
+  private pending = true;
+  private disabled = false;
+  private subscription: Subscription;
 
-  @HostBinding('disabled')
-  public waiting = false;
+  @Input('asyncClick') clickFunc;
 
-  @Input()
-  appClickWait: () => Observable<any> | Promise<any> = async() => void 0;
+  constructor(
+    private _renderer: Renderer2,
+    private _elementRef: ElementRef
+  ) {
+    this.pending = true;
+    this.disabled = false;
+    console.log(this._elementRef)
+  }
 
   @HostListener('click')
-  clickEvent() {
-    this.waiting = true;
+  onClick() {
+    console.log('click')
+    if (typeof this.clickFunc === 'function') {
+      this.subscribe(this.clickFunc());
+    }
+  }
 
-    from(this.appClickWait()).pipe(take(1)).subscribe({
-      // subscribe: () => this.waiting = false,
-      complete: () => this.waiting = false,
-      error: (e) => {
-        console.error(e);
-        this.waiting = false;
-      }
-    })
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.pending) {
+      this.enable();
+    }
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
+  disable() {
+    this._renderer.setAttribute(
+      this._elementRef.nativeElement,
+      'disabled',
+      'true'
+    );
+  }
+
+  enable() {
+    this._renderer.removeAttribute(
+      this._elementRef.nativeElement,
+      'disabled'
+    );
+  }
+
+  subscribe(r) {
+    this.pending = true;
+    this.disable();
+    const enable = () => this.enable();
+    if (typeof r.subscribe === 'function') {
+      this.subscription = (<Observable<any>>r).subscribe({
+        next: noop,
+        complete: enable,
+        error: enable
+      })
+    } else if (typeof r.then === 'function') {
+      (<Promise<any>>r).then(enable).catch(enable);
+      this.subscription = null;
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }

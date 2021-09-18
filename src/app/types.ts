@@ -1,7 +1,9 @@
 declare global {
   interface Window {
-    $: any;
+    process: any;
+    require: any;
     jQuery: any;
+    $: any;
   }
 }
 export type PublicRoutes = {

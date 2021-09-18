@@ -2,8 +2,8 @@
   <div class="card-header">
     <h3 class="card-title">Registers Control</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" (click)="test()">
-        <i class="fas fa-bug"></i>
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl">
+        <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="refresh()">
         <i class="fas fa-sync-alt"></i>
@@ -48,7 +48,7 @@
         <ng-container matColumnDef="Binary">
           <th mat-header-cell *matHeaderCellDef>Binary</th>
           <td mat-cell class="width-70" *matCellDef="let element">
-            0x{{ (machine.registers[element].value | binary | leftPadFilter: 32) }}
+            {{ (machine.registers[element].value | binary: 32) }}
           </td>
         </ng-container>
       </table>
@@ -56,11 +56,65 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal-RegistersControl" tabindex="-1" role="dialog"
+     aria-labelledby="modalTitle-Control" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle-Control">Edit Register Control {{registerToEditControl}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="">
+
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- select -->
+              <div class="form-group">
+                <label>Select Register</label>
+                <select class="form-control" (change)="selectOptionRegisterControl($event.target)">
+                  <ng-template ngFor let-item [ngForOf]="list_REGISTERS" let-currentElementIndex="index">
+                    <option [value]="item">{{item}}</option>
+                  </ng-template>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="itemSelectedEditControlId">Register</label>
+                <input type="number" class="form-control" id="itemSelectedEditControlId" placeholder="Enter Value"
+                       (change)="changeControlRegister($event.target)"
+                       value="{{ this.machine.registers[registerToEditControl].value }}">
+              </div>
+              <p>Hexadecimal: <strong>{{ (machine.registers[registerToEditControl].value | hexadecimal | uppercase) }}</strong></p>
+              <p>Binary: <strong>{{ (machine.registers[registerToEditControl].value | binary: dataRegisters.DEFAULT.size) }}</strong></p>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+
+Registers vector
+
+-->
+
+
 <div class="card" id="registers_R_id">
   <div class="card-header">
     <h3 class="card-title">Registers Integer</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl" (click)="prepareModal('R')">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector" (click)="prepareModal('R')">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -101,7 +155,7 @@
         <ng-container matColumnDef="Binary">
           <th mat-header-cell *matHeaderCellDef>Binary</th>
           <td mat-cell class="width-70" *matCellDef="let element">
-            0x{{ (machine.registers.R[element].value | binary | leftPadFilter: 32) }}
+            {{ (machine.registers.R[element].value | binary: dataRegisters.R.size) }}
           </td>
         </ng-container>
       </table>
@@ -114,7 +168,7 @@
   <div class="card-header">
     <h3 class="card-title">Registers Float</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl" (click)="prepareModal('F')">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector" (click)="prepareModal('F')">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -155,7 +209,7 @@
         <ng-container matColumnDef="Binary">
           <th mat-header-cell *matHeaderCellDef>Binary</th>
           <td mat-cell class="width-70" *matCellDef="let element">
-            0x{{ (machine.registers.F[element].value | binary | leftPadFilter: 32) }}
+            {{ (machine.registers.F[element].value | binary: dataRegisters.F.size) }}
           </td>
         </ng-container>
       </table>
@@ -168,7 +222,7 @@
   <div class="card-header">
     <h3 class="card-title">Registers Double</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl" (click)="prepareModal('D')">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector" (click)="prepareModal('D')">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -209,7 +263,7 @@
         <ng-container matColumnDef="Binary">
           <th mat-header-cell *matHeaderCellDef>Binary</th>
           <td mat-cell class="width-70" *matCellDef="let element">
-            0x{{ (machine.registers.D[element].value | binary | leftPadFilter: 64) }}
+            {{ (machine.registers.D[element].value | binary: dataRegisters.D.size) }}
           </td>
         </ng-container>
       </table>
@@ -248,7 +302,7 @@
         <td>D-{{i}}</td>
         <td>{{ machine.registers.D[i].value }}</td>
         <td>{{ machine.registers.D[i].value | hexadecimal | uppercase }}</td>
-        <td>0x{{ machine.registers.D[i].value | binary | leftPadFilter: 64 }}</td>
+        <td>0x{{ machine.registers.D[i].value | binary: 64 }}</td>
       </tr>
       </tbody>
     </table>
@@ -256,13 +310,12 @@
 </div>
 -->
 
-
-<div class="modal fade" id="modal-RegistersControl" tabindex="-1" role="dialog"
-     aria-labelledby="modalTitle-Control" aria-hidden="true">
+<div class="modal fade" id="modal-RegistersVector" tabindex="-1" role="dialog"
+     aria-labelledby="modalTitle-RegistersVector" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle-Control">Edit Register {{registerToEdit}}</h5>
+        <h5 class="modal-title" id="modalTitle-RegistersVector">Edit Register {{registerToEdit}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -275,7 +328,7 @@
               <!-- select -->
               <div class="form-group">
                 <label>Select Register Integer {{registerToEdit}}</label>
-                <select class="form-control" (change)="selectOption($event.target)">
+                <select class="form-control" (change)="selectOptionRegisterVector($event.target)">
                   <ng-template ngFor let-item [ngForOf]="createRange(dataRegisters[registerToEdit].registers)" let-currentElementIndex="index">
                     <option [value]="currentElementIndex">{{registerToEdit}} {{currentElementIndex}}</option>
                   </ng-template>
@@ -288,10 +341,11 @@
               <div class="form-group">
                 <label for="itemSelectedEditId">Register {{registerToEdit}}-{{itemSelected}}</label>
                 <input type="number" class="form-control" id="itemSelectedEditId" placeholder="Enter Value"
+                       (change)="changeRegister($event.target)"
                        value="{{ this.machine.registers[registerToEdit][itemSelected].value }}">
               </div>
               <p>Hexadecimal: <strong>{{ (machine.registers[registerToEdit][itemSelected].value | hexadecimal | uppercase) }}</strong></p>
-              <p>Binary: <strong>0x{{ (machine.registers[registerToEdit][itemSelected].value | binary | leftPadFilter: dataRegisters[registerToEdit].size) }}</strong></p>
+              <p>Binary: <strong>{{ (machine.registers[registerToEdit][itemSelected].value | binary: dataRegisters[registerToEdit].size) }}</strong></p>
             </div>
           </div>
         </form>

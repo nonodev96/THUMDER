@@ -10,28 +10,41 @@ import { AuthDirective } from "./directives/auth/auth.directive";
 import { HexadecimalPipe } from "./pipes/numbers/hexadecimal.pipe";
 import { LeftPadFilterPipe } from "./pipes/filter/LeftPadFilter.pipe";
 import { BinaryPipe } from "./pipes/numbers/binary.pipe";
+import { AsyncClickDirective } from './directives/async-await/async-click.directive';
+import { AwaitClickDirective } from "./directives/async-await/await-click.directive";
 
 @NgModule({
-  declarations: [
-    PageNotFoundComponent,
-    WebviewDirective,
-    AuthDirective,
-    HexadecimalPipe,
-    BinaryPipe,
-    LeftPadFilterPipe
-  ],
   imports: [
-    CommonModule,
     TranslateModule,
+    CommonModule,
     FormsModule
   ],
-  exports: [
-    TranslateModule,
+  declarations: [
+    PageNotFoundComponent,
+
+    AsyncClickDirective,
+    AwaitClickDirective,
+    AuthDirective,
     WebviewDirective,
-    FormsModule,
-    HexadecimalPipe,
+
+    LeftPadFilterPipe,
     BinaryPipe,
-    LeftPadFilterPipe
+    HexadecimalPipe
+  ],
+  exports: [
+    FormsModule,
+    TranslateModule,
+
+    PageNotFoundComponent,
+
+    AsyncClickDirective,
+    AwaitClickDirective,
+    AuthDirective,
+    WebviewDirective,
+
+    LeftPadFilterPipe,
+    BinaryPipe,
+    HexadecimalPipe
   ]
 })
 export class SharedModule {
