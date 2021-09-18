@@ -10,23 +10,55 @@
       </button>
     </div>
   </div>
-
   <div class="card-body">
-    <button class="btn btn-primary" (click)="change()">
-      Change
-    </button>
-
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-      Launch demo modal
-    </button>
-
-
+    <cdk-virtual-scroll-viewport tvsItemSize="48"
+                                 headerHeight="56"
+                                 style="height: 800px;"
+                                 class="wrapper-table mat-elevation-z2">
+      <table mat-table matSort [dataSource]="dataSourceMemory" [ngClass]="'table-layout'">
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;"></tr>
+        <ng-container matColumnDef="Register">
+          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ element | leftPadFilter: 5 }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Decimal">
+          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ machine.memory[element].value }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Hexadecimal">
+          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ (machine.memory[element].value | hexadecimal | uppercase) }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Binary">
+          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <td mat-cell class="width-70" *matCellDef="let element">
+            {{ (machine.memory[element].value | binary: 32) }}
+          </td>
+        </ng-container>
+      </table>
+    </cdk-virtual-scroll-viewport>
   </div>
 </div>
 
 
+<button class="btn btn-primary" (click)="change()">
+  Change
+</button>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
 <!-- Modal -->
+<!-- TODO -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

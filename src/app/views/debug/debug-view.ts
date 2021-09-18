@@ -49,4 +49,11 @@ export class DebugView implements OnInit {
   debugLanguage(){
 
   }
+
+  getSomethingFromRemoteP = () => {
+    return new Promise((resolve) => {
+
+      resolve()
+    })
+  }
 }

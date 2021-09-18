@@ -28,6 +28,21 @@ import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
 
 
 @NgModule({
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    BrowserModule,
+    ScrollingModule,
+
+    // npm
+    MonacoEditorModule,
+    DxFileManagerModule,
+    TableVirtualScrollModule,
+    MatTableModule,
+
+    SharedModule
+  ],
   declarations: [
     // Aside
     AsideLeftComponent,
@@ -52,21 +67,6 @@ import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
     // MemoryComponent,
 
 
-  ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule,
-    BrowserModule,
-    ScrollingModule,
-
-    // npm
-    MonacoEditorModule,
-    DxFileManagerModule,
-    TableVirtualScrollModule,
-    MatTableModule,
-
-    SharedModule
   ],
   exports: [
     // Aside

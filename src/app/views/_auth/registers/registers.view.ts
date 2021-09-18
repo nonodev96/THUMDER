@@ -1,8 +1,7 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {MachineService} from "../../../__core/machine/machine.service";
-import {Int32} from 'app/__core/interfaces';
-import {TableVirtualScrollDataSource} from "ng-table-virtual-scroll";
-import {MatSort} from "@angular/material/sort";
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { MachineService } from "../../../__core/machine/machine.service";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { MatSort } from "@angular/material/sort";
 
 export const MACHINE_REGISTERS = [
   "PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"
@@ -26,8 +25,11 @@ export const MACHINE_REGISTERS_D = Array.from({length: 16}, (v, i) => (
 })
 export class RegistersView implements OnInit, AfterViewInit {
 
-  itemSelected = 0
-  registerToEdit: 'R' | 'F' | 'D' = 'R'
+  // items
+  itemSelected = 0;
+  registerToEditControl = 'PC';
+
+  registerToEdit: 'R' | 'F' | 'D' = 'R';
   dataRegisters = {
     'R': {
       registers: 32,
@@ -41,8 +43,13 @@ export class RegistersView implements OnInit, AfterViewInit {
       registers: 16,
       size: 64
     },
-  }
+    DEFAULT: {
+      registers: 32,
+      size: 32
+    }
+  };
 
+  list_REGISTERS = MACHINE_REGISTERS;
   displayedColumns = ['Register', 'Decimal', 'Hexadecimal', 'Binary'];
   dataSource = new TableVirtualScrollDataSource<string>(MACHINE_REGISTERS);
   dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R);
@@ -52,8 +59,6 @@ export class RegistersView implements OnInit, AfterViewInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(public machine: MachineService) {
-    machine.registers.R[12] = new Int32()
-    machine.registers.R[12].value = 12002
   }
 
   ngOnInit(): void {
@@ -68,6 +73,7 @@ export class RegistersView implements OnInit, AfterViewInit {
     }
   }
 
+  // TODO - remove?
   registerControl($event: Event) {
     document.getElementById('registerControlId')
   }
@@ -89,12 +95,28 @@ export class RegistersView implements OnInit, AfterViewInit {
     return new Array(number);
   }
 
-  selectOption(target: any) {
-    this.itemSelected = target.value;
-  }
-
   prepareModal(registerToEdit: 'R' | 'F' | 'D') {
     this.itemSelected = 0;
     this.registerToEdit = registerToEdit
+  }
+
+  selectOptionRegisterVector(target: any) {
+    this.itemSelected = target.value;
+  }
+
+  selectOptionRegisterControl(target: any) {
+    this.registerToEditControl = target.value
+  }
+
+  changeRegister(target: any) {
+    if (this.registerToEdit === 'R') {
+      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseInt(target.value)
+    } else {
+      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseFloat(target.value)
+    }
+  }
+
+  changeControlRegister(target: any) {
+    this.machine.registers[this.registerToEditControl].value = parseInt(target.value)
   }
 }

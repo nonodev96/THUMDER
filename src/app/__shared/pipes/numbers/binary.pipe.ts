@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
   name: 'binary'
@@ -6,7 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class BinaryPipe implements PipeTransform {
 
   transform(value: number, ...args: unknown[]): string {
-     return value.toString(2);
+    const toReturn = value >= 0 ? '0x' : '1x';
+    return toReturn + Math.abs(value).toString(2).padStart(<number>args[0] - 1, '0');
   }
 
 }

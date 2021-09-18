@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {Double64, Float32, Int32} from "../interfaces";
-import {PixiTHUMER_Pipeline} from "../../components/pixi-pipeline/PixiTHUMER_Pipeline";
-import {PixiTHUMDER_CycleClockDiagram} from "../../components/pixi-cycle-clock-diagram/PixiTHUMDER_CycleClockDiagram";
+import { Injectable } from '@angular/core';
+import { Double64, Float32, Int32 } from "../interfaces";
+import { PixiTHUMER_Pipeline } from "../../components/pixi-pipeline/PixiTHUMER_Pipeline";
+import { PixiTHUMDER_CycleClockDiagram } from "../../components/pixi-cycle-clock-diagram/PixiTHUMDER_CycleClockDiagram";
 
 
 class Registers {
@@ -30,26 +30,26 @@ class Registers {
   // code = Array<Int32>(32764)
   // memory = Array<Int32>(32736)
   constructor() {
-    this.PC = new Int32()
-    this.IMAR = new Int32()
-    this.IR = new Int32()
-    this.A = new Int32()
-    this.AHI = new Int32()
-    this.B = new Int32()
-    this.BHI = new Int32()
-    this.BTA = new Int32()
-    this.ALU = new Int32()
-    this.ALUHI = new Int32()
-    this.FPSR = new Int32()
-    this.DMAR = new Int32()
-    this.SDR = new Int32()
-    this.SDRHI = new Int32()
-    this.LDR = new Int32()
-    this.LDRHI = new Int32()
+    this.PC = new Int32();
+    this.IMAR = new Int32();
+    this.IR = new Int32();
+    this.A = new Int32();
+    this.AHI = new Int32();
+    this.B = new Int32();
+    this.BHI = new Int32();
+    this.BTA = new Int32();
+    this.ALU = new Int32();
+    this.ALUHI = new Int32();
+    this.FPSR = new Int32();
+    this.DMAR = new Int32();
+    this.SDR = new Int32();
+    this.SDRHI = new Int32();
+    this.LDR = new Int32();
+    this.LDRHI = new Int32();
 
-    this.R = Array<Int32>(32)
-    this.F = Array<Float32>(32)
-    this.D = Array<Double64>(16)
+    this.R = Array<Int32>(32);
+    this.F = Array<Float32>(32);
+    this.D = Array<Double64>(16);
     for (let i = 0; i < 32; i++) {
       this.R[i] = new Int32();
       this.F[i] = new Float32();
@@ -66,10 +66,10 @@ class Registers {
 export class MachineService {
 
   private static instance: MachineService
-  public registers: Registers
   // public memory: Map<number, number>;
-  public memory: Array<Int32>
-  public code: Array<Int32>
+  public registers: Registers = new Registers();
+  public memory: Array<Int32> = Array<Int32>(32736).fill(new Int32())
+  public code: Array<Int32> = Array<Int32>(32764).fill(new Int32())
   public pipeline: PixiTHUMER_Pipeline
   public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
 
@@ -78,36 +78,16 @@ export class MachineService {
    * construction calls with the `new` operator.
    */
   constructor() {
-    this.registers = new Registers()
-    this.memory = Array<Int32>(32736)
-    this.code = Array<Int32>(32764);
-
     this.pipeline = new PixiTHUMER_Pipeline()
     this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram()
-
-    const bigArray = Array.from({length: 1000}, (v, i) => i);
-    const i32 = new Int32()
-    for (const item of bigArray) {
-      i32.value = item
-      this.memory.push(i32);
-    }
   }
 
   public loadConfiguration(): Promise<boolean> {
     return new Promise((resolve) => {
-      this.registers = new Registers()
-      this.memory = Array<Int32>(32736)
-      this.code = Array<Int32>(32764);
 
       this.pipeline = new PixiTHUMER_Pipeline()
       this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram()
 
-      const bigArray = Array.from({length: 1000}, (v, i) => i);
-      const i32 = new Int32()
-      for (const item of bigArray) {
-        i32.value = item
-        this.memory.push(i32);
-      }
       resolve(true)
     })
   }
@@ -132,5 +112,17 @@ export class MachineService {
    */
   public someBusinessLogic() {
     console.log(this.registers.D[17])
+  }
+
+  next(): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(resolve, 2000)
+    })
+  }
+
+  end(): Promise<void> {
+    return new Promise(resolve => {
+      resolve()
+    })
   }
 }
