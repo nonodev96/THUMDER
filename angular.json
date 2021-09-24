@@ -62,12 +62,12 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
               "namedChunks": false,
               "aot": false,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": false,
+              "extractCss": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -84,17 +84,17 @@
             },
             "web": {
               "optimization": false,
-              "outputHashing": "none",
+              "outputHashing": "all",
               "sourceMap": true,
-              "extractCss": true,
-              "namedChunks": true,
-              "showCircularDependencies": true,
-              "aot": true,
-              "extractLicenses": false,
-              "statsJson": true,
-              "progress": true,
-              "vendorChunk": true,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
               "buildOptimizer": false,
+              "progress": true,
+              "statsJson": false,
+              "extractCss": true,
+              "showCircularDependencies": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -113,12 +113,12 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "extractCss": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -186,6 +186,37 @@
               "main.ts"
             ]
           }
+        },
+        "cypress-run": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "angular-electron:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-electron:serve:production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": true,
+            "headless": false
+          }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "angular-electron:serve",
+            "watch": true,
+            "headless": false
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-electron:serve:production"
+            }
+          }
         }
       }
     },
@@ -200,6 +231,39 @@
             "lintFilePatterns": [
               "e2e/**.ts"
             ]
+          }
+        },
+        "cypress-run": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "angular-electron-e2e:serve",
+            "configFile": "e2e/cypress.json"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-electron-e2e:serve:production"
+            }
+          }
+        },
+        "cypress-open": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "watch": true,
+            "headless": false,
+            "configFile": "e2e/cypress.json"
+          }
+        },
+        "e2e": {
+          "builder": "@cypress/schematic:cypress",
+          "options": {
+            "devServerTarget": "angular-electron-e2e:serve",
+            "watch": true,
+            "headless": false
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "angular-electron-e2e:serve:production"
+            }
           }
         }
       }

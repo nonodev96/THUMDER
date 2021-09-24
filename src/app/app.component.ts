@@ -16,16 +16,17 @@ export class AppComponent {
 
   lang: string;
 
-  constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private electronService: ElectronService,
-    private translate: TranslateService,
-    private router: Router
+  constructor(@Inject(DOCUMENT)
+              private document: Document,
+              private electronService: ElectronService,
+              private translate: TranslateService,
+              private router: Router
   ) {
     if (localStorage.getItem('lang') === null) {
       localStorage.setItem('lang', DEFAULT_LANG)
     }
     this.lang = localStorage.getItem('lang')
+    this.document.documentElement.lang = this.lang;
     this.translate.setDefaultLang(this.lang);
     console.log("ElectronService.debug: ", ElectronService.debug)
 

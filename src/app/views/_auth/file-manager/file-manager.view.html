@@ -1,5 +1,6 @@
 <dx-file-manager id="fileManager"
                  currentPath="Widescreen"
+                 *ngIf="show"
                  [fileSystemProvider]="customFileProvider"
                  [height]="height()"
                  (onContextMenuItemClick)="onContextMenuItemClick($event)"

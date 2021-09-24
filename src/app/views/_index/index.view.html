@@ -32,7 +32,7 @@
       <ng-container [ngTemplateOutlet]="recursiveMenu" [ngTemplateOutletContext]="{ $implicit: [PRIVATE_ROUTES] }">
       </ng-container>
       <ng-template #recursiveMenu let-menus>
-        <ul>
+        <ul *ngIf="menus.length>0">
           <li *ngFor="let menu of menus;">
             <a href="{{ menu.routerLink }}" title="{{menu.displayName}}" (click)="onItemSelected($event, menu)">
               {{menu.displayName}} </a>
@@ -50,59 +50,9 @@
   <!-- /.content-wrapper -->
 
   <!-- Control Sidebar -->
-  <app-aside-right></app-aside-right>
+  <!--  <app-aside-right></app-aside-right>-->
   <!-- /.control-sidebar -->
 
   <!-- Main Footer -->
-  <app-footer></app-footer>
+  <!--  <app-footer></app-footer>-->
 </div>
-
-<!--<div class="container">-->
-<!--  <div class="row">-->
-<!--    <div class="col-lg-12">-->
-<!--      <app-file-manager></app-file-manager>-->
-<!--      &lt;!&ndash;<dx-toolbar>-->
-<!--        <dxi-item location="before"-->
-<!--                  widget="dxButton"-->
-<!--                  [options]="backButtonOptions">-->
-<!--        </dxi-item>-->
-<!--        <dxi-item location="before"-->
-<!--                  widget="dxButton"-->
-<!--                  locateInMenu="auto"-->
-<!--                  [options]="refreshButtonOptions">-->
-<!--        </dxi-item>-->
-<!--        <dxi-item location="center"-->
-<!--                  widget="dxButton"-->
-<!--                  locateInMenu="never">-->
-<!--          <div *dxTemplate>-->
-<!--            <div class='toolbar-label'><b>Tom's Club</b> Products</div>-->
-<!--          </div>-->
-<!--        </dxi-item>-->
-<!--        <dxi-item location="after"-->
-<!--                  widget="dxSelectBox"-->
-<!--                  locateInMenu="auto"-->
-<!--                  [options]="selectBoxOptions">-->
-<!--        </dxi-item>-->
-<!--        <dxi-item location="after"-->
-<!--                  widget="dxButton"-->
-<!--                  locateInMenu="auto"-->
-<!--                  [options]="addButtonOptions">-->
-<!--        </dxi-item>-->
-<!--        <dxi-item widget="dxButton"-->
-<!--                  locateInMenu="always"-->
-<!--                  [options]="saveButtonOptions">-->
-<!--        </dxi-item>-->
-<!--        <dxi-item widget="dxButton"-->
-<!--                  locateInMenu="always"-->
-<!--                  [options]="printButtonOptions">-->
-<!--        </dxi-item>-->
-<!--        <dxi-item widget="dxButton"-->
-<!--                  locateInMenu="always"-->
-<!--                  [options]="settingsButtonOptions">-->
-<!--        </dxi-item>-->
-<!--      </dx-toolbar>-->
-<!--      <dx-list id="products" [dataSource]="productsStore">-->
-<!--      </dx-list>&ndash;&gt;-->
-<!--    </div>-->
-<!--  </div>-->
-<!--</div>-->

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-config',
-  templateUrl: './config.component.html',
-  styleUrls: ['./config.component.scss']
+  templateUrl: './config.view.html',
+  styleUrls: ['./config.view.scss']
 })
-export class ConfigComponent implements OnInit {
+export class ConfigView implements OnInit {
 
   constructor() { }
 

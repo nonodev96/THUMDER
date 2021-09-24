@@ -22,6 +22,7 @@ import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cy
 import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "./views/_auth/profile/profile.view";
 import { RegistersView } from "./views/_auth/registers/registers.view";
+import { ConfigView } from "./views/_auth/config/config.view";
 
 // no _layouts views
 import { DebugView } from "./views/debug/debug-view";
@@ -67,6 +68,7 @@ const routes: Routes = [
       {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
       {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
+      {path: "config", component: ConfigView, data: {breadcrumb: 'Config'}},
     ],
   },
   {

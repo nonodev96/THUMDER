@@ -3,6 +3,7 @@ const electronPath = require('electron'); // Require Electron from the binaries 
 const path = require('path');
 
 export default function setup(): void {
+
   beforeEach(async function () {
     this.app = new Application({
       // Your electron path can be any binary

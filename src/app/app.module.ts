@@ -81,7 +81,7 @@ import { MemoryView } from './views/_auth/memory/memory.view';
 // AoT requires an exported function for factories
 
 import * as PIXI from "pixi.js";
-import { ConfigComponent } from './views/_auth/config/config/config.component';
+import { ConfigView } from './views/_auth/config/config.view';
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
 
@@ -118,7 +118,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
     DebugView,
 
-    ConfigComponent,
+    ConfigView,
   ],
   imports: [
 
@@ -172,6 +172,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     NoAuthGuard,
     UtilityService,
     CookieService,
+/*
     MachineService,
     {
       provide: APP_INITIALIZER,
@@ -179,6 +180,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
       deps: [MachineService],
       multi: true
     }
+ */
   ],
   exports: [],
   bootstrap: [

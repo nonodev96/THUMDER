@@ -1,22 +1,27 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { User } from "../interfaces";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { ElectronService } from "../services";
 import { Router } from "@angular/router";
-import firebase from 'firebase'
-import 'firebase/auth'
+import { Subscription } from "rxjs";
+import firebase from 'firebase/app';
 import UserCredential = firebase.auth.UserCredential;
-import GoogleAuthProvider = firebase.auth.GoogleAuthProvider;
-import GithubAuthProvider = firebase.auth.GithubAuthProvider;
+// import GoogleAuthProvider = firebase.auth.GoogleAuthProvider();
+// import GithubAuthProvider = firebase.auth.GithubAuthProvider();
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class AuthService {
+export class AuthService implements OnInit, OnDestroy {
   userData: User; // Save logged in user data
-
+  private subscriptions$ = new Subscription();
+  // afs
+  // afAuth
+  // ngZone
+  // router
+  // electronService
   constructor(
     public afs: AngularFirestore,   // Inject Firestore service
     public afAuth: AngularFireAuth, // Inject Firebase auth service
@@ -24,18 +29,29 @@ export class AuthService {
     public router: Router,
     public electronService: ElectronService
   ) {
+    // this.afAuth.auth.setPersistence('none');
     /* Saving user data in localstorage when
     logged in and setting up null when logged out */
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.userData = user;
-        localStorage.setItem('user', JSON.stringify(this.userData));
-        JSON.parse(localStorage.getItem('user'));
-      } else {
-        localStorage.setItem('user', null);
-        JSON.parse(localStorage.getItem('user'));
-      }
-    })
+    this.subscriptions$.add(
+      this.afAuth.authState.subscribe(user => {
+        if (user) {
+          this.userData = user;
+          localStorage.setItem('user', JSON.stringify(this.userData));
+          JSON.parse(localStorage.getItem('user'));
+        } else {
+          localStorage.setItem('user', null);
+          JSON.parse(localStorage.getItem('user'));
+        }
+      })
+    )
+  }
+
+  ngOnInit() {
+    // this.afAuth.auth.setPersistence('none')
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions$.unsubscribe()
   }
 
   // Sign in with email/password
@@ -90,12 +106,12 @@ export class AuthService {
 
   // Sign in with Google
   GoogleAuth(): Promise<void> {
-    return this.AuthLogin(new GoogleAuthProvider());
+    return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
   }
 
   // Sign in with Google
   GithubAuth(): Promise<void> {
-    return this.AuthLogin(new GithubAuthProvider());
+    return this.AuthLogin(new firebase.auth.GithubAuthProvider());
   }
 
   // Auth logic to run auth providers
@@ -142,7 +158,9 @@ export class AuthService {
             }
             resolve(true)
           })
-        }
+      } else {
+        reject("Error you can't login in electron app")
+      }
 
     }));
   }

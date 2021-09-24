@@ -65,21 +65,23 @@ class Registers {
 })
 export class MachineService {
 
-  private static instance: MachineService
+  private static instance: MachineService;
   // public memory: Map<number, number>;
   public registers: Registers = new Registers();
-  public memory: Array<Int32> = Array<Int32>(32736).fill(new Int32())
-  public code: Array<Int32> = Array<Int32>(32764).fill(new Int32())
-  public pipeline: PixiTHUMER_Pipeline
-  public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
+  // public memory: Array<Int32> = [...new Array(32736)].map(() => new Int32());
+  // public code: Array<Int32> = [...new Array(32764)].map(() => new Int32());
+  public memory: Array<Int32> = Array<Int32>(32736).fill(new Int32());
+  public code: Array<Int32> = Array<Int32>(32764).fill(new Int32());
+  public pipeline: PixiTHUMER_Pipeline;
+  public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
 
-  /**
-   * The Singleton's constructor should always be private to prevent direct
-   * construction calls with the `new` operator.
-   */
+  step = -1;
+  playB = false;
+  interval;
+
   constructor() {
-    this.pipeline = new PixiTHUMER_Pipeline()
-    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram()
+    this.pipeline = new PixiTHUMER_Pipeline();
+    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
   }
 
   public loadConfiguration(): Promise<boolean> {
@@ -114,13 +116,35 @@ export class MachineService {
     console.log(this.registers.D[17])
   }
 
-  next(): Promise<void> {
+  async play() {
     return new Promise(resolve => {
-      setTimeout(resolve, 2000)
+
+        this.playB = true;
+        // this.interval = setInterval(() => {
+        //   this.step++;
+        // },1000)
+
+      resolve()
     })
   }
 
-  end(): Promise<void> {
+  async pause() {
+    return new Promise(resolve => {
+
+      this.playB = false;
+      clearInterval(this.interval);
+
+      resolve()
+    })
+  }
+
+  async next(): Promise<void> {
+    return new Promise(resolve => {
+      resolve()
+    })
+  }
+
+  async end(): Promise<void> {
     return new Promise(resolve => {
       resolve()
     })
