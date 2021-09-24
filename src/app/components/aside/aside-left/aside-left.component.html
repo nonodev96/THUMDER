@@ -6,7 +6,7 @@
          alt="AdminLTE Logo"
          class="brand-image img-circle elevation-3"
          style="opacity: .8">
-    <span class="brand-text font-weight-light">THUMDER</span>
+    <span class="brand-text font-weight-light" id="title-app">THUMDER</span>
   </a>
 
   <!-- Sidebar -->
@@ -14,7 +14,7 @@
     <!-- Sidebar user (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        <img src="assets/img/admin-lte/img/user2-160x160.jpg" class="img-circle elevation-2"
+        <img src="https://avatars.githubusercontent.com/u/23743639" class="img-circle elevation-2"
              alt="User Image">
       </div>
       <div class="info">
@@ -24,9 +24,9 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <li class="nav-header">Admin</li>
-        <li class="nav-item has-treeview">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" data-accordion="false" role="menu">
+        <li role="menuitem" class="nav-header">Admin</li>
+        <li role="menuitem" class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
             <p>
@@ -34,9 +34,9 @@
               <i class="fas fa-angle-left right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview" role="menu">
 
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/admin']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Admin</p>
@@ -46,60 +46,60 @@
           </ul>
         </li>
 
-        <li class="nav-header">Auth</li>
-        <li class="nav-item has-treeview">
+        <li role="menuitem" class="nav-header">Auth</li>
+        <li role="menuitem" class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
-            <p>
+            <p id="ComponentsID">
               Components
               <i class="fas fa-angle-left right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview" role="menu">
 
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/file-manager']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>File-manager</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/ide']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>IDE</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/cycle-clock-diagram']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Cycle clock diagram</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/pipeline']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Pipeline</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/memory']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Memory</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/registers']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Registers</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/profile']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Profile</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/documentation']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Documentation</p>
@@ -108,8 +108,8 @@
           </ul>
         </li>
 
-        <li class="nav-header">Externs</li>
-        <li class="nav-item has-treeview">
+        <li role="menuitem" class="nav-header">Externs</li>
+        <li role="menuitem" class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
             <p>
@@ -117,21 +117,21 @@
               <i class="fas fa-angle-left right"></i>
             </p>
           </a>
-          <ul class="nav nav-treeview">
+          <ul class="nav nav-treeview" role="menu">
 
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/login']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Login</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/register']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Register</p>
               </a>
             </li>
-            <li class="nav-item">
+            <li role="menuitem" class="nav-item">
               <a [routerLink]="['/forgot-password']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Forgot password</p>

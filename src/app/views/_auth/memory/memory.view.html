@@ -21,7 +21,7 @@
         <ng-container matColumnDef="Register">
           <th mat-header-cell *matHeaderCellDef>Register</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ element | leftPadFilter: 5 }}
+            {{ '' + element | leftPadFilter: 5 }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
@@ -59,7 +59,8 @@
 
 <!-- Modal -->
 <!-- TODO -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -69,7 +70,36 @@
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <form action="">
+
+          <div class="row">
+            <div class="col-sm-12">
+              <!-- select -->
+              <div class="form-group">
+                <label for="itemSelectedEditMemoryId">Select Register</label>
+                <input type="number" class="form-control" id="itemSelectedEditMemoryId" placeholder="Enter Value"
+                       (change)="changeRegisterMemoryID($event.target)"
+                       value="{{ this.machine.memory[registerMemoryToEdit].value }}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label for="itemSelectedEditControlId">Register</label>
+                <input type="number" class="form-control" id="itemSelectedEditControlId" placeholder="Enter Value"
+                       (change)="changeMemory($event.target)"
+                       min="0" max="{{this.machine.memory.length}}"
+                       value="{{ this.machine.memory[registerMemoryToEdit].value }}">
+              </div>
+              <p>Hexadecimal:
+                <strong>{{ (machine.memory[registerMemoryToEdit].value | hexadecimal | uppercase) }}</strong></p>
+              <p>Binary:
+                <strong>{{ (machine.memory[registerMemoryToEdit].value | binary: 32) }}</strong>
+              </p>
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -44,12 +44,20 @@ YES! You can do it! Just by importing your library in npm dependencies section (
 
 ## E2E Testing
 
-E2E Test scripts can be found in `e2e` folder.
+E2E Test scripts can be found in `e2e` and `cypress` folder.
 
+### Electron e2e
 
-| Command       | Description              |
-| --------------- | -------------------------- |
-| `npm run e2e` | Execute end to end tests |
+| Command         | Description                         |
+| --------------- | ----------------------------------- |
+| `npm run e2e`   | Execute end to end tests of electron|
+
+### Server e2e
+| Command                | Description                                        |
+| ---------------------- | -------------------------------------------------- |
+| `npm run ng:server`    | Start the server                                   |
+| `npm run cypress:open` | Open cypress app and configure the commands        |
+| `npm run cypress:run`  | Run tests of cypress                               |
 
 Note: To make it work behind a proxy, you can add this proxy exception in your terminal
 `export {no_proxy,NO_PROXY}="127.0.0.1,localhost"`

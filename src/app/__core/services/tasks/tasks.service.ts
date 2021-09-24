@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { ACLMessage, AID, CoreAgentsClient, CreateFile, CreateFolder, Ontology, Performative } from "thumder-ontology";
 import { TaskContainer } from "thumder-ontology/dist/Utils/Types";
 import {
@@ -6,19 +6,25 @@ import {
   Task_CreateFile_RequestInitiator
 } from "../../../_tasks/Tasks";
 import { SocketProviderConnectService } from "../socket-provider-connect.service";
+import { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class TasksService {
+export class TasksService implements OnDestroy {
 
   private coreAgentsClient: CoreAgentsClient;
+  private subscription = new Subscription();
 
   constructor(private socketProviderConnectService: SocketProviderConnectService) {
-    this.socketProviderConnectService.connectObservable.subscribe((connect) => {
+    this.subscription = this.socketProviderConnectService.connectObservable.subscribe((connect) => {
       console.log('tarda mucho', connect)
       this.coreAgentsClient = new CoreAgentsClient(<any>this.socketProviderConnectService.socket.ioSocket);
     })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe()
   }
 
   debug() {

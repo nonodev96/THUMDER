@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DOCUMENT } from "@angular/common";
 import { NavigationExtras, Router } from "@angular/router";
 import { TasksService } from "../../../__core/services/tasks/tasks.service";
@@ -36,21 +36,54 @@ export type FileMenuOptions = {
   templateUrl: './file-manager.view.html',
   styleUrls: ['./file-manager.view.scss']
 })
-export class FileManagerView implements OnInit {
+export class FileManagerView implements OnInit, OnDestroy {
   @ViewChild(DxFileManagerComponent, {static: false})
   fileManager: DxFileManagerComponent;
-
 
   fileItems: FileSystemItem[] = [];
   newFileMenuOptions: FileMenuOptions;
   changeCategoryMenuOptions: FileMenuOptions;
   customFileProvider: CustomFileSystemProvider;
+  show: boolean
 
   constructor(@Inject(DOCUMENT)
               private document: Document,
               private router: Router,
               private tasksService: TasksService,
               private fileSystemService: FileSystemService) {
+  }
+
+  ngOnInit(): void {
+    this.document.body.classList.add('login-page');
+    this.show = true;
+
+    this.fileSystemService.initialize().then((canInit) => {
+      if (canInit) {
+        this.customFileProvider = new CustomFileSystemProvider({
+          getItems: (parentDirectory) => {
+            return this.fileSystemService.getItems(parentDirectory);
+          },
+          createDirectory: (parentDirectory, name) => {
+            return this.fileSystemService.createDirectory(parentDirectory, name);
+          },
+          renameItem: (item: FileSystemItem, name: string) => {
+            return this.fileSystemService.renameItem(item, name);
+          },
+          deleteItem: (item: FileSystemItem) => {
+            return this.fileSystemService.deleteItem(item);
+          },
+          moveItem: (item, destinationDirectory) => {
+            return this.fileSystemService.moveItem(item, destinationDirectory);
+          },
+          uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
+            return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
+          },
+          downloadItems: (items) => {
+            return this.fileSystemService.downloadItem(items);
+          }
+        });
+      }
+    });
     this.newFileMenuOptions = {
       items: [
         {
@@ -80,36 +113,13 @@ export class FileManagerView implements OnInit {
     };
   }
 
-  ngOnInit(): void {
-    this.document.body.classList.add('login-page');
-
-    this.fileSystemService.initialize().then((canInit) => {
-      if (canInit) {
-        this.customFileProvider = new CustomFileSystemProvider({
-          getItems: (parentDirectory) => {
-            return this.fileSystemService.getItems(parentDirectory);
-          },
-          createDirectory: (parentDirectory, name) => {
-            return this.fileSystemService.createDirectory(parentDirectory, name);
-          },
-          renameItem: (item: FileSystemItem, name: string) => {
-            return this.fileSystemService.renameItem(item, name);
-          },
-          deleteItem: (item: FileSystemItem) => {
-            return this.fileSystemService.deleteItem(item);
-          },
-          moveItem: (item, destinationDirectory) => {
-            return this.fileSystemService.moveItem(item, destinationDirectory);
-          },
-          uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
-            return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
-          },
-          downloadItems: (items) => {
-            return this.fileSystemService.downloadItem(items);
-          }
-        });
-      }
-    });
+  ngOnDestroy(): void {
+    // Fix memory leak
+    this.show = false
+    this.fileManager = null;
+    this.customFileProvider = null;
+    this.newFileMenuOptions = null;
+    this.changeCategoryMenuOptions = null;
   }
 
   onSelectedFileOpened($event: { file?: string }) {

@@ -118,6 +118,12 @@ export const PUBLIC_ROUTES: PublicRoutes = {
           routerLink: '/auth/documentation',
           displayName: 'Documentation',
           data: {breadcrumb: 'Documentation'}
+        },
+        {
+          path: "config",
+          routerLink: '/auth/config',
+          displayName: 'Config',
+          data: {breadcrumb: 'config'}
         }
       ],
     },

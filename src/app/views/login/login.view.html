@@ -10,7 +10,8 @@
       <form [formGroup]="loginForm">
 
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email" formControlName="email" #userEmail>
+          <input type="email" class="form-control" placeholder="Email" formControlName="email" #userEmail
+                 id="userEmail">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -27,7 +28,8 @@
         </div>
 
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" formControlName="password" #userPassword>
+          <input type="password" class="form-control" placeholder="Password" formControlName="password" #userPassword
+                 id="userPassword">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
@@ -54,7 +56,9 @@
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block" [disabled]="!loginForm.valid"
+            <button type="submit" class="btn btn-primary btn-block"
+                    id="buttonSignInID"
+                    [disabled]="!loginForm.valid"
                     (click)="authService.SignIn(userEmail.value, userPassword.value)">Sign In
             </button>
           </div>
