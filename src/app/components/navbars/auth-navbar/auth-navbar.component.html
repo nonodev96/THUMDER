@@ -10,23 +10,40 @@
     </li>
 
     <li class="nav-item dropdown">
-      <a id="dropdownSubMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+      <a id="dropdownSubMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
          class="nav-link dropdown-toggle">{{'CONFIG.LANG'|translate}}</a>
-      <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+      <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu border-0 shadow">
         <li>
-          <a class="dropdown-item" (click)="changeToSpain()">
+          <a class="dropdown-item" (click)="changeToSpain()" id="changeLangToSpanish">
             <span class="flag-icon flag-icon-esp"></span>
             Spanish
           </a>
         </li>
         <li>
-          <a class="dropdown-item" (click)="changeToEnglish()">
+          <a class="dropdown-item" (click)="changeToEnglish()" id="changeLangToEnglish">
             <span class="flag-icon flag-icon-gbr"></span>
             English
           </a>
         </li>
       </ul>
     </li>
+
+
+    <ng-container *ngIf="authService.isLoggedIn">
+      <li class="nav-item dropdown">
+        <a id="dropdownSubMenuNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+           class="nav-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</a>
+        <ul aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow">
+          <li *ngFor="let menu of AUTH_ROUTES;">
+            <a class="dropdown-item"
+               title="{{menu.path}}"
+               (click)="goToPage($event, menu)">
+              {{'NAVIGATION.' + menu.lang | translate}}
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ng-container>
 
   </ul>
 

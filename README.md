@@ -12,24 +12,18 @@ You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<s
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/)
 [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
 
-![Maintained][maintained-badge]
-[![Travis Build Status][build-badge]][build]
-[![Make a pull request][prs-badge]][prs]
-[![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 
-Currently runs with:
+## Currently, runs with:
 
-- Angular v10.0.14
-- Electron v9.3.0
-- Electron Builder v22.8.0
+- Angular v10.2.5
+- Electron v8.4.1
+- Electron Builder v22.8.1
 
-With this sample, you can :
 
 ## Included Commands
 
-
 | Command                  | Description                                                                          |
-| -------------------------- | -------------------------------------------------------------------------------------- |
+| ------------------------ | ------------------------------------------------------------------------------------ |
 | `npm run ng:serve`       | Execute the app in the browser                                                       |
 | `npm run build`          | Build the app. Your built files are in the /dist folder.                             |
 | `npm run build:prod`     | Build the app with Angular aot. Your built files are in the /dist folder.            |
@@ -53,11 +47,12 @@ E2E Test scripts can be found in `e2e` and `cypress` folder.
 | `npm run e2e`   | Execute end to end tests of electron|
 
 ### Server e2e
+
 | Command                | Description                                        |
 | ---------------------- | -------------------------------------------------- |
 | `npm run ng:server`    | Start the server                                   |
 | `npm run cypress:open` | Open cypress app and configure the commands        |
-| `npm run cypress:run`  | Run tests of cypress                               |
+| `npm run cypress:run`  | Run tests of cypress (BUG)                         |
 
 Note: To make it work behind a proxy, you can add this proxy exception in your terminal
 `export {no_proxy,NO_PROXY}="127.0.0.1,localhost"`

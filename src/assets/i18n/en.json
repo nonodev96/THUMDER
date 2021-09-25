@@ -2,6 +2,19 @@
   "CONFIG": {
     "LANG": "Language"
   },
+  "NAVIGATION": {
+    "PAGES": "Pages",
+    "FILE-MANAGER": "File manager",
+    "IDE": "Integrated development environment",
+    "PIPELINE": "Pipeline",
+    "CYCLE-CLOCK-DIAGRAM": "Cycle Clock Diagram",
+    "MEMORY": "Memory",
+    "CODE": "Code",
+    "REGISTERS": "Registers",
+    "PROFILE": "Profile",
+    "DOCUMENTATION": "Documentation",
+    "CONFIG": "Config"
+  },
   "TOAST": {
     "ACCESS_DENIED": "Access denied",
     "LOGIN_FALSE": "You need to login",
@@ -10,7 +23,7 @@
   },
   "PAGES": {
     "HOME": {
-      "TITLE": "App works !",
+      "TITLE": "App works!",
       "GO_TO_DETAIL": "Go to Detail"
     },
     "DETAIL": {
