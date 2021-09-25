@@ -28,7 +28,8 @@ export class LoginView implements OnInit {
     ],
   }
 
-  constructor(@Inject(DOCUMENT) private document: Document,
+  constructor(@Inject(DOCUMENT)
+              private document: Document,
               public electronService: ElectronService,
               public authService: AuthService,
               public formBuilder: FormBuilder) {

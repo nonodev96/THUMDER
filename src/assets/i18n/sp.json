@@ -2,6 +2,19 @@
   "CONFIG": {
     "LANG": "Idioma"
   },
+  "NAVIGATION": {
+    "PAGES": "Páginas",
+    "FILE-MANAGER": "Gestor de ficheros",
+    "IDE": "Entorno de desarrollo integrado",
+    "PIPELINE": "Pipeline",
+    "CYCLE-CLOCK-DIAGRAM": "Ciclos de reloj",
+    "MEMORY": "Memoria",
+    "CODE": "Código",
+    "REGISTERS": "Registros",
+    "PROFILE": "Perfil",
+    "DOCUMENTATION": "Documentación",
+    "CONFIG": "Configuración"
+  },
   "TOAST": {
     "ACCESS_DENIED": "Acceso denegado",
     "LOGIN_FALSE": "Necesitas iniciar sesión",

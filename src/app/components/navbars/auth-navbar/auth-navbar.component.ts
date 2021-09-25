@@ -2,7 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { AppComponent } from "../../../app.component";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { timer } from "rxjs";
+import { AUTH_ROUTES } from "../../../CONSTAST";
+import { Router } from "@angular/router";
+import { PublicRoutes } from "../../../types";
 
 @Component({
   selector: "app-auth-navbar",
@@ -10,11 +12,12 @@ import { timer } from "rxjs";
 })
 export class AuthNavbarComponent implements OnInit {
   navbarOpen = false;
+  AUTH_ROUTES = AUTH_ROUTES;
 
-  constructor(private app: AppComponent,
+  constructor(private router: Router,
+              private app: AppComponent,
               public machine: MachineService,
-              public authService: AuthService
-  ) {
+              public authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -47,5 +50,11 @@ export class AuthNavbarComponent implements OnInit {
 
   async end() {
     const end = await this.machine.end()
+  }
+
+  goToPage($event: MouseEvent, menu: PublicRoutes) {
+    this.router.navigateByUrl(menu.routerLink).then(value => {
+      // console.log(value)
+    })
   }
 }

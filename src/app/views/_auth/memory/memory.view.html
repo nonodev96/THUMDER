@@ -2,6 +2,10 @@
   <div class="card-header">
     <h3 class="card-title">Memory</h3>
     <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#editMemoryModal"
+              id="editMemoryModalButton">
+        <i class="fas fa-edit"></i>
+      </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
         <i class="fas fa-minus"></i>
       </button>
@@ -52,19 +56,14 @@
   Change
 </button>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button>
-
 <!-- Modal -->
 <!-- TODO -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="editMemoryModal" tabindex="-1" role="dialog" aria-labelledby="editMemoryModalLabel"
      aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="editMemoryModalLabel">Edit Memory</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -79,7 +78,7 @@
                 <label for="itemSelectedEditMemoryId">Select Register</label>
                 <input type="number" class="form-control" id="itemSelectedEditMemoryId" placeholder="Enter Value"
                        (change)="changeRegisterMemoryID($event.target)"
-                       value="{{ this.machine.memory[registerMemoryToEdit].value }}">
+                       value="{{ registerMemoryToEdit }}">
               </div>
             </div>
           </div>
@@ -93,9 +92,14 @@
                        value="{{ this.machine.memory[registerMemoryToEdit].value }}">
               </div>
               <p>Hexadecimal:
-                <strong>{{ (machine.memory[registerMemoryToEdit].value | hexadecimal | uppercase) }}</strong></p>
+                <strong id="hexValue">
+                  {{ (machine.memory[registerMemoryToEdit].value | hexadecimal | uppercase) }}
+                </strong>
+              </p>
               <p>Binary:
-                <strong>{{ (machine.memory[registerMemoryToEdit].value | binary: 32) }}</strong>
+                <strong id="binValue">
+                  {{ (machine.memory[registerMemoryToEdit].value | binary: 32) }}
+                </strong>
               </p>
             </div>
           </div>

@@ -1,7 +1,7 @@
 describe('Auth access', () => {
 
   beforeEach(() => {
-    cy.login(Cypress.env('USER_EMAIL'), Cypress.env('USER_PASSWORD'))
+    cy.THUMDER_login()
   })
 
   it('should actually be accessible', () => {
@@ -10,6 +10,8 @@ describe('Auth access', () => {
 
   it('should actually not be accessible', () => {
     cy.visit('/login')
+    cy.location('pathname').should('not.eq', '/login')
+    cy.location('pathname').should('eq', '/')
   })
 
 })

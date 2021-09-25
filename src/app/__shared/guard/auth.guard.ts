@@ -11,9 +11,9 @@ import { TranslateService } from "@ngx-translate/core";
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(public authService: AuthService,
-              public router: Router,
+  constructor(private router: Router,
               private translate: TranslateService,
+              private authService: AuthService,
               private toast: ToastrService) {
   }
 

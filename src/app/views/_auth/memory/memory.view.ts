@@ -52,6 +52,10 @@ export class MemoryView implements OnInit, AfterViewInit {
   }
 
   changeMemory(target: EventTargetExtend | any) {
-    this.machine.memory[this.registerMemoryToEdit].value = parseInt(target.value)
+    try {
+      this.machine.memory[this.registerMemoryToEdit].value = parseInt(target.value)
+    } catch (e) {
+      this.machine.memory[this.registerMemoryToEdit].value = 0
+    }
   }
 }

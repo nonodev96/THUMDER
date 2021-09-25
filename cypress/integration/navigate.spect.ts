@@ -1,7 +1,6 @@
 describe('Visit pages no auth', () => {
 
   beforeEach(() => {
-
   })
 
   it('go to login', () => {
@@ -22,37 +21,51 @@ describe('Visit pages no auth', () => {
 
 })
 
-
+// TODO
 describe('Visit pages auth', () => {
 
-  before(() => {
-
-  })
-
   beforeEach(() => {
-    cy.login(Cypress.env('USER_EMAIL'), Cypress.env('USER_PASSWORD'))
-    cy.goHome()
+    cy.THUMDER_login()
   })
 
   it('visit file-manager', () => {
-    cy.get('a[title="file-manager"]').click()
-    cy.url().should('contain', '/auth/file-manager')
+    cy.THUMDER_goFileManager();
   })
 
   it('visit IDE', () => {
-    cy.get('a[title="IDE"]').click()
-    cy.url().should('contain', '/auth/ide')
+    cy.THUMDER_goIDE();
   })
 
   it('visit Pipeline', () => {
-    cy.get('a[title="Pipeline"]').click()
-    cy.url().should('contain', '/auth/pipeline')
+    cy.THUMDER_goPipeline();
   })
 
   it('visit Cycle clock diagram', () => {
-    cy.get('a[title="Cycle clock diagram"]').click()
-    cy.url().should('contain', '/auth/cycle-clock-diagram')
+    cy.THUMDER_goCycleClockDiagram();
+ })
+
+  it('visit Memory', () => {
+    cy.THUMDER_goMemory();
   })
 
+  it('visit Code', () => {
+    cy.THUMDER_goCode();
+  })
+
+  it('visit Registers', () => {
+    cy.THUMDER_goRegisters();
+  })
+
+  it('visit Profile', () => {
+    cy.THUMDER_goProfile()
+  })
+
+  it('visit Documentation', () => {
+    cy.THUMDER_goDocumentation()
+  })
+
+  it('visit Config', () => {
+    cy.THUMDER_goConfig()
+  })
 
 })

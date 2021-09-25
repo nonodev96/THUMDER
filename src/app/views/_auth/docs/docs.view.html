@@ -9,24 +9,32 @@
         </div>
       </a>
       <div id="collapseOne" class="collapse show" data-parent="#accordion">
-        <div class="card-body like-pre">
-          The current values of all registers are displayed in this window. It is possible to change the contents of the registers.
+        <div class="card-body">
+            <pre>
+The current values of all registers are displayed in this window. It is possible to change the contents of the
+registers.
 
-          The Register Menu
+The Register Menu
 
-          There are several options in this menu to fix the type of representing the contents and the type of registers to be displayed:
+There are several options in this menu to fix the type of representing the contents and the type of registers to be
+displayed:
 
-          + Hexadecimal
-          + Decimal
-          + Display Special Registers
-          + Display Integer Registers
-          + Display Floatingpoint Registers
-          + Display Doubleprecision-Floatingpoints
-          + Display All Registers
++ Hexadecimal
++ Decimal
++ Display Special Registers
++ Display Integer Registers
++ Display Floating point Registers
++ Display Double precision-Floatingpoints
++ Display All Registers
 
-          Change the contents of Registers
+Change the contents of Registers
 
-          You can change the contents of all GPRs, FPRs, the PC and the FPSR, but not the contents of the special (Hardware-)registers. You can select a register doubleclicking its name with the mouse. A dialog box is displayed, allowing you to change the content of the selected register. Legal values for integer registers are integer expressions and for floating point registers constant values.
+You can change the contents of all GPRs, FPRs, the PC and the FPSR, but not the contents of the special
+(Hardware-)registers.
+You can select a register double clicking its name with the mouse. A dialog box is displayed, allowing you to change
+the content of the selected register. Legal values for integer registers are integer expressions and for floating point
+registers constant values.
+          </pre>
         </div>
       </div>
     </div>
@@ -39,20 +47,30 @@
         </div>
       </a>
       <div id="collapseTwo" class="collapse" data-parent="#accordion">
-        <div class="card-body like-pre">
-          The DLX instructions loaded in the memory and their addresses are diplayed (hexadecimal and disassembled) in the Code window. Further, the set breakpoints for each instruction are marked with Bxx, where xx is the type of the breakpoint. If an instruction is currently executing in a pipeline stage, the characteristic colour of the stage is used as background colour for the instruction and it is also labled adequately.
+        <div class="card-body ">
+          <pre>
+The DLX instructions loaded in the memory and their addresses are diplayed (hexadecimal and disassembled) in the Code
+window. Further, the set breakpoints for each instruction are marked with Bxx, where xx is the type of the breakpoint.
+If an instruction is currently executing in a pipeline stage, the characteristic colour of the stage is used as
+background colour for the instruction and it is also labled adequately.
 
-          You can scroll up/down the memory using the arrows or the page keys. After executing one or more steps of a DLX code, the instructions executed at last are displayed.
+You can scroll up/down the memory using the arrows or the page keys. After executing one or more steps of a DLX code,
+the instructions executed at last are displayed.
 
-          You can get detailed information about an instruction being in the pipeline or set /delete breakpoints selecting the instruction with the arrows or page keys and using the TAB-Key (You can also click the mouse button once). If you press the ENTER key (or doubleclicking the muse button), the Instruction-Information-Window is displayed. There are menu commands to set or delete breakpoints.
+You can get detailed information about an instruction being in the pipeline or set /delete breakpoints selecting the
+instruction with the arrows or page keys and using the TAB-Key (You can also click the mouse button once). If you press
+the ENTER key (or double clicking the muse button), the Instruction-Information-Window is displayed.
 
-          The Code Menu:
+There are menu commands to set or delete breakpoints.
 
-          This menu contains the following commands:
+The Code Menu:
 
-          + From Address
-          + Set Breakpoint
-          + Delete Breakpoint
+This menu contains the following commands:
+
++ From Address
++ Set Breakpoint
++ Delete Breakpoint
+          </pre>
         </div>
       </div>
     </div>
@@ -65,16 +83,20 @@
         </div>
       </a>
       <div id="collapseThree" class="collapse" data-parent="#accordion">
-        <div class="card-body like-pre">
-          The Structure of the DLX-Pipeline will be displayed in this Child window. If the window is large enough, additional information about the instructions currently being executed in the pipeline will be displayed.
+        <div class="card-body ">
+          <pre>
+The Structure of the DLX-Pipeline will be displayed in this Child window. If the window is large enough, additional
+information about the instructions currently being executed in the pipeline will be displayed.
 
-          Each stage is represented by different colours, characterizing this stage through all windows.
+Each stage is represented by different colours, characterizing this stage through all windows.
 
-          After pressing TAB, you can select a stage with the arrow keys. Pressing ENTER (or doubleclicking the stage) allows you to get detailed information about the instruction in the stage via the Instruction-Information-Window.
+After pressing TAB, you can select a stage with the arrow keys. Pressing ENTER (or doubleclicking the stage)
+allows you to get detailed information about the instruction in the stage via the Instruction-Information-Window.
 
-          The Pipeline Menu:
+The Pipeline Menu:
 
-          + Display Floating point stages Display Floating point stages
++ Display Floating point stages Display Floating point stages
+          </pre>
         </div>
       </div>
     </div>
@@ -87,39 +109,47 @@
         </div>
       </a>
       <div id="collapseFour" class="collapse" data-parent="#accordion">
-        <div class="card-body like-pre">
-          In this Child window is displayed, what is done in which cycle and in which stage. Each column represents the state of the pipeline in a given clock cycle. The current state of the pipeline (the last column) is underlayed with gray.
+        <div class="card-body ">
+          <pre>
+In this Child window is displayed, what is done in which cycle and in which stage. Each column represents the state of
+the pipeline in a given clock cycle. The current state of the pipeline (the last column) is underlayed with gray.
 
-          You can select an instruction the same way as in the Code window and get more information about it via the Instruction-Information-Window.
+You can select an instruction the same way as in the Code window and get more information about it via the
+Instruction-Information-Window.
 
-          Furthermore, details about the stalls and executed forwardings (if enabled) are displayed:
+Furthermore, details about the stalls and executed forwardings (if enabled) are displayed:
 
-          Stalls and Forwarding:
+Stalls and Forwarding:
 
-          Stalls are represented in boxes, that are underlayed with a colour corresponding to the stalled stage. The contents of the box give more information about the type of the stall:
+Stalls are represented in boxes, that are underlayed with a colour corresponding to the stalled stage. The contents of
+the box give more information about the type of the stall:
 
-          "R-Stall" - RAW-Stall. A dark red arrow shows (if enabled) the instruction that causes the stall.
+"R-Stall" - RAW-Stall. A dark red arrow shows (if enabled) the instruction that causes the stall.
 
-          "T-Stall" - Trap-Stall. This stall occurs only by a Trap-Instruction . A Trap instruction remains in the IF-stage, until no other instructions are in the pipeline.
+"T-Stall" - Trap-Stall. This stall occurs only by a Trap-Instruction . A Trap instruction remains in the IF-stage,
+until no other instructions are in the pipeline.
 
-          "W-Stall" - WAW-Stalls. A dark red arrow shows (if enabled) the instruction that causes the stall.
+"W-Stall" - WAW-Stalls. A dark red arrow shows (if enabled) the instruction that causes the stall.
 
-          "S-Stall" - structural Stall, There are not enough resources to serving the instruction.
+"S-Stall" - structural Stall, There are not enough resources to serving the instruction.
 
-          "Stall" - If a Floatingpoint instruction is in MEM-stage, the next instruction will be stalled in the intEX-stage, labeled with "Stall".
+"Stall" - If a Floating point instruction is in MEM-stage, the next instruction will be stalled in the intEX-stage,
+labeled with "Stall".
 
-          If "Display Forwarding" is enabled, forwarding is represented with a green arrow, showing the soucre and the destination of forwarding.
+If "Display Forwarding" is enabled, forwarding is represented with a green arrow, showing the source and the
+destination of forwarding.
 
-          See also Instruction execution for more details.
+See also Instruction execution for more details.
 
-          The Clock Cycle Diagram Menu:
+The Clock Cycle Diagram Menu:
 
-          The clock cycle diagram menu contains the following options:
+The clock cycle diagram menu contains the following options:
 
-          + Display Forwarding
-          + Display Cause of Stalls
-          + Delete History
-          + Set History Length
++ Display Forwarding
++ Display Cause of Stalls
++ Delete History
++ Set History Length
+          </pre>
         </div>
       </div>
     </div>
@@ -132,30 +162,33 @@
         </div>
       </a>
       <div id="collapseFive" class="collapse" data-parent="#accordion">
-        <div class="card-body like-pre">
-          Statistics about the simulation are displayed in the Statistics window. This data is arranged in several groups. You can select the groups to be displayed in the Statistics window. The group "Total" will always be displayed and contains:
+        <div class="card-body ">
+          <pre>
+Statistics about the simulation are displayed in the Statistics window. This data is arranged in several groups. You
+can select the groups to be displayed in the Statistics window. The group "Total" will always be displayed and contains:
 
-          + Total number of cycles executed.
++ Total number of cycles executed.
 
-          + The number of instructions, which have already passed the ID-stage.
++ The number of instructions, which have already passed the ID-stage.
 
-          + The number of instructions currently being executed in the pipeline (if Detail info (see Statistic Menu) is set).
++ The number of instructions currently being executed in the pipeline (if Detail info (see Statistic Menu) is set).
 
+The Statistic Menu:
 
-          The Statistic Menu:
+This menu contains several options to control the display of information in the Statistics window. Further, you can
+reset the statistics:
 
-          This menu contains several options to control  the display of information in the Statistics window. Further, you can reset the statistics:
-
-          + Display:
-          - Hardware
-          - Stalls
-          - Conditional Branches
-          - Load/Store-Instructions
-          - Floating point stages instructions
-          - Traps
-          - All
-          + Detail info
-          + Reset
++ Display:
+- Hardware
+- Stalls
+- Conditional Branches
+- Load/Store-Instructions
+- Floating point stages instructions
+- Traps
+- All
++ Detail info
++ Reset
+            </pre>
         </div>
       </div>
     </div>
@@ -168,19 +201,23 @@
         </div>
       </a>
       <div id="collapseSix" class="collapse" data-parent="#accordion">
-        <div class="card-body like-pre">
-          In the Breakpoint window, you can view, set, change or delete breakpoints. It is possible to set up to 20 breakpoints. You can also set /delete breakpoints via the Code window.
+        <div class="card-body ">
+          <pre>
+In the Breakpoint window, you can view, set, change or delete breakpoints. It is possible to set up to 20 breakpoints.
+You can also set /delete breakpoints via the Code window.
 
-          The Breakpoint Menu:
+The Breakpoint Menu:
 
-          This menu allows you to manipulate breakpoints. To do this, you must first select a breakpoint using arrow keys or the mouse. Doubleclicking a breakpoint allows to change the breakpoint.
+This menu allows you to manipulate breakpoints. To do this, you must first select a breakpoint using arrow keys or the
+mouse. Double clicking a breakpoint allows to change the breakpoint.
 
-          The Breakpoint menu contains the following commands:
+The Breakpoint menu contains the following commands:
 
-          + Set
-          + Delete
-          + Delete All
-          + Change
++ Set
++ Delete
++ Delete All
++ Change
+          </pre>
         </div>
       </div>
     </div>
@@ -193,26 +230,30 @@
         </div>
       </a>
       <div id="collapseSeven" class="collapse" data-parent="#accordion">
-        <div class="card-body like-pre">
-          You can open up to 10 memory windows with the command memory / Display in the main menu.
+        <div class="card-body ">
+          <pre>
+You can open up to 10 memory windows with the command memory / Display in the main menu.
 
-          For more details about memory windows see also Memory / Display.
+For more details about memory windows see also Memory / Display.
 
-          The Memory Display Menu
+The Memory Display Menu
 
-          This menu contains the following commands, that are applicable to the active memory window:
+This menu contains the following commands, that are applicable to the active memory window:
 
-          + Change
-          + Close
++ Change
++ Close
+          </pre>
         </div>
       </div>
     </div>
   </div>
 </div>
+<!--
 <div class="row">
   <div class="col-12 mt-3 text-center">
     <p class="lead">
-      if you found not the right anwser or you have a other question?<br />
+      if you found not the right answer or you have a other question?<br/>
     </p>
   </div>
 </div>
+-->
