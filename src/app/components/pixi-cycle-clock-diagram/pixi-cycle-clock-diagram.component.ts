@@ -1,19 +1,19 @@
 import * as PIXI from 'pixi.js';
-import { Component, HostListener, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { ArrowDirection } from "./PixiTHUMDER_CycleClockDiagram";
+import { Component, HostListener, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
+import { ArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
 
 @Component({
   selector: 'thumder-pixi-cycle-clock-diagram',
   templateUrl: './pixi-cycle-clock-diagram.component.html',
   styleUrls: ['./pixi-cycle-clock-diagram.component.scss']
 })
-export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
+export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('pixiContainer') pixiContainer;
   pApp: PIXI.Application;
 
-  constructor(private machine: MachineService) {
+  constructor(public machine: MachineService) {
     const width = 1600;
     const height = 900;
     this.pApp = new PIXI.Application({
@@ -22,21 +22,20 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
       backgroundColor: 0x1099bb,
       resolution: 1,
     });
-
-    this.machine.cycleClockDiagram.addInstruction("inst 1");
-    this.machine.cycleClockDiagram.addInstruction("inst 2");
-    this.machine.cycleClockDiagram.addInstruction("inst 3");
-    this.machine.cycleClockDiagram.addInstruction("inst 4");
-
-    this.pApp.stage.addChild(this.machine.cycleClockDiagram.draw());
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit() {
+    this.pApp.stage.addChild(this.machine.cycleClockDiagram.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
     this.resize();
+  }
+
+  ngOnDestroy(): void {
+    this.pApp.stage.destroy();
+    this.pApp.destroy();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -107,6 +106,13 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit {
 
   reset() {
     this.machine.cycleClockDiagram.reset();
+  }
+
+  debug() {
+    this.machine.cycleClockDiagram.addInstruction("instruction 1");
+    this.machine.cycleClockDiagram.addInstruction("instruction 2");
+    this.machine.cycleClockDiagram.addInstruction("instruction 3");
+    this.machine.cycleClockDiagram.addInstruction("instruction 4");
   }
 
   private resize() {

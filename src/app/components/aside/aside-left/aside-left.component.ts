@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AUTH_ROUTES } from "../../../CONSTAST";
+import { PublicRoutes } from "../../../types";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-aside-left',
@@ -7,9 +10,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AsideLeftComponent implements OnInit {
 
-  constructor() { }
+  AUTH_ROUTES_ASIDE = AUTH_ROUTES;
+
+  constructor(private router: Router) {
+  }
 
   ngOnInit(): void {
   }
 
+  goToPage($event: MouseEvent, menu: PublicRoutes) {
+    this.router.navigateByUrl(menu.routerLink)
+      .then(() => {
+        // console.log(value)
+      })
+  }
 }

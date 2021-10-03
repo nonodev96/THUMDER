@@ -215,6 +215,16 @@ export class PixiTHUMER_Pipeline extends PIXI.Container {
     this.WB_text.text = value
   }
 
+  public reset() {
+    this.update_ID_text('');
+    this.update_intEX_text('');
+    this.update_faddEX_text('');
+    this.update_fmultEX_text('');
+    this.update_fdivEX_text('');
+    this.update_MEM_text('');
+    this.update_WB_text('');
+  }
+
   public draw(): PIXI.Container {
     return this
   }

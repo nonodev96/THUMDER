@@ -5,7 +5,7 @@
   "NAVIGATION": {
     "PAGES": "Pages",
     "FILE-MANAGER": "File manager",
-    "IDE": "Integrated development environment",
+    "IDE": "IDE",
     "PIPELINE": "Pipeline",
     "CYCLE-CLOCK-DIAGRAM": "Cycle Clock Diagram",
     "MEMORY": "Memory",
@@ -14,6 +14,37 @@
     "PROFILE": "Profile",
     "DOCUMENTATION": "Documentation",
     "CONFIG": "Config"
+  },
+  "MACHINE": {
+    "EDIT_REGISTER": "Edit Register",
+    "EDIT_REGISTER_CONTROL": "Edit Register Control",
+    "REGISTERS_CONTROL": "Registers Control",
+    "SELECT_REGISTER_R": "Select register Integer",
+    "SELECT_REGISTER_F": "Select register Float",
+    "SELECT_REGISTER_D": "Select register Double",
+    "REGISTERS_INTEGER": "Registers Integer",
+    "REGISTERS_FLOAT": "Registers Float",
+    "REGISTERS_DOUBLE": "Registers Double",
+    "CYCLE_CLOCK_DIAGRAM": "Cycle clock diagram",
+    "PIPELINE": "Pipeline",
+    "LINE": "Line",
+    "ADDRESS": "Address",
+    "CODE": "Code",
+    "STAGE": "Stage",
+    "INSTRUCTION": "Instruction",
+    "SELECT_MEMORY": "Select memory",
+    "SELECT_MEMORY_VALUE": "Select memory value",
+    "INTEGER": "Integer",
+    "REGISTER": "Register",
+    "MEMORY": "Memory",
+    "DECIMAL": "Decimal",
+    "HEXADECIMAL": "Hexadecimal",
+    "BINARY": "Binary"
+  },
+  "FORMS": {
+    "ENTER_VALUE": "Enter Value",
+    "SAVE": "Save",
+    "CLOSE": "Close"
   },
   "TOAST": {
     "ACCESS_DENIED": "Access denied",

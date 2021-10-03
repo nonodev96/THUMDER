@@ -15,6 +15,7 @@
 
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
 import * as f_goToPage from './commands/goToPage';
+import { THUMDER_openNavigation } from "./commands/goToPage";
 
 // this is another example.
 
@@ -35,6 +36,7 @@ function THUMDER_login(username: string = Cypress.env('USER_EMAIL'), password: s
 }
 
 
+Cypress.Commands.add('THUMDER_openNavigation', THUMDER_openNavigation);
 Cypress.Commands.add('THUMDER_login', THUMDER_login);
 Cypress.Commands.add('THUMDER_goHome', f_goToPage.THUMDER_goHome);
 Cypress.Commands.add('THUMDER_goFileManager', f_goToPage.THUMDER_goFileManager);
@@ -49,7 +51,9 @@ Cypress.Commands.add('THUMDER_goDocumentation', f_goToPage.THUMDER_goDocumentati
 Cypress.Commands.add('THUMDER_goConfig', f_goToPage.THUMDER_goConfig);
 
 /**
- * Auth
+ * clicks:
+ *    THUMDER_openNavigation
+ * Auth:
  *    THUMDER_goFileManager
  *    THUMDER_goIDE
  *    THUMDER_goPipeline
@@ -65,6 +69,8 @@ declare global {
   namespace Cypress {
     interface Chainable<Subject> {
       THUMDER_login(email?: string, password?: string): void;
+
+      THUMDER_openNavigation(): void;
 
       THUMDER_goHome(): void;
 

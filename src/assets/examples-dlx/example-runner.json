@@ -1,0 +1,96 @@
+{
+  "name_file": "win-dlx.s",
+  "date": "2021-08-28 12:25:00",
+  "steps": 3,
+  "runner": [
+    {
+      "step": 0,
+      "instruction": "ADDI R28, R0, #4",
+      "stage": "IF",
+      "IF": 1,
+      "IF_stall": 0,
+      "ID": 1,
+      "ID_stall": 0,
+      "intEX": 1,
+      "intEX_stall": 0,
+      "MEM": 1,
+      "MEM_stall": 0,
+      "WB": 1,
+      "WB_stall": 0,
+      "registers": [
+        {
+          "register": "R28",
+          "value": 4
+        }
+      ],
+      "memory": []
+    },
+    {
+      "step": 1,
+      "instruction": "ADDI R29, R0, #1",
+      "IF": 1,
+      "IF_stall": 0,
+      "ID": 1,
+      "ID_stall": 0,
+      "intEX": 1,
+      "intEX_stall": 0,
+      "MEM": 1,
+      "MEM_stall": 0,
+      "WB": 1,
+      "WB_stall": 0,
+      "registers": [
+        {
+          "register": "R29",
+          "value": 1
+        }
+      ],
+      "memory": []
+    },
+    {
+      "step": 2,
+      "instruction": "ADDI R17, R0, 0",
+      "IF": 1,
+      "IF_stall": 0,
+      "ID": 1,
+      "ID_stall": 0,
+      "intEX": 1,
+      "intEX_stall": 0,
+      "MEM": 1,
+      "MEM_stall": 0,
+      "WB": 1,
+      "WB_stall": 0,
+      "registers": [
+        {
+          "register": "R17",
+          "value": 0
+        }
+      ],
+      "memory": []
+    },
+    {
+      "step": 3,
+      "instruction": "ADDI R18, R0, 0",
+      "IF": 1,
+      "IF_stall": 0,
+      "ID": 1,
+      "ID_stall": 0,
+      "intEX": 1,
+      "intEX_stall": 0,
+      "MEM": 1,
+      "MEM_stall": 0,
+      "WB": 1,
+      "WB_stall": 0,
+      "registers": [
+        {
+          "register": "R18",
+          "value": 0
+        },
+        {
+          "register": "PC",
+          "value": 4
+        }
+      ],
+      "memory": []
+    }
+  ]
+}

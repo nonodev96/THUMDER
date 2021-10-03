@@ -9,21 +9,21 @@ skinparam defaultFontName consolas
 skinparam sequenceMessageAlign center
 
 === "Authentication" ==
-Client -> Server:   1 REQUEST (AuthenticationRequest)
-Client <-- Server:  2.1 ACCEPT-REQUEST (AuthenticationResponse)
-Client <-- Server:  2.2 REJECT-REQUEST (AuthenticationResponse)
+Client ->   Server: 1   REQUEST         (AuthenticationRequest)
+Client <--  Server: 2.1 ACCEPT-REQUEST  (AuthenticationResponse)
+Client <--  Server: 2.2 REJECT-REQUEST  (AuthenticationResponse)
 
 === "Request Modify a file" ==
-Client -> Server:   3 REQUEST (ModifyFileRequest)
+Client -> Server:   3 REQUEST           (EditFileRequest)
 note right
   Send hash of file and file
 end note
-Client <-- Server:  4.1 ACCEPT-REQUEST (ModifyFileResponse)
-Client <-- Server:  4.2 REJECT-REQUEST (ModifyFileResponse)
+Client <--  Server: 4.1 ACCEPT-REQUEST  (EditFileResponse)
+Client <--  Server: 4.2 REJECT-REQUEST  (EditFileResponse)
 note left
   Get hash of file
 end note
 
-...Cada vez que guarde o se salga de la sección...
+...Cada vez que guarde o cambie de sección...
 
 @enduml

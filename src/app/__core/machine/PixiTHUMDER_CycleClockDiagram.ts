@@ -337,6 +337,29 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.realStep++;
   }
 
+  // TODO
+  public goToStep(_step: number): void {
+    const result = Utils.MapToArray(this.timer);
+
+    for (const time of result) {
+      const instruction = time.key;
+      const v = time.value;
+      const rec = v.dequeue();
+      if (rec !== null) {
+        this.table.addCell(rec, instruction);
+      }
+    }
+    const listArrows = this.listArrows.toArray()
+      .filter((value) => this.realStep === value.to.step);
+
+    for (const arrow of listArrows) {
+      this.drawArrow(arrow);
+    }
+
+    this.drawSteps();
+    this.realStep++;
+  }
+
   public draw(): PIXI.Container {
     this.addChild(this.table.draw());
     this.addChild(this.tableSteps.draw());
@@ -357,6 +380,9 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.arrows.position.x -= 20;
   }
 
+
+  // TODO
+  // change -> se debe ir a la ultima celda añadida, se puede calcular con el numero de columnas de tableSteps * tamaño
   public moveRight() {
     if (this.table.position.x < 200) {
       this.table.position.x += 20;

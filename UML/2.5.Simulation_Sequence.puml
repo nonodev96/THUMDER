@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+/'
+Action : Elementos que representas los eventos a los que responden los agentes para completar las tareas de la ontología.
+Predicate : Elementos que representan las respuestas a los eventos para completar las tareas de la ontología.
+'/
+'autonumber
+skinparam defaultFontName consolas
+skinparam sequenceMessageAlign center
+
+=== "Authentication" ==
+Client ->   Server: 1   REQUEST         (AuthenticationRequest)
+Client <--  Server: 2.1 ACCEPT-REQUEST  (AuthenticationResponse)
+Client <--  Server: 2.2 REJECT-REQUEST  (AuthenticationResponse)
+
+=== "CFP Simulation" ==
+
+Client ->   Server: 3   CFP             (InitSimulation, MachineStatus, File)
+Client <--  Server: 4.1 ACCEPT-PROPOSE  (Simulation)
+Client <--  Server: 4.2 REJECT-PROPOSE  (Simulation)
+Client <-   Server: 5   INFORM          (SimulationResponse)
+
+note right
+Accept or reject the CFP Simulation
+if detect any error in code
+end note
+
+
+group Changes in simulation
+'  group Repeat [Repeat for the last instruction]
+  Client ->   Server: 6   PROPOSE         (StatusSimulation, MachineStatus)
+  Client <--  Server: 7.1 ACCEPT-PROPOSE  (Simulation)
+  Client <--  Server: 7.2 REJECT-PROPOSE  (Simulation)
+  Client <-   Server: 8   INFORM          (SimulationResponse)
+'  end
+end
+
+@enduml

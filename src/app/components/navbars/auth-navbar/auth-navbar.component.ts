@@ -36,25 +36,29 @@ export class AuthNavbarComponent implements OnInit {
   }
 
   async togglePlayPause() {
-    if (this.machine.playB === false) {
-      const end = await this.machine.play()
+    if (this.machine.isRunning === false) {
+      await this.machine.resume()
     } else {
-      const pause = await this.machine.pause()
+      await this.machine.pause()
     }
   }
 
+  async play() {
+      await this.machine.play()
+  }
 
   async next() {
-    const next = await this.machine.next()
+      await this.machine.next()
   }
 
   async end() {
-    const end = await this.machine.end()
+    await this.machine.end()
   }
 
   goToPage($event: MouseEvent, menu: PublicRoutes) {
-    this.router.navigateByUrl(menu.routerLink).then(value => {
-      // console.log(value)
-    })
+    this.router.navigateByUrl(menu.routerLink)
+      .then(() => {
+        // console.log(value)
+      })
   }
 }

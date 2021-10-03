@@ -25,8 +25,6 @@ export class MemoryView implements OnInit, AfterViewInit {
   constructor(public machine: MachineService) {
     this.dataSourceMemory.filter = null
     this.dataSourceMemory.sort = this.sort;
-
-    this.machine.memory[this.registerMemoryToEdit] = new Int32()
   }
 
   ngOnInit(): void {
@@ -38,9 +36,9 @@ export class MemoryView implements OnInit, AfterViewInit {
     })
   }
 
-  change() {
-    this.machine.memory[0].value = 10
-    console.log(this.machine.memory)
+  change(value = 10) {
+    this.machine.memory[this.registerMemoryToEdit].value = value
+    console.log(this.machine.memory[this.registerMemoryToEdit])
   }
 
   changeRegisterMemoryID(target: EventTargetExtend | any) {

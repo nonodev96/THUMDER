@@ -22,8 +22,13 @@ export class IndexView implements OnInit {
 
   onItemSelected($event: MouseEvent, menu: any) {
     $event.preventDefault();
-    this.router.navigateByUrl(menu.routerLink).then(value => {
-      // console.log(value)
-    })
+    this.router.navigateByUrl(menu.routerLink)
+      .then(() => {
+        // console.log(value)
+      })
+  }
+
+  log(msg: string) {
+    console.log(msg);
   }
 }

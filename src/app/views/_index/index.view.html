@@ -17,7 +17,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a (click)="log('TODO')">Home</a></li>
               <li class="breadcrumb-item active">Dashboard v2</li>
             </ol>
           </div><!-- /.col -->
@@ -34,7 +34,8 @@
       <ng-template #recursiveMenu let-menus>
         <ul *ngIf="menus.length>0">
           <li *ngFor="let menu of menus;">
-            <a href="{{ menu.routerLink }}" title="{{menu.displayName}}" (click)="onItemSelected($event, menu)">
+            <!-- href="{{ menu.routerLink }}"  -->
+            <a (click)="onItemSelected($event, menu)">
               {{menu.displayName}} </a>
             <ng-template [ngIf]="menu.children">
               <ng-container [ngTemplateOutlet]="recursiveMenu"
@@ -54,5 +55,5 @@
   <!-- /.control-sidebar -->
 
   <!-- Main Footer -->
-  <!--  <app-footer></app-footer>-->
+  <app-footer></app-footer>
 </div>

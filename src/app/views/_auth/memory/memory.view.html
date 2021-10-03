@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">Memory</h3>
+    <h3 class="card-title">{{'MACHINE.MEMORY' | translate}}</h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#editMemoryModal"
               id="editMemoryModalButton">
@@ -23,25 +23,25 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;"></tr>
         <ng-container matColumnDef="Register">
-          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ '' + element | leftPadFilter: 5 }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
-          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ machine.memory[element].value }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
-          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ (machine.memory[element].value | hexadecimal | uppercase) }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-70" *matCellDef="let element">
             {{ (machine.memory[element].value | binary: 32) }}
           </td>
@@ -63,7 +63,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editMemoryModalLabel">Edit Memory</h5>
+        <h5 class="modal-title" id="editMemoryModalLabel">{{'MACHINE.EDIT_MEMORY' | translate}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -75,8 +75,8 @@
             <div class="col-sm-12">
               <!-- select -->
               <div class="form-group">
-                <label for="itemSelectedEditMemoryId">Select Register</label>
-                <input type="number" class="form-control" id="itemSelectedEditMemoryId" placeholder="Enter Value"
+                <label for="itemSelectedEditMemoryId">{{'MACHINE.SELECT_MEMORY' | translate}}</label>
+                <input type="number" class="form-control" id="itemSelectedEditMemoryId" placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
                        (change)="changeRegisterMemoryID($event.target)"
                        value="{{ registerMemoryToEdit }}">
               </div>
@@ -85,18 +85,18 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="itemSelectedEditControlId">Register</label>
-                <input type="number" class="form-control" id="itemSelectedEditControlId" placeholder="Enter Value"
+                <label for="itemSelectedEditControlId">{{'MACHINE.SELECT_MEMORY_VALUE' | translate}}</label>
+                <input type="number" class="form-control" id="itemSelectedEditControlId" placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
                        (change)="changeMemory($event.target)"
                        min="0" max="{{this.machine.memory.length}}"
                        value="{{ this.machine.memory[registerMemoryToEdit].value }}">
               </div>
-              <p>Hexadecimal:
+              <p>{{'MACHINE.HEXADECIMAL' | translate}}:
                 <strong id="hexValue">
                   {{ (machine.memory[registerMemoryToEdit].value | hexadecimal | uppercase) }}
                 </strong>
               </p>
-              <p>Binary:
+              <p>{{'MACHINE.BINARY' | translate}}:
                 <strong id="binValue">
                   {{ (machine.memory[registerMemoryToEdit].value | binary: 32) }}
                 </strong>
@@ -106,8 +106,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
+        <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
       </div>
     </div>
   </div>

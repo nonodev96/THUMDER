@@ -5,7 +5,7 @@
   "NAVIGATION": {
     "PAGES": "Páginas",
     "FILE-MANAGER": "Gestor de ficheros",
-    "IDE": "Entorno de desarrollo integrado",
+    "IDE": "IDE",
     "PIPELINE": "Pipeline",
     "CYCLE-CLOCK-DIAGRAM": "Ciclos de reloj",
     "MEMORY": "Memoria",
@@ -14,6 +14,9 @@
     "PROFILE": "Perfil",
     "DOCUMENTATION": "Documentación",
     "CONFIG": "Configuración"
+  },
+  "FORMS": {
+    "SAVE": "Guardar"
   },
   "TOAST": {
     "ACCESS_DENIED": "Acceso denegado",

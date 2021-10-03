@@ -10,24 +10,26 @@ skinparam conditionStyle inside
 |Cliente|
 
   start
-  :Iniciar la aplicación *;
-
-partition "Crear Cuenta" {
- |Aplicación|
-  :Acceder al registro;
-  if (Seleccionar tipo de autetificación) then (OAuth)
-    :Acceder al registro de OAuth;
-  else (Email)
-    :Acceder al registro con email;
-  endif
+  partition Initialization {
+    :Iniciar la aplicación *;
+  }
 
 |Aplicación|
 
-  repeat
-    :Registro;
-    :Introducir parametros;
-  repeat while (Parametros correctos && Comprobar registro) is (false)
-}
-  stop
+  partition "Crear Cuenta" {
+    :Acceder al registro;
+    if (Seleccionar tipo de autetificación) then (OAuth)
+      :Acceder al registro de OAuth;
+    else (Email)
+      :Acceder al registro con email;
+    endif
+
+    repeat
+      :Registro;
+      :Introducir parametros;
+    repeat while (Parametros correctos && Comprobar registro) is (false)
+  }
+
+stop
 
 @enduml

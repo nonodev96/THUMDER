@@ -12,4 +12,8 @@ export class LayoutAdminComponent implements OnInit {
   ngOnInit(): void {
     this.document.body.className = "dx-viewport";
   }
+
+  log(msg: string) {
+    console.log(msg)
+  }
 }

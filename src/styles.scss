@@ -47,22 +47,78 @@ html, body {
   width: 10%;
 }
 
+.width-20 {
+  width: 20%;
+}
+
+.width-30 {
+  width: 30%;
+}
+
+.width-40 {
+  width: 40%;
+}
+
+.width-50 {
+  width: 50%;
+}
+
+.width-60 {
+  width: 60%;
+}
+
 .width-70 {
   width: 70%;
+}
+
+.width-80 {
+  width: 80%;
+}
+
+.width-90 {
+  width: 90%;
+}
+
+.stage-IF {
+  background-color: #fffe04;
+}
+
+.stage-ID {
+  background-color: #ffa200;
+}
+
+.stage-EX {
+  background-color: #ff001b;
+}
+
+.stage-MEM {
+  background-color: #01ff1b;
+}
+
+.stage-WB {
+  background-color: #a2a2ff;
+}
+
+.stage- {
+
 }
 
 .full-width-table {
   width: 100%;
 }
+
 .mat-column-Register {
   width: 20% !important;
 }
+
 .mat-column-Decimal {
   width: 20% !important;
 }
+
 .mat-column-Hexadecimal {
   width: 20% !important;
 }
+
 .mat-column-Binary {
   width: 40% !important;
 }

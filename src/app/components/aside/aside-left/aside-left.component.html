@@ -57,6 +57,14 @@
           </a>
           <ul class="nav nav-treeview" role="menu">
 
+            <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
+              <a class="nav-link" (click)="goToPage($event, menu)">
+                <i class="far fa-circle nav-icon"></i>
+                {{'NAVIGATION.' + menu.lang | translate}}
+              </a>
+            </li>
+
+<!--
             <li role="menuitem" class="nav-item">
               <a [routerLink]="['/auth/file-manager']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -105,6 +113,9 @@
                 <p>Documentation</p>
               </a>
             </li>
+-->
+
+
           </ul>
         </li>
 
