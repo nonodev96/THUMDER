@@ -14,18 +14,18 @@ actor "User" as user
 rectangle THUMDER-Client {
   usecase "<<Story Case>>\nCrear una cuenta" as C_UC1
   usecase "<<Story Case>>\nIniciar sesión" as C_UC2
-  usecase "<<Story Case>>\nCrear Carpeta" as C_UC3
-  usecase "<<Story Case>>\nCrear Fichero" as C_UC3.1
-  usecase "<<Story Case>>\nModificar Carpeta" as C_UC4
-  usecase "<<Story Case>>\nModificar Fichero"" as C_UC4.1
-  usecase "<<Story Case>>\nEliminar Carpeta" as C_UC5
-  usecase "<<Story Case>>\nEliminar Fichero" as C_UC5.1
-'  usecase "<<Story Case>>\nEjecutar Ficheros" as C_UC6
-  usecase "<<Story Case>>\nSimular" as C_UC6
-'  usecase "<<Story Case>>\nDebug" as C_UC8
-  usecase "<<Story Case>>\nMostrar estado maquina" as C_UC7
-  usecase "<<Story Case>>\nActualizar estado maquina" as C_UC7.1
-  usecase "<<Story Case>>\nAlterar estado maquina" as C_UC8
+  usecase "<<Story Case>>\nCrear carpeta" as C_UC3.1a
+  usecase "<<Story Case>>\nCrear fichero" as C_UC3.2a
+  usecase "<<Story Case>>\nModificar nombre carpeta" as C_UC3.1b
+  usecase "<<Story Case>>\nModificar nombre fichero"" as C_UC3.2b
+  usecase "<<Story Case>>\nEliminar carpeta" as C_UC3.1c
+  usecase "<<Story Case>>\nEliminar fichero" as C_UC3.2c
+  usecase "<<Story Case>>\nEditar contenido fichero" as C_UC4
+  usecase "<<Story Case>>\nSimular" as C_UC5
+  usecase "<<Story Case>>\nMostrar estado maquina" as C_UC6
+  usecase "<<Story Case>>\nActualizar estado maquina" as C_UC7
+'  usecase "<<Story Case>>\nAlterar estado maquina" as C_UC9
+'  usecase "<<Story Case>>\nDebug" as C_UC_Debug
 }
 /'
 rectangle THUMDER-Server {
@@ -40,16 +40,18 @@ rectangle THUMDER-Server {
 'admin --> UC02
 user --> C_UC1
 user --> C_UC2
-user --> C_UC3
-C_UC3 --> C_UC3.1
+
+user --> C_UC3.1a
+C_UC3.1a --> C_UC3.2a
+user --> C_UC3.1b
+C_UC3.1b --> C_UC3.2b
+user --> C_UC3.1c
+C_UC3.1c --> C_UC3.2c
+
 user --> C_UC4
-C_UC4 --> C_UC4.1
 user --> C_UC5
-C_UC5 --> C_UC5.1
 user --> C_UC6
 user --> C_UC7
-C_UC7 --> C_UC7.1
-user --> C_UC8
 'user --> C_UC9
 'user --> C_UC10
 

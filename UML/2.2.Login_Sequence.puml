@@ -8,16 +8,10 @@ Predicate : Elementos que representan las respuestas a los eventos para completa
 skinparam defaultFontName consolas
 skinparam sequenceMessageAlign center
 
-=== "Authentication" ==
-Client ->  Server: REQUEST (AuthenticationRequest)
-Client <-- Server: ACCEPT-REQUEST (AuthenticationResponse)
-Client <-- Server: REJECT-REQUEST (AuthenticationResponse)
-
-=== "Show status machine" ==
-
-Client ->  Server: REQUEST (GetStatusMachine)
-Client <-- Server: ACCEPT-REQUEST (SendStatusMachine)
-Client <-- Server: REJECT-REQUEST (SendStatusMachine)
-
+=== "Request Login" ==
+'...5 minutes latter...
+Client ->   Firebase:  1    REQUEST (InitAccountRequest)
+Client <--  Firebase:  2.1  ACCEPT-REQUEST (InitAccountResponse)
+Client <--  Firebase:  2.2  REJECT-REQUEST (InitAccountResponse)
 
 @enduml

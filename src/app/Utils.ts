@@ -2,6 +2,15 @@ import { MachineService } from "./__core/machine/machine.service";
 
 export namespace Utils {
 
+  export function orderJSONBy(array, selector, desc = false) {
+    return [...array].sort((a, b) => {
+      if (desc) {
+        return parseFloat(a.selector) - parseFloat(b.selector)
+      } else
+        return parseFloat(b.selector) - parseFloat(a.selector)
+    });
+  }
+
   export function initSynchronousFactory() {
     return () => {
       console.log('initSynchronousFactory');
@@ -29,8 +38,10 @@ export namespace Utils {
   export function initServicesFactory(service: MachineService | any) {
     return async () => {
       // console.log('initServicesFactory - started')
-      const finish = await service.loadConfiguration();
-      // console.log('initServicesFactory - completed ', finish)
+      const finish = await service.resetMachineStatus();
+      if (finish === false) {
+        console.log('initServicesFactory - completed ', finish)
+      }
     };
   }
 
@@ -61,6 +72,16 @@ export namespace Utils {
       }
       return true;
     }
+  }
+
+  export function isSubsetV2(a, b): boolean {
+    return new Set(b).size === new Set(b.concat(a)).size
+  }
+
+  export function modNotNegative(n: number, m: number): number {
+    let value = ((n % m)) % m;
+    value = value < 0 ? 0 : value
+    return value;
   }
 
   export function isSubset(arr1: any[], arr2: any[]) {

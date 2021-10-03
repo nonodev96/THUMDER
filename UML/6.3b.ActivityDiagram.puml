@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+
+'Modificar fichero / carpeta
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+|Cliente|
+
+  start
+  partition Initialization {
+    :Iniciar la aplicación *;
+    :Iniciar la sesión *;
+  }
+
+|Aplicación|
+
+  partition "Gestionar los ficheros" {
+    :Acceder al gestor de ficheros;
+
+    switch (Seleccionar opción)
+      case ( fichero )
+        :Modificar nombre fichero;
+      case ( carpeta )
+        :Modificar nombre carpeta;
+    endswitch
+  }
+
+stop
+
+
+@enduml

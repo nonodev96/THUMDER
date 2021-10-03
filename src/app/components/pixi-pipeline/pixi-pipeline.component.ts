@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { PixiTHUMER_Pipeline } from "./PixiTHUMER_Pipeline";
+import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
 
 @Component({
@@ -8,9 +7,9 @@ import { MachineService } from "../../__core/machine/machine.service";
   templateUrl: './pixi-pipeline.component.html',
   styleUrls: ['./pixi-pipeline.component.scss']
 })
-export class PixiPipelineComponent implements OnInit, AfterViewInit {
+export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('pixiContainer') pixiContainer;
+  @ViewChild('pixiContainer') public pixiContainer;
   public pApp: PIXI.Application;
 
   constructor(private machine: MachineService) {
@@ -22,24 +21,27 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
       backgroundColor: 0x1099bb,
       resolution: 1,
     });
-
-    this.machine.pipeline = new PixiTHUMER_Pipeline()
-    this.pApp.stage.addChild(this.machine.pipeline.draw());
   }
 
   ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
+    this.pApp.stage.addChild(this.machine.pipeline.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
     this.resize();
+  }
+
+  ngOnDestroy(): void {
+    this.pApp.stage.destroy();
+    this.pApp.destroy();
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     event.preventDefault();
     event.stopPropagation();
-    this.resize()
+    this.resize();
   }
 
   @HostListener('document:keypress', ['$event'])
@@ -48,28 +50,28 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
     event.stopPropagation();
     switch (event.key) {
       case '1':
-        this.machine.pipeline.update_IF_text("Prueba")
+        this.machine.pipeline.update_IF_text("Prueba");
         break;
       case '2':
-        this.machine.pipeline.update_ID_text("Prueba")
+        this.machine.pipeline.update_ID_text("Prueba");
         break;
       case '3':
-        this.machine.pipeline.update_intEX_text("Prueba")
+        this.machine.pipeline.update_intEX_text("Prueba");
         break;
       case '4':
-        this.machine.pipeline.update_faddEX_text("Prueba")
+        this.machine.pipeline.update_faddEX_text("Prueba");
         break;
       case '5':
-        this.machine.pipeline.update_fmultEX_text("Prueba")
+        this.machine.pipeline.update_fmultEX_text("Prueba");
         break;
       case '6':
-        this.machine.pipeline.update_fdivEX_text("Prueba")
+        this.machine.pipeline.update_fdivEX_text("Prueba");
         break;
       case '7':
-        this.machine.pipeline.update_MEM_text("Prueba")
+        this.machine.pipeline.update_MEM_text("Prueba");
         break;
       case '8':
-        this.machine.pipeline.update_WB_text("Prueba")
+        this.machine.pipeline.update_WB_text("Prueba");
         break;
     }
   }
@@ -77,7 +79,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit {
   private resize() {
     let width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
-    height = height === 0 ? 900 : height
+    height = height === 0 ? 900 : height;
     this.pApp.renderer.resize(width, height);
   }
 }

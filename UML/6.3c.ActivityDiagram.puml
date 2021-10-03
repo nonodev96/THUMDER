@@ -1,0 +1,66 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+
+'Eliminar fichero / carpeta
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+|Cliente|
+
+  start
+  partition Initialization {
+    :Iniciar la aplicación *;
+    :Iniciar la sesión *;
+  }
+
+|Aplicación|
+
+  partition "Gestionar los ficheros" {
+    :Acceder al gestor de ficheros;
+
+    switch (Seleccionar opción)
+      case ( fichero )
+        :Eliminar fichero;
+      case ( carpeta )
+        :Eliminar carpeta;
+    endswitch
+  }
+
+  :Opción;
+  note right
+    << Calling the method
+    ""LaunchDefaultModal(message): Promise<boolean>""
+    ====
+    Metodo que muestra un mensaje y debe devolver
+    una promesa aceptando, rechazando o anulando el
+    mensaje.
+  end note
+
+  if (aceptar) then (Si, eliminar)
+    partition "Eliminar" {
+    switch (Seleccionar opción)
+      case ( fichero )
+        :Eliminar fichero;
+      case ( carpeta )
+        :Eliminar carpetas \nde forma recursiva;
+      endswitch
+    }
+    :Notificación;
+    note right
+      << Calling the method
+      ""LaunchDefaultToast(message): Promise<boolean>""
+      ====
+      Metodo que muestra un mensaje y debe devolver
+      una promesa si todo ha ocurrido correctamente.
+    end note
+  else (No, mantener)
+    stop
+  endif
+
+stop
+
+
+
+@enduml

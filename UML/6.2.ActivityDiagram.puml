@@ -1,8 +1,8 @@
 @startuml
 'https://plantuml.com/activity-diagram-beta
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
 
 'Iniciar Sesión
-
 skinparam defaultFontName consolas
 skinparam minClassWidth 100
 skinparam conditionStyle inside
@@ -10,15 +10,16 @@ skinparam conditionStyle inside
 |Cliente|
 
   start
-
-  :Iniciar la aplicación *;
+  partition Initialization {
+    :Iniciar la aplicación *;
+  }
 
 |Aplicación|
 
   partition "Iniciar la sesión" {
     :Acceder al inicio de sesión;
-    if (Seleccionar tipo de autetificación) then (Github)
-      :Acceder al inicio de sesión de Github;
+    if (Seleccionar tipo de autetificación) then (OAuth)
+      :Acceder al inicio de sesión de OAuth;
     else (Email)
       :Acceder al inicio de sesión con Email;
     endif

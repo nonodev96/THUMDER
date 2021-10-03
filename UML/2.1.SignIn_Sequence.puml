@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+/'
+Action : Elementos que representas los eventos a los que responden los agentes para completar las tareas de la ontología.
+Predicate : Elementos que representan las respuestas a los eventos para completar las tareas de la ontología.
+'/
+'autonumber
+skinparam defaultFontName consolas
+skinparam sequenceMessageAlign center
+
+=== "Request Sign In" ==
+'...5 minutes latter...
+Client ->   Firebase:  1    REQUEST (CreateAccountRequest)
+Client <--  Firebase:  2.1  ACCEPT-REQUEST (CreateAccountResponse)
+Client <--  Firebase:  2.2  REJECT-REQUEST (CreateAccountResponse)
+
+@enduml

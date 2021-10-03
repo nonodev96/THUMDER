@@ -1,6 +1,6 @@
 <div class="card" id="registers_Control_id">
   <div class="card-header">
-    <h3 class="card-title">Registers Control</h3>
+    <h3 class="card-title">{{'MACHINE.REGISTERS_CONTROL' | translate}}</h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersControl">
         <i class="fas fa-edit"></i>
@@ -28,25 +28,25 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         <ng-container matColumnDef="Register">
-          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ element }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
-          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ machine.registers[element].value }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
-          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ (machine.registers[element].value | hexadecimal | uppercase) }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-70" *matCellDef="let element">
             {{ (machine.registers[element].value | binary: 32) }}
           </td>
@@ -61,7 +61,8 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle-Control">Edit Register Control {{registerToEditControl}}</h5>
+        <h5 class="modal-title"
+            id="modalTitle-Control">{{'MACHINE.EDIT_REGISTER_CONTROL' | translate}} {{registerToEditControl}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -73,7 +74,7 @@
             <div class="col-sm-12">
               <!-- select -->
               <div class="form-group">
-                <label>Select Register</label>
+                <label>{{'MACHINE.SELECT_REGISTER' | translate}}</label>
                 <select class="form-control" (change)="selectOptionRegisterControl($event.target)">
                   <ng-template ngFor let-item [ngForOf]="list_REGISTERS" let-currentElementIndex="index">
                     <option [value]="item">{{item}}</option>
@@ -85,19 +86,23 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="form-group">
-                <label for="itemSelectedEditControlId">Register</label>
-                <input type="number" class="form-control" id="itemSelectedEditControlId" placeholder="Enter Value"
+                <label for="itemSelectedEditControlId">{{'MACHINE.REGISTER' | translate}}</label>
+                <input type="number" class="form-control" id="itemSelectedEditControlId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
                        (change)="changeControlRegister($event.target)"
                        value="{{ this.machine.registers[registerToEditControl].value }}">
               </div>
-              <p>Hexadecimal: <strong>{{ (machine.registers[registerToEditControl].value | hexadecimal | uppercase) }}</strong></p>
-              <p>Binary: <strong>{{ (machine.registers[registerToEditControl].value | binary: dataRegisters.DEFAULT.size) }}</strong></p>
+              <p>{{'MACHINE.HEXADECIMAL' | translate}}:
+                <strong>{{ (machine.registers[registerToEditControl].value | hexadecimal | uppercase) }}</strong></p>
+              <p>{{'MACHINE.BINARY' | translate}}:
+                <strong>{{ (machine.registers[registerToEditControl].value | binary: dataRegisters.DEFAULT.size) }}</strong>
+              </p>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
       </div>
     </div>
   </div>
@@ -112,9 +117,10 @@ Registers vector
 
 <div class="card" id="registers_R_id">
   <div class="card-header">
-    <h3 class="card-title">Registers Integer</h3>
+    <h3 class="card-title">{{'MACHINE.REGISTERS_INTEGER' | translate}}</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector" (click)="prepareModal('R')">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector"
+              (click)="prepareModal('R')">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -135,25 +141,25 @@ Registers vector
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         <ng-container matColumnDef="Register">
-          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             R-{{ element }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
-          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ machine.registers.R[element].value }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
-          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ (machine.registers.R[element].value | hexadecimal | uppercase) }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-70" *matCellDef="let element">
             {{ (machine.registers.R[element].value | binary: dataRegisters.R.size) }}
           </td>
@@ -166,9 +172,10 @@ Registers vector
 
 <div class="card" id="registers_F_id">
   <div class="card-header">
-    <h3 class="card-title">Registers Float</h3>
+    <h3 class="card-title">{{'MACHINE.REGISTERS_FLOAT' | translate}}</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector" (click)="prepareModal('F')">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector"
+              (click)="prepareModal('F')">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -189,25 +196,25 @@ Registers vector
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         <ng-container matColumnDef="Register">
-          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             F-{{ element }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
-          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ machine.registers.F[element].value }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
-          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ (machine.registers.F[element].value | hexadecimal | uppercase) }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-70" *matCellDef="let element">
             {{ (machine.registers.F[element].value | binary: dataRegisters.F.size) }}
           </td>
@@ -220,9 +227,10 @@ Registers vector
 
 <div class="card" id="registers_D_id">
   <div class="card-header">
-    <h3 class="card-title">Registers Double</h3>
+    <h3 class="card-title">{{'MACHINE.REGISTERS_DOUBLE' | translate}}</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector" (click)="prepareModal('D')">
+      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-RegistersVector"
+              (click)="prepareModal('D')">
         <i class="fas fa-edit"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -243,25 +251,25 @@ Registers vector
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         <ng-container matColumnDef="Register">
-          <th mat-header-cell *matHeaderCellDef>Register</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             D-{{ element }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
-          <th mat-header-cell *matHeaderCellDef>Decimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ machine.registers.D[element].value }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
-          <th mat-header-cell *matHeaderCellDef>Hexadecimal</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ (machine.registers.D[element].value | hexadecimal | uppercase) }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell *matHeaderCellDef>Binary</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-70" *matCellDef="let element">
             {{ (machine.registers.D[element].value | binary: dataRegisters.D.size) }}
           </td>
@@ -315,7 +323,8 @@ Registers vector
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle-RegistersVector">Edit Register {{registerToEdit}}</h5>
+        <h5 class="modal-title"
+            id="modalTitle-RegistersVector">{{'MACHINE.EDIT_REGISTER' | translate}} {{registerToEdit}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -327,9 +336,10 @@ Registers vector
             <div class="col-sm-12">
               <!-- select -->
               <div class="form-group">
-                <label>Select Register Integer {{registerToEdit}}</label>
+                <label>{{'MACHINE.SELECT_REGISTER_' + registerToEdit | translate}} {{registerToEdit}}</label>
                 <select class="form-control" (change)="selectOptionRegisterVector($event.target)">
-                  <ng-template ngFor let-item [ngForOf]="createRange(dataRegisters[registerToEdit].registers)" let-currentElementIndex="index">
+                  <ng-template ngFor let-item [ngForOf]="createRange(dataRegisters[registerToEdit].registers)"
+                               let-currentElementIndex="index">
                     <option [value]="currentElementIndex">{{registerToEdit}} {{currentElementIndex}}</option>
                   </ng-template>
                 </select>
@@ -340,18 +350,23 @@ Registers vector
             <div class="col-sm-12">
               <div class="form-group">
                 <label for="itemSelectedEditId">Register {{registerToEdit}}-{{itemSelected}}</label>
-                <input type="number" class="form-control" id="itemSelectedEditId" placeholder="Enter Value"
+                <input type="number" class="form-control" id="itemSelectedEditId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
                        (change)="changeRegister($event.target)"
                        value="{{ this.machine.registers[registerToEdit][itemSelected].value }}">
               </div>
-              <p>Hexadecimal: <strong>{{ (machine.registers[registerToEdit][itemSelected].value | hexadecimal | uppercase) }}</strong></p>
-              <p>Binary: <strong>{{ (machine.registers[registerToEdit][itemSelected].value | binary: dataRegisters[registerToEdit].size) }}</strong></p>
+              <p>{{'MACHINE.HEXADECIMAL' | translate}}:
+                <strong>{{ (machine.registers[registerToEdit][itemSelected].value | hexadecimal | uppercase) }}</strong>
+              </p>
+              <p>{{'MACHINE.BINARY' | translate}}:
+                <strong>{{ (machine.registers[registerToEdit][itemSelected].value | binary: dataRegisters[registerToEdit].size) }}</strong>
+              </p>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
       </div>
     </div>
   </div>

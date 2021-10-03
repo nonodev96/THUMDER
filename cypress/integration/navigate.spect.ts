@@ -1,3 +1,5 @@
+// import { THUMDER_goHome } from "../support/commands/goToPage";
+
 describe('Visit pages no auth', () => {
 
   beforeEach(() => {
@@ -21,50 +23,55 @@ describe('Visit pages no auth', () => {
 
 })
 
-// TODO
 describe('Visit pages auth', () => {
 
-  beforeEach(() => {
-    cy.THUMDER_login()
+  before(() => {
+    cy.visit('/')
   })
 
-  it('visit file-manager', () => {
+  beforeEach(() => {
+    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
+    cy.visit('/'); // Reload page
+    // cy.THUMDER_login()
+  })
+
+  it('can visit file-manager', () => {
     cy.THUMDER_goFileManager();
   })
 
-  it('visit IDE', () => {
+  it('can visit IDE', () => {
     cy.THUMDER_goIDE();
   })
 
-  it('visit Pipeline', () => {
+  it('can visit Pipeline', () => {
     cy.THUMDER_goPipeline();
   })
 
-  it('visit Cycle clock diagram', () => {
+  it('can visit Cycle clock diagram', () => {
     cy.THUMDER_goCycleClockDiagram();
- })
+  })
 
-  it('visit Memory', () => {
+  it('can visit Memory', () => {
     cy.THUMDER_goMemory();
   })
 
-  it('visit Code', () => {
+  it('can visit Code', () => {
     cy.THUMDER_goCode();
   })
 
-  it('visit Registers', () => {
+  it('can visit Registers', () => {
     cy.THUMDER_goRegisters();
   })
 
-  it('visit Profile', () => {
+  it('can visit Profile', () => {
     cy.THUMDER_goProfile()
   })
 
-  it('visit Documentation', () => {
+  it('can visit Documentation', () => {
     cy.THUMDER_goDocumentation()
   })
 
-  it('visit Config', () => {
+  it('can visit Config', () => {
     cy.THUMDER_goConfig()
   })
 

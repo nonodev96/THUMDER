@@ -65,11 +65,17 @@
     <ng-container *ngIf="authService.isLoggedIn">
 
       <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" (click)="play()">
+          <i class="fas fa-upload"></i>
+        </a>
+      </li>
+
+      <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="togglePlayPause()">
-          <ng-container *ngIf="machine.playB === true">
+          <ng-container *ngIf="machine.isRunning === true">
             <i class="fas fa-pause"></i>
           </ng-container>
-          <ng-container *ngIf="machine.playB === false">
+          <ng-container *ngIf="machine.isRunning === false">
             <i class="fas fa-play"></i>
           </ng-container>
         </a>

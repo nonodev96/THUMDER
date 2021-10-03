@@ -6,46 +6,51 @@
 skinparam defaultFontName consolas
 skinparam minClassWidth 100
 skinparam conditionStyle inside
-'skinparam defaultTextAlignment center
 
 |Cliente|
 
   start
-  :Iniciar la aplicación *;
+  partition Initialization {
+    :Iniciar la aplicación *;
+    :Iniciar la sesión *;
+  }
 
   |Aplicación|
 
-  :Iniciar la sesión *;
+  if (Fichero cargado) then (Si)
 
-  partition "Gestionar ficheros" {
-    :Acceder al gestor de ficheros;
+  else (No)
+    partition "Gestionar ficheros" {
+      :Acceder al gestor de ficheros;
 
-    :Seleccionar fichero;
-    :Cargar fichero;
+      :Seleccionar fichero;
+
+      :Cargar fichero;
+      note right
+        << Calling the method ""notification(message)""
+        ====
+        Al cargar un fichero se lanzara un evento
+        que mostrara una notificación cuando el fichero
+        este cargado en el <b>editor de monaco</b>
+      end note
+    }
+  endif
+
+  partition "Editor" {
+    :Acceder al editor;
+
+    :Editar contenido fichero;
+
+    :Guardar;
     note right
-      << Calling the method
-      ""LaunchDefaultToast(message)""
+      << Calling the method ""notification(message)""
       ====
-      Al cargar un fichero se lanzara un evento
-      que mostrara una notificación cuando el fichero
-      este cargado en el <b>editor de monaco</b>
+      Al guardar el fichero se lanzara un evento que
+      mostrara una notificación cuando el fichero se
+      haya guardado y se haya confirmado por el servidor
     end note
   }
-
-  :Acceder Editor de ficheros;
-
-  partition "Monaco Editor" {
-
-    :Editar;
-
-    split
-       :Usar Tabs para guardar;
-    split again
-       :Usar Shortcuts para guardar;
-    end split
-  }
   stop
-
 
 
 @enduml

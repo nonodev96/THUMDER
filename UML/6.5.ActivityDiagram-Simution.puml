@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+
+'Simulación
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+|Cliente|
+
+  start
+  partition Initialization {
+    :Iniciar la aplicación *;
+    :Iniciar la sesión *;
+    :Cargar fichero *;
+  }
+
+|Aplicación|
+
+
+  partition "Simulación" {
+    :Ejecutar;
+    note right
+      << Calling the method ""notification(message)""
+      ====
+      Al ejecutar el fichero se lanzara un evento que
+      mostrara una notificación cuando el servidor haya
+      confirmado y respondido con el código a simular.
+    end note
+  }
+
+
+
+  stop
+
+
+@enduml

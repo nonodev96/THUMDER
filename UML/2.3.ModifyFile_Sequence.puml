@@ -9,14 +9,13 @@ skinparam defaultFontName consolas
 skinparam sequenceMessageAlign center
 
 === "Authentication" ==
-Client -> Server:   1 REQUEST (AuthenticationRequest)
-Client <-- Server:  2.1 ACCEPT-REQUEST (AuthenticationResponse)
-Client <-- Server:  2.2 REJECT-REQUEST (AuthenticationResponse)
+Client ->   Server: 1   REQUEST         (AuthenticationRequest)
+Client <--  Server: 2.1 ACCEPT-REQUEST  (AuthenticationResponse)
+Client <--  Server: 2.2 REJECT-REQUEST  (AuthenticationResponse)
 
-=== "Request Delete a file" ==
-'...5 minutes latter...
-Client -> Server:   3 REQUEST (DeleteFileRequest)
-Client <-- Server:  4.1 ACCEPT-REQUEST (DeleteFileResponse)
-Client <-- Server:  4.2 REJECT-REQUEST (DeleteFileResponse)
+=== "Request Modify a file" ==
+Client ->   Server: 3   REQUEST         (ModifyFileRequest)
+Client <--  Server: 4.1 ACCEPT-REQUEST  (ModifyFileResponse)
+Client <--  Server: 4.2 REJECT-REQUEST  (ModifyFileResponse)
 
 @enduml

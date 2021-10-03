@@ -3,9 +3,10 @@ THUMDER
 
 # Introduction | THUMDER
 
+[![Schematic DLX](https://raw.githubusercontent.com/nonodev96/THUMDER/dev/assets/Datapath_Schematic.svg](./assets/Datapath_Schematic.svg)
+
 [![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 
-You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<size>`
 
 # Introduction | Angular - Electron
 
@@ -30,6 +31,9 @@ You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<s
 | `npm run electron:local` | Builds your application and start electron                                           |
 | `npm run electron:build` | Builds your application and creates an app consumable based on your operating system |
 
+
+You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<size>`
+
 **Your application is optimised. Only /dist folder and node dependencies are included in the executable.**
 
 ## You want to use a specific lib (like rxjs) in electron main thread ?
@@ -42,9 +46,9 @@ E2E Test scripts can be found in `e2e` and `cypress` folder.
 
 ### Electron e2e
 
-| Command         | Description                         |
-| --------------- | ----------------------------------- |
-| `npm run e2e`   | Execute end to end tests of electron|
+| Command         | Description                           |
+| --------------- | ------------------------------------- |
+| `npm run e2e`   | Execute end to end tests of electron  |
 
 ### Server e2e
 
