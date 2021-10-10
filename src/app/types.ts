@@ -21,20 +21,31 @@ export type PublicRoutesList = PublicRoutes[];
 
 export type StepSimulation = {
   step: number,
-  pipeline: string,
   instruction: string,
+  steps: number,
+  stage: 'IF' | 'ID' | 'intEX' | 'faddEX' | 'fmultEX' | 'fdivEX' | 'MEM' | 'WB' | 'other';
 
-  stage: 'IF' | 'ID' | 'intEX' | 'faddEX' | 'fmultEX' | 'fdivEX' | 'MEM' | 'WB'| 'other';
-  IF: number,
   IF_stall: number,
-  ID: number,
+  IF: number,
   ID_stall: number,
-  intEX: number,
+  ID: number,
   intEX_stall: number,
-  MEM: number,
+  intEX: number,
   MEM_stall: number,
-  WB: number,
+  MEM: number,
   WB_stall: number,
+  WB: number,
+
+  pipeline: {
+    IF: string,
+    ID: string,
+    intEX: string,
+    faddEX: string,
+    fmultEX: string,
+    fdivEX: string,
+    MEM: string,
+    WB: string,
+  },
 
   registers: {
     register: string,

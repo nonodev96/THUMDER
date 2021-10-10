@@ -28,6 +28,8 @@ skinparam conditionStyle inside
       mostrara una notificación cuando el servidor haya
       confirmado y respondido con el código a simular.
     end note
+'    TODO
+'    Mostrar error con mensaje
   }
 
 

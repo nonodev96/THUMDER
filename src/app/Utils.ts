@@ -1,6 +1,11 @@
 import { MachineService } from "./__core/machine/machine.service";
 
+
 export namespace Utils {
+
+  export function hexadecimalToDecimal(value): number {
+    return parseInt(value, 16);
+  }
 
   export function orderJSONBy(array, selector, desc = false) {
     return [...array].sort((a, b) => {
@@ -92,5 +97,16 @@ export namespace Utils {
       }
     }
     return true;
+  }
+
+  export function toBase(base, num) {
+    const largest_power = ~~(Math.log(num) / Math.log(base));
+    const result = [];
+    for (let pow = largest_power; pow >= 0; pow--) {
+      const digit = ~~(num / base ** pow);
+      num -= digit * base ** pow;
+      result.push(digit);
+    }
+    return result;
   }
 }

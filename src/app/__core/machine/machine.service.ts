@@ -74,22 +74,21 @@ class Registers {
 export class MachineService {
 
   // public memory: Map<number, number>;
-  // public memory: Array<Int32> = [...new Array(32736)].map(() => new Int32());
-  // public code: Array<Int32> = [...new Array(32764)].map(() => new Int32());
+  public code: Array<Int32> = [...new Array(32764)].map(() => new Int32());
+  public memory: Array<Int32> = [...new Array(32764)].map(() => new Int32());
   public registers: Registers = new Registers();
-  public memory: Array<Int32> = Array<Int32>(32736).fill(new Int32());
-  public code: Array<Int32> = Array<Int32>(32764).fill(new Int32());
+  // public memory: Array<Int32> = Array<Int32>(32764).fill(new Int32());
+  // public code: Array<Int32> = Array<Int32>(32764).fill(new Int32());
   public pipeline: PixiTHUMER_Pipeline;
   public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
-  public step$ = new Subject<number>();
-  private privateStep = -1;
 
   // Vector con los pasos de la simulación
   private simulation: SimulationResponse;
 
-  timer: Observable<number>;
-  timerObserver: PartialObserver<number>;
-
+  public step$ = new Subject<number>();
+  private privateStep = -1;
+  private timer: Observable<number>;
+  private readonly timerObserver: PartialObserver<number>;
 
   stopClick$ = new Subject();
   pauseClick$ = new Subject();
@@ -102,6 +101,7 @@ export class MachineService {
   // 20 de septiembre: Me quiero morir, este código es una locura y no sé hacerlo bonito y entendible por que no
   // hay forma con js suerte Nono del futuro, que te sea leve 👍
   // 28 de septiembre: Nono del pasado eres un cabron
+  // 05 de octubre: Nono del pasado sigues siendo un cabron
   // https://stackblitz.com/edit/angular-play-pause-timer
   constructor() {
     this.pipeline = new PixiTHUMER_Pipeline();
@@ -109,64 +109,69 @@ export class MachineService {
     this.memory[0] = new Int32()
     this.code[0] = new Int32()
 
-    this.timer = interval(1000)
-      .pipe(
-        takeUntil(this.pauseClick$),
-        takeUntil(this.stopClick$)
-      );
+    this.timer = interval(1000).pipe(
+      takeUntil(this.pauseClick$),
+      takeUntil(this.stopClick$)
+    );
 
     this.timerObserver = {
       next: (_: number) => {
+        this.log(new Date().getSeconds())
         if (this.isRunning) {
-          // this.clock()
+          this.privateStep++;
+          this.checkConditions();
+          this.clock();
         } else {
           this.stopClick$.next();
-          this.isRunning = false;
-          this.isComplete = true;
+          // this.isRunning = false;
+          // this.isComplete = true;
         }
       }
     };
 
     this.timer.subscribe(this.timerObserver);
+
+    fetch('./assets/examples-dlx/example-runner.json')
+      .then((res) => res.json())
+      .then((simulation: SimulationResponse) => {
+        this.log(simulation);
+        this.simulation = simulation;
+      })
+  }
+
+  // TODO
+  public resetMachineStatus(): Promise<boolean> {
+    return new Promise((resolve) => {
+      this.pipeline = new PixiTHUMER_Pipeline();
+      this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
+      this.code = [...new Array(32764)].map(() => new Int32());
+      this.memory = [...new Array(32736)].map(() => new Int32());
+      this.registers = new Registers();
+      this.privateStep = -1;
+      this.isComplete = false;
+      this.isRunning = false;
+      this.stopClick$.next();
+
+      resolve(true);
+    })
   }
 
   public getStepObservable(): Observable<number> {
     return this.step$.asObservable();
   }
 
-  public resetMachineStatus(): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.pipeline = new PixiTHUMER_Pipeline();
-      this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-      this.privateStep = -1;
-
-      resolve(true)
-    })
-  }
-
   // Navbar
   async play(): Promise<void> {
     return new Promise((resolve, reject) => {
-      fetch('./assets/examples-dlx/example-runner.json')
-        .then((res) => res.json())
-        .then((simulation: SimulationResponse) => {
-          this.simulation = simulation
-
-          resolve()
-        })
-        .catch(() => {
-          reject()
-        });
+      resolve();
     })
   }
 
   async pause(): Promise<void> {
     return new Promise(resolve => {
-      this.isComplete = true;
-
       this.pauseClick$.next();
       this.isRunning = false;
-      resolve()
+      resolve();
     })
   }
 
@@ -176,40 +181,37 @@ export class MachineService {
       if (this.isComplete) {
         this.isComplete = false;
       }
-
       this.timer.subscribe(this.timerObserver);
-      resolve()
+      resolve();
     })
   }
 
   async next(): Promise<void> {
     return new Promise(resolve => {
       this.privateStep++;
-      this.clock()
-      if (this.privateStep === this.simulation.steps) {
-        this.isComplete = true;
-        this.isRunning = false;
-      }
-      resolve()
+      this.checkConditions();
+      this.clock();
+      resolve();
     })
   }
 
   async end(): Promise<void> {
     return new Promise(resolve => {
       this.privateStep = -1;
-      this.pipeline.reset();
-      this.cycleClockDiagram.reset();
 
       this.stopClick$.next();
       this.isRunning = false;
-
-      resolve()
+      this.isComplete = true;
+      resolve();
     })
   }
 
-  clock() {
-    const statusMachineInStep = this.getStepInRunner(this.privateStep)
-    const instructionText = statusMachineInStep.instruction
+  clock(): any {
+    if (this.isRunning === false) {
+      return;
+    }
+    const statusMachineInStep = this.getStepInRunner(this.privateStep);
+    const instructionText = statusMachineInStep.instruction;
     // this.cycleClockDiagram.addInstruction(instructionText);
     // this.cycleClockDiagram.goToStep(this.privateStep);
 
@@ -217,76 +219,105 @@ export class MachineService {
       for (const register_value of statusMachineInStep.registers) {
         const register = register_value.register
         const value = register_value.value
-        console.log(register)
         if (RegexRegisterInteger.test(register)) {
-          console.log('Es R0-R31')
-          const r: number = MachineService.getRegisterNumber(register)
-          this.registers.R[r] = new Int32()
-          this.registers.R[r].value = value
+          const r: number = MachineService.getRegisterNumber(register);
+          this.registers.R[r] = new Int32();
+          this.registers.R[r].value = value;
         } else if (RegexRegisterFloat.test(register)) {
-          console.log('Es F0-F31')
-          const f: number = MachineService.getRegisterNumber(register)
-          this.registers.F[f] = new Float32()
-          this.registers.F[f].value = value
+          const f: number = MachineService.getRegisterNumber(register);
+          this.registers.F[f] = new Float32();
+          this.registers.F[f].value = value;
         } else if (RegexRegisterDouble.test(register)) {
-          console.log('Es D0-D30')
-          const d: number = MachineService.getRegisterNumber(register)
-          this.registers.D[d] = new Double64()
-          this.registers.D[d].value = value
+          const d: number = MachineService.getRegisterNumber(register);
+          this.registers.D[d] = new Double64();
+          this.registers.D[d].value = value;
         } else if (RegexRegisterControl.test(register)) {
-          console.log('ES otro registro')
-          this.registers[register] = new Int32()
-          this.registers[register].value = value
+          this.registers[register] = new Int32();
+          this.registers[register].value = value;
         }
+        this.log('Registro: ', register, 'con valor', value, 'de la instrucción', instructionText)
       }
     }
 
     if (statusMachineInStep.memory !== []) {
       for (const memory_value of statusMachineInStep.memory) {
-        const address = memory_value.address
-        const value = memory_value.value
-        this.memory[address] = new Int32()
-        this.memory[address].value = value
+        const address = memory_value.address;
+        const value = memory_value.value;
+        this.memory[address] = new Int32();
+        this.memory[address].value = value;
+        this.log('Dirección: ', address, 'con valor', value, 'de la instrucción', instructionText)
       }
     }
 
-    switch (statusMachineInStep.stage) {
-      case "IF":
-        this.pipeline.update_IF_text(instructionText)
-        break;
-      case "ID":
-        this.pipeline.update_ID_text(instructionText)
-        break;
-      case "intEX":
-        this.pipeline.update_intEX_text(instructionText)
-        break;
-      case "faddEX":
-        this.pipeline.update_faddEX_text(instructionText)
-        break;
-      case "fmultEX":
-        this.pipeline.update_fmultEX_text(instructionText)
-        break;
-      case "fdivEX":
-        this.pipeline.update_fdivEX_text(instructionText)
-        break;
-      case "MEM":
-        this.pipeline.update_MEM_text(instructionText)
-        break;
-      case "WB":
-        this.pipeline.update_WB_text(instructionText)
-        break;
+    const {IF, ID, intEX, faddEX, fmultEX, fdivEX, MEM, WB} = statusMachineInStep.pipeline;
+    this.pipeline.update_IF_text(IF);
+    this.pipeline.update_ID_text(ID);
+    this.pipeline.update_intEX_text(intEX);
+    this.pipeline.update_faddEX_text(faddEX);
+    this.pipeline.update_fmultEX_text(fmultEX);
+    this.pipeline.update_fdivEX_text(fdivEX);
+    this.pipeline.update_MEM_text(MEM);
+    this.pipeline.update_WB_text(WB);
+  }
+
+  private checkConditions() {
+    if (this.privateStep > this.simulation.steps) {
+      this.isComplete = true;
+      this.isRunning = false;
     }
   }
 
   private static getRegisterNumber(str): number {
-    return parseInt(str.replace(/\D/g, ''))
+    return parseInt(str.replace(/\D/g, ''));
   }
 
+  private log(...msg) {
+    console.log(this.privateStep, ...msg)
+  }
+
+  /**
+   * DEFAULT STEP
+   *
+   * @param step
+   * @private
+   */
   private getStepInRunner(step: number): StepSimulation {
-    const status = this.simulation.runner.filter((value) => value.step === step)[0]
+    const status = this.simulation.runner.filter((value) => value.step === step)[0];
     if (status === undefined) {
-      console.error('No hay nada que simular')
+      console.error('No hay nada que simular');
+      return;
+    } else {
+      if (status.pipeline === undefined) {
+        status.pipeline = {
+          IF: "", ID: "", MEM: "", WB: "", faddEX: "", fdivEX: "", fmultEX: "", intEX: "",
+        }
+      }
+      return status;
     }
-    return status
+  }
+
+
+  /**
+   *
+   */
+  public getMemory(index: number): Int32 {
+    if (this.memory[index] === undefined) {
+      this.memory[index] = new Int32()
+    }
+    return this.memory[index]
+  }
+
+  public setMemory(index: number, value: number): Int32 {
+    if (this.memory[index] === undefined) {
+      this.memory[index] = new Int32()
+    }
+    this.memory[index].value = value
+    return this.memory[index]
+  }
+
+  defineMemory(index: number) {
+    if (this.memory[index] === undefined) {
+      this.memory[index] = new Int32()
+    }
   }
 }

@@ -51,7 +51,7 @@ export class FileSystemService {
   }
 
   createDirectory(parentDirectory: FileSystemItem, name: string): PromiseLike<FileItem> | any {
-    return new Promise(resolve => {
+    return new Promise(async (resolve) => {
       const {path, pathKeys} = parentDirectory;
       const newDirectory = new FileSystemItem(path, true, pathKeys);
       newDirectory.name = name;
@@ -62,6 +62,7 @@ export class FileSystemService {
       const canCreateFolder = true;
       if (canCreateFolder) {
         this.items.push(newDirectory);
+        const response = await this.tasksService.createNewFolder(path, newDirectory.name)
       }
       // resolve (canCreateFolder);
       resolve(newDirectory);
@@ -77,7 +78,7 @@ export class FileSystemService {
       const index = this.items.push(newItem);
       // return true if can insert
       if (index > -1) {
-        const response = await this.tasksService.createNewFile()
+        const response = await this.tasksService.createNewFile(path, newItem.name)
       }
       resolve(index > -1);
     })
