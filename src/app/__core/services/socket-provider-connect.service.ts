@@ -23,7 +23,7 @@ export class SocketProviderConnectService {
   constructor(public socket: Socket,
               private translate: TranslateService,
               private toast: ToastrService) {
-    /*
+
     this.socket.ioSocket.on('connect', () => {
       const connect = this.socket.connect();
       this.connectSubject.next(connect)
@@ -45,7 +45,6 @@ export class SocketProviderConnectService {
     this.socket.ioSocket.on('connect_failed', err => SocketProviderConnectService.handleErrors(err));
     this.socket.ioSocket.on('disconnect', err => SocketProviderConnectService.handleErrors(err));
     this.socket.ioSocket.on('error', err => SocketProviderConnectService.handleErrors(err));
-     */
   }
 
   emitMessage(event = 'default', payload = {}) {

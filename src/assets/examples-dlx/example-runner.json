@@ -1,7 +1,7 @@
 {
   "name_file": "win-dlx.s",
   "date": "2021-08-28 12:25:00",
-  "steps": 3,
+  "steps": 4,
   "runner": [
     {
       "step": 0,
@@ -17,10 +17,20 @@
       "MEM_stall": 0,
       "WB": 1,
       "WB_stall": 0,
+      "pipeline": {
+        "IF": "ADDI R28, R0, #4",
+        "ID": "",
+        "intEX": "",
+        "faddEX": "",
+        "fmultEX": "",
+        "fdivEX": "",
+        "MEM": "",
+        "WB": ""
+      },
       "registers": [
         {
-          "register": "R28",
-          "value": 4
+          "register": "PC",
+          "value": 0
         }
       ],
       "memory": []
@@ -38,9 +48,19 @@
       "MEM_stall": 0,
       "WB": 1,
       "WB_stall": 0,
+      "pipeline": {
+        "IF": "ADDI R29, R0, #1",
+        "ID": "ADDI R28, R0, #4",
+        "intEX": "",
+        "faddEX": "",
+        "fmultEX": "",
+        "fdivEX": "",
+        "MEM": "",
+        "WB": ""
+      },
       "registers": [
         {
-          "register": "R29",
+          "register": "PC",
           "value": 1
         }
       ],
@@ -48,7 +68,7 @@
     },
     {
       "step": 2,
-      "instruction": "ADDI R17, R0, 0",
+      "instruction": "ADDI R17, R0, #3",
       "IF": 1,
       "IF_stall": 0,
       "ID": 1,
@@ -59,10 +79,24 @@
       "MEM_stall": 0,
       "WB": 1,
       "WB_stall": 0,
+      "pipeline": {
+        "IF": "ADDI R17, R0, #3",
+        "ID": "ADDI R29, R0, #1",
+        "intEX": "ADDI R28, R0, #4",
+        "faddEX": "",
+        "fmultEX": "",
+        "fdivEX": "",
+        "MEM": "",
+        "WB": ""
+      },
       "registers": [
         {
-          "register": "R17",
-          "value": 0
+          "register": "R28",
+          "value": 4
+        },
+        {
+          "register": "PC",
+          "value": 2
         }
       ],
       "memory": []
@@ -80,10 +114,55 @@
       "MEM_stall": 0,
       "WB": 1,
       "WB_stall": 0,
+      "pipeline": {
+        "IF": "ADDI R18, R0, 0",
+        "ID": "ADDI R17, R0, #3",
+        "intEX": "ADDI R29, R0, #1",
+        "faddEX": "",
+        "fmultEX": "",
+        "fdivEX": "",
+        "MEM": "ADDI R28, R0, #4",
+        "WB": ""
+      },
       "registers": [
         {
-          "register": "R18",
-          "value": 0
+          "register": "R29",
+          "value": 1
+        },
+        {
+          "register": "PC",
+          "value": 3
+        }
+      ],
+      "memory": []
+    },
+    {
+      "step": 4,
+      "instruction": "trap",
+      "IF": 1,
+      "IF_stall": 0,
+      "ID": 1,
+      "ID_stall": 0,
+      "intEX": 1,
+      "intEX_stall": 0,
+      "MEM": 1,
+      "MEM_stall": 0,
+      "WB": 1,
+      "WB_stall": 0,
+      "pipeline": {
+        "IF": "trap",
+        "ID": "ADDI R18, R0, 0",
+        "intEX": "ADDI R17, R0, #3",
+        "faddEX": "",
+        "fmultEX": "",
+        "fdivEX": "",
+        "MEM": "ADDI R29, R0, #1",
+        "WB": "ADDI R28, R0, #4"
+      },
+      "registers": [
+        {
+          "register": "R17",
+          "value": 3
         },
         {
           "register": "PC",

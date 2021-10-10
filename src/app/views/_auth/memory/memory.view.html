@@ -20,47 +20,69 @@
                                  style="height: 800px;"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceMemory" [ngClass]="'table-layout'">
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;"></tr>
-        <ng-container matColumnDef="Register">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
-          <td mat-cell class="width-10" *matCellDef="let element">
-            {{ '' + element | leftPadFilter: 5 }}
+        <ng-container matColumnDef="Address">
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}</th>
+          <td mat-cell *matCellDef="let address">
+            <p>0x{{ 4 * address | hexadecimal | uppercase | leftPadFilter: 8 }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Decimal">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DECIMAL' | translate}}</th>
-          <td mat-cell class="width-10" *matCellDef="let element">
-            {{ machine.memory[element].value }}
+          <td mat-cell *matCellDef="let address">
+            <p>{{ machine.memory[address].value }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
-          <td mat-cell class="width-10" *matCellDef="let element">
-            {{ (machine.memory[element].value | hexadecimal | uppercase) }}
+          <td mat-cell *matCellDef="let address">
+            <p>0x{{ (machine.memory[address].value | hexadecimal | uppercase | leftPadFilter: 8) }}</p>
           </td>
         </ng-container>
+
         <ng-container matColumnDef="Binary">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
-          <td mat-cell class="width-70" *matCellDef="let element">
-            {{ (machine.memory[element].value | binary: 32) }}
+          <td mat-cell *matCellDef="let address">
+            <p>{{ (machine.memory[address].value | binary: 32) }}</p>
           </td>
         </ng-container>
+
+        <ng-container matColumnDef="Address-0">
+          <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+0</th>
+          <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
+            <p>{{ getBinaryMemory(address, 0)}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Address-1">
+          <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+1</th>
+          <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
+            <p>{{ getBinaryMemory(address, 1)}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Address-2">
+          <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+2</th>
+          <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
+            <p>{{ getBinaryMemory(address, 2)}}</p>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Address-3">
+          <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+3</th>
+          <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
+            <p>{{ getBinaryMemory(address, 3)}}</p>
+          </td>
+        </ng-container>
+
       </table>
     </cdk-virtual-scroll-viewport>
   </div>
 </div>
 
-
-<button class="btn btn-primary" (click)="change()">
-  Change
-</button>
-
 <!-- Modal -->
 <!-- TODO -->
 <div class="modal fade" id="editMemoryModal" tabindex="-1" role="dialog" aria-labelledby="editMemoryModalLabel"
      aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editMemoryModalLabel">{{'MACHINE.EDIT_MEMORY' | translate}}</h5>
@@ -70,37 +92,139 @@
       </div>
       <div class="modal-body">
         <form action="">
-
           <div class="row">
+
             <div class="col-sm-12">
-              <!-- select -->
-              <div class="form-group">
-                <label for="itemSelectedEditMemoryId">{{'MACHINE.SELECT_MEMORY' | translate}}</label>
-                <input type="number" class="form-control" id="itemSelectedEditMemoryId" placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
-                       (change)="changeRegisterMemoryID($event.target)"
-                       value="{{ registerMemoryToEdit }}">
+              <h4>{{'MACHINE.TYPE_DATA' | translate}}</h4>
+            </div>
+
+            <div class="col-sm-4 col-lg-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataByte" value="byte"
+                       (change)="changeTypeData($event.target)">
+                <label class="form-check-label" for="typeDataByte">
+                  {{'MACHINE.BYTE' | translate}}
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataHalfWord" value="h-word"
+                       (change)="changeTypeData($event.target)">
+                <label class="form-check-label" for="typeDataHalfWord">
+                  {{'MACHINE.HALF_WORD' | translate}}
+                </label>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12">
-              <div class="form-group">
-                <label for="itemSelectedEditControlId">{{'MACHINE.SELECT_MEMORY_VALUE' | translate}}</label>
-                <input type="number" class="form-control" id="itemSelectedEditControlId" placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
-                       (change)="changeMemory($event.target)"
-                       min="0" max="{{this.machine.memory.length}}"
-                       value="{{ this.machine.memory[registerMemoryToEdit].value }}">
+
+            <div class="col-sm-4 col-lg-4">
+              <!-- checked -->
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataWord" value="word" checked
+                       (change)="changeTypeData($event.target)">
+                <label class="form-check-label" for="typeDataWord">
+                  {{ 'MACHINE.WORD' | translate }}
+                </label>
               </div>
-              <p>{{'MACHINE.HEXADECIMAL' | translate}}:
-                <strong id="hexValue">
-                  {{ (machine.memory[registerMemoryToEdit].value | hexadecimal | uppercase) }}
-                </strong>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataSimpleFloatingPoint" value="s-f-point"
+                       (change)="changeTypeData($event.target)">
+                <label class="form-check-label" for="typeDataSimpleFloatingPoint">
+                  {{ 'MACHINE.SIMPLE_FLOATING_POINT' | translate }}
+                </label>
+              </div>
+            </div>
+
+            <div class="col-sm-4 col-lg-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataDoubleFloatingPoint" value="d-f-point"
+                       (change)="changeTypeData($event.target)">
+                <label class="form-check-label" for="typeDataDoubleFloatingPoint">
+                  {{ 'MACHINE.DOUBLE_FLOATING_POINT' | translate }}
+                </label>
+              </div>
+            </div>
+
+            <!-- ADDRESS in hexadecimal, multiple of data size -->
+            <div class="col-sm-12">
+              <label for="itemSelectedEditMemoryId">{{ 'MACHINE.SELECT_ADDRESS' | translate }}</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">0x</span>
+                </div>
+                <input type="text" class="form-control {{ this.addressIsValid ? 'is-valid' : 'is-invalid' }}"
+                       id="itemSelectedEditMemoryId" pattern="[a-fA-F\d]+"
+                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                       [value]="addressMemoryDisplay | hexadecimal | uppercase | leftPadFilter: 8"
+                       (change)="changeAddressMemoryToEdit($event.target)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in hexadecimal</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- VALUE in decimal -->
+            <div class="col-sm-12">
+              <label for="itemSelectedEditMemoryValueId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="itemSelectedEditMemoryValueId"
+                       (keyup)="changeMemory($event.target)"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}"
+                       min="0" max="{{ maxValueTypeData[typeData] }}"
+                       value="{{ valueInSection }}">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <p>Min value: 0</p>
+            </div>
+            <div class="col-sm-6">
+              <p>Max value: {{ maxValueTypeData[typeData] }}</p>
+            </div>
+
+            <div class="col-sm-6">
+              <p id="decValue"><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong>
+                {{ (valueInSection) }}
               </p>
-              <p>{{'MACHINE.BINARY' | translate}}:
-                <strong id="binValue">
-                  {{ (machine.memory[registerMemoryToEdit].value | binary: 32) }}
-                </strong>
+            </div>
+            <div class="col-sm-6">
+              <p id="octalValue"><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong>
+                {{ (valueInSection | decimalToBasePipe: 8) }}
               </p>
+            </div>
+            <div class="col-sm-6">
+              <p id="hexValue"><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong>
+                {{ (valueInSection | hexadecimal | uppercase | leftPadFilter: 8) }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p id="indexValue"><strong>{{ 'MACHINE.INDEX' | translate }}:</strong>
+                {{ (addressMemoryToEdit) }}
+              </p>
+            </div>
+
+            <div class="col-sm-3">
+              <p><strong>{{ 'MACHINE.ADDRESS' | translate }}:</strong></p>
+              <!-- address -->
+              <p class="text-right" id="address" style="line-height: 2em">
+                0x{{ (addressMemoryDisplay | hexadecimal | uppercase | leftPadFilter: 8) }}
+              </p>
+              <!-- address + 32 bits -->
+              <p class="text-right" id="next_address" style="line-height: 2em">
+                0x{{ (addressMemoryDisplay + 4 | hexadecimal | uppercase | leftPadFilter: 8) }}
+              </p>
+            </div>
+            <div class="col-sm-9">
+              <p><strong>{{ 'MACHINE.BINARY' | translate }}:</strong></p>
+
+              <div [innerHTML]="drawDigitsToChangeByTypeData(addressMemoryToEdit)"></div>
+
             </div>
           </div>
         </form>

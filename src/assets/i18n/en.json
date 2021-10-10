@@ -16,6 +16,7 @@
     "CONFIG": "Config"
   },
   "MACHINE": {
+    "INDEX": "Index",
     "EDIT_REGISTER": "Edit Register",
     "EDIT_REGISTER_CONTROL": "Edit Register Control",
     "REGISTERS_CONTROL": "Registers Control",
@@ -32,14 +33,22 @@
     "CODE": "Code",
     "STAGE": "Stage",
     "INSTRUCTION": "Instruction",
-    "SELECT_MEMORY": "Select memory",
-    "SELECT_MEMORY_VALUE": "Select memory value",
+    "SELECT_ADDRESS": "Select memory address",
+    "SET_MEMORY_VALUE": "Set memory value",
     "INTEGER": "Integer",
     "REGISTER": "Register",
     "MEMORY": "Memory",
     "DECIMAL": "Decimal",
     "HEXADECIMAL": "Hexadecimal",
-    "BINARY": "Binary"
+    "OCTAL": "Octal",
+    "BINARY": "Binary",
+    "EDIT_MEMORY": "Edit memory",
+    "TYPE_DATA": "Data size",
+    "BYTE": "Byte",
+    "HALF_WORD": "Half word",
+    "WORD": "Word",
+    "SIMPLE_FLOATING_POINT": "Simple floating point",
+    "DOUBLE_FLOATING_POINT": "Double floating point"
   },
   "FORMS": {
     "ENTER_VALUE": "Enter Value",
@@ -50,7 +59,13 @@
     "ACCESS_DENIED": "Access denied",
     "LOGIN_FALSE": "You need to login",
     "TITLE_SERVER_DOWN": "Error in socket",
-    "MESSAGE_SERVER_DOWN": "The server is down"
+    "MESSAGE_SERVER_DOWN": "The server is down",
+    "TITLE_ERROR_REGEX": "Error in regex pattern",
+    "MESSAGE_ERROR_REGEX_MEMORY": "Error in memory value, the value is invalid",
+    "TITLE_ERROR_IN_ADDRESS": "Error in address",
+    "MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE": "The address must be a multiple of data size ({{text}})",
+    "TITLE_ERROR_IN_VALUE_MEMORY": "Error in value memory",
+    "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid"
   },
   "PAGES": {
     "HOME": {

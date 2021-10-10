@@ -13,14 +13,15 @@ import { BinaryPipe } from "./pipes/numbers/binary.pipe";
 import { AsyncClickDirective } from './directives/async-await/async-click.directive';
 import { AwaitClickDirective } from "./directives/async-await/await-click.directive";
 import { RouterModule } from "@angular/router";
+import { DecimalToBasePipe } from "./pipes/numbers/decimalToBase.pipe";
 
 @NgModule({
-    imports: [
-        TranslateModule,
-        CommonModule,
-        FormsModule,
-        RouterModule
-    ],
+  imports: [
+    TranslateModule,
+    CommonModule,
+    FormsModule,
+    RouterModule
+  ],
   declarations: [
     PageNotFoundComponent,
 
@@ -30,6 +31,7 @@ import { RouterModule } from "@angular/router";
     WebviewDirective,
 
     LeftPadFilterPipe,
+    DecimalToBasePipe,
     BinaryPipe,
     HexadecimalPipe
   ],
@@ -45,6 +47,7 @@ import { RouterModule } from "@angular/router";
     WebviewDirective,
 
     LeftPadFilterPipe,
+    DecimalToBasePipe,
     BinaryPipe,
     HexadecimalPipe
   ]

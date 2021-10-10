@@ -3,7 +3,7 @@ THUMDER
 
 # Introduction | THUMDER
 
-[![Schematic DLX](https://raw.githubusercontent.com/nonodev96/THUMDER/dev/assets/Datapath_Schematic.svg](./assets/Datapath_Schematic.svg)
+![Datapath Schematic](./assets/Datapath_Schematic.svg)
 
 [![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 
