@@ -50,7 +50,10 @@ export class RegistersView implements OnInit, AfterViewInit {
   };
 
   list_REGISTERS = MACHINE_REGISTERS;
-  displayedColumns = ['Register', 'Decimal', 'Hexadecimal', 'Binary'];
+  displayedColumns = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Word'];
+  displayedColumnsR = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Integer'];
+  displayedColumnsF = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Float'];
+  displayedColumnsD = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Double'];
   dataSource = new TableVirtualScrollDataSource<string>(MACHINE_REGISTERS);
   dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R);
   dataSourceF = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_F);
@@ -62,20 +65,15 @@ export class RegistersView implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataSource.filter = null
+    this.dataSource.filter = null;
     this.dataSource.sort = this.sort;
   }
 
   ngAfterViewInit(): void {
-    const list_cards = ['registers_R_id', 'registers_F_id', 'registers_D_id']
+    const list_cards = ['registers_R_id', 'registers_F_id', 'registers_D_id'];
     for (const card_id of list_cards) {
-      window.jQuery('#' + card_id).CardWidget('collapse')
+      window.jQuery('#' + card_id).CardWidget('collapse');
     }
-  }
-
-  // TODO - remove?
-  registerControl($event: Event) {
-    document.getElementById('registerControlId')
   }
 
   refresh() {
@@ -84,7 +82,7 @@ export class RegistersView implements OnInit, AfterViewInit {
 
   test() {
     this.dataSource.data.push('PC')
-    console.log(this.dataSource.data)
+    console.log(this.dataSource.data);
   }
 
   applyFilter(filterValue: string) {
@@ -97,7 +95,7 @@ export class RegistersView implements OnInit, AfterViewInit {
 
   prepareModal(registerToEdit: 'R' | 'F' | 'D') {
     this.itemSelected = 0;
-    this.registerToEdit = registerToEdit
+    this.registerToEdit = registerToEdit;
   }
 
   selectOptionRegisterVector(target: any) {
@@ -105,18 +103,18 @@ export class RegistersView implements OnInit, AfterViewInit {
   }
 
   selectOptionRegisterControl(target: any) {
-    this.registerToEditControl = target.value
+    this.registerToEditControl = target.value;
   }
 
   changeRegister(target: any) {
     if (this.registerToEdit === 'R') {
-      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseInt(target.value)
+      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseInt(target.value);
     } else {
-      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseFloat(target.value)
+      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseFloat(target.value);
     }
   }
 
   changeControlRegister(target: any) {
-    this.machine.registers[this.registerToEditControl].value = parseInt(target.value)
+    this.machine.registers[this.registerToEditControl].value = parseInt(target.value);
   }
 }

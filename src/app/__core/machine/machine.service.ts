@@ -108,6 +108,7 @@ export class MachineService {
     this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
     this.memory[0] = new Int32()
     this.code[0] = new Int32()
+    // this.registers.D[0].value = 3.14
 
     this.timer = interval(1000).pipe(
       takeUntil(this.pauseClick$),
@@ -307,17 +308,18 @@ export class MachineService {
     return this.memory[index]
   }
 
-  public setMemory(index: number, value: number): Int32 {
+  public setMemory(index: number, value: number, binary: string = "00000000000000000000000000000000"): Int32 {
     if (this.memory[index] === undefined) {
-      this.memory[index] = new Int32()
+      this.memory[index] = new Int32();
     }
-    this.memory[index].value = value
+    this.memory[index].value = value;
+    this.memory[index].binary = binary;
     return this.memory[index]
   }
 
   defineMemory(index: number) {
     if (this.memory[index] === undefined) {
-      this.memory[index] = new Int32()
+      this.memory[index] = new Int32();
     }
   }
 }

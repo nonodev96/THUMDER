@@ -109,4 +109,98 @@ export namespace Utils {
     }
     return result;
   }
+
+  export function integer8ToBin(integer8: number) {
+    return Math.abs(integer8).toString(2).padStart(8, '0').toString()
+  }
+
+  export function integer16ToBin(integer16: number) {
+    return Math.abs(integer16).toString(2).padStart(16, '0').toString()
+  }
+
+  export function integer32ToBin(integer32: number) {
+    return Math.abs(integer32).toString(2).padStart(32, '0').toString()
+  }
+
+  export function float32ToBin(float32: number): string {
+    let str = "";
+    const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
+    for (const element of Array.from(c).reverse()) {
+      str += element.toString(2).padStart(8, '0');
+    }
+    return str;
+  }
+
+  export function float64ToBin(float64: number): string {
+    let str = "";
+    const c = new Uint8Array(new Float64Array([float64]).buffer, 0, 8);
+    for (const element of Array.from(c).reverse()) {
+      str += element.toString(2).padStart(8, '0');
+    }
+    return str;
+  }
+
+  export function convertBinaryIEEE754_32bits_ToUintArray(float32: number): string {
+    const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
+    const elements: string[] = [];
+    for (const element of Array.from(c).reverse()) {
+      elements.push(element.toString().padStart(3, '0'));
+    }
+    const list = elements.join('-');
+    return "[" + list + "]";
+  }
+
+  export function convertBinaryIEEE754_64bits_ToUintArray(float64: number): string {
+    const c = new Uint8Array(new Float64Array([float64]).buffer, 0, 8);
+    const elements: string[] = [];
+    for (const element of Array.from(c).reverse()) {
+      elements.push(element.toString().padStart(3, '0'));
+    }
+    const list = elements.join('-');
+    return "[" + list + "]";
+  }
+
+  export function convertBinaryIEEE754_32bits_ToNumber(str: string): number {
+    if (str.length !== 32) throw new Error("Binary cannot be converted because the length is not 32.")
+    const arr = [];
+    for (let i = 0; i < str.length; i += 8) {
+      const inner = str.slice(i, i + 8);
+      arr.push(parseInt(inner, 2));
+    }
+    const c = new Uint8Array(arr);
+    return new DataView(c.buffer, 0, 4).getFloat32(0);
+  }
+
+  export function convertBinaryIEEE754_64bits_ToNumber(str: string): number {
+    if (str.length !== 64) throw new Error("Binary cannot be converted because the length is not 64.")
+    const arr = [];
+    for (let i = 0; i < str.length; i += 8) {
+      const inner = str.slice(i, i + 8);
+      arr.push(parseInt(inner, 2));
+    }
+    const c = new Uint8Array(arr);
+    return new DataView(c.buffer, 0, 8).getFloat64(0);
+  }
+
+
+  export function formatDecimalString(num: number): string {
+    const numberFormat = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 10
+    });
+    return replaceAll(numberFormat.format(num), ",", "");
+  }
+
+  export function formatDecimalNumber(num) {
+    const numberFormat = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 10
+    });
+    const text = replaceAll(numberFormat.format(num), ",", "");
+    return parseFloat(text);
+  }
+
+  export function replaceAll(str: string = "", search = "", replace = "") {
+    return str.split(search).join(replace);
+  }
 }
