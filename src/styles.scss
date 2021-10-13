@@ -43,6 +43,11 @@ html, body {
   white-space: pre-line;
 }
 
+
+.btn--active {
+  color: #495057 !important;
+}
+
 .width-10 {
   width: 10%;
 }
@@ -154,6 +159,27 @@ html, body {
   }
 }
 
+
+.mat-column-Byte {
+  width: 10% !important;
+}
+
+.mat-column-HalfWord {
+  width: 10% !important;
+}
+
+.mat-column-Word {
+  width: 10% !important;
+}
+
+.mat-column-Float {
+  width: 10% !important;
+}
+
+.mat-column-Double {
+  width: 10% !important;
+}
+
 @media(min-width: 992px) {
   .invisible-lg {
     display: none !important;
@@ -168,7 +194,7 @@ html, body {
     width: 10% !important;
   }
   .mat-column-Binary {
-    width: 40% !important;
+    width: 30% !important;
   }
   .mat-column-Address-0 {
     width: 10% !important;
@@ -182,6 +208,18 @@ html, body {
   .mat-column-Address-3 {
     width: 10% !important;
   }
+  .mat-column-Byte-0 {
+    width: 2.5% !important;
+  }
+  .mat-column-Byte-1 {
+    width: 2.5% !important;
+  }
+  .mat-column-Byte-2 {
+    width: 2.5% !important;
+  }
+  .mat-column-Byte-3 {
+    width: 2.5% !important;
+  }
 
   .visible-lg-xl-table-cell {
     display: table-cell !important;
@@ -192,35 +230,27 @@ html, body {
   .invisible-xl {
     display: none !important;
   }
-
   .mat-column-Address {
     width: 10% !important;
   }
-
   .mat-column-Decimal {
     width: 10% !important;
   }
-
   .mat-column-Hexadecimal {
     width: 10% !important;
   }
-
   .mat-column-Binary {
-    width: 40% !important;
+    width: 30% !important;
   }
-
   .mat-column-Address-0 {
     width: 10% !important;
   }
-
   .mat-column-Address-1 {
     width: 10% !important;
   }
-
   .mat-column-Address-2 {
     width: 10% !important;
   }
-
   .mat-column-Address-3 {
     width: 10% !important;
   }

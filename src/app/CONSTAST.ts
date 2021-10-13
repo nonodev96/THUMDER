@@ -3,6 +3,8 @@ import { PublicRoutes, PublicRoutesList } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
 export const DEFAULT_LANG = 'sp';
+export const DEFAULT_BINARY_32_BITS = "".padStart(32, '0');
+export const DEFAULT_BINARY_64_BITS = "".padStart(64, '0');
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   progressBar: true,
