@@ -7,23 +7,29 @@ import { PageNotFoundComponent } from './components/';
 import { WebviewDirective } from './directives/';
 import { FormsModule } from '@angular/forms';
 import { AuthDirective } from "./directives/auth/auth.directive";
-import { HexadecimalPipe } from "./pipes/numbers/hexadecimal.pipe";
-import { LeftPadFilterPipe } from "./pipes/filter/LeftPadFilter.pipe";
-import { BinaryPipe } from "./pipes/numbers/binary.pipe";
+
+import { RouterModule } from "@angular/router";
+
 import { AsyncClickDirective } from './directives/async-await/async-click.directive';
 import { AwaitClickDirective } from "./directives/async-await/await-click.directive";
-import { RouterModule } from "@angular/router";
-import { DecimalToBasePipe } from "./pipes/numbers/decimalToBase.pipe";
-import { Binary_IEEE754_32_Pipe } from "./pipes/numbers/binary_IEEE754_32.pipe";
-import { Binary_IEEE754_64_Pipe } from "./pipes/numbers/binary_IEEE754_64.pipe";
-import { Decimal_IEEE754_32_Pipe } from "./pipes/numbers/decimal_IEEE754_32.pipe";
-import { Decimal_IEEE754_64_Pipe } from "./pipes/numbers/decimal_IEEE754_64.pipe";
+
+import { BinaryPipe } from "./pipes/numbers/Binary.pipe";
+import { Binary32ToASCIIPipe } from "./pipes/numbers/Binary32ToASCII.pipe";
+import { Binary32ToBytesPipe } from "./pipes/numbers/Binary32ToBytes.pipe";
+import { Binary32ToDecimal_IEEE754Pipe } from "./pipes/numbers/Binary32ToDecimal_IEEE754.pipe";
+import { Binary32ToHalfWordPipe } from "./pipes/numbers/Binary32ToHalfWord.pipe";
+import { Binary64ToDecimal_IEEE754Pipe } from "./pipes/numbers/Binary64ToDecimal_IEEE754.pipe";
+import { NumberToBinary32_IEEE754Pipe } from "./pipes/numbers/NumberToBinary32_IEEE754.pipe";
+import { NumberToBinary64_IEEE754Pipe } from "./pipes/numbers/NumberToBinary64_IEEE754.pipe";
+import { NumberToHexadecimalPipe } from "./pipes/numbers/NumberToHexadecimal.pipe";
+import { PadStartFilterPipe } from "./pipes/filter/LeftPadFilter.pipe";
+import { NumberToBasePipe } from "./pipes/numbers/NumberToBase.pipe";
+import { BinaryToHexadecimal_FormatPipe } from "./pipes/numbers/BinaryToHexadecimal_Format.pipe";
 import { Uint_IEEE754_32_Pipe } from "./pipes/numbers/uint_IEEE754_32.pipe";
 import { Uint_IEEE754_64_Pipe } from "./pipes/numbers/uint_IEEE754_64.pipe";
-import { BinaryByteToNumberPipe } from "./pipes/numbers/binaryByteToNumberPipe.pipe";
-import { PadStartPipe } from "./pipes/numbers/padStart.pipe";
-import { BinaryToHexPipe } from "./pipes/numbers/binaryToHex.pipe";
-import { ReplaceAllPipe } from "./pipes/numbers/replaceAll.pipe";
+import { BinaryByteToNumberPipe } from "./pipes/numbers/BinaryToNumber.pipe";
+import { PadStartPipe } from "./pipes/numbers/PadStart.pipe";
+import { ReplaceAllPipe } from "./pipes/numbers/ReplaceAll.pipe";
 
 @NgModule({
   imports: [
@@ -40,20 +46,23 @@ import { ReplaceAllPipe } from "./pipes/numbers/replaceAll.pipe";
     AuthDirective,
     WebviewDirective,
 
-    LeftPadFilterPipe,
-    DecimalToBasePipe,
     BinaryPipe,
-    Binary_IEEE754_32_Pipe,
-    Binary_IEEE754_64_Pipe,
-    BinaryByteToNumberPipe,
-    BinaryToHexPipe,
-    Decimal_IEEE754_32_Pipe,
-    Decimal_IEEE754_64_Pipe,
+    Binary32ToASCIIPipe,
+    Binary32ToBytesPipe,
+    Binary32ToDecimal_IEEE754Pipe,
+    Binary32ToHalfWordPipe,
+    Binary64ToDecimal_IEEE754Pipe,
+    NumberToBinary32_IEEE754Pipe,
+    NumberToBinary64_IEEE754Pipe,
+    NumberToHexadecimalPipe,
+    PadStartFilterPipe,
+    NumberToBasePipe,
+    BinaryToHexadecimal_FormatPipe,
     Uint_IEEE754_32_Pipe,
     Uint_IEEE754_64_Pipe,
+    BinaryByteToNumberPipe,
     PadStartPipe,
-    ReplaceAllPipe,
-    HexadecimalPipe
+    ReplaceAllPipe
   ],
   exports: [
     FormsModule,
@@ -66,20 +75,23 @@ import { ReplaceAllPipe } from "./pipes/numbers/replaceAll.pipe";
     AuthDirective,
     WebviewDirective,
 
-    LeftPadFilterPipe,
-    DecimalToBasePipe,
     BinaryPipe,
-    Binary_IEEE754_32_Pipe,
-    Binary_IEEE754_64_Pipe,
-    BinaryByteToNumberPipe,
-    BinaryToHexPipe,
-    Decimal_IEEE754_32_Pipe,
-    Decimal_IEEE754_64_Pipe,
+    Binary32ToASCIIPipe,
+    Binary32ToBytesPipe,
+    Binary32ToDecimal_IEEE754Pipe,
+    Binary32ToHalfWordPipe,
+    Binary64ToDecimal_IEEE754Pipe,
+    NumberToBinary32_IEEE754Pipe,
+    NumberToBinary64_IEEE754Pipe,
+    NumberToHexadecimalPipe,
+    PadStartFilterPipe,
+    NumberToBasePipe,
+    BinaryToHexadecimal_FormatPipe,
     Uint_IEEE754_32_Pipe,
     Uint_IEEE754_64_Pipe,
+    BinaryByteToNumberPipe,
     PadStartPipe,
-    ReplaceAllPipe,
-    HexadecimalPipe
+    ReplaceAllPipe
   ]
 })
 export class SharedModule {

@@ -24,6 +24,40 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
+      const list_elements = this.machine.getListStatusPipeline(stepSimulation);
+      for (const e of list_elements) {
+        const instruction = this.machine.getTableCode(e.address).instruction;
+        switch (e.stage) {
+          case "IF":
+            this.machine.pipeline.update_IF_text(instruction);
+            break;
+          case "ID":
+            this.machine.pipeline.update_ID_text(instruction);
+            break;
+          case "intEX":
+            this.machine.pipeline.update_intEX_text(instruction);
+            break;
+          case "WB":
+            this.machine.pipeline.update_WB_text(instruction);
+            break;
+          case "MEM":
+            this.machine.pipeline.update_MEM_text(instruction);
+            break;
+          default:
+            if (e.stage.includes('faddEX')) {
+              this.machine.pipeline.update_faddEX_text(instruction, e.unit);
+            }
+            if (e.stage.includes('fmultEX')) {
+              this.machine.pipeline.update_fmultEX_text(instruction, e.unit);
+            }
+            if (e.stage.includes('fdivEX')) {
+              this.machine.pipeline.update_fdivEX_text(instruction, e.unit);
+            }
+            break;
+        }
+      }
+    });
   }
 
   ngAfterViewInit(): void {

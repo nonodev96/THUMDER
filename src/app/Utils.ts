@@ -1,9 +1,10 @@
 import { MachineService } from "./__core/machine/machine.service";
+import { ASCII_TABLE } from "./CONSTAST";
 
 
 export namespace Utils {
 
-  export function hexadecimalToDecimal(value): number {
+  export function hexadecimalToDecimal(value: string): number {
     return parseInt(value, 16);
   }
 
@@ -108,6 +109,39 @@ export namespace Utils {
       result.push(digit);
     }
     return result;
+  }
+
+  export function decimalToHexString(n: number): string {
+    if (n < 0) {
+      n = 0xFFFFFFFF + n + 1;
+    }
+    return "0x" + ("00000000" + n.toString(16).toUpperCase()).substr(-8);
+  }
+
+  export function binaryToASCII(binary8: string): string {
+    const element = ASCII_TABLE.filter(v => v.binary === binary8);
+    if (element[0] === undefined) return "NUL";
+    return element[0].ascii;
+  }
+
+  export function hexadecimalToBinary(hex: string, args = {maxLength: 32, fillString: '0'}): string {
+    const decimal = hexStringToDecimal(hex)
+    return (decimal).toString(2).padStart(args.maxLength, args.fillString)
+  }
+
+  export function hexStringToDecimal(hex: string): number {
+    return parseInt(hex, 16);
+  }
+
+
+  export function binaryStringSwap_module(oldValueBinaryString: string, newValuePart: string, start: number, end: number, module: number) {
+    let result = oldValueBinaryString.split('');
+    for (let i = 0; i < 32; i++) {
+      if (i >= start && i < end) {
+        result[i] = newValuePart[i % module];
+      }
+    }
+    return result.join('');
   }
 
   export function integer8ToBin(integer8: number) {

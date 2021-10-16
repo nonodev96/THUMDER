@@ -1,12 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'hexadecimal'
+  name: 'number_to_hexadecimal'
 })
-export class HexadecimalPipe implements PipeTransform {
-
+export class NumberToHexadecimalPipe implements PipeTransform {
   transform(value: number, ...args: unknown[]): string {
-     return value.toString(16);
+    return value.toString(16);
   }
-
 }

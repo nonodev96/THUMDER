@@ -1,7 +1,4 @@
 {
-  "CONFIG": {
-    "LANG": "Language"
-  },
   "NAVIGATION": {
     "PAGES": "Pages",
     "FILE-MANAGER": "File manager",
@@ -29,6 +26,7 @@
     "CYCLE_CLOCK_DIAGRAM": "Cycle clock diagram",
     "PIPELINE": "Pipeline",
     "LINE": "Line",
+    "TEXT": "Text",
     "ADDRESS": "Address",
     "CODE": "Code",
     "STAGE": "Stage",
@@ -53,6 +51,7 @@
   "FORMS": {
     "ENTER_VALUE": "Enter Value",
     "SAVE": "Save",
+    "RESET": "Reset",
     "CLOSE": "Close"
   },
   "TOAST": {
@@ -66,6 +65,19 @@
     "MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE": "The address must be a multiple of data size ({{text}})",
     "TITLE_ERROR_IN_VALUE_MEMORY": "Error in value memory",
     "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid"
+  },
+  "CONFIG": {
+    "LANG": "Language",
+    "FLOATING_POINT_STAGE_CONFIGURATION": "Floating point stage configuration",
+    "COUNT_CONFIG": "Count config",
+    "COUNT_DELAY": "Count delay",
+    "ADDITION": "Addition",
+    "MULTIPLICATION": "Multiplication",
+    "DIVISION": "Division",
+    "MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION": "Number of units in each class: 1 <= M <= 8 -- Delay",
+    "MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION": "(Clock cycles): 1 <= N <= 50",
+    "MESSAGE_3_FLOATING_POINT_STAGE_CONFIGURATION": "WARNING: if you change the values, the processor wil be reset automatically!",
+    "SIZE": "Size"
   },
   "PAGES": {
     "HOME": {
