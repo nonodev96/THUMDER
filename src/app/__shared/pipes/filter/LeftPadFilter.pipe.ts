@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'leftPadFilter'
+  name: 'pad_start'
 })
-export class LeftPadFilterPipe implements PipeTransform {
+export class PadStartFilterPipe implements PipeTransform {
 
-  transform(value: string, ...args: unknown[]): string {
-    return value.padStart(<number>args[0], '0');
+  transform(value: string, args = {maxLength: 32, fillString: '0'}): string {
+    return value.padStart(args.maxLength, args.fillString);
   }
 
 }

@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Utils } from "../../../Utils";
 
 @Pipe({
-  name: 'replaceAll'
+  name: 'replace_all'
 })
 export class ReplaceAllPipe implements PipeTransform {
   transform(str: string = "", args: { search: string, replace: string } = {search: "", replace: ""}): string {

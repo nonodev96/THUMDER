@@ -43,8 +43,12 @@ export class AuthNavbarComponent implements OnInit {
     }
   }
 
+  async reset() {
+    await this.machine.reset()
+  }
+
   async play() {
-      await this.machine.play()
+    await this.machine.play()
   }
 
   async next() {

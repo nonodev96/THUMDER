@@ -4,6 +4,9 @@
     <h3 class="card-title">{{'MACHINE.CODE' | translate}}</h3>
 
     <div class="card-tools">
+      <button type="button" class="btn btn-tool" (click)="test()">
+        <i class="fas fa-bug"></i>
+      </button>
       <button type="button" class="btn btn-tool" (click)="next()">
         <i class="fas fa-bug"></i>
       </button>
@@ -23,36 +26,42 @@
                                  headerHeight="56"
                                  style="height: 800px;"
                                  class="wrapper-table mat-elevation-z2">
-      <table mat-table matSort [dataSource]="dataSourceMemory" [ngClass]="'table-layout'">
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory"></tr>
+      <table mat-table matSort [dataSource]="dataSourceCode" [ngClass]="'table-layout'">
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;" [ngClass]="'stage-' + row.stage "></tr>
-        <ng-container matColumnDef="Line">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.LINE' | translate}}</th>
-          <td mat-cell class="width-10" *matCellDef="let element">
-            {{ element.line }}
-          </td>
-        </ng-container>
         <ng-container matColumnDef="Address">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}</th>
+          <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ element.address }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="Code">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.CODE' | translate}}</th>
+        <ng-container matColumnDef="Text">
+          <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.TEXT' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ element.code }}
+            {{ element.text }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Binary">
+          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
+          <td mat-cell class="width-20" *matCellDef="let element">
+            {{ element.binary }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="Hexadecimal">
+          <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
+          <td mat-cell class="width-10" *matCellDef="let element">
+            {{ element.binary | binary_to_hex }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Stage">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.STAGE' | translate}}</th>
+          <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.STAGE' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
             {{ element.stage }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Instruction">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.INSTRUCTION' | translate}}</th>
-          <td mat-cell class="width-70" *matCellDef="let element">
+          <th mat-header-cell class="width-40" *matHeaderCellDef>{{'MACHINE.INSTRUCTION' | translate}}</th>
+          <td mat-cell class="width-40" *matCellDef="let element">
             {{ element.instruction }}
           </td>
         </ng-container>

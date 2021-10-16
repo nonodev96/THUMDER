@@ -65,13 +65,11 @@ export class PixiTHUMER_Pipeline extends PIXI.Container {
     this.IntStages_text.position.y = 20
     this.addChild(this.IntStages_text)
 
-
     this.drawText(this.IF_text, {x: 100 + 5, y: 100})
     this.drawText(this.ID_text, {x: 100 + 5, y: 200})
     this.drawText(this.intEX_text, {x: 100 + 5, y: 300})
     this.drawText(this.MEM_text, {x: 100 + 5, y: 400})
     this.drawText(this.WB_text, {x: 100 + 5, y: 500})
-
 
     this.drawText(this.faddEX_text, {x: 400 + 5, y: 100})
     this.drawText(this.fmultEX_text, {x: 650 + 5, y: 100})
@@ -195,15 +193,15 @@ export class PixiTHUMER_Pipeline extends PIXI.Container {
     this.intEX_text.text = value
   }
 
-  public update_faddEX_text(value: string): void {
+  public update_faddEX_text(value: string, unit: number = 0): void {
     this.faddEX_text.text = value
   }
 
-  public update_fmultEX_text(value: string): void {
+  public update_fmultEX_text(value: string, unit: number = 0): void {
     this.fmultEX_text.text = value
   }
 
-  public update_fdivEX_text(value: string): void {
+  public update_fdivEX_text(value: string, unit: number = 0): void {
     this.fdivEX_text.text = value
   }
 

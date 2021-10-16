@@ -17,6 +17,7 @@ export const MACHINE_REGISTERS_D = Array.from({length: 16}, (v, i) => (
   i
 ));
 
+export type  TypeDataRegisters = 'Bytes' | 'HalfWord' | 'Word' | 'ASCII';
 
 @Component({
   selector: 'app-registers',
@@ -50,7 +51,8 @@ export class RegistersView implements OnInit, AfterViewInit {
   };
 
   list_REGISTERS = MACHINE_REGISTERS;
-  displayedColumns = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Word'];
+  btn__active = 'Bytes';
+  displayedColumns = ['Register', 'Hexadecimal', 'Binary', 'Bytes'];
   displayedColumnsR = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Integer'];
   displayedColumnsF = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Float'];
   displayedColumnsD = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Double'];
@@ -76,8 +78,13 @@ export class RegistersView implements OnInit, AfterViewInit {
     }
   }
 
+  changeTypeDataInTableRegisters(column: TypeDataRegisters) {
+    this.displayedColumns[3] = column;
+  }
+
   refresh() {
     this.dataSource.filter = null;
+    this.dataSource.data = [...this.dataSource.data];
   }
 
   test() {

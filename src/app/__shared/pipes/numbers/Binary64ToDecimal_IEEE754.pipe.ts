@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Utils } from "../../../Utils";
 
 @Pipe({
-  name: 'decimal_IEEE754_64'
+  name: 'binary64_to_decimal_IEEE754'
 })
-export class Decimal_IEEE754_64_Pipe implements PipeTransform {
+export class Binary64ToDecimal_IEEE754Pipe implements PipeTransform {
   transform(value: string): number {
     return Utils.convertBinaryIEEE754_64bits_ToNumber(value);
   }

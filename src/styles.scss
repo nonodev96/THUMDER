@@ -84,6 +84,10 @@ html, body {
   width: 90%;
 }
 
+.width-100 {
+  width: 100%;
+}
+
 .stage-IF {
   background-color: #fffe04;
 }
@@ -93,6 +97,22 @@ html, body {
 }
 
 .stage-EX {
+  background-color: #ff001b;
+}
+
+.stage-intEX {
+  background-color: #ff001b;
+}
+
+.faddEX_1, .faddEX_2, .faddEX_3, .faddEX_4, .faddEX_5, .faddEX_6, .faddEX_7, .faddEX_8 {
+  background-color: #ff001b;
+}
+
+.fmultEX_1, .fmultEX_2, .fmultEX_3, .fmultEX_4, .fmultEX_5, .fmultEX_6, .fmultEX_7, .fmultEX_8 {
+  background-color: #ff001b;
+}
+
+.fdivEX_1, .fdivEX_2, .fdivEX_3, .fdivEX_4, .fdivEX_5, .fdivEX_6, .fdivEX_7, .fdivEX_8 {
   background-color: #ff001b;
 }
 
@@ -114,6 +134,10 @@ html, body {
 
 .mat-header-cell {
   background-color: #ffffff;
+}
+
+.mat-column-ASCII {
+  white-space: pre;
 }
 
 @media(min-width: 576px) {

@@ -11,7 +11,7 @@
 
     <li class="nav-item dropdown">
       <a id="dropdownSubMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-         class="nav-link dropdown-toggle">{{'CONFIG.LANG'|translate}}</a>
+         class="nav-link dropdown-toggle">{{ 'CONFIG.LANG' | translate }}</a>
       <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu border-0 shadow">
         <li>
           <a class="dropdown-item" (click)="changeToSpain()" id="changeLangToSpanish">
@@ -38,7 +38,7 @@
             <a class="dropdown-item"
                title="{{menu.path}}"
                (click)="goToPage($event, menu)">
-              {{'NAVIGATION.' + menu.lang | translate}}
+              {{ 'NAVIGATION.' + menu.lang | translate }}
             </a>
           </li>
         </ul>
@@ -65,8 +65,8 @@
     <ng-container *ngIf="authService.isLoggedIn">
 
       <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="play()">
-          <i class="fas fa-upload"></i>
+        <a class="nav-link" (click)="reset()">
+          <i class="fas fa-sync"></i>
         </a>
       </li>
 

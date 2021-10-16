@@ -25,6 +25,7 @@ import { MatTableModule } from "@angular/material/table";
 
 import { SharedModule } from "../__shared/shared.module";
 import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
+import { EditBinary32Component } from './modals/edit-binary32/edit-binary32.component';
 
 
 @NgModule({
@@ -64,6 +65,7 @@ import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
     // xTerm
     XtermComponent,
     BreadcrumbComponent,
+    EditBinary32Component,
     // MemoryComponent,
 
 
@@ -87,7 +89,9 @@ import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
     // xTerm
     XtermComponent,
     BreadcrumbComponent,
-    PixiPipelineComponent
+    PixiPipelineComponent,
+
+    EditBinary32Component
   ]
 })
 export class ComponentsModule {
