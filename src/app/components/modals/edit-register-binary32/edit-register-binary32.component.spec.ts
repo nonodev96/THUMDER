@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditBinary32Component } from './edit-binary32.component';
+import { EditRegisterBinary32Component } from './edit-register-binary32.component';
 
 describe('EditBinary32Component', () => {
-  let component: EditBinary32Component;
-  let fixture: ComponentFixture<EditBinary32Component>;
+  let component: EditRegisterBinary32Component;
+  let fixture: ComponentFixture<EditRegisterBinary32Component>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EditBinary32Component ]
+      declarations: [ EditRegisterBinary32Component ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditBinary32Component);
+    fixture = TestBed.createComponent(EditRegisterBinary32Component);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

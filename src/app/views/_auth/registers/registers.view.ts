@@ -2,22 +2,15 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
-
-export const MACHINE_REGISTERS = [
-  "PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"
-]
-
-export const MACHINE_REGISTERS_R = Array.from({length: 32}, (v, i) => (
-  i
-));
-export const MACHINE_REGISTERS_F = Array.from({length: 32}, (v, i) => (
-  i
-));
-export const MACHINE_REGISTERS_D = Array.from({length: 16}, (v, i) => (
-  i
-));
-
-export type  TypeDataRegisters = 'Bytes' | 'HalfWord' | 'Word' | 'ASCII';
+import { TypeData } from "../../../types";
+import { EditRegisterBinary32Component } from "../../../components/modals/edit-register-binary32/edit-register-binary32.component";
+import {
+  MACHINE_REGISTERS_C,
+  MACHINE_REGISTERS_F,
+  MACHINE_REGISTERS_R,
+  MACHINE_REGISTERS_D,
+  REGISTERS_DATA
+} from "../../../CONSTAST";
 
 @Component({
   selector: 'app-registers',
@@ -26,40 +19,20 @@ export type  TypeDataRegisters = 'Bytes' | 'HalfWord' | 'Word' | 'ASCII';
 })
 export class RegistersView implements OnInit, AfterViewInit {
 
-  // items
-  itemSelected = 0;
-  registerToEditControl = 'PC';
 
-  registerToEdit: 'R' | 'F' | 'D' = 'R';
-  dataRegisters = {
-    'R': {
-      registers: 32,
-      size: 32
-    },
-    'F': {
-      registers: 32,
-      size: 32
-    },
-    'D': {
-      registers: 16,
-      size: 64
-    },
-    DEFAULT: {
-      registers: 32,
-      size: 32
-    }
-  };
+  @ViewChild(EditRegisterBinary32Component) editRegisterBinary32Component: EditRegisterBinary32Component;
 
-  list_REGISTERS = MACHINE_REGISTERS;
-  btn__active = 'Bytes';
-  displayedColumns = ['Register', 'Hexadecimal', 'Binary', 'Bytes'];
-  displayedColumnsR = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Integer'];
+  typeDataSelected: TypeData = 'Byte';
+  displayedColumns = ['Register', 'Hexadecimal', 'Binary', 'Byte'];
+  dataSource = new TableVirtualScrollDataSource<string>(MACHINE_REGISTERS_C as string[]);
+
+  dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R as number[]);
+  dataSourceF = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_F as number[]);
+  dataSourceD = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_D as number[]);
+
+  displayedColumnsR = ['Register', 'Hexadecimal', 'Binary', 'Integer'];
   displayedColumnsF = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Float'];
   displayedColumnsD = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Double'];
-  dataSource = new TableVirtualScrollDataSource<string>(MACHINE_REGISTERS);
-  dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R);
-  dataSourceF = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_F);
-  dataSourceD = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_D);
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -78,13 +51,23 @@ export class RegistersView implements OnInit, AfterViewInit {
     }
   }
 
-  changeTypeDataInTableRegisters(column: TypeDataRegisters) {
-    this.displayedColumns[3] = column;
+  changeTypeDataInTableRegisters(typeData: TypeData) {
+    this.typeDataSelected = typeData;
+    this.displayedColumns[3] = typeData.toString();
   }
 
   refresh() {
     this.dataSource.filter = null;
     this.dataSource.data = [...this.dataSource.data];
+
+    this.dataSourceR.filter = null;
+    this.dataSourceR.data = [...this.dataSourceR.data];
+
+    this.dataSourceF.filter = null;
+    this.dataSourceF.data = [...this.dataSourceF.data];
+
+    this.dataSourceD.filter = null;
+    this.dataSourceD.data = [...this.dataSourceD.data];
   }
 
   test() {
@@ -96,32 +79,4 @@ export class RegistersView implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  createRange(number: number) {
-    return new Array(number);
-  }
-
-  prepareModal(registerToEdit: 'R' | 'F' | 'D') {
-    this.itemSelected = 0;
-    this.registerToEdit = registerToEdit;
-  }
-
-  selectOptionRegisterVector(target: any) {
-    this.itemSelected = target.value;
-  }
-
-  selectOptionRegisterControl(target: any) {
-    this.registerToEditControl = target.value;
-  }
-
-  changeRegister(target: any) {
-    if (this.registerToEdit === 'R') {
-      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseInt(target.value);
-    } else {
-      this.machine.registers[this.registerToEdit][this.itemSelected].value = parseFloat(target.value);
-    }
-  }
-
-  changeControlRegister(target: any) {
-    this.machine.registers[this.registerToEditControl].value = parseInt(target.value);
-  }
 }

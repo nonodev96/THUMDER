@@ -1,5 +1,13 @@
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
-import { PublicRoutes, PublicRoutesList, TypeCode, TypeTableCode } from "./types";
+import {
+  PublicRoutes,
+  PublicRoutesList,
+  TypeCode,
+  TypeDataRegister,
+  TypeRegister,
+  TypeRegisterToEdit,
+  TypeTableCode
+} from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
 export const DEFAULT_LANG = 'sp';
@@ -11,6 +19,7 @@ export const DEFAULT_CODE: TypeCode = {
   instruction: "",
   address: ""
 }
+
 export const DEFAULT_TABLE_CODE: TypeTableCode = {
   text: "",
   instruction: "",
@@ -26,19 +35,75 @@ export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
 }
 
 export const MAX_VALUE_TYPE_DATA = {
-  "byte": 255,
-  "h-word": 65535,
-  "word": 4294967295,
-  "s-f-point": 4294967295,
-  "d-f-point": 18446744073709551615
+  "Byte": 255,
+  "HalfWord": 65535,
+  "Word": 4294967295,
+  "Float": 4294967295,
+  "Double": 18446744073709551615
 }
 export const STEP_TYPE_DATA = {
-  "byte": 1,
-  "h-word": 1,
-  "word": 1,
-  "s-f-point": 0.1,
-  "d-f-point": 0.1
+  "Byte": 1,
+  "HalfWord": 1,
+  "Word": 1,
+  "Float": 0.1,
+  "Double": 0.1
 }
+export const REGISTER_TO_EDIT: TypeRegister = 'Control';
+
+export const REGISTERS_DATA: TypeDataRegister = {
+  Control: {
+    registers: 32,
+    size: 32,
+    maxLengthHexadecimal: 8
+  },
+  Integer: {
+    registers: 32,
+    size: 32,
+    maxLengthHexadecimal: 8
+  },
+  Float: {
+    registers: 32,
+    size: 32,
+    maxLengthHexadecimal: 8
+  },
+  Double: {
+    registers: 16,
+    size: 64,
+    maxLengthHexadecimal: 16
+  },
+  DEFAULT: {
+    registers: 32,
+    size: 32,
+    maxLengthHexadecimal: 8
+  }
+};
+
+export const MACHINE_TYPE_REGISTERS: TypeRegister[] = [
+  "Control", "Integer", "Float", "Double"
+]
+
+export const MACHINE_REGISTERS_C: TypeRegisterToEdit[] = [
+  "PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"
+]
+
+export const MACHINE_REGISTERS_R: TypeRegisterToEdit[] = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+  10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+  30, 31
+];
+
+export const MACHINE_REGISTERS_F: Partial<TypeRegisterToEdit>[] = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+  10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+  20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+  30, 31
+];
+
+export const MACHINE_REGISTERS_D: TypeRegisterToEdit[] = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+  10, 11, 12, 13, 14, 15,
+];
 
 export const ASCII_TABLE = [
   {hex: "00", binary: "00000000", ascii: "NUL"},

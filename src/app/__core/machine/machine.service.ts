@@ -7,7 +7,7 @@ import { takeUntil } from "rxjs/operators";
 import {
   SimulationResponse,
   StepSimulation,
-  TypeCode,
+  TypeCode, TypeRegister, TypeRegisterToEdit,
   TypeStage,
   TypeStatusPipeline,
   TypeTableCode
@@ -397,6 +397,26 @@ export class MachineService {
       this.memory[address] = new Int32()
     }
     return this.memory[address]
+  }
+
+  public getRegister(index: TypeRegisterToEdit, typeRegister: TypeRegister): Int32 | Float32 | Double64 {
+    let register: Int32 | Float32 | Double64;
+    switch (typeRegister) {
+      case "Control":
+        register = this.registers[index];
+        break;
+      case "Integer":
+        register = this.registers.R[index];
+        break;
+      case "Float":
+        register = this.registers.F[index];
+        break;
+      case "Double":
+        register = this.registers.D[index];
+        break;
+    }
+
+    return register;
   }
 
   public getTableCode(address: string): TypeTableCode {

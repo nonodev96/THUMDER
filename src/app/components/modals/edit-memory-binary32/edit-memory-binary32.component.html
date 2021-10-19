@@ -1,0 +1,271 @@
+<div class="modal fade" id="editMemoryModal" tabindex="-1" role="dialog" aria-labelledby="editMemoryModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editMemoryModalLabel">{{'MACHINE.EDIT_MEMORY' | translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="">
+          <div class="row">
+
+            <div class="col-sm-12">
+              <h4>{{'MACHINE.TYPE_DATA' | translate}}</h4>
+            </div>
+
+            <div class="col-sm-4 col-lg-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataByte" value="Byte"
+                       (change)="changeTypeData('Byte')">
+                <label class="form-check-label" for="typeDataByte">
+                  {{'MACHINE.BYTE' | translate}}
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataHalfWord" value="HalfWord"
+                       (change)="changeTypeData('HalfWord')">
+                <label class="form-check-label" for="typeDataHalfWord">
+                  {{'MACHINE.HALF_WORD' | translate}}
+                </label>
+              </div>
+            </div>
+
+            <div class="col-sm-4 col-lg-4">
+              <!-- checked -->
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataWord" value="Word" checked
+                       (change)="changeTypeData('Word')">
+                <label class="form-check-label" for="typeDataWord">
+                  {{ 'MACHINE.WORD' | translate }}
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataSimpleFloatingPoint" value="Float"
+                       (change)="changeTypeData('Float')">
+                <label class="form-check-label" for="typeDataSimpleFloatingPoint">
+                  {{ 'MACHINE.SIMPLE_FLOATING_POINT' | translate }}
+                </label>
+              </div>
+            </div>
+
+            <div class="col-sm-4 col-lg-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="typeData"
+                       id="typeDataDoubleFloatingPoint" value="Double"
+                       (change)="changeTypeData('Double')">
+                <label class="form-check-label" for="typeDataDoubleFloatingPoint">
+                  {{ 'MACHINE.DOUBLE_FLOATING_POINT' | translate }}
+                </label>
+              </div>
+            </div>
+
+            <!-- ADDRESS in hexadecimal, multiple of data size -->
+            <div class="col-sm-12">
+              <label for="itemSelectedEditMemoryId">{{ 'MACHINE.SELECT_ADDRESS' | translate }}</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">0x</span>
+                </div>
+                <input type="text" class="form-control {{ this.addressIsValid ? 'is-valid' : 'is-invalid' }}"
+                       id="itemSelectedEditMemoryId" pattern="[a-fA-F\d]+"
+                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                       [value]="addressMemoryDisplay | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: '0'}"
+                       (keyup)="changeAddressMemoryToEdit($event.target)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in hexadecimal</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- VALUE in Hexadecimal -->
+            <div class="col-sm-6">
+              <label for="itemSelectedEditMemoryValueHexadecimalId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">0x</span>
+                </div>
+                <input type="text" class="form-control" id="itemSelectedEditMemoryValueHexadecimalId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
+                       [ngModel]="valueInSection_Hexadecimal"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="ngModelChange_ValueInSection_Hexadecimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- VALUE in decimal -->
+            <div class="col-sm-6" *ngIf="typeDataSelected === 'Byte'">
+              <label for="itemSelectedEditMemoryValueByteId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="itemSelectedEditMemoryValueByteId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
+                       min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
+                       [ngModel]="valueInSection_Byte"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="typeDataSelected === 'HalfWord'">
+              <label for="itemSelectedEditMemoryValueHalfWordId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="itemSelectedEditMemoryValueHalfWordId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
+                       min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
+                       [ngModel]="valueInSection_HalfWord"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="typeDataSelected === 'Word'">
+              <label for="itemSelectedEditMemoryValueDecimalId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="itemSelectedEditMemoryValueDecimalId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
+                       min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
+                       [ngModel]="valueInSection_Word"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="typeDataSelected === 'Float'">
+              <label for="itemSelectedEditMemoryValueFloatId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="itemSelectedEditMemoryValueFloatId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
+                       min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
+                       [ngModel]="valueInSection_Float_Binary32_IEEE754"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="typeDataSelected === 'Double'">
+              <label for="itemSelectedEditMemoryValueDoubleId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" class="form-control" id="itemSelectedEditMemoryValueDoubleId"
+                       placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
+                       min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
+                       [ngModel]="valueInSection_Double_Binary64_IEEE754"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-sm-6">
+              <p>Min value: 0</p>
+            </div>
+            <div class="col-sm-6">
+              <p>Max value: {{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}</p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong><br>
+                {{ (memoryValueBinary32Display | binary_to_number) }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong><br>
+                {{ (memoryValueBinary32Display | binary_to_number | number_to_base: {base: 8}) }}
+              </p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong><br>
+                {{ (memoryValueBinary32Display | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
+                  maxLength: typeDataSelected === 'Double' ? 16 : 8,
+                  fillString: '0'
+                }) }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.BYTE' | translate }}:</strong><br>
+                {{ (memoryValueBinary32Display | binary32_to_bytes) }}
+              </p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong><br>
+                {{ (memoryValueBinary32Display | binary32_to_halfword) }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.ASCII' | translate }}:</strong><br>
+                {{ (memoryValueBinary32Display | binary32_to_ascii) }}
+              </p>
+            </div>
+
+            <div class="col-sm-12" *ngIf="typeDataSelected === 'Float' || typeDataSelected === 'Double'">
+              <p class="text-monospace"><strong>{{ 'MACHINE.IEEE_754' | translate }}:</strong></p>
+              <p class="text-monospace" *ngIf="typeDataSelected === 'Float'">
+                {{ (memoryValueBinary32Display | binary32_to_decimal_IEEE754) }}
+              </p>
+              <p class="text-monospace" *ngIf="typeDataSelected === 'Double'">
+                {{ (memoryValueBinary64Display | binary64_to_decimal_IEEE754) }}
+              </p>
+            </div>
+
+            <div class="col-sm-3">
+              <p><strong>{{ 'MACHINE.ADDRESS' | translate }}: </strong></p>
+              <!-- address -->
+              <p class="text-right" id="address" style="line-height: 2em">
+                0x{{
+                addressMemoryDisplay | number_to_hexadecimal | uppercase | pad_start: {
+                  maxLength: 8,
+                  fillString: '0'
+                }
+                }}
+              </p>
+              <!-- address + 32 bits -->
+              <p class="text-right" id="next_address" style="line-height: 2em">
+                0x{{
+                addressMemoryDisplay + 4 | number_to_hexadecimal | uppercase | pad_start: {
+                  maxLength: 8,
+                  fillString: '0'
+                }
+                }}
+              </p>
+            </div>
+            <div class="col-sm-9">
+              <p><strong>{{ 'MACHINE.BINARY' | translate }}: </strong></p>
+
+              <div [innerHTML]="drawDigitsToChangeByTypeData(addressMemoryToEdit)"></div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
+        <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

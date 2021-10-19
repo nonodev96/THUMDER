@@ -2,28 +2,28 @@
   <div class="card-header">
     <h3 class="card-title">{{'MACHINE.MEMORY' | translate}}</h3>
     <div class="card-tools">
-      <button class="btn btn-tool {{ btn__active === 'byte' ? 'btn--active' : '' }}" title="Bytes"
-              (click)="changeTypeDataInTable('byte')">
+      <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Bytes"
+              (click)="changeTypeDataInTable('Byte')">
         <i class="fas fa-table"></i> Bytes
       </button>
-      <button class="btn btn-tool {{ btn__active === 'h-word' ? 'btn--active' : '' }}" title="Half Word"
-              (click)="changeTypeDataInTable('h-word')">
+      <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="Half Word"
+              (click)="changeTypeDataInTable('HalfWord')">
         <i class="fas fa-table"></i> Half Word
       </button>
-      <button class="btn btn-tool {{ btn__active === 'word' ? 'btn--active' : '' }}" title="Word"
-              (click)="changeTypeDataInTable('word')">
+      <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="Word"
+              (click)="changeTypeDataInTable('Word')">
         <i class="fas fa-table"></i> Word
       </button>
-      <button class="btn btn-tool {{ btn__active === 'ascii' ? 'btn--active' : '' }}" title="ASCII"
-              (click)="changeTypeDataInTable('ascii')">
+      <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="ASCII"
+              (click)="changeTypeDataInTable('ASCII')">
         <i class="fas fa-table"></i> ASCII
       </button>
-      <button class="btn btn-tool {{ btn__active === 's-f-point' ? 'btn--active' : '' }}" title="Float"
-              (click)="changeTypeDataInTable('s-f-point')">
+      <button class="btn btn-tool {{ typeDataSelected === 'Float' ? 'btn--active' : '' }}" title="Float"
+              (click)="changeTypeDataInTable('Float')">
         <i class="fas fa-table"></i> Float
       </button>
-      <button class="btn btn-tool {{ btn__active === 'd-f-point' ? 'btn--active' : '' }}" title="Double"
-              (click)="changeTypeDataInTable('d-f-point')">
+      <button class="btn btn-tool {{ typeDataSelected === 'Double' ? 'btn--active' : '' }}" title="Double"
+              (click)="changeTypeDataInTable('Double')">
         <i class="fas fa-table"></i> Double
       </button>
 
@@ -31,11 +31,14 @@
               id="editMemoryModalButton">
         <i class="fas fa-edit"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+      <button type="button" class="btn btn-tool" (click)="refresh()">
+        <i class="fas fa-sync-alt"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
       </button>
     </div>
   </div>
@@ -56,7 +59,7 @@
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory[address].binary | binary_to_hex) }}</p>
+            <p>{{ (machine.memory[address].binary | binary_32_64_to_hexadecimal) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
@@ -156,4 +159,4 @@
 
 <!-- Modal -->
 
-<THUMDER-edit-binary32></THUMDER-edit-binary32>
+<THUMDER-edit-memory-binary32></THUMDER-edit-memory-binary32>

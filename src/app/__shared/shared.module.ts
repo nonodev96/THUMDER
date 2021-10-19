@@ -30,6 +30,7 @@ import { Uint_IEEE754_64_Pipe } from "./pipes/numbers/uint_IEEE754_64.pipe";
 import { BinaryByteToNumberPipe } from "./pipes/numbers/BinaryToNumber.pipe";
 import { PadStartPipe } from "./pipes/numbers/PadStart.pipe";
 import { ReplaceAllPipe } from "./pipes/numbers/ReplaceAll.pipe";
+import { FromBaseToBasePipe } from "./pipes/numbers/FromBaseToBase.pipe";
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { ReplaceAllPipe } from "./pipes/numbers/ReplaceAll.pipe";
     PadStartFilterPipe,
     NumberToBasePipe,
     BinaryToHexadecimal_FormatPipe,
+    FromBaseToBasePipe,
     Uint_IEEE754_32_Pipe,
     Uint_IEEE754_64_Pipe,
     BinaryByteToNumberPipe,
@@ -87,6 +89,7 @@ import { ReplaceAllPipe } from "./pipes/numbers/ReplaceAll.pipe";
     PadStartFilterPipe,
     NumberToBasePipe,
     BinaryToHexadecimal_FormatPipe,
+    FromBaseToBasePipe,
     Uint_IEEE754_32_Pipe,
     Uint_IEEE754_64_Pipe,
     BinaryByteToNumberPipe,

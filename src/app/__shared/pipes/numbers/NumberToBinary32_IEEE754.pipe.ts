@@ -6,6 +6,6 @@ import { Utils } from "../../../Utils";
 })
 export class NumberToBinary32_IEEE754Pipe implements PipeTransform {
   transform(value: number, ...args: unknown[]): string {
-    return Utils.float32ToBin(value);
+    return Utils.convertIEEE754_Number_To_Binary32Bits(value);
   }
 }
