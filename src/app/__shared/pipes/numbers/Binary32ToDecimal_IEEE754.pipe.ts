@@ -6,6 +6,6 @@ import { Utils } from "../../../Utils";
 })
 export class Binary32ToDecimal_IEEE754Pipe implements PipeTransform {
   transform(value: string): number {
-    return Utils.convertBinaryIEEE754_32bits_ToNumber(value);
+    return Utils.convertIEEE754_Binary32Bits_To_Number(value);
   }
 }

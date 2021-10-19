@@ -7,9 +7,9 @@
       <button type="button" class="btn btn-tool" (click)="test()">
         <i class="fas fa-bug"></i>
       </button>
-      <button type="button" class="btn btn-tool" (click)="next()">
-        <i class="fas fa-bug"></i>
-      </button>
+<!--      <button type="button" class="btn btn-tool" (click)="next()">-->
+<!--        <i class="fas fa-bug"></i>-->
+<!--      </button>-->
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
         <i class="fas fa-minus"></i>
       </button>
@@ -50,7 +50,7 @@
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ element.binary | binary_to_hex }}
+            {{ element.binary | binary_32_64_to_hexadecimal }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Stage">

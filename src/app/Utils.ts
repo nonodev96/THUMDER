@@ -4,10 +4,6 @@ import { ASCII_TABLE } from "./CONSTAST";
 
 export namespace Utils {
 
-  export function hexadecimalToDecimal(value: string): number {
-    return parseInt(value, 16);
-  }
-
   export function orderJSONBy(array, selector, desc = false) {
     return [...array].sort((a, b) => {
       if (desc) {
@@ -124,15 +120,38 @@ export namespace Utils {
     return element[0].ascii;
   }
 
-  export function hexadecimalToBinary(hex: string, args = {maxLength: 32, fillString: '0'}): string {
-    const decimal = hexStringToDecimal(hex)
+  export function hexadecimalToBinary(hexadecimal: string, args = {maxLength: 32, fillString: '0'}): string {
+    const decimal = hexadecimalToDecimal(hexadecimal)
     return (decimal).toString(2).padStart(args.maxLength, args.fillString)
   }
 
-  export function hexStringToDecimal(hex: string): number {
+  export function binaryToHexadecimal(binary: string, args = {maxLength: 8, fillString: '0'}): string {
+    return parseInt(binary, 2).toString(16).toUpperCase().padStart(args.maxLength, args.fillString)
+  }
+
+  export function hexadecimalToDecimal(hex: string): number {
     return parseInt(hex, 16);
   }
 
+  export function replaceAt(text: string, index: number, replacement: string): string {
+    return text.substr(0, index) + replacement + text.substr(index + replacement.length);
+  }
+
+  /**
+   *
+   * @param binary_A  1100-1100-1100-1100
+   * @param binary_B       0000
+   * @param index          4
+   * result =======>  1100-0000-1100-1100
+   *
+   * @param binary_A  1100-1100-1100-1100
+   * @param binary_B            0000-0000
+   * @param index               8
+   * result =======>  1100-1100-0000-0000
+   */
+  export function binaryStringSwap(binary_A: string, binary_B: string, index: number): string {
+    return replaceAt(binary_A, index, binary_B)
+  }
 
   export function binaryStringSwap_module(oldValueBinaryString: string, newValuePart: string, start: number, end: number, module: number) {
     let result = oldValueBinaryString.split('');
@@ -156,7 +175,7 @@ export namespace Utils {
     return Math.abs(integer32).toString(2).padStart(32, '0').toString()
   }
 
-  export function float32ToBin(float32: number): string {
+  export function convertIEEE754_Number_To_Binary32Bits(float32: number): string {
     let str = "";
     const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
     for (const element of Array.from(c).reverse()) {
@@ -165,9 +184,9 @@ export namespace Utils {
     return str;
   }
 
-  export function float64ToBin(float64: number): string {
+  export function convertIEEE754_Number_To_Binary64Bits(double64: number): string {
     let str = "";
-    const c = new Uint8Array(new Float64Array([float64]).buffer, 0, 8);
+    const c = new Uint8Array(new Float64Array([double64]).buffer, 0, 8);
     for (const element of Array.from(c).reverse()) {
       str += element.toString(2).padStart(8, '0');
     }
@@ -194,7 +213,7 @@ export namespace Utils {
     return "[" + list + "]";
   }
 
-  export function convertBinaryIEEE754_32bits_ToNumber(str: string): number {
+  export function convertIEEE754_Binary32Bits_To_Number(str: string): number {
     if (str.length !== 32) throw new Error("Binary cannot be converted because the length is not 32.")
     const arr = [];
     for (let i = 0; i < str.length; i += 8) {
@@ -205,7 +224,7 @@ export namespace Utils {
     return new DataView(c.buffer, 0, 4).getFloat32(0);
   }
 
-  export function convertBinaryIEEE754_64bits_ToNumber(str: string): number {
+  export function convertIEEE754_Binary64Bits_To_Number(str: string): number {
     if (str.length !== 64) throw new Error("Binary cannot be converted because the length is not 64.")
     const arr = [];
     for (let i = 0; i < str.length; i += 8) {
@@ -217,15 +236,15 @@ export namespace Utils {
   }
 
 
-  export function formatDecimalString(num: number): string {
+  export function formatDecimalString(num: number): number {
     const numberFormat = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 10
     });
-    return replaceAll(numberFormat.format(num), ",", "");
+    return parseFloat(replaceAll(numberFormat.format(num), ",", ""));
   }
 
-  export function formatDecimalNumber(num) {
+  export function formatDecimalNumber(num: number) {
     const numberFormat = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 10

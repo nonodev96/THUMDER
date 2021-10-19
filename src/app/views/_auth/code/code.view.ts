@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { StepSimulation, TypeCode, TypeStage, TypeTableCode } from "../../../types";
+import { TypeCode, TypeStage, TypeTableCode } from "../../../types";
 import { Utils } from "../../../Utils";
 
 
@@ -26,7 +26,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dataSourceCode.data = this.machine.memory.map((value, index, a) => {
+    this.dataSourceCode.data = this.machine.memory.map((value, index) => {
       return {
         text: "",
         address: Utils.decimalToHexString(index * 4),

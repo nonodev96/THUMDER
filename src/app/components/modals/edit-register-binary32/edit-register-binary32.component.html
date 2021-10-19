@@ -1,0 +1,161 @@
+<div class="modal fade" id="modal-EditRegister" tabindex="-1" role="dialog" aria-labelledby="editRegisterModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editRegisterModalLabel">{{'MACHINE.EDIT_REGISTER' | translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="">
+          <div class="row">
+
+            <div class="col-sm-12">
+              <!-- select -->
+              <div class="form-group">
+                <label for="selectTypeRegisterId">{{ 'FORM.SELECT_TYPE_REGISTER' | translate }}</label>
+                <select class="form-control" (change)="changeTypeRegister($any($event.target).value)"
+                        id="selectTypeRegisterId">
+                  <ng-template ngFor let-item [ngForOf]="MACHINE_TYPE_REGISTERS" let-currentElementIndex="index">
+                    <option [value]="item">{{ item }}</option>
+                  </ng-template>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <!-- select -->
+              <div class="form-group">
+                <label for="selectRegisterId">{{ 'FORM.SELECT_REGISTER' | translate }}</label>
+                <select class="form-control" (change)="changeRegisterToEdit($any($event.target).value)"
+                        id="selectRegisterId">
+                  <ng-template ngFor let-item [ngForOf]="listRegisters" let-currentElementIndex="index">
+                    <option [value]="item">{{aliasTypeRegister}}{{item}}</option>
+                  </ng-template>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="registerToEditValueHexadecimalId">{{ 'FORM.VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">0x</span>
+                </div>
+                <input type="text" id="registerToEditValueHexadecimalId"
+                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                       [ngModel]="registerToEdit_Hexadecimal"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="onRegisterToEditChangeHexadecimal($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in hexadecimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="registerSelected === 'Control' || registerSelected === 'Integer'">
+              <label for="registerToEditValueDecimalId">{{ 'FORM.VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" id="registerToEditValueDecimalId"
+                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                       [ngModel]="registerToEdit_Word"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6" *ngIf="registerSelected === 'Float'">
+              <label for="registerToEditValueFloatId">{{ 'FORM.VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" id="registerToEditValueFloatId"
+                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                       [ngModel]="registerToEdit_Float"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6" *ngIf="registerSelected === 'Double'">
+              <label for="registerToEditValueDoubleId">{{ 'FORM.VALUE' | translate }}</label>
+              <div class="input-group mb-3">
+                <input type="number" id="registerToEditValueDoubleId"
+                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                       [ngModel]="registerToEdit_Double"
+                       [ngModelOptions]="{standalone: true}"
+                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
+                <div class="input-group-append">
+                  <span class="input-group-text">in decimal</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <p class="text-monospace"><strong>{{ 'MACHINE.BINARY' | translate }}:</strong><br>
+                {{ registerToEdit_Binary }}
+              </p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong><br>
+                {{ (registerToEdit_Binary | binary_to_number) }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong><br>
+                {{ (registerToEdit_Binary | binary_to_number | number_to_base: {base: 8}) }}
+              </p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong><br>
+                {{ (registerToEdit_Binary | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
+                  maxLength: maxLengthHexadecimal,
+                  fillString: '0'
+                }) }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.BYTE' | translate }}:</strong><br>
+                {{ registerToEdit_Binary | binary32_to_bytes }}
+              </p>
+            </div>
+
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong><br>
+                {{ registerToEdit_Binary | binary32_to_halfword }}
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="text-monospace"><strong>{{ 'MACHINE.ASCII' | translate }}:</strong><br>
+                {{ registerToEdit_Binary | binary32_to_ascii }}
+              </p>
+            </div>
+
+            <div class="col-sm-12">
+              <p class="text-monospace"><strong>{{ 'MACHINE.IEEE_754' | translate }}:</strong></p>
+              <p class="text-monospace"
+                 *ngIf="registerSelected !== 'Double'">{{ registerToEdit_Binary | binary32_to_decimal_IEEE754 }}</p>
+              <p class="text-monospace"
+                 *ngIf="registerSelected === 'Double'">{{ registerToEdit_Binary | binary64_to_decimal_IEEE754 }}</p>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
+        <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,65 @@ export type PublicRoutes = {
 
 export type PublicRoutesList = PublicRoutes[];
 
-export type TypeData = "byte" | "h-word" | "word" | "s-f-point" | "d-f-point" | "ascii";
+export type TypeData = "Byte" | "HalfWord" | "Word" | "Float" | "Double" | "ASCII";
+
+export type TypeRegister = "Control" | "Integer" | "Float" | "Double";
+
+export type TypeDataRegister = {
+  Control: {
+    registers: number,
+    size: number,
+    maxLengthHexadecimal: number,
+  },
+  Integer: {
+    registers: number,
+    size: number,
+    maxLengthHexadecimal: number,
+  },
+  Float: {
+    registers: number,
+    size: number,
+    maxLengthHexadecimal: number,
+  },
+  Double: {
+    registers: number,
+    size: number,
+    maxLengthHexadecimal: number,
+  },
+  DEFAULT: {
+    registers: number,
+    size: number,
+    maxLengthHexadecimal: number,
+  }
+}
+
+export type TypeRegisterToEdit = "PC"
+  | "IMAR"
+  | "IR"
+  | "A"
+  | "AHI"
+  | "B"
+  | "BHI"
+  | "BTA"
+  | "ALU"
+  | "ALUHI"
+  | "FPSR"
+  | "DMAR"
+  | "SDR"
+  | "SDRHI"
+  | "LDR"
+  | "LDRHI"
+
+  | 0 | 10 | 20 | 30
+  | 1 | 11 | 21 | 31
+  | 2 | 12 | 22
+  | 3 | 13 | 23
+  | 4 | 14 | 24
+  | 5 | 15 | 25
+  | 6 | 16 | 26
+  | 7 | 17 | 27
+  | 8 | 18 | 28
+  | 9 | 19 | 29;
 
 export type TypeStage =
   ""
