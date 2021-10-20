@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import '../polyfills';
 
+import { NgModule, SecurityContext } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
@@ -11,7 +12,6 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
 
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
@@ -27,6 +27,9 @@ import { SocketIoModule } from "ngx-socket-io";
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 // Cookies
 import { CookieService } from "ngx-cookie-service";
+// ngx-markdown
+import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
+
 
 // Services
 import { UtilityService } from "./__core/utility.service";
@@ -75,13 +78,12 @@ import { RegisterView } from "./views/register/register.view";
 import { IndexView } from "./views/_index/index.view";
 import { RegistersView } from './views/_auth/registers/registers.view';
 import { CodeView } from './views/_auth/code/code.view';
-import { MachineService } from "./__core/machine/machine.service";
-import { Utils } from "./Utils";
 import { MemoryView } from './views/_auth/memory/memory.view';
 // AoT requires an exported function for factories
 
 import * as PIXI from "pixi.js";
 import { ConfigView } from './views/_auth/config/config.view';
+
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
 
@@ -90,6 +92,29 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
+export function markedOptionsFactory(): MarkedOptions {
+  const markedRenderer = new MarkedRenderer();
+
+  markedRenderer.heading = (text: string, level: number) => {
+    const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+    return `
+<h${level}>
+    <a name="${escapedText}" class="anchor" href="#${escapedText}" id="${escapedText}">
+        <span class="header-link"></span>
+    </a> ${text}
+</h${level}>`;
+  };
+
+  return {
+    renderer: markedRenderer,
+    headerIds: true,
+    gfm: true,
+    breaks: false,
+    pedantic: false,
+    smartLists: true,
+    smartypants: false,
+  };
+}
 
 @NgModule({
   declarations: [
@@ -134,6 +159,14 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
     AppRoutingModule,
 
+    MarkdownModule.forRoot({
+      sanitize: SecurityContext.NONE,
+      loader: HttpClient,
+      markedOptions: {
+        provide: MarkedOptions,
+        useFactory: markedOptionsFactory,
+      },
+    }),
     ToastrModule.forRoot(),
     SocketIoModule.forRoot(CONFIG_WEBSOCKET),
     TranslateModule.forRoot({
@@ -172,15 +205,15 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     NoAuthGuard,
     UtilityService,
     CookieService,
-/*
-    MachineService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: Utils.initServicesFactory,
-      deps: [MachineService],
-      multi: true
-    }
- */
+    /*
+        MachineService,
+        {
+          provide: APP_INITIALIZER,
+          useFactory: Utils.initServicesFactory,
+          deps: [MachineService],
+          multi: true
+        }
+     */
   ],
   exports: [],
   bootstrap: [
