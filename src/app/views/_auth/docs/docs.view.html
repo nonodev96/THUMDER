@@ -1,6 +1,20 @@
 <div class="row">
   <div class="col-12" id="accordion">
     <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            0. README
+          </h4>
+        </div>
+      </a>
+      <div id="collapse_readme" class="collapse show" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/docs.md'" (load)="onMarkdownLoad()" #markdownID></markdown>
+        </div>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
       <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
         <div class="card-header">
           <h4 class="card-title w-100">
@@ -8,7 +22,7 @@
           </h4>
         </div>
       </a>
-      <div id="collapseOne" class="collapse show" data-parent="#accordion">
+      <div id="collapseOne" class="collapse" data-parent="#accordion">
         <div class="card-body">
             <pre>
 The current values of all registers are displayed in this window. It is possible to change the contents of the

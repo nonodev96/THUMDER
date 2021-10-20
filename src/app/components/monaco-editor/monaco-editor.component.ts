@@ -5,6 +5,8 @@ import MonacoConfig from "../../../monaco-config";
 import { filter, take } from "rxjs/operators";
 import { MonacoEditorConstructionOptions, MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+import { editor } from "monaco-editor";
+import IModelDecoration = editor.IModelDecoration;
 // import { editor } from "monaco-editor";
 // import IEditorOption = editor.IEditorOption;
 
@@ -27,7 +29,8 @@ export class MonacoEditorComponent implements OnInit {
 
   private httpClient: HttpClient;
   private editor: IStandaloneCodeEditor;
-  private oldDecorationDebugTag: string[] = [];
+  // private oldDecorationDebugTag_targetId: { line: number, target_id: string } []= [];
+  private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
   private iteratorLine: number = 1;
 
@@ -55,7 +58,7 @@ export class MonacoEditorComponent implements OnInit {
     this.editor = $event;
     this.editor.layout();
 
-    this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_S, function () {
+    this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_S, () => {
       alert('SAVE pressed!');
     });
     this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_D, () => {
@@ -75,22 +78,39 @@ export class MonacoEditorComponent implements OnInit {
    * Controllers
    */
 
+  public debug(){
+    const line = this.editor.getPosition().lineNumber ?? 1;
+    const decorations = this.editor.getModel().getLineDecorations(line);
+    const decorations_target_id = decorations.map(v => v.id);
+
+    console.log("line", line)
+    console.log("decorations", decorations)
+    console.log("decorations_target_id", decorations_target_id)
+    console.log("getAllDecorations", this.editor.getModel().getAllDecorations())
+    console.log("oldDecorationDebugTag_targetId", this.oldDecorationDebugTag_targetId)
+    console.log("decorations.some( fas fa-circle color-red )", decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red"))
+  }
 
   public toggleDebuggerTag() {
     const line = this.editor.getPosition().lineNumber ?? 1;
-    // this.oldDecoration = this.editor.deltaDecorations(this.oldDecoration, []);
     const decorations = this.editor.getModel().getLineDecorations(line);
+    const decorations_target_id = decorations.map(v => v.id);
 
     if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
-      this.oldDecorationDebugTag = this.editor.deltaDecorations(this.oldDecorationDebugTag, []);
+      // Eliminamos la tag
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
     } else {
-      this.oldDecorationDebugTag = this.editor.deltaDecorations([], [...decorations, {
-          range: new monaco.Range(line, 1, line, 1),
-          options: {
-            isWholeLine: true,
-            glyphMarginClassName: 'fas fa-circle color-red',
+      // Añadimos la tag
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [
+          {
+            range: new monaco.Range(line, 0, line, 0),
+            options: {
+              isWholeLine: true,
+              // inlineClassName: 'fas fa-circle color-red',
+              glyphMarginClassName: 'fas fa-circle color-red',
+            }
           }
-        }]
+        ]
       );
     }
   }
@@ -98,8 +118,8 @@ export class MonacoEditorComponent implements OnInit {
   /**
    * Devuelve una lista de las lineas marcadas con la tag de debug
    */
-  public getListOfTags(): { line: number, content: string }[] {
-    const vectorOfInstructions: { line: number, content: string }[] = []
+  public getListOfTags(): { line: number, content: string, decorator: IModelDecoration[] | null }[] {
+    const vectorOfInstructions: { line: number, content: string, decorator: IModelDecoration[] | null }[] = []
     const lineCount = this.editor.getModel().getLineCount()
 
     for (let line = 0; line < lineCount; line++) {
@@ -107,7 +127,8 @@ export class MonacoEditorComponent implements OnInit {
       if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
         vectorOfInstructions.push({
           line: line,
-          content: this.editor.getModel().getLineContent(line)
+          content: this.editor.getModel().getLineContent(line),
+          decorator: this.editor.getModel().getLineDecorations(line)
         });
       }
     }
@@ -152,3 +173,35 @@ export class MonacoEditorComponent implements OnInit {
   }
 
 }
+
+
+/*
+https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-line-and-inline-decorations
+
+this.editor.addCommand((window).monaco.KeyMod.CtrlCmd | (window).monaco.KeyCode.KEY_S, function () {
+    const line = this.editor.getPosition().lineNumber ?? 1;
+
+    const decorations = this.editor.getModel().getLineDecorations(line);
+    const decorations_target_id = decorations.map(v => v.id);
+
+    if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
+        // Eliminamos la tag
+        this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
+    } else {
+        // Añadimos la tag
+        this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], [
+            {
+            range: new monaco.Range(line, 1, line, 1),
+            options: {
+                isWholeLine: true,
+                inlineClassName: 'myInlineDecoration',
+                glyphMarginClassName: 'myInlineDecoration',
+            }
+            }
+        ]
+        );
+    }
+});
+
+
+ */

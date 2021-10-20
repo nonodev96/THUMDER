@@ -10,6 +10,8 @@ import {
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
+export const REGEX_IS_ABSOLUTE_HREF = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)', 'i');
+
 export const DEFAULT_LANG = 'sp';
 export const DEFAULT_BINARY_32_BITS = "".padStart(32, '0');
 export const DEFAULT_BINARY_64_BITS = "".padStart(64, '0');
@@ -41,6 +43,7 @@ export const MAX_VALUE_TYPE_DATA = {
   "Float": 4294967295,
   "Double": 18446744073709551615
 }
+
 export const STEP_TYPE_DATA = {
   "Byte": 1,
   "HalfWord": 1,
@@ -48,6 +51,7 @@ export const STEP_TYPE_DATA = {
   "Float": 0.1,
   "Double": 0.1
 }
+
 export const REGISTER_TO_EDIT: TypeRegister = 'Control';
 
 export const REGISTERS_DATA: TypeDataRegister = {
