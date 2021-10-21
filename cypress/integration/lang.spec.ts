@@ -1,18 +1,16 @@
 describe('Tests lang', () => {
 
   beforeEach(() => {
-    cy.THUMDER_login()
-    cy.get('#dropdownSubMenuLang').click()
-  })
-
-  it('check english', () => {
-    cy.get('#changeLangToEnglish').click()
-    cy.contains('App works!')
+    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
+    cy.visit('/');
   })
 
   it('check spanish', () => {
-    cy.get('#changeLangToSpanish').click()
-    cy.contains('App funciona!')
+    cy.THUMDER_setLangSpanish();
+  })
+
+  it('check english', () => {
+    cy.THUMDER_setLangEnglish();
   })
 
 })
