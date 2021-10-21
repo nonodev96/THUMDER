@@ -76,8 +76,9 @@
                 <input type="text" class="form-control {{ this.addressIsValid ? 'is-valid' : 'is-invalid' }}"
                        id="itemSelectedEditMemoryId" pattern="[a-fA-F\d]+"
                        placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
-                       [value]="addressMemoryDisplay | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: '0'}"
-                       (keyup)="changeAddressMemoryToEdit($event.target)">
+                       [ngModel]="addressMemory"
+                       [ngModelOptions]="{standalone: true}"
+                       (change)="changeAddressMemoryToEdit($event.target)">
                 <div class="input-group-append">
                   <span class="input-group-text">in hexadecimal</span>
                 </div>
@@ -97,7 +98,7 @@
                        [ngModelOptions]="{standalone: true}"
                        (ngModelChange)="ngModelChange_ValueInSection_Hexadecimal($event)">
                 <div class="input-group-append">
-                  <span class="input-group-text">in decimal</span>
+                  <span class="input-group-text">in hexadecimal</span>
                 </div>
               </div>
             </div>
@@ -236,27 +237,17 @@
               <p><strong>{{ 'MACHINE.ADDRESS' | translate }}: </strong></p>
               <!-- address -->
               <p class="text-right" id="address" style="line-height: 2em">
-                0x{{
-                addressMemoryDisplay | number_to_hexadecimal | uppercase | pad_start: {
-                  maxLength: 8,
-                  fillString: '0'
-                }
-                }}
+                {{ displayAddressMemory }}
               </p>
               <!-- address + 32 bits -->
               <p class="text-right" id="next_address" style="line-height: 2em">
-                0x{{
-                addressMemoryDisplay + 4 | number_to_hexadecimal | uppercase | pad_start: {
-                  maxLength: 8,
-                  fillString: '0'
-                }
-                }}
+                {{ displayAddressMemoryNext }}
               </p>
             </div>
             <div class="col-sm-9">
               <p><strong>{{ 'MACHINE.BINARY' | translate }}: </strong></p>
 
-              <div [innerHTML]="drawDigitsToChangeByTypeData(addressMemoryToEdit)"></div>
+              <div [innerHTML]="drawDigitsToChangeByTypeData()" [attr.data-id]="'drawBinary'"></div>
 
             </div>
           </div>

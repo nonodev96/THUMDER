@@ -2,8 +2,8 @@
   "compilerOptions": {
     "sourceMap": true,
     "declaration": false,
-    "incremental": true,
     "moduleResolution": "node",
+    "incremental": true,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,

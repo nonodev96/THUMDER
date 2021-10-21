@@ -22,7 +22,7 @@ export namespace Utils {
 
   export function initLongRunningFactory() {
     return () => {
-      return new Promise((resolve) => {
+      return new Promise<void>((resolve) => {
         setTimeout(() => {
           resolve();
         }, 5000);
@@ -107,7 +107,7 @@ export namespace Utils {
     return result;
   }
 
-  export function decimalToHexString(n: number): string {
+  export function numberToHexadecimalString(n: number): string {
     if (n < 0) {
       n = 0xFFFFFFFF + n + 1;
     }

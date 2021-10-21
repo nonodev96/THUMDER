@@ -265,7 +265,9 @@ export class PixiJSTable extends PIXI.Container {
     // add that to the previous entry, and you're good to go.
     this.rows.forEach((row, index) => {
       rowSeparation.push(0);
+      // @ts-ignore
       if (typeof row.cells !== 'undefined') {
+        // @ts-ignore
         row.cells.forEach((cell) => {
           if (cell.height + _inst.rowBuffer + rowSeparation[index] > rowSeparation[index + 1]) {
             rowSeparation[index + 1] = cell.height + _inst.rowBuffer + rowSeparation[index];

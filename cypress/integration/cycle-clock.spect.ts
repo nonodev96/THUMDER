@@ -1,8 +1,14 @@
+import { THUMDER_goCycleClockDiagram } from "../support/commands/goToPage";
+import { THUMDER_setLangEnglish } from "../support/commands/setLang";
+
 describe('Cycle Clock Diagram', () => {
 
   beforeEach(() => {
-    cy.THUMDER_login()
-    cy.get('a[title="Cycle clock diagram"]').click()
+    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
+    cy.visit('/'); // Reload page
+    cy.THUMDER_goCycleClockDiagram()
+    cy.THUMDER_setLangEnglish()
+
     cy.url().should('contain', '/auth/cycle-clock-diagram')
 
     // Define variables with @name

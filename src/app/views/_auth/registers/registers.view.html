@@ -94,13 +94,6 @@
   </div>
 </div>
 
-<!--
-
-Registers vector
-
--->
-
-
 <div class="card" id="registers_R_id">
   <div class="card-header">
     <h3 class="card-title">{{'MACHINE.REGISTERS_INTEGER' | translate}}</h3>
@@ -283,44 +276,6 @@ Registers vector
     </cdk-virtual-scroll-viewport>
   </div>
 </div>
-
-<!--
-<div class="card">
-
-  <div class="card-header">
-    <h3 class="card-title">Registers Double</h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="card-body table-responsive p-0" style="height: 500px;">
-    <table class="table table-head-fixed text-nowrap">
-      <thead>
-      <tr>
-        <th class="width-10">D</th>
-        <th class="width-10">D-Value B(10)</th>
-        <th class="width-10">D-Value B(16)</th>
-        <th >D-Value B(2)</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let key of this.machine.registers.D; let i=index">
-        <td>D-{{i}}</td>
-        <td>{{ machine.registers.D[i].value }}</td>
-        <td>{{ machine.registers.D[i].value | hexadecimal | uppercase }}</td>
-        <td>0x{{ machine.registers.D[i].value | binary: 64 }}</td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
--->
 
 
 <THUMDER-edit-register-binary32></THUMDER-edit-register-binary32>

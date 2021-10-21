@@ -29,7 +29,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.dataSourceCode.data = this.machine.memory.map((value, index) => {
       return {
         text: "",
-        address: Utils.decimalToHexString(index * 4),
+        address: Utils.numberToHexadecimalString(index * 4),
         binary: value.binary,
         stage: "",
         instruction: ""

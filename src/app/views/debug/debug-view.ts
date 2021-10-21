@@ -46,13 +46,12 @@ export class DebugView implements OnInit {
     console.log(this.socketProviderConnect.socket.ioSocket)
   }
 
-  debugLanguage(){
+  debugLanguage() {
 
   }
 
-  getSomethingFromRemoteP = () => {
+  getSomethingFromRemoteP(): Promise<void> {
     return new Promise((resolve) => {
-
       resolve()
     })
   }

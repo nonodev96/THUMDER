@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-electron": {
+    "thumder-angular-electron": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -23,7 +23,8 @@
               "@firebase/app-check",
               "socket.io-client",
               "datastructures-js",
-              "thumder-ontology"
+              "thumder-ontology",
+              "debug"
             ],
             "assets": [
               {
@@ -59,7 +60,6 @@
               "node_modules/prismjs/prism.js",
               "node_modules/prismjs/components/prism-typescript.min.js",
               "node_modules/prismjs/components/prism-javascript.min.js",
-              "node_modules/prismjs/components/prism-cpp.min.js",
               "node_modules/prismjs/components/prism-css.min.js",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
               "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
@@ -78,7 +78,6 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": false,
-              "extractCss": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -102,10 +101,6 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": false,
-              "progress": true,
-              "statsJson": false,
-              "extractCss": true,
-              "showCircularDependencies": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -121,15 +116,14 @@
               ]
             },
             "production": {
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
-              "buildOptimizer": true,
-              "extractCss": true,
+              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -149,24 +143,24 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "angular-electron:build"
+            "browserTarget": "thumder-angular-electron:build"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "angular-electron:build:dev"
+              "browserTarget": "thumder-angular-electron:build:dev"
             },
             "web": {
-              "browserTarget": "angular-electron:build:web"
+              "browserTarget": "thumder-angular-electron:build:web"
             },
             "production": {
-              "browserTarget": "angular-electron:build:production"
+              "browserTarget": "thumder-angular-electron:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-electron:build"
+            "browserTarget": "thumder-angular-electron:build"
           }
         },
         "test": {
@@ -200,7 +194,7 @@
         }
       }
     },
-    "angular-electron-e2e": {
+    "thumder-angular-electron-e2e": {
       "root": "e2e",
       "projectType": "application",
       "architect": {
@@ -216,7 +210,7 @@
       }
     }
   },
-  "defaultProject": "angular-electron",
+  "defaultProject": "thumder-angular-electron",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

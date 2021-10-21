@@ -1,10 +1,18 @@
 <div class="card">
   <div class="card-header">
     <h3 class="card-title">{{ 'CONFIG.FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
   </div>
-  <form>
-    <div class="card-body">
 
+  <div class="card-body">
+    <form>
       <table class="table">
         <tr>
           <th></th>
@@ -62,17 +70,16 @@
       <p>{{ 'CONFIG.MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
       <p>{{ 'CONFIG.MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
 
+      <div class="col-md-12">
+        <button type="reset" class="btn btn-secondary"
+                (click)="resetConfiguration()">{{ "FORM.RESET" | translate }}</button>
+        <button type="submit" class="btn btn-primary float-right"
+                (click)="updateConfiguration()">{{ "FORM.SAVE" | translate }}</button>
+      </div>
+    </form>
+  </div>
 
-    </div>
-    <!-- /.card-body -->
-
-    <div class="card-footer">
-      <button type="reset" class="btn btn-secondary"
-              (click)="resetConfiguration()">{{ "FORM.RESET" | translate }}</button>
-      <button type="submit" class="btn btn-primary float-right"
-              (click)="updateConfiguration()">{{ "FORM.SAVE" | translate }}</button>
-    </div>
-  </form>
+  <div class="card-footer"></div>
 </div>
 
 <!-- Button trigger modal -->
