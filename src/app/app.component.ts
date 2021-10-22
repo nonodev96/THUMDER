@@ -7,6 +7,7 @@ import { ElectronService } from './__core/services';
 import { StorageService } from "./__core/storage/storage.service";
 
 import { DEFAULT_LANG } from "./CONSTAST";
+import MonacoConfig from "../monaco-config";
 
 @Component({
   selector: 'app-root',
@@ -31,13 +32,13 @@ export class AppComponent {
     this.document.documentElement.lang = this.lang;
     this.translate.setDefaultLang(this.lang);
     console.log("ElectronService.debug: ", ElectronService.debug)
-
     // clean the route class when you travel and end de navigation
     router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
         this.document.body.className = ""
       }
     });
+    MonacoConfig.onMonacoLoad();
   }
 
   change(lang: string): void {

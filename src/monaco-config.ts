@@ -1,4 +1,5 @@
 import {AppConfig} from "./environments/environment";
+import * as monaco from 'monaco-editor';
 
 const MonacoConfig: any = {
   baseUrl: AppConfig.production ? './assets' : '',
@@ -10,10 +11,10 @@ const MonacoConfig: any = {
   onMonacoLoad: function () {
 
     // Register a new language
-    (window as any).monaco.languages.register({id: 'thumderLanguage'});
+    monaco.languages.register({id: 'thumderLanguage'});
 
     // Register a tokens provider for the language
-    (window as any).monaco.languages.setMonarchTokensProvider('thumderLanguage', {
+    monaco.languages.setMonarchTokensProvider('thumderLanguage', {
       tokenizer: {
         root: [
           [/\b(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31)\b/i, "custom-register.integer"],
@@ -30,7 +31,7 @@ const MonacoConfig: any = {
     });
 
     // Define a new theme that contains only rules that match this language
-    (window as any).monaco.editor.defineTheme('thumderTheme', {
+    monaco.editor.defineTheme('thumderTheme', {
       colors: undefined,
       encodedTokensColors: [],
       base: 'vs',
@@ -49,33 +50,33 @@ const MonacoConfig: any = {
     });
 
     // Register a completion item provider for the new language
-    (window as any).monaco.languages.registerCompletionItemProvider('thumderLanguage', {
+    monaco.languages.registerCompletionItemProvider('thumderLanguage', {
       provideCompletionItems: (model, position, context, token) => {
 
         const completionListItem: any[] = [
           {
             label: 'add',
-            kind: (window as any).monaco.languages.CompletionItemKind.Text,
+            kind: monaco.languages.CompletionItemKind.Text,
             insertText: 'add R0, R1, R2',
-            insertTextRules: (window as any).monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             documentation: 'Suma R1 y R2 y lo guarda en R0'
           },
           {
             label: 'function',
-            kind: (window as any).monaco.languages.CompletionItemKind.Function,
+            kind: monaco.languages.CompletionItemKind.Function,
             insertText: '${1:pattern}:',
-            insertTextRules: (window as any).monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             documentation: ''
           },
           {
             label: 'jump',
-            kind: (window as any).monaco.languages.CompletionItemKind.Keyword,
+            kind: monaco.languages.CompletionItemKind.Keyword,
             insertText: 'j ${1:condition}',
-            insertTextRules: (window as any).monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
           },
           {
             label: 'ifelse',
-            kind: (window as any).monaco.languages.CompletionItemKind.Snippet,
+            kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: [
               'if (${1:condition}) {',
               '\t$0',
@@ -83,7 +84,7 @@ const MonacoConfig: any = {
               '\t',
               '}'
             ].join('\n'),
-            insertTextRules: (window as any).monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             documentation: 'If-Else Statement'
           }
         ];
@@ -128,7 +129,7 @@ const MonacoConfig: any = {
 
     const tokenPattern = new RegExp('([a-zA-Z]+)((?:\\.[a-zA-Z]+)*)', 'g');
 
-    (window as any).monaco.languages.registerDocumentSemanticTokensProvider('plaintext', {
+    monaco.languages.registerDocumentSemanticTokensProvider('plaintext', {
       getLegend: () => {
         return legend;
       },

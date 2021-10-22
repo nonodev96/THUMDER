@@ -1,14 +1,9 @@
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { XtermComponent } from "../xterm/xterm.component";
-import MonacoConfig from "../../../monaco-config";
-import { filter, take } from "rxjs/operators";
-import { MonacoEditorConstructionOptions, MonacoEditorLoaderService } from "@materia-ui/ngx-monaco-editor";
+import * as monaco from "monaco-editor";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import { editor } from "monaco-editor";
-import IModelDecoration = editor.IModelDecoration;
-// import { editor } from "monaco-editor";
-// import IEditorOption = editor.IEditorOption;
+import IModelDecoration = monaco.editor.IModelDecoration;
+import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
 
 @Component({
@@ -17,33 +12,36 @@ import IModelDecoration = editor.IModelDecoration;
   styleUrls: ['./monaco-editor.component.scss']
 })
 export class MonacoEditorComponent implements OnInit {
+  // export function create(domElement: HTMLElement, options?: IStandaloneEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneCodeEditor;
 
-  public editorOptions_thumder: MonacoEditorConstructionOptions = {
+  public editorOptions_thumder: IStandaloneEditorConstructionOptions = {
     theme: 'thumderTheme',
     language: 'thumderLanguage',
     automaticLayout: true,
     scrollBeyondLastLine: false,
     glyphMargin: true
   };
-  public code_asm: string = ``;
+  public code_asm: string = '';
 
   private httpClient: HttpClient;
+
+
   private editor: IStandaloneCodeEditor;
   // private oldDecorationDebugTag_targetId: { line: number, target_id: string } []= [];
   private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
   private iteratorLine: number = 1;
 
-  constructor(http: HttpClient, private monacoLoaderService: MonacoEditorLoaderService) {
+  constructor(http: HttpClient/*, private monacoLoaderService: MonacoEditorLoaderService*/) {
     this.httpClient = http;
-    this.monacoLoaderService.isMonacoLoaded$
-      .pipe(
-        filter(isLoaded => !!isLoaded),
-        take(1)
-      )
-      .subscribe(() => {
-        MonacoConfig.onMonacoLoad();
-      });
+    // this.monacoLoaderService.isMonacoLoaded$
+    //   .pipe(
+    //     filter(isLoaded => !!isLoaded),
+    //     take(1)
+    //   )
+    //   .subscribe(() => {
+    //     MonacoConfig.onMonacoLoad();
+    //   });
   }
 
   ngOnInit(): void {
@@ -54,31 +52,48 @@ export class MonacoEditorComponent implements OnInit {
       });
   }
 
-  public onInitEditor($event: any) {
+  editorInitialized($event: IStandaloneCodeEditor) {
+    console.log('editorInitialized', $event);
     this.editor = $event;
+
     this.editor.layout();
 
-    this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_S, () => {
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
       alert('SAVE pressed!');
     });
-    this.editor.addCommand((window as any).monaco.KeyMod.CtrlCmd | (window as any).monaco.KeyCode.KEY_D, () => {
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D, () => {
       this.toggleDebuggerTag();
     });
-
     this.editor.onDidChangeCursorSelection((e) => {
 
     });
-
     this.editor.onDidChangeModelDecorations((e) => {
 
     });
+  }
+
+  editorLanguageChanged() {
+    console.log('editorLanguageChanged');
+  }
+
+  editorConfigurationChanged() {
+    console.log('editorConfigurationChanged');
+  }
+
+  editorValueChange() {
+    console.log('editorValueChange');
+  }
+
+
+  callBackFunc($event_text: any) {
+    console.log('callBackFunc', $event_text)
   }
 
   /*
    * Controllers
    */
 
-  public debug(){
+  public debug() {
     const line = this.editor.getPosition().lineNumber ?? 1;
     const decorations = this.editor.getModel().getLineDecorations(line);
     const decorations_target_id = decorations.map(v => v.id);
@@ -171,7 +186,6 @@ export class MonacoEditorComponent implements OnInit {
       }]
     );
   }
-
 }
 
 
