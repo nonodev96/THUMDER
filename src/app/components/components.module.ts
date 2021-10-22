@@ -16,7 +16,7 @@ import { PixiCycleClockDiagramComponent } from "./pixi-cycle-clock-diagram/pixi-
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
-import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
+// import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { DxFileManagerModule } from "devextreme-angular";
 // import { MemoryComponent } from './memory/memory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -27,6 +27,7 @@ import { SharedModule } from "../__shared/shared.module";
 import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
 import { EditMemoryBinary32Component } from './modals/edit-memory-binary32/edit-memory-binary32.component';
 import { EditRegisterBinary32Component } from "./modals/edit-register-binary32/edit-register-binary32.component";
+import { CovalentCodeEditorModule } from "@covalent/code-editor";
 
 
 @NgModule({
@@ -38,12 +39,14 @@ import { EditRegisterBinary32Component } from "./modals/edit-register-binary32/e
     ScrollingModule,
 
     // npm
-    MonacoEditorModule,
+    // MonacoEditorModule,
+    CovalentCodeEditorModule,
     DxFileManagerModule,
     TableVirtualScrollModule,
     MatTableModule,
 
-    SharedModule
+    SharedModule,
+    CovalentCodeEditorModule
   ],
   declarations: [
     // Aside

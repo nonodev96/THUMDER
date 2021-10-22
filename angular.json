@@ -27,15 +27,11 @@
               "debug"
             ],
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "node_modules/monaco-editor",
-                "output": "assets/monaco-editor/"
-              },
               "src/assets"
             ],
             "styles": [
               "src/styles.scss",
+              "src/monaco-editor.scss",
               "src/assets/flag-icons-master/css/flag-icon.css",
               "src/assets/styles/dx.generic.custom-scheme-thumder.css",
               "node_modules/xterm/css/xterm.css",
@@ -65,7 +61,10 @@
               "node_modules/emoji-toolkit/lib/js/joypixels.min.js"
             ],
             "customWebpackConfig": {
-              "path": "./angular.webpack.js"
+              "path": "./angular.webpack.js",
+              "mergeStrategies": {
+                "module.rules": "prepend"
+              }
             }
           },
           "configurations": {
@@ -178,7 +177,10 @@
               "src/assets"
             ],
             "customWebpackConfig": {
-              "path": "./angular.webpack.js"
+              "path": "./angular.webpack.js",
+              "mergeStrategies": {
+                "module.rules": "prepend"
+              }
             }
           }
         },

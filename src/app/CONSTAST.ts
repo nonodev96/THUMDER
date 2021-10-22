@@ -10,7 +10,7 @@ import {
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
-export const NPM_VERSION = '1.2.0';
+export const NPM_VERSION = '1.2.1';
 
 export const REGEX_IS_ABSOLUTE_HREF = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)', 'i');
 export const REGEX_HEXADECIMAL_08 = new RegExp('^(0x|0X|)?([a-fA-F0-9]{08})$', 'i');

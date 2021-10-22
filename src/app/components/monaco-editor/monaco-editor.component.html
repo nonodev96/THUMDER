@@ -1,4 +1,14 @@
-<ngx-monaco-editor class="monaco-editor"
-                   [options]="editorOptions_thumder"
-                   [(ngModel)]="code_asm"
-                   (init)="onInitEditor($event)"></ngx-monaco-editor>
+<td-code-editor
+  [style.height.px]="800"
+  editorStyle="border:0;"
+  flex
+  theme="thumderTheme"
+  language="thumderLanguage"
+  [editorOptions]="editorOptions_thumder"
+  [(ngModel)]="code_asm"
+  (ngModelChange)="callBackFunc($event)"
+  (editorInitialized)="editorInitialized($any($event))"
+  (editorConfigurationChanged)="editorConfigurationChanged()"
+  (editorLanguageChanged)="editorLanguageChanged()"
+  (editorValueChange)="editorValueChange()">
+</td-code-editor>

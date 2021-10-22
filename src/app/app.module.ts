@@ -18,7 +18,9 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 // devextreme
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
 // Monaco
-import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+// import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { CovalentCodeEditorModule } from '@covalent/code-editor';
+
 // TOAST
 import { ToastrModule } from "ngx-toastr";
 // SOCKET
@@ -176,7 +178,8 @@ export function markedOptionsFactory(): MarkedOptions {
         deps: [HttpClient]
       }
     }),
-    MonacoEditorModule,
+    // MonacoEditorModule,
+    CovalentCodeEditorModule,
 
 
     DxToolbarModule,
