@@ -19,6 +19,8 @@
             "allowedCommonJsDependencies": [
               "admin-lte/plugins/chart.js/Chart.js",
               "chart.js",
+              "pixi.js-keyboard",
+              "pixi.js-mouse",
               "mini-signals",
               "@firebase/app-check",
               "socket.io-client",
@@ -73,7 +75,7 @@
               "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
-              "aot": false,
+              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": false,

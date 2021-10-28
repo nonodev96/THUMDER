@@ -26,11 +26,11 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dataSourceCode.data = this.machine.memory.map((value, index) => {
+    this.dataSourceCode.data = this.machine.memory.getAllMemory().map((value, index) => {
       return {
         text: "",
+        index: index,
         address: Utils.numberToHexadecimalString(index * 4),
-        binary: value.binary,
         stage: "",
         instruction: ""
       }
@@ -47,10 +47,11 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+    // TODO
     this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
-      const list_elements = this.machine.getListStatusPipeline(stepSimulation);
+      const stepSimulationPipeline = this.machine.getListStatusPipeline(stepSimulation);
 
-      for (const element of list_elements) {
+      for (const element of stepSimulationPipeline) {
         if (element != undefined && element.address !== "") {
           const index = Math.round(Utils.hexadecimalToDecimal(element.address) / 4);
           const data_code = this.machine.code.get(element.address);
@@ -61,6 +62,18 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    const array = Utils.MapToArray(this.machine.code)
+    for (const code_memory of array) {
+      const index = Utils.addressToIndex(code_memory.value.address);
+      const stage = code_memory.value.stage;
+      const code: TypeCode = {
+        address: code_memory.value.address,
+        instruction: code_memory.value.instruction,
+        text: code_memory.value.text
+      }
+
+      this.setRow(index,code,stage)
+    }
   }
 
   ngOnDestroy(): void {
@@ -86,8 +99,9 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       text: tableCode.text,
       address: tableCode.address,
       instruction: tableCode.instruction,
-      binary: this.machine.getMemory(index).binary,
       stage: stage,
+      binary: this.machine.getMemory(index).binary,
+      index: index,
     };
     this.refreshDataSourceCode();
   }

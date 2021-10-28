@@ -4,6 +4,17 @@ import { ASCII_TABLE } from "./CONSTAST";
 
 export namespace Utils {
 
+  export function MapToArray<K, V>(map: Map<K, V>): { key: K; value: V }[] {
+    return Array.from(map, ([key, value]) => ({
+      key,
+      value
+    }));
+  }
+
+  export function addressToIndex(address: string): number {
+    return Math.trunc(this.hexadecimalToDecimal(address) / 4)
+  }
+
   export function orderJSONBy(array, selector, desc = false) {
     return [...array].sort((a, b) => {
       if (desc) {

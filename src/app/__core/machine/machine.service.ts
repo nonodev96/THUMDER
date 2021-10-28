@@ -1,19 +1,28 @@
 import { Injectable } from '@angular/core';
 import { Double64, Float32, Int32 } from "../interfaces";
-import { PixiTHUMER_Pipeline } from "./PixiTHUMER_Pipeline";
-import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
+// import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
+// import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import { interval, Observable, PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {
+  InterfaceMemory,
+  InterfaceRegisters,
   SimulationResponse,
   StepSimulation,
-  TypeCode, TypeRegister, TypeRegisterToEdit,
+  TypeCode,
+  TypeFloatingPointStageConfiguration,
+  TypeRegister,
+  TypeRegisterToEdit,
   TypeStage,
+  TypeStatusCycleClockDiagram,
+  TypeStatusMachine,
   TypeStatusPipeline,
-  TypeTableCode
+  TypeTableCode,
+  TypeTags
 } from "../../types";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS, DEFAULT_TABLE_CODE } from "../../CONSTAST";
 import { Utils } from "../../Utils";
+import { StorageService } from "../storage/storage.service";
 
 
 const RegexRegisterInteger = /\b(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31)\b/i;
@@ -21,7 +30,7 @@ const RegexRegisterFloat = /\b(F0|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14
 const RegexRegisterDouble = /\b(D0|D2|D4|D6|D8|D10|D12|D14|D16|D18|D20|D22|D24|D26|D28|D30)\b/i;
 const RegexRegisterControl = /(pc|imar|ir|a|ahi|b|bhi|bta|alu|aluhi|fpsr|dmar|sdr|sdrhi|ldr|ldrhi|PC|IMAR|IR|A|AHI|B|BHI|BTA|ALU|ALUHI|FPSR|DMAR|SDR|SDRHI|LDR|LDRHI)/;
 
-class Registers {
+export class Registers implements InterfaceRegisters {
   PC: Int32;
   IMAR: Int32;
   IR: Int32;
@@ -77,40 +86,85 @@ class Registers {
   }
 }
 
+export class Memory implements InterfaceMemory {
+  // Bytes
+  private _memorySize: number;
+  private _memory: Array<Int32>;
+
+  constructor(memorySize4Bytes: number) {
+    this._memorySize = (memorySize4Bytes / 4);
+    this._memory = [...new Array(this._memorySize)].map((v, i, a) => new Int32())
+  }
+
+  get memorySize() {
+    return this._memorySize * 4;
+  }
+
+  set memorySize(memorySize: number) {
+    this._memorySize = memorySize;
+    this._memory = [];
+    this._memory.fill(new Int32(), 0, this._memorySize);
+  }
+
+  public getMemoryByIndex(index: number): Int32 {
+    return this._memory[index];
+  }
+
+  public setMemoryWordByIndex(index: number, data: Int32) {
+    this._memory[index] = data;
+  }
+
+  public setMemoryWordBinaryByIndex(index: number, data: string) {
+    this._memory[index].binary = data;
+  }
+
+  public setMemoryByAddress(address: string, data: Int32) {
+    this._memory[Math.trunc(Utils.hexadecimalToDecimal(address) / 4)] = data;
+  }
+
+  public getMemoryWordByAddress(address: string): Int32 {
+    return this._memory[Math.trunc(Utils.hexadecimalToDecimal(address) / 4)];
+  }
+
+  public getAllMemory(): Int32[] {
+    return this._memory.map((value, index) => {
+      return value
+    })
+  }
+
+  public getAllIndex(): number[] {
+    return this._memory.map((value, index) => {
+      return index
+    })
+  }
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class MachineService {
-  // 0x8000 --> 32768
-  public currentMemorySize = 32768;
-  public floating_point_stage_configuration = {
-    addition: {
-      count: 1,
-      delay: 2
-    },
-    multiplication: {
-      count: 1,
-      delay: 5
-    },
-    division: {
-      count: 1,
-      delay: 19
-    },
-  }
-  public registers: Registers = new Registers();
+  public memorySize;
+  public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
+  public registers: Registers;
   // La memoria se organiza de direcciones de 4 bits en 4 bits
-  public memory: Array<Int32> = [...new Array(this.currentMemorySize)].map((v, i, a) => new Int32());
+  public memory: Memory;
+
   // address --> TypeTableCode
-  public code: Map<string, TypeTableCode> = new Map()
+  public code: Map<string, TypeTableCode> = new Map();
+  public codeText = '';
+
+  public tagsDebugger: TypeTags = [];
 
   // public memory: Array<Int32> = Array<Int32>(32764).fill(new Int32());
   // public code: Array<Int32> = Array<Int32>(32764).fill(new Int32());
-  public pipeline: PixiTHUMER_Pipeline;
-  public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
+  // public pipeline: PixiTHUMER_Pipeline;
+  // public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
+  // public pipeline: PixiTHUMDER_Pipeline;
 
   // Vector con los pasos de la simulación
   private simulation: SimulationResponse;
 
+  public dataCodeArray;
   public codeSimulation$ = new Subject<TypeCode[]>();
   public stepSimulation$ = new Subject<StepSimulation>();
   public step$ = new Subject<number>();
@@ -131,14 +185,24 @@ export class MachineService {
   // 28 de septiembre: Nono del pasado eres un cabron
   // 05 de octubre: Nono del pasado sigues siendo un cabron
   // 15 de octubre: Nono, lo has mejorado un poquito, pero sigues siendo un cabron
+  // 22 de octubre: Nono tienes que poner ahora las tags del debugger 😂
   // https://stackblitz.com/edit/angular-play-pause-timer
-  constructor() {
-    this.pipeline = new PixiTHUMER_Pipeline();
-    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-    this.memory[0] = new Int32()
+  constructor(private store: StorageService) {
+    this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
+    // this.pipeline = new PixiTHUMER_Pipeline(
+    //   this.floatingPointStageConfiguration.addition.count,
+    //   this.floatingPointStageConfiguration.multiplication.count,
+    //   this.floatingPointStageConfiguration.division.count
+    // );
+
+    this.memorySize = this.store.getItem('memory_size');
+    this.memory = new Memory(this.memorySize);
+    this.registers = new Registers();
+    // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
+    // this.pipeline = new PixiTHUMDER_CycleClockDiagram();
     // this.registers.D[0].value = 3.14
 
-    this.timer = interval(1000).pipe(
+    this.timer = interval(250).pipe(
       takeUntil(this.pauseClick$),
       takeUntil(this.stopClick$)
     );
@@ -164,12 +228,21 @@ export class MachineService {
   // TODO
   public resetMachineStatus(): Promise<boolean> {
     return new Promise(async (resolve) => {
-      this.pipeline = new PixiTHUMER_Pipeline();
-      this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-      this.memory = [...new Array(this.currentMemorySize)].map(() => new Int32());
+      this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
+      // this.pipeline = new PixiTHUMER_Pipeline(
+      //   this.floatingPointStageConfiguration.addition.count,
+      //   this.floatingPointStageConfiguration.multiplication.count,
+      //   this.floatingPointStageConfiguration.division.count
+      // );
+      // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
+      // this.pipeline = new PixiTHUMDER_Pipeline();
+
+      this.memorySize = this.store.getItem('memory_size');
+      this.memory = new Memory(this.memorySize);
+      this.registers = new Registers();
+
       this.code = new Map();
       this.code.clear();
-      this.registers = new Registers();
       this.privateStep = -1;
       this.isComplete = false;
       this.isRunning = false;
@@ -191,6 +264,26 @@ export class MachineService {
 
   public getCodeSimulationObservable(): Observable<TypeCode[]> {
     return this.codeSimulation$.asObservable();
+  }
+
+  getStatusCycleClockDiagram(stepSimulation: StepSimulation): TypeStatusCycleClockDiagram {
+    return {
+      step: stepSimulation.step,
+      instruction: stepSimulation.instruction,
+      cycle: {
+        IF_stall: stepSimulation.IF_stall,
+        IF: stepSimulation.IF,
+        ID_stall: stepSimulation.ID_stall,
+        ID: stepSimulation.ID,
+        intEX_stall: stepSimulation.intEX_stall,
+        intEX: stepSimulation.intEX,
+        MEM_stall: stepSimulation.MEM_stall,
+        MEM: stepSimulation.MEM,
+        WB_stall: stepSimulation.WB_stall,
+        WB: stepSimulation.WB,
+      },
+      stepsToWait: 0
+    };
   }
 
   getListStatusPipeline(stepSimulation: StepSimulation): TypeStatusPipeline[] {
@@ -216,13 +309,13 @@ export class MachineService {
 
   // Navbar
   async play(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       resolve();
     })
   }
 
   async reset(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.resetMachineStatus()
       resolve();
     })
@@ -318,38 +411,39 @@ export class MachineService {
       for (const memory_value of statusMachineInStep.memory) {
         const address = memory_value.address;
         const value = memory_value.value;
-        this.memory[address] = new Int32();
-        this.memory[address].value = value;
+        const data = new Int32();
+        data.binary = parseInt(memory_value.value).toString(2).padStart(32, '0');
+        this.memory.setMemoryByAddress(address, data);
         this.log('Dirección: ', address, 'con valor', value, 'de la instrucción', instructionText)
       }
     }
 
-    const {IF, ID, intEX, faddEX, fmultEX, fdivEX, MEM, WB} = statusMachineInStep.pipeline;
-
-    const data_code_IF = this.code.get(IF) ?? DEFAULT_TABLE_CODE
-    const data_code_ID = this.code.get(ID) ?? DEFAULT_TABLE_CODE
-    const data_code_intEX = this.code.get(intEX) ?? DEFAULT_TABLE_CODE
-    const data_code_MEM = this.code.get(MEM) ?? DEFAULT_TABLE_CODE
-    const data_code_WB = this.code.get(WB) ?? DEFAULT_TABLE_CODE
-
-    this.pipeline.update_IF_text(data_code_IF.instruction);
-    this.pipeline.update_ID_text(data_code_ID.instruction);
-    this.pipeline.update_intEX_text(data_code_intEX.instruction);
-    this.pipeline.update_MEM_text(data_code_MEM.instruction);
-    this.pipeline.update_WB_text(data_code_WB.instruction);
-
-    for (const unit_value of faddEX) {
-      const {instruction: faddEX_i} = this.code.get(unit_value.address)
-      this.pipeline.update_faddEX_text(faddEX_i, unit_value.unit);
-    }
-    for (const unit_value of fmultEX) {
-      const {instruction: fmultEX_i} = this.code.get(unit_value.address)
-      this.pipeline.update_fmultEX_text(fmultEX_i, unit_value.unit);
-    }
-    for (const unit_value of fdivEX) {
-      const {instruction: fdivEX_i} = this.code.get(unit_value.address)
-      this.pipeline.update_fdivEX_text(fdivEX_i, unit_value.unit);
-    }
+    // const {IF, ID, intEX, faddEX, fmultEX, fdivEX, MEM, WB} = statusMachineInStep.pipeline;
+    //
+    // const data_code_IF = this.code.get(IF) ?? DEFAULT_TABLE_CODE
+    // const data_code_ID = this.code.get(ID) ?? DEFAULT_TABLE_CODE
+    // const data_code_intEX = this.code.get(intEX) ?? DEFAULT_TABLE_CODE
+    // const data_code_MEM = this.code.get(MEM) ?? DEFAULT_TABLE_CODE
+    // const data_code_WB = this.code.get(WB) ?? DEFAULT_TABLE_CODE
+    //
+    // this.pipeline.update_IF_text(data_code_IF.instruction);
+    // this.pipeline.update_ID_text(data_code_ID.instruction);
+    // this.pipeline.update_intEX_text(data_code_intEX.instruction);
+    // this.pipeline.update_MEM_text(data_code_MEM.instruction);
+    // this.pipeline.update_WB_text(data_code_WB.instruction);
+    //
+    // for (const unit_value of faddEX) {
+    //   const {instruction: faddEX_i} = this.code.get(unit_value.address)
+    //   this.pipeline.update_faddEX_text(unit_value.unit, faddEX_i);
+    // }
+    // for (const unit_value of fmultEX) {
+    //   const {instruction: fmultEX_i} = this.code.get(unit_value.address)
+    //   this.pipeline.update_fmultEX_text(unit_value.unit, fmultEX_i);
+    // }
+    // for (const unit_value of fdivEX) {
+    //   const {instruction: fdivEX_i} = this.code.get(unit_value.address)
+    //   this.pipeline.update_fdivEX_text(unit_value.unit, fdivEX_i);
+    // }
   }
 
   private checkConditions() {
@@ -392,11 +486,11 @@ export class MachineService {
   /**
    *
    */
-  public getMemory(address: number): Int32 {
-    if (this.memory[address] === undefined) {
-      this.memory[address] = new Int32()
+  public getMemory(index: number): Int32 {
+    if (this.memory.getMemoryByIndex(index) === undefined) {
+      this.memory.setMemoryWordByIndex(index, new Int32());
     }
-    return this.memory[address]
+    return this.memory.getMemoryByIndex(index)
   }
 
   public getRegister(index: TypeRegisterToEdit, typeRegister: TypeRegister): Int32 | Float32 | Double64 {
@@ -425,15 +519,6 @@ export class MachineService {
       return DEFAULT_TABLE_CODE;
     }
     return this.code.get(address);
-  }
-
-  public setMemory(address: number, value: number, binary: string = "00000000000000000000000000000000"): Int32 {
-    if (this.memory[address] === undefined) {
-      this.memory[address] = new Int32();
-    }
-    this.memory[address].value = value;
-    this.memory[address].binary = binary;
-    return this.memory[address]
   }
 
   getBinaryOfMemory_Byte(address: number, module: 0 | 1 | 2 | 3): string {
@@ -486,8 +571,19 @@ export class MachineService {
         data_code_array.push(ins)
       }
 
+      this.dataCodeArray = data_code_array
       this.codeSimulation$.next(data_code_array)
       resolve()
     })
+  }
+
+
+  public getAllStatusMachine(): TypeStatusMachine {
+    return {
+      codeText: this.codeText,
+      registers: this.registers,
+      memory: this.memory,
+      tagsDebugger: this.tagsDebugger,
+    }
   }
 }

@@ -64,7 +64,9 @@
     "TITLE_ERROR_IN_ADDRESS": "Error in address",
     "MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE": "The address must be a multiple of data size ({{text}})",
     "TITLE_ERROR_IN_VALUE_MEMORY": "Error in value memory",
-    "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid"
+    "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid" ,
+    "TITLE_ERROR_IN_ADDRESS_MEMORY": "Error in memory",
+    "MESSAGE_ERROR_IN_ADDRESS_MEMORY": "Address not valid, out of memory"
   },
   "CONFIG": {
     "LANG": "Language",

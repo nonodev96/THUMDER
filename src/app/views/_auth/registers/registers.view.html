@@ -36,7 +36,7 @@
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 style="height: 400px;"
+                                 [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSource" [ngClass]="'table-layout'">
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -116,7 +116,7 @@
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 style="height: 400px;"
+                                 [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceR" [ngClass]="'table-layout'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsR; sticky: true"></tr>
@@ -173,7 +173,7 @@
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 style="height: 400px;"
+                                 [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceF" [ngClass]="'table-layout'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsF; sticky: true"></tr>
@@ -236,7 +236,7 @@
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 style="height: 400px;"
+                                 [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceD" [ngClass]="'table-layout'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsD; sticky: true"></tr>

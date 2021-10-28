@@ -22,33 +22,45 @@
         <tr>
           <th>{{ 'CONFIG.ADDITION' | translate }}</th>
           <td>
-            <input type="number" [value]="machine.floating_point_stage_configuration.addition.count"
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="floatingPointStageConfiguration.addition.count"
                    (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control">
           </td>
           <td>
-            <input type="number" [value]="machine.floating_point_stage_configuration.addition.delay"
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="floatingPointStageConfiguration.addition.delay"
                    (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control">
           </td>
         </tr>
         <tr>
           <th>{{ 'CONFIG.MULTIPLICATION' | translate }}</th>
           <td>
-            <input type="number" [value]="machine.floating_point_stage_configuration.multiplication.count"
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="floatingPointStageConfiguration.multiplication.count"
                    (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control">
           </td>
           <td>
-            <input type="number" [value]="machine.floating_point_stage_configuration.multiplication.delay"
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="floatingPointStageConfiguration.multiplication.delay"
                    (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control">
           </td>
         </tr>
         <tr>
           <th>{{ 'CONFIG.DIVISION' | translate }}</th>
           <td>
-            <input type="number" [value]="machine.floating_point_stage_configuration.division.count"
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="floatingPointStageConfiguration.division.count"
                    (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control">
           </td>
           <td>
-            <input type="number" [value]="machine.floating_point_stage_configuration.division.delay"
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="floatingPointStageConfiguration.division.delay"
                    (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control">
           </td>
         </tr>
@@ -59,10 +71,12 @@
         </tr>
         <tr>
           <th>{{ 'CONFIG.MEMORY_SIZE' | translate }}</th>
-          <td colspan="2"><input type="number"
-                                 [value]="machine.currentMemorySize"
-                                 (change)="checkMemorySize($event.target)"
-                                 class="form-control" min="512" max="1048576" step="1">
+          <td colspan="2">
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="memorySize"
+                   (change)="checkMemorySize($event.target)"
+                   class="form-control" min="512" max="1048576" step="8">
           </td>
         </tr>
       </table>
@@ -72,9 +86,9 @@
 
       <div class="col-md-12">
         <button type="reset" class="btn btn-secondary"
-                (click)="resetConfiguration()">{{ "FORM.RESET" | translate }}</button>
+                (click)="resetConfiguration()">{{ "FORMS.RESET" | translate }}</button>
         <button type="submit" class="btn btn-primary float-right"
-                (click)="updateConfiguration()">{{ "FORM.SAVE" | translate }}</button>
+                (click)="updateConfiguration()">{{ "FORMS.SAVE" | translate }}</button>
       </div>
     </form>
   </div>

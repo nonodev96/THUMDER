@@ -15,7 +15,7 @@ export class AuthNavbarComponent implements OnInit {
   AUTH_ROUTES = AUTH_ROUTES;
 
   constructor(private router: Router,
-              private app: AppComponent,
+              public app: AppComponent,
               public machine: MachineService,
               public authService: AuthService) {
   }
@@ -25,14 +25,6 @@ export class AuthNavbarComponent implements OnInit {
 
   setNavbarOpen() {
     this.navbarOpen = !this.navbarOpen;
-  }
-
-  changeToSpain() {
-    this.app.change('sp');
-  }
-
-  changeToEnglish() {
-    this.app.change('en');
   }
 
   async togglePlayPause() {
@@ -52,7 +44,7 @@ export class AuthNavbarComponent implements OnInit {
   }
 
   async next() {
-      await this.machine.next()
+    await this.machine.next()
   }
 
   async end() {

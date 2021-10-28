@@ -19,6 +19,7 @@ import {
 })
 export class RegistersView implements OnInit, AfterViewInit {
 
+  public maxHeightCard: number = 60;
 
   @ViewChild(EditRegisterBinary32Component) editRegisterBinary32Component: EditRegisterBinary32Component;
 
@@ -49,6 +50,19 @@ export class RegistersView implements OnInit, AfterViewInit {
     for (const card_id of list_cards) {
       window.jQuery('#' + card_id).CardWidget('collapse');
     }
+
+    window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
+      .on('expanded.lte.cardwidget', ($event) => {
+        this.resizeCards(60);
+      })
+    window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
+      .on('minimized.lte.cardwidget', ($event) => {
+        this.resizeCards(60);
+      })
+    window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
+      .on('maximized.lte.cardwidget', ($event) => {
+        this.resizeCards(80);
+      })
   }
 
   changeTypeDataInTableRegisters(typeData: TypeData) {
@@ -79,4 +93,7 @@ export class RegistersView implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
+  private resizeCards(newHeightCard) {
+    this.maxHeightCard = newHeightCard;
+  }
 }

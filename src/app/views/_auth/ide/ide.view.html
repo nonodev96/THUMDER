@@ -1,5 +1,5 @@
 <!-- Default box -->
-<div class="card">
+<div class="card" id="card-IDE">
   <div class="card-header">
     <h3 class="card-title">Editor</h3>
     <div class="card-tools">
@@ -33,7 +33,7 @@
     </div>
   </div>
 
-  <div class="card-body">
+  <div class="card-body" id="ide-container">
     <div id="ide">
       <div id="ide-main">
         <div id="ide-monaco-editor-container">
@@ -50,6 +50,7 @@
   </div>
 
   <div class="card-footer">
+    <button type="button" class="btn btn-success" (click)="changeHeight()">Change Height</button>
     <button type="button" class="btn btn-success" (click)="getListOfTags()">Get List Of Tags</button>
     <button type="button" class="btn btn-success" (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>
   </div>

@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
+import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 
 @Component({
   selector: 'thumder-pixi-pipeline',
@@ -11,17 +12,15 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('pixiContainer') public pixiContainer;
   public pApp: PIXI.Application;
+  private pipeline: PixiTHUMDER_Pipeline;
 
   constructor(private machine: MachineService) {
-    let width = 1600;
-    let height = 900;
-    this.pApp = new PIXI.Application({
-      width: width,
-      height: height,
-      backgroundColor: 0x1099bb,
-      resolution: 1,
-    });
+    let faddEX_count = machine.floatingPointStageConfiguration.addition.count;
+    let fmultEX_count = machine.floatingPointStageConfiguration.multiplication.count;
+    let fdivEX_count = machine.floatingPointStageConfiguration.division.count;
+    this.pipeline = new PixiTHUMDER_Pipeline(faddEX_count, fmultEX_count, fdivEX_count);
   }
+
 
   ngOnInit(): void {
     this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
@@ -30,29 +29,29 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
         const instruction = this.machine.getTableCode(e.address).instruction;
         switch (e.stage) {
           case "IF":
-            this.machine.pipeline.update_IF_text(instruction);
+            this.pipeline.update_IF_text(instruction);
             break;
           case "ID":
-            this.machine.pipeline.update_ID_text(instruction);
+            this.pipeline.update_ID_text(instruction);
             break;
           case "intEX":
-            this.machine.pipeline.update_intEX_text(instruction);
+            this.pipeline.update_intEX_text(instruction);
             break;
           case "WB":
-            this.machine.pipeline.update_WB_text(instruction);
+            this.pipeline.update_WB_text(instruction);
             break;
           case "MEM":
-            this.machine.pipeline.update_MEM_text(instruction);
+            this.pipeline.update_MEM_text(instruction);
             break;
           default:
             if (e.stage.includes('faddEX')) {
-              this.machine.pipeline.update_faddEX_text(instruction, e.unit);
+              this.pipeline.update_faddEX_text(e.unit, instruction);
             }
             if (e.stage.includes('fmultEX')) {
-              this.machine.pipeline.update_fmultEX_text(instruction, e.unit);
+              this.pipeline.update_fmultEX_text(e.unit, instruction);
             }
             if (e.stage.includes('fdivEX')) {
-              this.machine.pipeline.update_fdivEX_text(instruction, e.unit);
+              this.pipeline.update_fdivEX_text(e.unit, instruction);
             }
             break;
         }
@@ -61,7 +60,15 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.pApp.stage.addChild(this.machine.pipeline.draw());
+    let width = 1600;
+    let height = 975;
+    this.pApp = new PIXI.Application({
+      width: width,
+      height: height,
+      backgroundColor: 0x1099bb,
+      resolution: 1,
+    });
+    this.pApp.stage.addChild(this.pipeline.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
     this.resize();
   }
@@ -84,28 +91,28 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     event.stopPropagation();
     switch (event.key) {
       case '1':
-        this.machine.pipeline.update_IF_text("Prueba");
+        this.pipeline.update_IF_text("Prueba");
         break;
       case '2':
-        this.machine.pipeline.update_ID_text("Prueba");
+        this.pipeline.update_ID_text("Prueba");
         break;
       case '3':
-        this.machine.pipeline.update_intEX_text("Prueba");
+        this.pipeline.update_intEX_text("Prueba");
         break;
       case '4':
-        this.machine.pipeline.update_faddEX_text("Prueba");
+        this.pipeline.update_faddEX_text(0, "Prueba");
         break;
       case '5':
-        this.machine.pipeline.update_fmultEX_text("Prueba");
+        this.pipeline.update_fmultEX_text(0, "Prueba");
         break;
       case '6':
-        this.machine.pipeline.update_fdivEX_text("Prueba");
+        this.pipeline.update_fdivEX_text(0, "Prueba");
         break;
       case '7':
-        this.machine.pipeline.update_MEM_text("Prueba");
+        this.pipeline.update_MEM_text("Prueba");
         break;
       case '8':
-        this.machine.pipeline.update_WB_text("Prueba");
+        this.pipeline.update_WB_text("Prueba");
         break;
     }
   }

@@ -1,17 +1,16 @@
 export class Int32 {
   // Se almacena en decimal, siempre
-  private _value: number = 0;
   private _binary: string = "";
 
-  get value(): number {
-    return this._value;
-  }
-
-  set value(newValue: number) {
-    // if (newValue < 0 || newValue > 4294967295 || Math.round(newValue) !== newValue) throw new Error("Rango no permitido");
-    this._value = newValue;
-    this._binary = newValue.toString(2).padStart(32, '0');
-  }
+  // get value(): number {
+  //   return this._value;
+  // }
+  //
+  // set value(newValue: number) {
+  //   // if (newValue < 0 || newValue > 4294967295 || Math.round(newValue) !== newValue) throw new Error("Rango no permitido");
+  //   this._value = newValue;
+  //   this._binary = newValue.toString(2).padStart(32, '0');
+  // }
 
   get binary(): string {
     return this._binary.padStart(32, '0');
@@ -19,7 +18,7 @@ export class Int32 {
 
   set binary(newBinary: string) {
     this._binary = newBinary;
-    this._value = parseInt(newBinary, 2);
+    // this._value = parseInt(newBinary, 2);
   }
 }
 
