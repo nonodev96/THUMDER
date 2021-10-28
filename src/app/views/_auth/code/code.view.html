@@ -44,13 +44,13 @@
         <ng-container matColumnDef="Binary">
           <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-20" *matCellDef="let element">
-            {{ element.binary }}
+            {{ machine.memory.getMemoryByIndex(element.index).binary }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ element.binary | binary_32_64_to_hexadecimal }}
+            {{ machine.memory.getMemoryByIndex(element.index).binary | binary_32_64_to_hexadecimal }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Stage">

@@ -10,6 +10,10 @@ import * as PIXI from 'pixi.js';
 export class PixiJSTable extends PIXI.Container {
   private readonly debugMode: boolean;
 
+  private readonly title: PIXI.Text;
+
+  private readonly rows: any[] | PIXI.Container[];
+
   private rowBuffer: number;
 
   private columnBuffer: number;
@@ -17,10 +21,6 @@ export class PixiJSTable extends PIXI.Container {
   private rowStartPosition: { x: number; y: number };
 
   private cellStartPosition: { x: number; y: number };
-
-  private readonly title: PIXI.Text;
-
-  private readonly rows: any[] | PIXI.Container[];
 
   public rowCount: number;
 
@@ -36,17 +36,17 @@ export class PixiJSTable extends PIXI.Container {
    * @param tableTitle
    */
   constructor(debugMode = false,
-    rowSeparation = 10,
-    columnSeparation = 10,
-    rowStartPosition: { x: number, y: number } = {
-      x: 5,
-      y: 5,
-    },
-    cellStartPosition: { x: number, y: number } = {
-      x: 5,
-      y: 5,
-    },
-    tableTitle: PIXI.Text = new PIXI.Text('')) {
+              rowSeparation = 10,
+              columnSeparation = 10,
+              rowStartPosition: { x: number, y: number } = {
+                x: 5,
+                y: 5,
+              },
+              cellStartPosition: { x: number, y: number } = {
+                x: 5,
+                y: 5,
+              },
+              tableTitle: PIXI.Text = new PIXI.Text('')) {
     super();
     // options
     this.debugMode = debugMode; // for displaying information about what's happening. Goes to the console.log
@@ -88,8 +88,8 @@ export class PixiJSTable extends PIXI.Container {
     const row = this.rows[this.rows.length - 1];
     if (this.rowCount > 1) {
       row.position.set(
-        this.rowStartPosition.x,
-        this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
+      this.rowStartPosition.x,
+      this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
       );
     } else {
       row.position.set(this.rowStartPosition.x, this.rowStartPosition.y);
@@ -103,7 +103,7 @@ export class PixiJSTable extends PIXI.Container {
    * @param {} rowNumber The row number to splice at
    */
   addRowAt(rowNumber) {
-    this.debugLog('add row at', { rowNumber });
+    this.debugLog('add row at', {rowNumber});
     this.rows.splice(rowNumber, 0, new PIXI.Container());
 
     this.addChildAt(this.rows[rowNumber], rowNumber);
@@ -111,8 +111,8 @@ export class PixiJSTable extends PIXI.Container {
     const row = this.rows[rowNumber];
     if (this.rowCount > 1) {
       row.position.set(
-        this.rowStartPosition.x,
-        this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
+      this.rowStartPosition.x,
+      this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
       );
     } else {
       row.position.set(this.rowStartPosition.x, this.rowStartPosition.y);
@@ -127,13 +127,13 @@ export class PixiJSTable extends PIXI.Container {
    * @param {*} rowNumber The row number
    * @param {*} cellNumber The cell number
    */
-  addCellAt(displayObject, rowNumber, cellNumber) {
+  addCellAt(displayObject, rowNumber: number, cellNumber: number) {
     this.debugLog('add cell at', {
       rowNumber,
       cellNumber,
     });
     let row = this.rows[rowNumber];
-    if (typeof row === 'undefined' && cellNumber === 0) {
+    if (typeof row === 'undefined' || cellNumber === 0) {
       row = new PIXI.Container();
       row.cells = [];
       row.cells.push(displayObject);
@@ -156,7 +156,7 @@ export class PixiJSTable extends PIXI.Container {
    * @param {*} rowNumber The row number to delete.
    */
   deleteRow(rowNumber) {
-    this.debugLog('delete row', { rowNumber });
+    this.debugLog('delete row', {rowNumber});
     if (rowNumber > -1 && rowNumber < this.rowCount) {
       this.rows[rowNumber].destroy(true);
       this.rowCount--;
@@ -187,8 +187,8 @@ export class PixiJSTable extends PIXI.Container {
       // check to see how long the array is. If it's length of 1, default to (5,5). if not, calculate.
       if (row.cells.length > 1) {
         cell.position.set(
-          row.cells[row.cells.length - 2].x + row.cells[row.cells.length - 2].width + this.columnBuffer, // default to 10 over for a 5 px spacing between cells
-          this.cellStartPosition.y, // default to 5 pixels from the top
+        row.cells[row.cells.length - 2].x + row.cells[row.cells.length - 2].width + this.columnBuffer, // default to 10 over for a 5 px spacing between cells
+        this.cellStartPosition.y, // default to 5 pixels from the top
         );
       } else {
         cell.position.set(this.cellStartPosition.x, this.cellStartPosition.y);
@@ -319,6 +319,17 @@ export class PixiJSTable extends PIXI.Container {
   clampCells(amount = 2) {
     this.columnBuffer -= amount;
     this.updateRows();
+  }
+
+  /**
+   *
+   * @param rowNumber
+   * @param cellNumber
+   */
+  exist(rowNumber: number, cellNumber: number): boolean {
+    if (this.rows[rowNumber] === undefined) return false;
+    if (this.rows[rowNumber].cells === undefined) return false;
+    return this.rows[rowNumber].cells[cellNumber] !== undefined;
   }
 
   /**

@@ -14,13 +14,13 @@
          class="nav-link dropdown-toggle">{{ 'CONFIG.LANG' | translate }}</a>
       <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu border-0 shadow">
         <li>
-          <a class="dropdown-item" (click)="changeToSpain()" id="changeLangToSpanish">
+          <a class="dropdown-item" (click)="app.setLang('sp')" id="changeLangToSpanish">
             <span class="flag-icon flag-icon-esp"></span>
             Spanish
           </a>
         </li>
         <li>
-          <a class="dropdown-item" (click)="changeToEnglish()" id="changeLangToEnglish">
+          <a class="dropdown-item" (click)="app.setLang('en')" id="changeLangToEnglish">
             <span class="flag-icon flag-icon-gbr"></span>
             English
           </a>

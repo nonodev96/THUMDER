@@ -1,6 +1,6 @@
 {
   "name": "thumder",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "TFG - THUMDER (THe UltiMate Dlx EmulatoR): emulador multiplataforma DLX con fines didácticos",
   "homepage": "https://github.com/nonodev96/THUMDER",
   "author": {
@@ -89,7 +89,7 @@
     "core-js": "3.6.5",
     "cross-env": "7.0.2",
     "cypress": "8.4.1",
-    "electron": "12.0.6",
+    "electron": "12.2.2",
     "electron-builder": "22.10.5",
     "electron-reload": "1.5.0",
     "eslint": "7.10.0",

@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
-import { ArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
+import { PixiTHUMDER_CycleClockDiagram, TypeArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
 
 @Component({
   selector: 'thumder-pixi-cycle-clock-diagram',
@@ -10,32 +10,125 @@ import { ArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagr
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('pixiContainer') pixiContainer;
-  pApp: PIXI.Application;
+  @ViewChild('pixiContainer') public pixiContainer;
+  public pApp: PIXI.Application;
+  private cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
+  private loader: PIXI.Loader;
+  private ticker: PIXI.Ticker;
+  Keyboard
+  Mouse
 
   constructor(public machine: MachineService) {
-    const width = 1600;
-    const height = 900;
-    this.pApp = new PIXI.Application({
-      width: width,
-      height: height,
-      backgroundColor: 0x1099bb,
-      resolution: 1,
-    });
+    this.Keyboard = require('pixi.js-keyboard');
+    this.Mouse = require('pixi.js-mouse');
+    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
   }
 
   ngOnInit(): void {
+    this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
+      const cycle = this.machine.getStatusCycleClockDiagram(stepSimulation);
+      this.cycleClockDiagram.addInstruction(cycle.instruction, cycle.cycle, cycle.stepsToWait)
+      this.cycleClockDiagram.nextStep(cycle.step)
+    });
   }
 
   ngAfterViewInit() {
-    this.pApp.stage.addChild(this.machine.cycleClockDiagram.draw());
+    let width = 1600;
+    let height = 975;
+    this.pApp = new PIXI.Application({
+      width: width,
+      height: height,
+      backgroundColor: 0x1099BB,
+      resolution: 1,
+    });
+    this.pApp.stage.addChild(this.cycleClockDiagram.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
-    this.resize();
+
+    this.loader = PIXI.Loader.shared;
+    this.ticker = PIXI.Ticker.shared;
+
+    // this.loader.onComplete.add(this.setup);
+    this.loader.load((loader, resources) => {
+      // Container
+      // const table = new PixiJSTable(true, 10, 10, { x: 0, y: 0 }, { x: 0, y: 0 }, new Text(""))
+      // table.addCell(new PIXI.Text("This is a large bit of text without word wrap to show you what happens when there's a large cell", styleNoWrap));
+      // app.stage.addChild(table.draw())
+
+      // Graphics
+      // const grid = new PixiJSGrid(1024, 64, { width: 1, color: 0xffffff, alpha: 1, alignment: 0.5, native: true }, true, true)
+      // app.stage.addChild(grid.drawGrid())
+
+      // Graphics
+      // app.stage.addChild(cycleClockDiagram.draw());
+
+      // app.stage.addChild(pipeline.draw());
+
+      // const cycleClockDiagram2 = new PixiJScycleClockDiagram(5, 10)
+      // cycleClockDiagram2.table.position.x += 0
+      // cycleClockDiagram2.table.position.y += 200
+      // app.stage.addChild(cycleClockDiagram2.draw())
+
+      this.resize();
+      const fps = new PIXI.Text('FPS: 0', {fill: 0xFFFFFF, fontSize: 12});
+      fps.position.x = 0 /*this.pApp.view.width - 200*/;
+      fps.position.y = 0 /*25*/;
+      fps.zIndex = 100;
+      this.pApp.stage.addChild(fps);
+
+      // const container = new PIXI.Container();
+      // const text = new PIXI.Text("Texto")
+      // container.addChild(text)
+      // app.stage.addChild(container)
+      this.pApp.ticker.add((delta) => {
+        fps.text = `FPS: ${this.ticker.FPS.toFixed(2)}`;
+        // hero.direction = getNextEntityDirection(app.view.width, hero);
+        // hero.sprite.x = getNextEntityPosition(hero);
+      });
+      this.pApp.ticker.add((delta) => this.gameLoop(delta));
+
+    });
+
+  }
+
+  // setup() {
+  //   console.log("setup")
+  // }
+
+  private gameLoop(delta: number) {
+    // Update the current game state:
+    this.play(delta);
+
+    this.Keyboard.update();
+    this.Mouse.update();
+  }
+
+  private play(delta: number) {
+    if (this.Keyboard.isKeyDown('ArrowLeft', 'KeyA', 'KeyJ')) {
+      this.cycleClockDiagram.moveRight();
+    }
+    if (this.Keyboard.isKeyDown('ArrowRight', 'KeyD', 'KeyL')) {
+      this.cycleClockDiagram.moveLeft();
+    }
+    if (this.Keyboard.isKeyDown('ArrowUp', 'KeyW', 'KeyI')) {
+      this.cycleClockDiagram.moveBottom();
+    }
+    if (this.Keyboard.isKeyDown('ArrowDown', 'KeyS', 'KeyK')) {
+      this.cycleClockDiagram.moveTop();
+    }
+    if (this.Keyboard.isKeyDown('KeyR')) {
+      this.cycleClockDiagram.reset();
+    }
+    if (this.Keyboard.isKeyDown('KeyN')) {
+      this.nextStep();
+    }
+    if (this.Keyboard.isKeyDown('KeyM')) {
+      this.nextStepX10();
+    }
   }
 
   ngOnDestroy(): void {
-    this.pApp.stage.destroy();
-    this.pApp.destroy();
+    // this.pApp.stage.destroy();
+    // this.pApp.destroy();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -45,74 +138,51 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     this.resize();
   }
 
-  @HostListener('document:keypress', ['$event'])
+  // Detengo el movimiento de desplazamiento
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     event.preventDefault();
-    event.stopPropagation();
-    switch (event.key) {
-      case 'i':
-        this.machine.cycleClockDiagram.moveBottom();
-        break;
-      case 'k':
-        this.machine.cycleClockDiagram.moveTop();
-        break;
-      case 'j':
-        this.machine.cycleClockDiagram.moveRight();
-        break;
-      case 'l':
-        this.machine.cycleClockDiagram.moveLeft();
-        break;
-      case 'n':
-        this.machine.cycleClockDiagram.nextStep();
-        break;
-      case 'm':
-        this.nextStepX10()
-        break;
-      case 'r':
-        this.reset();
-        break;
-    }
   }
 
   moveBottom() {
-    this.machine.cycleClockDiagram.moveBottom();
+    this.cycleClockDiagram.moveBottom();
   }
 
   moveTop() {
-    this.machine.cycleClockDiagram.moveTop();
+    this.cycleClockDiagram.moveTop();
   }
 
   moveRight() {
-    this.machine.cycleClockDiagram.moveRight();
+    this.cycleClockDiagram.moveRight();
   }
 
   moveLeft() {
-    this.machine.cycleClockDiagram.moveLeft();
+    this.cycleClockDiagram.moveLeft();
   }
 
   nextStep() {
-    this.machine.cycleClockDiagram.nextStep();
+    this.cycleClockDiagram.nextStep();
   }
 
   nextStepX10() {
     for (let i = 0; i < 10; i++) {
-      this.machine.cycleClockDiagram.nextStep();
+      this.cycleClockDiagram.nextStep();
     }
   }
 
-  addArrow(instructionArrow: ArrowDirection) {
-    this.machine.cycleClockDiagram.addArrow(instructionArrow);
+  addArrow(instructionArrow: TypeArrowDirection) {
+    this.cycleClockDiagram.addArrow(instructionArrow);
   }
 
   reset() {
-    this.machine.cycleClockDiagram.reset();
+    this.cycleClockDiagram.reset();
   }
 
   debug() {
-    this.machine.cycleClockDiagram.addInstruction("instruction 1");
-    this.machine.cycleClockDiagram.addInstruction("instruction 2");
-    this.machine.cycleClockDiagram.addInstruction("instruction 3");
-    this.machine.cycleClockDiagram.addInstruction("instruction 4");
+    this.cycleClockDiagram.addInstruction("instruction 1");
+    this.cycleClockDiagram.addInstruction("instruction 2");
+    this.cycleClockDiagram.addInstruction("instruction 3");
+    this.cycleClockDiagram.addInstruction("instruction 4");
   }
 
   private resize() {
@@ -120,7 +190,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     let height = this.pixiContainer.nativeElement.offsetHeight;
     height = height === 0 ? 900 : height
     this.pApp.renderer.resize(width, height);
-    this.machine.cycleClockDiagram.borderTop.width = width;
-    this.machine.cycleClockDiagram.borderLeft.height = height;
+    this.cycleClockDiagram.borderTopWidth = width;
+    this.cycleClockDiagram.borderLeftHeight = height;
   }
 }

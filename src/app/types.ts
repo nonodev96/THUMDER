@@ -1,3 +1,7 @@
+import { Registers } from "./__core/machine/machine.service";
+import { Double64, Float32, Int32 } from "./__core/interfaces";
+import { TypeCycleType } from "./__core/machine/PixiTHUMDER_CycleClockDiagram";
+
 declare global {
   interface Window {
     process: any;
@@ -7,11 +11,42 @@ declare global {
   }
 }
 
+export interface InterfaceRegisters {
+  PC: Int32;
+  IMAR: Int32;
+  IR: Int32;
+  A: Int32;
+  AHI: Int32;
+  B: Int32;
+  BHI: Int32;
+  BTA: Int32;
+  ALU: Int32;
+  ALUHI: Int32;
+  FPSR: Int32;
+  DMAR: Int32;
+  SDR: Int32;
+  SDRHI: Int32;
+  LDR: Int32;
+  LDRHI: Int32;
+  R: Int32[];
+  F: Float32[];
+  D: Double64[];
+}
+
+export interface InterfaceMemory {
+
+}
+
 export type TypeTransformDecimalToBase = {
   base: number,
   maxLength?: number,
   fillString?: string
 };
+
+export type TypeTags = {
+  line: number,
+  content: string
+}[]
 
 export type PublicRoutes = {
   lang: string,
@@ -93,14 +128,14 @@ export type TypeStage =
   | "WB"
   | "trap"
   | "other"
+  | "faddEX_0" | "fmultEX_0" | "fdivEX_0"
   | "faddEX_1" | "fmultEX_1" | "fdivEX_1"
   | "faddEX_2" | "fmultEX_2" | "fdivEX_2"
   | "faddEX_3" | "fmultEX_3" | "fdivEX_3"
   | "faddEX_4" | "fmultEX_4" | "fdivEX_4"
   | "faddEX_5" | "fmultEX_5" | "fdivEX_5"
   | "faddEX_6" | "fmultEX_6" | "fdivEX_6"
-  | "faddEX_7" | "fmultEX_7" | "fdivEX_7"
-  | "faddEX_8" | "fmultEX_8" | "fdivEX_8";
+  | "faddEX_7" | "fmultEX_7" | "fdivEX_7";
 
 export type TypeTableCode = {
   text: string,
@@ -108,7 +143,24 @@ export type TypeTableCode = {
   instruction: string
   stage: TypeStage
   binary?: string,
+  index?: number,
 }
+
+export type TypeFloatingPointStageConfiguration = {
+  addition: {
+    count: number,
+    delay: number
+  },
+  multiplication: {
+    count: number,
+    delay: number
+  },
+  division: {
+    count: number,
+    delay: number
+  }
+}
+export type TypeLang = 'en' | 'sp';
 
 export type TypeCode = {
   text: string,
@@ -120,6 +172,21 @@ export type TypeStatusPipeline = {
   address: string;
   stage: TypeStage,
   unit?: number
+}
+
+export type TypeStatusCycleClockDiagram = {
+  step: number
+  instruction: string;
+  cycle: TypeCycleType,
+  stepsToWait: number
+}
+
+
+export type TypeStatusMachine = {
+  codeText: string,
+  registers: InterfaceRegisters,
+  memory: InterfaceMemory,
+  tagsDebugger: TypeTags,
 }
 
 export type StepSimulation = {

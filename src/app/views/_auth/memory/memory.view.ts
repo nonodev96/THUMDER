@@ -24,6 +24,7 @@ export class MemoryView implements OnInit, AfterViewInit {
   dataSourceMemory = new TableVirtualScrollDataSource<number>();
 
   typeDataSelected: TypeData = "Word"
+  public maxHeightCard = 75;
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
@@ -34,47 +35,56 @@ export class MemoryView implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+
   }
 
   ngAfterViewInit(): void {
-    this.dataSourceMemory.data = this.machine.memory.map((value, index) => {
-      return index
-    })
+    this.dataSourceMemory.data = this.machine.memory.getAllIndex();
+    window.jQuery('#card-Memory')
+      .on('expanded.lte.cardwidget', ($event) => {
+        this.resizeCard(75);
+      })
+    window.jQuery('#card-Memory')
+      .on('minimized.lte.cardwidget', ($event) => {
+        this.resizeCard(75);
+      })
+    window.jQuery('#card-Memory')
+      .on('maximized.lte.cardwidget', ($event) => {
+        this.resizeCard(85);
+      })
   }
 
   changeTypeDataInTable(typeData: TypeData) {
     // Word, HalfWord, Float, Double, Bytes
+    this.typeDataSelected = typeData;
     switch (typeData) {
       case "Byte":
-        this.displayedColumnsMemory[7] = "Bytes";
-        this.displayedColumnsMemory[2] = "Binary";
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary','Address-0', 'Address-1', 'Address-2', 'Address-3', 'Bytes']
         break;
       case "HalfWord":
-        this.displayedColumnsMemory[7] = "HalfWord";
-        this.displayedColumnsMemory[2] = "Binary";
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'HalfWord-0', 'HalfWord-1', 'HalfWord']
         break;
       case "Word":
-        this.displayedColumnsMemory[7] = "Word";
-        this.displayedColumnsMemory[2] = "Binary";
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Word']
         break;
       case "ASCII":
-        this.displayedColumnsMemory[7] = "ASCII";
-        this.displayedColumnsMemory[2] = "Binary";
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'ASCII']
         break;
       case "Float":
-        this.displayedColumnsMemory[7] = "Float";
-        this.displayedColumnsMemory[2] = "BinaryFloat";
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryFloat', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float']
         break;
       case "Double":
-        this.displayedColumnsMemory[7] = "Double";
-        this.displayedColumnsMemory[2] = "BinaryDouble";
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryDouble', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float']
         break;
     }
   }
 
-
   refresh() {
     this.dataSourceMemory.filter = null;
     this.dataSourceMemory.data = [...this.dataSourceMemory.data];
+  }
+
+  private resizeCard(value: number) {
+    this.maxHeightCard = value;
   }
 }

@@ -1,32 +1,34 @@
 /*!-----------------------------------------------------------
  * Copyright (c) Microsoft Corporation. All rights reserved.
- * Version: 0.29.2(df04357573e045be658960bd50ff0a45d6d1eadb)
+ * Version: 0.22.3(479b2f825538cfa990b511b97574cb96d24a9db4)
  * Released under the MIT license
- * https://github.com/microsoft/vscode/blob/main/LICENSE.txt
+ * https://github.com/microsoft/vscode/blob/master/LICENSE.txt
  *-----------------------------------------------------------*/
 .monaco-action-bar {
-  white-space: nowrap;
-  height: 100%
+  text-align: right;
+  white-space: nowrap
 }
 
 .monaco-action-bar .actions-container {
   display: flex;
   margin: 0 auto;
   padding: 0;
-  height: 100%;
   width: 100%;
-  align-items: center
+  justify-content: flex-end
 }
 
 .monaco-action-bar.vertical .actions-container {
   display: inline-block
 }
 
+.monaco-action-bar.reverse .actions-container {
+  flex-direction: row-reverse
+}
+
 .monaco-action-bar .action-item {
-  display: block;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
+  display: inline-block;
+  transition: transform 50ms ease;
   position: relative
 }
 
@@ -34,24 +36,25 @@
   cursor: default
 }
 
+.monaco-action-bar.animated .action-item.active {
+  transform: scale(1.272019649)
+}
+
 .monaco-action-bar .action-item .codicon, .monaco-action-bar .action-item .icon {
-  display: block
+  display: inline-block
 }
 
 .monaco-action-bar .action-item .codicon {
   display: flex;
-  align-items: center;
-  width: 16px;
-  height: 16px
+  align-items: center
 }
 
 .monaco-action-bar .action-label {
   font-size: 11px;
-  padding: 3px;
-  border-radius: 5px
+  margin-right: 4px
 }
 
-.monaco-action-bar .action-item.disabled .action-label, .monaco-action-bar .action-item.disabled .action-label:before, .monaco-action-bar .action-item.disabled .action-label:hover {
+.monaco-action-bar .action-item.disabled .action-label, .monaco-action-bar .action-item.disabled .action-label:hover {
   opacity: .4
 }
 
@@ -71,14 +74,8 @@
   margin-right: .8em
 }
 
-.monaco-action-bar .action-item .action-label.separator {
-  width: 1px;
-  height: 16px;
-  margin: 5px 4px !important;
-  cursor: default;
-  min-width: 1px;
-  padding: 0;
-  background-color: #bbb
+.monaco-action-bar.animated.vertical .action-item.active {
+  transform: translate(5px)
 }
 
 .secondary-actions .monaco-action-bar .action-label {
@@ -120,16 +117,12 @@
   align-items: center
 }
 
-.monaco-text-button:focus {
-  outline-offset: 2px !important
-}
-
 .monaco-text-button:hover {
   text-decoration: none !important
 }
 
-.monaco-button.disabled, .monaco-button.disabled:focus {
-  opacity: .4 !important;
+.monaco-button.disabled {
+  opacity: .4;
   cursor: default
 }
 
@@ -139,24 +132,11 @@
 }
 
 .monaco-button-dropdown {
-  display: flex;
-  cursor: pointer
+  display: flex
 }
 
 .monaco-button-dropdown > .monaco-dropdown-button {
   margin-left: 1px
-}
-
-.monaco-description-button {
-  flex-direction: column
-}
-
-.monaco-description-button .monaco-button-label {
-  font-weight: 500
-}
-
-.monaco-description-button .monaco-button-description {
-  font-style: italic
 }
 
 .monaco-custom-checkbox {
@@ -201,7 +181,6 @@
 
 @font-face {
   font-family: codicon;
-  font-display: block;
   src: url(../node_modules/monaco-editor/min/vs/base/browser/ui/codicons/codicon/codicon.ttf) format("truetype")
 }
 
@@ -228,7 +207,7 @@
   }
 }
 
-.codicon-gear.codicon-modifier-spin, .codicon-loading.codicon-modifier-spin, .codicon-notebook-state-executing.codicon-modifier-spin, .codicon-sync.codicon-modifier-spin {
+.codicon-loading.codicon-modifier-spin, .codicon-sync.codicon-modifier-spin {
   animation: codicon-spin 1.5s steps(30) infinite
 }
 
@@ -282,39 +261,11 @@
 
 .monaco-dropdown > .dropdown-label {
   cursor: pointer;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center
+  height: 100%
 }
 
 .monaco-dropdown > .dropdown-label > .action-label.disabled {
   cursor: default
-}
-
-.monaco-dropdown-with-primary {
-  display: flex !important;
-  flex-direction: row;
-  border-radius: 5px
-}
-
-.monaco-dropdown-with-primary > .action-container > .action-label {
-  margin-right: 0
-}
-
-.monaco-dropdown-with-primary > .dropdown-action-container > .monaco-dropdown > .dropdown-label .codicon[class*=codicon-] {
-  font-size: 12px;
-  padding-left: 0;
-  padding-right: 0;
-  line-height: 16px;
-  margin-left: -3px
-}
-
-.monaco-dropdown-with-primary > .dropdown-action-container > .monaco-dropdown > .dropdown-label > .action-label {
-  display: block;
-  background-size: 16px;
-  background-position: 50%;
-  background-repeat: no-repeat
 }
 
 .monaco-findInput {
@@ -409,7 +360,7 @@
   display: none
 }
 
-.monaco-hover .hover-contents:not(.html-hover-contents) {
+.monaco-hover .hover-contents {
   padding: 4px 8px
 }
 
@@ -419,7 +370,7 @@
 }
 
 .monaco-hover .markdown-hover > .hover-contents:not(.code-hover-contents) hr {
-  min-width: 100%
+  min-width: calc(100% + 100vw)
 }
 
 .monaco-hover .code, .monaco-hover p, .monaco-hover ul {
@@ -492,10 +443,6 @@
   vertical-align: middle
 }
 
-.monaco-hover .hover-contents a.code-link, .monaco-hover .hover-contents a.code-link:hover {
-  color: inherit
-}
-
 .monaco-hover .hover-contents a.code-link:before {
   content: "("
 }
@@ -504,26 +451,19 @@
   content: ")"
 }
 
+.monaco-hover .hover-contents a.code-link {
+  color: inherit
+}
+
 .monaco-hover .hover-contents a.code-link > span {
   text-decoration: underline;
   border-bottom: 1px solid transparent;
   text-underline-position: under
 }
 
-.monaco-hover .markdown-hover .hover-contents:not(.code-hover-contents):not(.html-hover-contents) span {
+.monaco-hover .markdown-hover .hover-contents:not(.code-hover-contents) span {
   margin-bottom: 4px;
   display: inline-block
-}
-
-.monaco-hover-content .action-container a {
-  -webkit-user-select: none;
-  user-select: none
-}
-
-.monaco-hover-content .action-container.disabled {
-  pointer-events: none;
-  opacity: .4;
-  cursor: default
 }
 
 .monaco-icon-label {
@@ -600,7 +540,7 @@
   opacity: .75;
   font-size: 90%;
   font-weight: 600;
-  margin: auto 16px 0 5px;
+  padding: 0 16px 0 5px;
   text-align: center
 }
 
@@ -691,6 +631,7 @@
   padding: .4em;
   font-size: 12px;
   line-height: 17px;
+  min-height: 34px;
   margin-top: -1px;
   word-wrap: break-word
 }
@@ -719,10 +660,13 @@
 
 .monaco-keybinding > .monaco-keybinding-key {
   display: inline-block;
-  border-style: solid;
-  border-width: 1px;
+  border: 1px solid hsla(0, 0%, 80%, .4);
+  border-bottom-color: hsla(0, 0%, 73.3%, .4);
   border-radius: 3px;
+  box-shadow: inset 0 -1px 0 hsla(0, 0%, 73.3%, .4);
+  background-color: hsla(0, 0%, 86.7%, .4);
   vertical-align: middle;
+  color: #555;
   font-size: 11px;
   padding: 3px 5px;
   margin: 0 2px
@@ -734,6 +678,14 @@
 
 .monaco-keybinding > .monaco-keybinding-key:last-child {
   margin-right: 0
+}
+
+.hc-black .monaco-keybinding > .monaco-keybinding-key, .vs-dark .monaco-keybinding > .monaco-keybinding-key {
+  background-color: hsla(0, 0%, 50.2%, .17);
+  color: #ccc;
+  border: 1px solid rgba(51, 51, 51, .6);
+  border-bottom-color: rgba(68, 68, 68, .6);
+  box-shadow: inset 0 -1px 0 rgba(68, 68, 68, .6)
 }
 
 .monaco-keybinding > .monaco-keybinding-key-separator {
@@ -790,6 +742,10 @@
 
 .monaco-list.element-focused, .monaco-list.selection-multiple, .monaco-list.selection-single {
   outline: 0 !important
+}
+
+.monaco-list:focus .monaco-list-row.selected .codicon {
+  color: inherit
 }
 
 .monaco-drag-image {
@@ -896,7 +852,7 @@
 }
 
 .hc-black.mac .monaco-mouse-cursor-text, .hc-black .mac .monaco-mouse-cursor-text, .vs-dark.mac .monaco-mouse-cursor-text, .vs-dark .mac .monaco-mouse-cursor-text {
-  cursor: -webkit-image-set(url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAL0lEQVQoz2NgCD3x//9/BhBYBWdhgFVAiVW4JBFKGIa4AqD0//9D3pt4I4tAdAMAHTQ/j5Zom30AAAAASUVORK5CYII=) 1x, url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAz0lEQVRIx2NgYGBY/R8I/vx5eelX3n82IJ9FxGf6tksvf/8FiTMQAcAGQMDvSwu09abffY8QYSAScNk45G198eX//yev73/4///701eh//kZSARckrNBRvz//+8+6ZohwCzjGNjdgQxkAg7B9WADeBjIBqtJCbhRA0YNoIkBSNmaPEMoNmA0FkYNoFKhapJ6FGyAH3nauaSmPfwI0v/3OukVi0CIZ+F25KrtYcx/CTIy0e+rC7R1Z4KMICVTQQ14feVXIbR695u14+Ir4gwAAD49E54wc1kWAAAAAElFTkSuQmCC) 2x) 5 8, text
+  cursor: -webkit-image-set(url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAL0lEQVQoz2NgCD3x//9/BhBYBWdhgFVAiVW4JBFKGIa4AqD0//9D3pt4I4tAdAMAHTQ/j5Zom30AAAAASUVORK5CYII=) 1x, url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAAz0lEQVRIx2NgYGBY/R8I/vx5eelX3n82IJ9FxGf6tksvf/8FiTMQAcAGQMDvSwu09abffY8QYSAScNk45G198eX//yev73/4///701eh//kZSARckrNBRvz//+8+6ZohwCzjGNjdgQxkAg7B9WADeBjIBqtJCbhRA0YNoIkBSNmaPEMoNmA0FkYNoFKhapJ6FGyAH3nauaSmPfwI0v/3OukVi0CIZ+F25KrtYcx/CTIy0e+rC7R1Z4KMICVTQQ14feVXIbR695u14+Ir4gwAAD49E54wc1kWAAAAAElFTkSuQmCC) 2x) 5 8, text;
 }
 
 .monaco-progress-container {
@@ -1003,7 +959,7 @@
   height: var(--sash-size)
 }
 
-.monaco-sash:not(.disabled) > .orthogonal-drag-handle {
+.monaco-sash:not(.disabled).orthogonal-end:after, .monaco-sash:not(.disabled).orthogonal-start:before {
   content: " ";
   height: calc(var(--sash-size) * 2);
   width: calc(var(--sash-size) * 2);
@@ -1013,52 +969,37 @@
   position: absolute
 }
 
-.monaco-sash.horizontal.orthogonal-edge-north:not(.disabled) > .orthogonal-drag-handle.start, .monaco-sash.horizontal.orthogonal-edge-south:not(.disabled) > .orthogonal-drag-handle.end {
+.monaco-sash.horizontal.orthogonal-edge-north:not(.disabled).orthogonal-start:before, .monaco-sash.horizontal.orthogonal-edge-south:not(.disabled).orthogonal-end:after {
   cursor: nwse-resize
 }
 
-.monaco-sash.horizontal.orthogonal-edge-north:not(.disabled) > .orthogonal-drag-handle.end, .monaco-sash.horizontal.orthogonal-edge-south:not(.disabled) > .orthogonal-drag-handle.start {
+.monaco-sash.horizontal.orthogonal-edge-north:not(.disabled).orthogonal-end:after, .monaco-sash.horizontal.orthogonal-edge-south:not(.disabled).orthogonal-start:before {
   cursor: nesw-resize
 }
 
-.monaco-sash.vertical > .orthogonal-drag-handle.start {
-  left: calc(var(--sash-size) * -0.5);
+.monaco-sash.orthogonal-start.vertical:before {
+  left: calc(var(--sash-size)/2);
   top: calc(var(--sash-size) * -1)
 }
 
-.monaco-sash.vertical > .orthogonal-drag-handle.end {
-  left: calc(var(--sash-size) * -0.5);
+.monaco-sash.orthogonal-end.vertical:after {
+  left: calc(var(--sash-size)/2);
   bottom: calc(var(--sash-size) * -1)
 }
 
-.monaco-sash.horizontal > .orthogonal-drag-handle.start {
-  top: calc(var(--sash-size) * -0.5);
+.monaco-sash.orthogonal-start.horizontal:before {
+  top: calc(var(--sash-size)/2);
   left: calc(var(--sash-size) * -1)
 }
 
-.monaco-sash.horizontal > .orthogonal-drag-handle.end {
-  top: calc(var(--sash-size) * -0.5);
+.monaco-sash.orthogonal-end.horizontal:after {
+  top: calc(var(--sash-size)/2);
   right: calc(var(--sash-size) * -1)
 }
 
-.monaco-sash:before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  width: 100%;
-  height: 100%;
+.monaco-sash {
   transition: background-color .1s ease-out;
   background: transparent
-}
-
-.monaco-sash.vertical:before {
-  width: var(--sash-hover-size);
-  left: calc(50% - var(--sash-hover-size) / 2)
-}
-
-.monaco-sash.horizontal:before {
-  height: var(--sash-hover-size);
-  top: calc(50% - var(--sash-hover-size) / 2)
 }
 
 .monaco-sash.debug {
@@ -1069,7 +1010,7 @@
   background: rgba(0, 255, 255, .2)
 }
 
-.monaco-sash.debug:not(.disabled) > .orthogonal-drag-handle {
+.monaco-sash.debug:not(.disabled).orthogonal-end:after, .monaco-sash.debug:not(.disabled).orthogonal-start:before {
   background: red
 }
 
@@ -1242,56 +1183,6 @@
   width: 100%
 }
 
-.monaco-table {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  height: 100%;
-  width: 100%;
-  white-space: nowrap
-}
-
-.monaco-table > .monaco-split-view2 {
-  border-bottom: 1px solid transparent
-}
-
-.monaco-table > .monaco-list {
-  flex: 1
-}
-
-.monaco-table-tr {
-  display: flex;
-  height: 100%
-}
-
-.monaco-table-th {
-  width: 100%;
-  height: 100%;
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis
-}
-
-.monaco-table-td, .monaco-table-th {
-  box-sizing: border-box;
-  flex-shrink: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis
-}
-
-.monaco-table > .monaco-split-view2 .monaco-sash.vertical:before {
-  content: "";
-  position: absolute;
-  left: calc(var(--sash-size) / 2);
-  width: 0;
-  border-left: 1px solid transparent
-}
-
-.monaco-table > .monaco-split-view2, .monaco-table > .monaco-split-view2 .monaco-sash.vertical:before {
-  transition: border-color .2s ease-out
-}
-
 .monaco-tl-row {
   display: flex;
   height: 100%;
@@ -1332,16 +1223,13 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
+  color: inherit !important;
   transform: translateX(3px)
 }
 
 .monaco-tl-contents {
   flex: 1;
   overflow: hidden
-}
-
-.monaco-tl-twistie:before {
-  border-radius: 20px
 }
 
 .monaco-tl-twistie.collapsed:before {
@@ -1356,14 +1244,13 @@
   position: absolute;
   width: 600px;
   z-index: 2000;
-  padding: 0 1px 1px;
+  padding-bottom: 6px;
   left: 50%;
   margin-left: -300px
 }
 
 .quick-input-titlebar {
-  display: flex;
-  align-items: center
+  display: flex
 }
 
 .quick-input-left-action-bar {
@@ -1372,11 +1259,13 @@
   flex: 1
 }
 
+.quick-input-left-action-bar.monaco-action-bar .actions-container {
+  justify-content: flex-start
+}
+
 .quick-input-title {
   padding: 3px 0;
-  text-align: center;
-  text-overflow: ellipsis;
-  overflow: hidden
+  text-align: center
 }
 
 .quick-input-right-action-bar {
@@ -1385,14 +1274,12 @@
   flex: 1
 }
 
-.quick-input-right-action-bar > .actions-container {
-  justify-content: flex-end
-}
-
 .quick-input-titlebar .monaco-action-bar .action-label.codicon {
+  margin: 0;
+  width: 19px;
+  height: 100%;
   background-position: 50%;
-  background-repeat: no-repeat;
-  padding: 2px
+  background-repeat: no-repeat
 }
 
 .quick-input-description {
@@ -1418,7 +1305,6 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  min-width: 0;
   position: relative
 }
 
@@ -1476,8 +1362,7 @@
 
 .quick-input-message {
   margin-top: -1px;
-  padding: 5px 5px 2px;
-  overflow-wrap: break-word
+  padding: 5px 5px 2px
 }
 
 .quick-input-message > .codicon {
@@ -1520,7 +1405,7 @@
   border-top-style: solid
 }
 
-.quick-input-list .monaco-list-row[data-index="0"] .quick-input-list-entry.quick-input-list-separator-border {
+.quick-input-list .monaco-list-row:first-child .quick-input-list-entry.quick-input-list-separator-border {
   border-top-style: none
 }
 
@@ -1568,7 +1453,7 @@
 }
 
 .quick-input-list .quick-input-list-rows > .quick-input-list-row .codicon[class*=codicon-] {
-  vertical-align: text-bottom
+  vertical-align: sub
 }
 
 .quick-input-list .quick-input-list-rows .monaco-highlighted-label span {
@@ -1605,8 +1490,10 @@
 }
 
 .quick-input-list .quick-input-list-entry-action-bar .action-label.codicon {
-  margin-right: 4px;
-  padding: 0 2px 2px
+  margin: 0;
+  height: 100%;
+  padding: 0 2px;
+  vertical-align: middle
 }
 
 .quick-input-list .quick-input-list-entry-action-bar {
@@ -1614,16 +1501,12 @@
   margin-right: 4px
 }
 
+.quick-input-list .quick-input-list-entry-action-bar .action-label.codicon {
+  margin-right: 4px
+}
+
 .quick-input-list .monaco-list-row.focused .quick-input-list-entry-action-bar .action-label, .quick-input-list .quick-input-list-entry .quick-input-list-entry-action-bar .action-label.always-visible, .quick-input-list .quick-input-list-entry:hover .quick-input-list-entry-action-bar .action-label {
   display: flex
-}
-
-.quick-input-list .monaco-list-row.focused .monaco-keybinding-key, .quick-input-list .monaco-list-row.focused .quick-input-list-entry .quick-input-list-separator {
-  color: inherit
-}
-
-.quick-input-list .monaco-list-row.focused .monaco-keybinding-key {
-  background: none
 }
 
 .monaco-editor .inputarea {
@@ -1672,7 +1555,7 @@
   justify-content: center
 }
 
-.monaco-editor .lines-content .core-guide {
+.monaco-editor .lines-content .cigr, .monaco-editor .lines-content .cigra {
   position: absolute
 }
 
@@ -2227,7 +2110,7 @@
 
 .monaco-editor .find-widget {
   position: absolute;
-  z-index: 35;
+  z-index: 50;
   height: 33px;
   overflow: hidden;
   line-height: 19px;
@@ -2319,10 +2202,8 @@
 }
 
 .monaco-editor .find-widget .button {
-  width: 16px;
-  height: 16px;
-  padding: 3px;
-  border-radius: 5px;
+  width: 20px;
+  height: 20px;
   flex: initial;
   margin-left: 3px;
   background-position: 50%;
@@ -2331,13 +2212,6 @@
   display: flex;
   align-items: center;
   justify-content: center
-}
-
-.monaco-editor .find-widget .codicon-find-selection {
-  width: 22px;
-  height: 22px;
-  padding: 3px;
-  border-radius: 5px
 }
 
 .monaco-editor .find-widget .button.left {
@@ -2357,7 +2231,6 @@
   left: 3px;
   width: 18px;
   height: 100%;
-  border-radius: 0;
   box-sizing: border-box
 }
 
@@ -2560,31 +2433,6 @@
   font-weight: 700
 }
 
-.monaco-editor .suggest-preview-additional-widget {
-  white-space: nowrap
-}
-
-.monaco-editor .suggest-preview-additional-widget .content-spacer {
-  color: transparent;
-  white-space: pre
-}
-
-.monaco-editor .suggest-preview-additional-widget .button {
-  display: inline-block;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-position: under
-}
-
-.monaco-editor .ghost-text-hidden {
-  opacity: 0;
-  font-size: 0
-}
-
-.monaco-editor .ghost-text-decoration, .monaco-editor .suggest-preview-text {
-  font-style: italic
-}
-
 .monaco-editor .detected-link, .monaco-editor .detected-link-active {
   text-decoration: underline;
   text-underline-position: under
@@ -2767,11 +2615,8 @@
   align-items: center;
   font-size: 13px;
   margin-left: 20px;
+  cursor: pointer;
   min-width: 0
-}
-
-.monaco-editor .peekview-widget .head .peekview-title.clickable {
-  cursor: pointer
 }
 
 .monaco-editor .peekview-widget .head .peekview-title .dirname:not(:empty) {
@@ -2785,8 +2630,7 @@
 
 .monaco-editor .peekview-widget .head .peekview-title .filename {
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap
+  text-overflow: ellipsis
 }
 
 .monaco-editor .peekview-widget .head .peekview-title .meta:not(:empty):before {
@@ -2808,6 +2652,23 @@
   height: 100%
 }
 
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar .action-item {
+  margin-left: 4px
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar .action-label {
+  width: 16px;
+  height: 100%;
+  margin: 0;
+  line-height: inherit;
+  background-repeat: no-repeat;
+  background-position: 50%
+}
+
+.monaco-editor .peekview-widget .head .peekview-actions > .monaco-action-bar .action-label.codicon {
+  margin: 0
+}
+
 .monaco-editor .peekview-widget > .body {
   border-top: 1px solid;
   position: relative
@@ -2815,10 +2676,6 @@
 
 .monaco-editor .peekview-widget .head .peekview-title .codicon {
   margin-right: 4px
-}
-
-.monaco-editor .peekview-widget .monaco-list .monaco-list-row.focused .codicon {
-  color: inherit !important
 }
 
 .monaco-editor .rename-box {
@@ -2985,28 +2842,25 @@
   opacity: 1
 }
 
-.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .right > .details-label {
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .left > .qualifier-label, .monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .left > .signature-label, .monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .right > .details-label {
   opacity: .7
 }
 
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .left > .signature-label {
   overflow: hidden;
-  text-overflow: ellipsis;
-  opacity: .6
+  text-overflow: ellipsis
 }
 
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .left > .qualifier-label {
-  margin-left: 12px;
+  margin-left: 4px;
   opacity: .4;
-  font-size: 85%;
-  line-height: normal;
+  font-size: 90%;
   text-overflow: ellipsis;
   overflow: hidden;
   align-self: center
 }
 
 .monaco-editor .suggest-widget .monaco-list .monaco-list-row > .contents > .main > .right > .details-label {
-  font-size: 85%;
   margin-left: 1.1em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3303,39 +3157,12 @@
   color: #0066bf
 }
 
-.vs .quick-input-widget .monaco-list-row.focused .monaco-highlighted-label .highlight {
-  color: #9dddff
-}
-
 .vs-dark .quick-input-widget .monaco-highlighted-label .highlight {
   color: #0097fb
 }
 
 .hc-black .quick-input-widget .monaco-highlighted-label .highlight {
   color: #f38518
-}
-
-.monaco-keybinding > .monaco-keybinding-key {
-  background-color: hsla(0, 0%, 86.7%, .4);
-  border: 1px solid hsla(0, 0%, 80%, .4);
-  border-bottom-color: hsla(0, 0%, 73.3%, .4);
-  box-shadow: inset 0 -1px 0 hsla(0, 0%, 73.3%, .4);
-  color: #555
-}
-
-.hc-black .monaco-keybinding > .monaco-keybinding-key {
-  background-color: transparent;
-  border: 1px solid #6fc3df;
-  box-shadow: none;
-  color: #fff
-}
-
-.vs-dark .monaco-keybinding > .monaco-keybinding-key {
-  background-color: hsla(0, 0%, 50.2%, .17);
-  border: 1px solid rgba(51, 51, 51, .6);
-  border-bottom-color: rgba(68, 68, 68, .6);
-  box-shadow: inset 0 -1px 0 rgba(68, 68, 68, .6);
-  color: #ccc
 }
 
 .monaco-editor {
@@ -3353,14 +3180,11 @@
 
 .monaco-aria-container {
   position: absolute !important;
-  top: 0;
   height: 1px;
   width: 1px;
-  margin: -1px;
+  left: inherit !important;
   overflow: hidden;
-  padding: 0;
-  clip: rect(1px, 1px, 1px, 1px);
-  clip-path: inset(50%)
+  clip: rect(1px, 1px, 1px, 1px)
 }
 
 .monaco-editor.hc-black {
@@ -3481,61 +3305,13 @@
   }
 }
 
-.monaco-action-bar .action-item.menu-entry .action-label.icon {
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-size: 16px
-}
-
 .monaco-action-bar .action-item.menu-entry .action-label {
-  background-image: var(--menu-entry-icon-light)
+  background-image: var(--menu-entry-icon-light);
+  display: inline-flex
 }
 
 .hc-black .monaco-action-bar .action-item.menu-entry .action-label, .vs-dark .monaco-action-bar .action-item.menu-entry .action-label {
   background-image: var(--menu-entry-icon-dark)
-}
-
-.monaco-dropdown-with-default {
-  display: flex !important;
-  flex-direction: row;
-  border-radius: 5px
-}
-
-.monaco-dropdown-with-default > .action-container > .action-label {
-  margin-right: 0
-}
-
-.monaco-dropdown-with-default > .action-container.menu-entry > .action-label.icon {
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-position: 50%;
-  background-size: 16px
-}
-
-.monaco-dropdown-with-default > .action-container.menu-entry > .action-label {
-  background-image: var(--menu-entry-icon-light)
-}
-
-.hc-black .monaco-dropdown-with-default > .action-container.menu-entry > .action-label, .vs-dark .monaco-dropdown-with-default > .action-container.menu-entry > .action-label {
-  background-image: var(--menu-entry-icon-dark)
-}
-
-.monaco-dropdown-with-default > .dropdown-action-container > .monaco-dropdown > .dropdown-label .codicon[class*=codicon-] {
-  font-size: 12px;
-  padding-left: 0;
-  padding-right: 0;
-  line-height: 16px;
-  margin-left: -3px
-}
-
-.monaco-dropdown-with-default > .dropdown-action-container > .monaco-dropdown > .dropdown-label > .action-label {
-  display: block;
-  background-size: 16px;
-  background-position: 50%;
-  background-repeat: no-repeat
 }
 
 .context-view .monaco-menu {
