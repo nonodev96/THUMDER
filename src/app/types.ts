@@ -1,6 +1,7 @@
-import { Registers } from "./__core/machine/machine.service";
-import { Double64, Float32, Int32 } from "./__core/interfaces";
+import { Registers } from "./__core/DLX/_Registers";
+import { Double64, Float32, Int32 } from "./__core/typesData";
 import { TypeCycleType } from "./__core/machine/PixiTHUMDER_CycleClockDiagram";
+import { InterfaceMemory, InterfaceRegisters } from "./__core/DLX/interfaces";
 
 declare global {
   interface Window {
@@ -11,30 +12,36 @@ declare global {
   }
 }
 
-export interface InterfaceRegisters {
-  PC: Int32;
-  IMAR: Int32;
-  IR: Int32;
-  A: Int32;
-  AHI: Int32;
-  B: Int32;
-  BHI: Int32;
-  BTA: Int32;
-  ALU: Int32;
-  ALUHI: Int32;
-  FPSR: Int32;
-  DMAR: Int32;
-  SDR: Int32;
-  SDRHI: Int32;
-  LDR: Int32;
-  LDRHI: Int32;
-  R: Int32[];
-  F: Float32[];
-  D: Double64[];
+export interface User {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
+  emailVerified: boolean;
 }
 
-export interface InterfaceMemory {
 
+export type StringOfLength<Min, Max> = string & {
+  readonly StringOfLength: unique symbol // this is the phantom type
+};
+
+// This is a type guard function which can be used to assert that a string
+// is of type StringOfLength<Min,Max>
+function isStringOfLength<Min extends number, Max extends number>(str: string, min: Min, max: Max): str is StringOfLength<Min, Max> {
+  return str.length >= min && str.length <= max;
+}
+
+// type constructor function
+export function stringOfLength<Min extends number, Max extends number>(input: unknown, min: Min, max: Max): StringOfLength<Min, Max> {
+  if (typeof input !== "string") {
+    throw new Error("invalid input");
+  }
+
+  if (!isStringOfLength(input, min, max)) {
+    throw new Error("input is not between specified min and max");
+  }
+
+  return input;
 }
 
 export type TypeTransformDecimalToBase = {
@@ -140,10 +147,16 @@ export type TypeStage =
 export type TypeTableCode = {
   text: string,
   address: string,
-  instruction: string
+  instruction: string,  // 0x00000000
+  code: string,         // 0x00000000
   stage: TypeStage
-  binary?: string,
   index?: number,
+}
+export type TypeCode = {
+  text: string,
+  address: string,      // 0x00000000
+  instruction: string,
+  code: string,         // 0x00000000
 }
 
 export type TypeFloatingPointStageConfiguration = {
@@ -162,11 +175,6 @@ export type TypeFloatingPointStageConfiguration = {
 }
 export type TypeLang = 'en' | 'sp';
 
-export type TypeCode = {
-  text: string,
-  address: string,
-  instruction: string
-}
 
 export type TypeStatusPipeline = {
   address: string;

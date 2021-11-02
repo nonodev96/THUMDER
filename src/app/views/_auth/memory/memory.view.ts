@@ -6,6 +6,7 @@ import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
 import { EditMemoryBinary32Component } from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { TypeData } from "../../../types";
+import { StorageService } from "../../../__core/storage/storage.service";
 
 
 @Component({
@@ -28,18 +29,25 @@ export class MemoryView implements OnInit, AfterViewInit {
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
-              private ref: ChangeDetectorRef,
+              private storage: StorageService,
               private toastService: ToastrService) {
     this.dataSourceMemory.filter = null
     this.dataSourceMemory.sort = this.sort;
   }
 
   ngOnInit(): void {
-
+    this.storage.watchStorage().subscribe((key) => {
+      switch (key) {
+        case 'memory_size':
+          this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
+          break;
+      }
+    })
   }
 
   ngAfterViewInit(): void {
-    this.dataSourceMemory.data = this.machine.memory.getAllIndex();
+    this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
+
     window.jQuery('#card-Memory')
       .on('expanded.lte.cardwidget', ($event) => {
         this.resizeCard(75);

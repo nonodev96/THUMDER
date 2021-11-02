@@ -43,15 +43,17 @@ export const DEFAULT_BINARY_64_BITS = "".padStart(64, '0');
 export const DEFAULT_CODE: TypeCode = {
   text: "",
   instruction: "",
-  address: ""
+  address: "",
+  code: ""
 }
 
 export const DEFAULT_TABLE_CODE: TypeTableCode = {
   text: "",
   instruction: "",
+  code: "",
   address: "",
   stage: "",
-  binary: "00000000000000000000000000000000"
+  // binary: "00000000000000000000000000000000"
 }
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
@@ -129,8 +131,7 @@ export const MACHINE_REGISTERS_F: Partial<TypeRegisterToEdit>[] = [
 ];
 
 export const MACHINE_REGISTERS_D: TypeRegisterToEdit[] = [
-  0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-  10, 11, 12, 13, 14, 15,
+  0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30
 ];
 
 export const ASCII_TABLE = [

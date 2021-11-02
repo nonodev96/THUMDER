@@ -1,6 +1,6 @@
 import { AppConfig } from "./environments/environment";
 import { DLX_DOCUMENTATION } from "./app/__core/DLX/Documentation";
-import { OPCODES } from "./app/__core/DLX/_OPCODES_";
+import { OPCODES } from "./app/__core/DLX/__OPCODES";
 import { Operation } from "./app/__core/DLX/interfaces";
 import * as monaco from 'monaco-editor';
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;

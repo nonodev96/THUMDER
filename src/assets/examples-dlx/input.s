@@ -1,0 +1,66 @@
+;*********** WINDLX EX.1: READ A POSITIVE INTEGER NUMBER *************
+;*********** (C) 1991 GüNTHER RAIDL			             *************
+;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR		     *************
+
+;-----------------------------------------------------------------------------
+;SUBPROGRAM CALL BY SYMBOL "INPUTUNSIGNED"
+;EXPECT THE ADDRESS OF A ZERO-TERMINATED PROMPT STRING IN R1
+;RETURNS THE READ VALUE IN R1
+;CHANGES THE CONTENTS OF REGISTERS R1, R13, R14
+;-----------------------------------------------------------------------------
+
+		.DATA
+
+		;*** DATA FOR READ-TRAP
+READBUFFER:	.SPACE		80
+READPAR:	.WORD		0, READBUFFER, 80
+
+		;*** DATA FOR PRINTF-TRAP
+PRINTFPAR:	.SPACE		4
+
+SAVER2:		.SPACE		4
+SAVER3:		.SPACE		4
+SAVER4:		.SPACE		4
+SAVER5:		.SPACE		4
+
+
+		.TEXT
+
+		.GLOBAL		INPUTUNSIGNED
+INPUTUNSIGNED:	
+		;*** SAVE REGISTER CONTENTS
+		SW		    SAVER2, R2
+		SW		    SAVER3, R3
+		SW		    SAVER4, R4
+		SW		    SAVER5, R5
+
+		;*** PROMPT
+		SW		    PRINTFPAR, R1
+		ADDI		R14, R0, PRINTFPAR
+		TRAP		5
+
+		;*** CALL TRAP-3 TO READ LINE
+		ADDI		R14, R0, READPAR
+		TRAP		3
+
+		;*** DETERMINE VALUE
+		ADDI		R2, R0, READBUFFER
+		ADDI		R1, R0, 0
+		ADDI		R4, R0, 10	;DECIMAL SYSTEM
+
+LOOP:		;*** READS DIGITS TO END OF LINE
+		LBU		    R3, 0(R2)
+		SEQI		R5, R3, 10	;LF -> EXIT
+		BNEZ		R5, FINISH
+		SUBI		R3, R3, 48	;�0�
+		MULTU		R1, R1, R4	;SHIFT DECIMAL
+		ADD		    R1, R1, R3
+		ADDI		R2, R2, 1 	;INCREMENT POINTER
+		J		    LOOP
+		
+FINISH: 	;*** RESTORE OLD REGISTER CONTENTS
+		LW		    R2, SAVER2
+		LW		    R3, SAVER3
+		LW		    R4, SAVER4
+		LW		    R5, SAVER5
+		JR		    R31		; RETURN

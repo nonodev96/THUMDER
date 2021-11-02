@@ -38,14 +38,14 @@
               </div>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-sm-{{ registerSelected === 'Double' ? 7 : 6 }}">
               <label for="registerToEditValueHexadecimalId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text">0x</span>
                 </div>
                 <input type="text" id="registerToEditValueHexadecimalId"
-                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       class="form-control {{ this.registerToEditHexadecimalValueIsValid ? 'is-valid' : 'is-invalid' }}"
                        placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
                        [ngModel]="registerToEdit_Hexadecimal"
                        [ngModelOptions]="{standalone: true}"
@@ -60,7 +60,8 @@
               <label for="registerToEditValueDecimalId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueDecimalId"
-                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       class="form-control"
+                       max="4294967295"
                        placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
                        [ngModel]="registerToEdit_Word"
                        [ngModelOptions]="{standalone: true}"
@@ -74,7 +75,7 @@
               <label for="registerToEditValueFloatId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueFloatId"
-                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       class="form-control"
                        placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
                        [ngModel]="registerToEdit_Float"
                        [ngModelOptions]="{standalone: true}"
@@ -84,11 +85,11 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-6" *ngIf="registerSelected === 'Double'">
+            <div class="col-sm-5" *ngIf="registerSelected === 'Double'">
               <label for="registerToEditValueDoubleId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueDoubleId"
-                       class="form-control {{ this.registerToEditValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                       class="form-control"
                        placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
                        [ngModel]="registerToEdit_Double"
                        [ngModelOptions]="{standalone: true}"
@@ -100,45 +101,39 @@
             </div>
 
             <div class="col-sm-12">
-              <p class="text-monospace"><strong>{{ 'MACHINE.BINARY' | translate }}:</strong><br>
-                {{ registerToEdit_Binary }}
-              </p>
+              <p><strong>{{ 'MACHINE.BINARY' | translate }}:</strong></p>
+              <p class="text-monospace">{{ registerToEdit_Binary }}</p>
             </div>
 
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong><br>
-                {{ (registerToEdit_Binary | binary_to_number) }}
-              </p>
+              <p><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong></p>
+              <p class="text-monospace">{{ (registerToEdit_Binary | binary_to_number) }}</p>
             </div>
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong><br>
-                {{ (registerToEdit_Binary | binary_to_number | number_to_base: {base: 8}) }}
-              </p>
+              <p><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong></p>
+              <p class="text-monospace">{{ (registerToEdit_Binary | binary_to_number | number_to_base: {base: 8}) }}</p>
             </div>
 
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong><br>
-                {{ (registerToEdit_Binary | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
-                  maxLength: maxLengthHexadecimal,
-                  fillString: '0'
-                }) }}
-              </p>
+              <p><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong></p>
+              <p
+                class="text-monospace">{{ (registerToEdit_Binary | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
+                maxLength: maxLengthHexadecimal,
+                fillString: '0'
+              }) }}</p>
             </div>
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.BYTE' | translate }}:</strong><br>
-                {{ registerToEdit_Binary | binary32_to_bytes }}
-              </p>
+              <p><strong>{{ 'MACHINE.BYTE' | translate }}:</strong></p>
+              <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_bytes }}</p>
             </div>
 
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong><br>
-                {{ registerToEdit_Binary | binary32_to_halfword }}
-              </p>
+              <p><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong></p>
+              <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_halfword }}</p>
             </div>
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.ASCII' | translate }}:</strong><br>
-                {{ registerToEdit_Binary | binary32_to_ascii }}
-              </p>
+              <p><strong>{{ 'MACHINE.ASCII' | translate }}:</strong></p>
+              <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_ascii }}</p>
             </div>
 
             <div class="col-sm-12">

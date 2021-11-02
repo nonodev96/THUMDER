@@ -31,6 +31,7 @@ import { BinaryByteToNumberPipe } from "./pipes/numbers/BinaryToNumber.pipe";
 import { PadStartPipe } from "./pipes/numbers/PadStart.pipe";
 import { ReplaceAllPipe } from "./pipes/numbers/ReplaceAll.pipe";
 import { FromBaseToBasePipe } from "./pipes/numbers/FromBaseToBase.pipe";
+import { Binary32ToWordPipe } from "./pipes/numbers/Binary32ToWord.pipe";
 
 @NgModule({
   imports: [
@@ -50,8 +51,9 @@ import { FromBaseToBasePipe } from "./pipes/numbers/FromBaseToBase.pipe";
     BinaryPipe,
     Binary32ToASCIIPipe,
     Binary32ToBytesPipe,
-    Binary32ToDecimal_IEEE754Pipe,
+    Binary32ToWordPipe,
     Binary32ToHalfWordPipe,
+    Binary32ToDecimal_IEEE754Pipe,
     Binary64ToDecimal_IEEE754Pipe,
     NumberToBinary32_IEEE754Pipe,
     NumberToBinary64_IEEE754Pipe,
@@ -80,8 +82,9 @@ import { FromBaseToBasePipe } from "./pipes/numbers/FromBaseToBase.pipe";
     BinaryPipe,
     Binary32ToASCIIPipe,
     Binary32ToBytesPipe,
-    Binary32ToDecimal_IEEE754Pipe,
+    Binary32ToWordPipe,
     Binary32ToHalfWordPipe,
+    Binary32ToDecimal_IEEE754Pipe,
     Binary64ToDecimal_IEEE754Pipe,
     NumberToBinary32_IEEE754Pipe,
     NumberToBinary64_IEEE754Pipe,
