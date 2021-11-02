@@ -1,5 +1,6 @@
 import { MachineService } from "./__core/machine/machine.service";
 import { ASCII_TABLE } from "./CONSTAST";
+import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } from "./__core/DLX/__OPCODES";
 
 
 export namespace Utils {
@@ -266,5 +267,122 @@ export namespace Utils {
 
   export function replaceAll(str: string = "", search = "", replace = "") {
     return str.split(search).join(replace);
+  }
+
+
+  export function convertHexCodeToTextMachineInstructionDLX(hexCode: string): string {
+    const binary = parseInt(hexCode, 16).toString(2).padStart(32, '0');
+    const opcode = binary.substr(0, 6);
+    const func_field = binary.substr(21, 11);
+    const func_field_6_last_bits = func_field.substr(-6);
+
+    const rs1 = parseInt(binary.substr(6, 5), 2);
+    const rs2 = parseInt(binary.substr(6 + 5, 5), 2);
+    const rd0 = parseInt(binary.substr(6 + 5 + 5, 5), 2);
+
+    const rs1F = parseInt(binary.substr(6, 5), 2);
+    const rs2F = parseInt(binary.substr(6 + 5, 5), 2);
+    const rd0F = parseInt(binary.substr(6 + 5 + 5, 5), 2);
+
+    const rs1I = parseInt(binary.substr(6, 5), 2);
+    const rd0I = parseInt(binary.substr(6 + 5, 5), 2);
+    const data = parseInt(binary.substr(6 + 5 + 5, 16), 2);
+    const data_26 = parseInt(binary.substr(6, 26), 2);
+
+    if (binary === "".padStart(32, '0')) {
+      return "NOP";
+    }
+
+    const is_OPCODE_0 = opcode === "000000";
+    if (is_OPCODE_0) {
+      const obj_instrction_type_r_opcode_0 = OPCODES_TYPE_R_OPCODE_0.find(value => {
+        return value.bits === func_field_6_last_bits;
+      })
+      if (obj_instrction_type_r_opcode_0) {
+        const instruction_name = obj_instrction_type_r_opcode_0.name;
+        // Type R with opcode = 0
+        return instruction_name + " R" + rd0 + ", R" + rs1 + ", R" + rs2;
+      }
+      return "Instruction error #0";
+    }
+
+    const is_OPCODE_1 = opcode === "000001";
+    if (is_OPCODE_1) {
+      const obj_instrction_type_r_opcode_1 = OPCODES_TYPE_R_OPCODE_1.find(value => {
+        return value.bits === func_field_6_last_bits;
+      })
+      if (obj_instrction_type_r_opcode_1) {
+        const instruction_name = obj_instrction_type_r_opcode_1.name;
+        // Type R with opcode = 1
+        return instruction_name + " F" + rd0F + ", F" + rs1F + ", F" + rs2F;
+      }
+      return "Instruction error #1";
+    }
+
+    // Others OPCODES
+    const is_OPCODE_TYPE_I_or_J = OPCODES_TYPE_I_J.some(value => {
+      return value.bits === opcode;
+    })
+    if (is_OPCODE_TYPE_I_or_J) {
+      const obj_instruction_type_i_or_j = OPCODES_TYPE_I_J.find(value => {
+        return value.bits === opcode;
+      })
+
+      if (obj_instruction_type_i_or_j) {
+        const instruction_name = obj_instruction_type_i_or_j.name;
+
+        // Type I or type J
+        if (["ADDI", "ADDUI", "SUBI", "SUBUI", "ANDI", "ORI", "XORI"].includes(instruction_name)) {
+          return instruction_name + " R" + rd0I + ", R" + rs1I + ", #" + data;
+        }
+        if ("LHI" === instruction_name) {
+          return instruction_name + " R" + rd0I + "#" + data;
+        }
+
+        // Type J ?
+        if (["J", "JAL"].includes(instruction_name)) {
+          return instruction_name + " #" + data;
+        }
+        if (["BEQZ", "BNEZ"].includes(instruction_name)) {
+          return instruction_name + " R"  + rs1I + " #" + data;
+        }
+        if (["BFPT", "BFPF"].includes(instruction_name)) {
+          return instruction_name + " #" + data;
+        }
+        if ("RFE" === instruction_name) {
+          return instruction_name;
+        }
+        if ("TRAP" === instruction_name) {
+          return instruction_name + " #" + data_26;
+        }
+
+        // No se de que tipo son :3 supongamos que de tipo I
+        if (["JR", "JALR"].includes(instruction_name)) {
+          return instruction_name + " R" + rs1I;
+        }
+
+        if (["SLLI", "SRLI", "SRAI", "SEQI", "SNEI", "SLTI", "SGTI", "SLEI", "SGEI"].includes(instruction_name)) {
+          return instruction_name + " R" + rd0I + ", R" + rs1I + ", #" + data;
+        }
+
+        if (["LB", "LH", "LW", "LBU", "LHU"].includes(instruction_name)) {
+          return instruction_name + " R" + rd0I + ", ##" + data + "(R" + rs1I + ")";
+        }
+        if (["LF", "LD"].includes(instruction_name)) {
+          return instruction_name + " F" + rd0I + ", ##" + data + "(R" + rs1I + ")";
+        }
+
+        if (["SB", "SH", "SW"].includes(instruction_name)) {
+          return instruction_name + " ##" + data + "(R" + rs1I + "), R" + rd0I;
+        }
+        if (["SF", "SD"].includes(instruction_name)) {
+          return instruction_name + " ##" + data + "(R" + rs1I + "), F" + rd0I;
+        }
+
+      }
+      return "Instruction error #1";
+    }
+
+    return "Instruction error #-1";
   }
 }

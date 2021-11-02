@@ -28,15 +28,24 @@ export class FileSystemService {
     const documents = new FileItem('', true, []);
     documents.name = 'Documents';
     documents.key = Utils.uuidv4();
-    const pepe = new FileItem('', false, []);
-    pepe.name = 'pepe.s';
-    pepe.key = Utils.uuidv4();
+
+    const listNameExamples = ['base.s', 'fact.s', 'gcm.s', 'input.s', 'prim.s'];
+    const listFilesExamples = [];
+
+    for (const nameFile of listNameExamples) {
+      const file = new FileItem('', false, []);
+      file.name = nameFile;
+      file.key = Utils.uuidv4();
+
+      listFilesExamples.push(file);
+    }
 
     // this.disk = new Map<string, FileItem[]>();
     // this.disk.set('', [documents, pepe]);
-    this.items = [documents];
+    this.items = [documents, ...listFilesExamples];
   }
 
+  // TODO
   initialize(): Promise<boolean> {
     return new Promise<boolean>(resolve => {
       resolve(true);

@@ -188,67 +188,55 @@
             </div>
 
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong><br>
-                {{ (memoryValueBinary32Display | binary_to_number) }}
-              </p>
+              <p><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong></p>
+              <p class="text-monospace">{{ (memoryValueBinary32Display | binary_to_number) }}</p>
             </div>
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong><br>
-                {{ (memoryValueBinary32Display | binary_to_number | number_to_base: {base: 8}) }}
-              </p>
-            </div>
-
-            <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong><br>
-                {{ (memoryValueBinary32Display | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
-                  maxLength: typeDataSelected === 'Double' ? 16 : 8,
-                  fillString: '0'
-                }) }}
-              </p>
-            </div>
-            <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.BYTE' | translate }}:</strong><br>
-                {{ (memoryValueBinary32Display | binary32_to_bytes) }}
-              </p>
+              <p><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong></p>
+              <p
+                class="text-monospace">{{ (memoryValueBinary32Display | binary_to_number | number_to_base: {base: 8}) }}</p>
             </div>
 
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong><br>
-                {{ (memoryValueBinary32Display | binary32_to_halfword) }}
-              </p>
+              <p><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong></p>
+              <p
+                class="text-monospace">{{ (memoryValueBinary32Display | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
+                maxLength: typeDataSelected === 'Double' ? 16 : 8,
+                fillString: '0'
+              }) }}</p>
             </div>
             <div class="col-sm-6">
-              <p class="text-monospace"><strong>{{ 'MACHINE.ASCII' | translate }}:</strong><br>
-                {{ (memoryValueBinary32Display | binary32_to_ascii) }}
-              </p>
+              <p><strong>{{ 'MACHINE.BYTE' | translate }}:</strong></p>
+              <p class="text-monospace">{{ (memoryValueBinary32Display | binary32_to_bytes) }}</p>
+            </div>
+
+            <div class="col-sm-6">
+              <p><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong></p>
+              <p class="text-monospace">{{ (memoryValueBinary32Display | binary32_to_halfword) }}</p>
+            </div>
+            <div class="col-sm-6">
+              <p><strong>{{ 'MACHINE.ASCII' | translate }}:</strong></p>
+              <p class="text-monospace">{{ (memoryValueBinary32Display | binary32_to_ascii) }}</p>
             </div>
 
             <div class="col-sm-12" *ngIf="typeDataSelected === 'Float' || typeDataSelected === 'Double'">
               <p class="text-monospace"><strong>{{ 'MACHINE.IEEE_754' | translate }}:</strong></p>
-              <p class="text-monospace" *ngIf="typeDataSelected === 'Float'">
-                {{ (memoryValueBinary32Display | binary32_to_decimal_IEEE754) }}
-              </p>
-              <p class="text-monospace" *ngIf="typeDataSelected === 'Double'">
-                {{ (memoryValueBinary64Display | binary64_to_decimal_IEEE754) }}
-              </p>
+              <p class="text-monospace"
+                 *ngIf="typeDataSelected === 'Float'">{{ (memoryValueBinary32Display | binary32_to_decimal_IEEE754) }}</p>
+              <p class="text-monospace"
+                 *ngIf="typeDataSelected === 'Double'">{{ (memoryValueBinary64Display | binary64_to_decimal_IEEE754) }}</p>
             </div>
 
             <div class="col-sm-3">
               <p><strong>{{ 'MACHINE.ADDRESS' | translate }}: </strong></p>
               <!-- address -->
-              <p class="text-right" id="address" style="line-height: 2em">
-                {{ displayAddressMemory }}
-              </p>
+              <p class="text-right" id="address" style="line-height: 2em">{{ displayAddressMemory }}</p>
               <!-- address + 32 bits -->
-              <p class="text-right" id="next_address" style="line-height: 2em">
-                {{ displayAddressMemoryNext }}
-              </p>
+              <p class="text-right" id="next_address" style="line-height: 2em">{{ displayAddressMemoryNext }}</p>
             </div>
             <div class="col-sm-9">
               <p><strong>{{ 'MACHINE.BINARY' | translate }}: </strong></p>
-
               <div [innerHTML]="drawDigitsToChangeByTypeData()" [attr.data-id]="'drawBinary'"></div>
-
             </div>
           </div>
         </form>

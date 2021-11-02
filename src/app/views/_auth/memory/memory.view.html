@@ -53,31 +53,31 @@
         <ng-container matColumnDef="Address">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>0x{{ 4 * address | number_to_hexadecimal | uppercase | pad_start: {maxLength: 0, fillString: "0"} }}</p>
+            <p>0x{{ address | number_to_hexadecimal | uppercase | pad_start: {maxLength: 0, fillString: "0"} }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary | binary_32_64_to_hexadecimal) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address) | binary_32_64_to_hexadecimal) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address)) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="BinaryFloat">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY_FLOAT' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address)) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="BinaryDouble">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.BINARY_DOUBLE' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary | pad_start: {maxLength: 32, fillString: '0'}) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address)) }}</p>
           </td>
         </ng-container>
 
@@ -85,83 +85,83 @@
           <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+0
           </th>
           <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
-            <p>{{ machine.getBinaryOfMemory_Byte(address, 0) }}</p>
+            <p>{{ machine.memory.getMemoryByteBinaryByIndex(address) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Address-1">
           <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+1
           </th>
           <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
-            <p>{{ machine.getBinaryOfMemory_Byte(address, 1) }}</p>
+            <p>{{ machine.memory.getMemoryByteBinaryByIndex(address + 1) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Address-2">
           <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+2
           </th>
           <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
-            <p>{{ machine.getBinaryOfMemory_Byte(address, 2) }}</p>
+            <p>{{ machine.memory.getMemoryByteBinaryByIndex(address + 2) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Address-3">
           <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}+3
           </th>
           <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
-            <p>{{ machine.getBinaryOfMemory_Byte(address, 3) }}</p>
+            <p>{{ machine.memory.getMemoryByteBinaryByIndex(address + 3) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="HalfWord-0">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HALF_WORD' | translate}} 0</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.getBinaryOfMemory_Byte(address, 0)) + machine.getBinaryOfMemory_Byte(address, 1) }}</p>
+            <p>{{ machine.memory.getMemoryHalfWordBinaryByIndex(address) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="HalfWord-1">
-          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HALF_WORD' | translate}} 1</th>
+          <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HALF_WORD' | translate}} 2</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.getBinaryOfMemory_Byte(address, 2)) + machine.getBinaryOfMemory_Byte(address, 3) }}</p>
+            <p>{{ machine.memory.getMemoryHalfWordBinaryByIndex(address + 2) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="Bytes">
           <th mat-header-cell class="visible-lg-xl-table-cell" *matHeaderCellDef>{{'MACHINE.BYTE' | translate}}</th>
           <td mat-cell class="visible-lg-xl-table-cell" *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary | binary32_to_bytes) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address) | binary32_to_bytes) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="HalfWord">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.HALF_WORD' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary | binary32_to_halfword) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address) | binary32_to_halfword) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="Word">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.WORD' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary | binary_to_number) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address) | binary_to_number) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="ASCII">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.ASCII' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary | binary32_to_ascii) }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address) | binary32_to_ascii) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="Float">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.FLOAT' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ ((machine.memory.getMemoryByIndex(address).binary) | binary32_to_decimal_IEEE754) }}</p>
+            <p>{{ ((machine.memory.getMemoryWordBinaryByIndex(address)) | binary32_to_decimal_IEEE754) }}</p>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="Double">
           <th mat-header-cell *matHeaderCellDef>{{'MACHINE.DOUBLE' | translate}}</th>
           <td mat-cell *matCellDef="let address">
-            <p>{{ (machine.memory.getMemoryByIndex(address).binary + machine.memory.getMemoryByIndex(address + 1).binary) | binary64_to_decimal_IEEE754 }}</p>
+            <p>{{ (machine.memory.getMemoryWordBinaryByIndex(address) + machine.memory.getMemoryWordBinaryByIndex(address + 4)) | binary64_to_decimal_IEEE754 }}</p>
           </td>
         </ng-container>
 

@@ -1,5 +1,5 @@
 import { Injectable, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { User } from "../interfaces";
+import { User } from "../../types";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { ElectronService } from "../services";

@@ -26,13 +26,14 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.dataSourceCode.data = this.machine.memory.getAllMemory().map((value, index) => {
+    this.dataSourceCode.data = this.machine.memory.getAllMemoryWord().map((value, index) => {
       return {
         text: "",
         index: index,
         address: Utils.numberToHexadecimalString(index * 4),
         stage: "",
-        instruction: ""
+        instruction: "NOP",
+        code: "0x00000000"
       }
     });
 
@@ -69,10 +70,11 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       const code: TypeCode = {
         address: code_memory.value.address,
         instruction: code_memory.value.instruction,
+        code: code_memory.value.code,
         text: code_memory.value.text
       }
 
-      this.setRow(index,code,stage)
+      this.setRow(index, code, stage)
     }
   }
 
@@ -98,9 +100,10 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.dataSourceCode.data[index] = {
       text: tableCode.text,
       address: tableCode.address,
-      instruction: tableCode.instruction,
+      instruction: Utils.convertHexCodeToTextMachineInstructionDLX(tableCode.code),
+      code: tableCode.code,
       stage: stage,
-      binary: this.machine.getMemory(index).binary,
+      // binary: this.machine.getMemory(index).binary,
       index: index,
     };
     this.refreshDataSourceCode();
