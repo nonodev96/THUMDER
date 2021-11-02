@@ -32,9 +32,9 @@ export type FileMenuOptions = {
 };
 
 @Component({
-  selector: 'app-file-manager',
+  selector: 'view-file-manager',
   templateUrl: './file-manager.view.html',
-  styleUrls: ['./file-manager.view.scss']
+  styleUrls: []
 })
 export class FileManagerView implements OnInit, OnDestroy {
   @ViewChild(DxFileManagerComponent, {static: false})

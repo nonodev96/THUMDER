@@ -3,8 +3,9 @@ import { DOCUMENT } from "@angular/common";
 import { AuthService } from "../../../__core/auth/auth.service";
 
 @Component({
-  selector: "app-profile",
+  selector: "view-profile",
   templateUrl: "./profile.view.html",
+  styleUrls: []
 })
 export class ProfileView implements OnInit {
   constructor(@Inject(DOCUMENT)

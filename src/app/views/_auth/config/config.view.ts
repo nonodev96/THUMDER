@@ -9,9 +9,9 @@ interface EventTargetInput extends EventTarget {
 }
 
 @Component({
-  selector: 'app-config',
+  selector: 'view-config',
   templateUrl: './config.view.html',
-  styleUrls: ['./config.view.scss']
+  styleUrls: []
 })
 export class ConfigView implements OnInit {
 

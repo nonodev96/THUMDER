@@ -4,16 +4,10 @@ import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { TypeData } from "../../../types";
 import { EditRegisterBinary32Component } from "../../../components/modals/edit-register-binary32/edit-register-binary32.component";
-import {
-  MACHINE_REGISTERS_C,
-  MACHINE_REGISTERS_F,
-  MACHINE_REGISTERS_R,
-  MACHINE_REGISTERS_D,
-  REGISTERS_DATA
-} from "../../../CONSTAST";
+import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R, MACHINE_REGISTERS_D } from "../../../CONSTAST";
 
 @Component({
-  selector: 'app-registers',
+  selector: 'view-registers',
   templateUrl: './registers.view.html',
   styleUrls: []
 })
