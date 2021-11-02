@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
@@ -8,9 +8,8 @@ import { EditMemoryBinary32Component } from "../../../components/modals/edit-mem
 import { TypeData } from "../../../types";
 import { StorageService } from "../../../__core/storage/storage.service";
 
-
 @Component({
-  selector: 'app-memory',
+  selector: 'view-memory',
   templateUrl: './memory.view.html',
   styleUrls: []
 })

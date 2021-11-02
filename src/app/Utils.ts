@@ -12,6 +12,11 @@ export namespace Utils {
     }));
   }
 
+  export function clone<T>(data: T) {
+    return JSON.parse(JSON.stringify(data));
+  }
+
+
   export function addressToIndex(address: string): number {
     return Math.trunc(this.hexadecimalToDecimal(address) / 4)
   }
@@ -344,7 +349,7 @@ export namespace Utils {
           return instruction_name + " #" + data;
         }
         if (["BEQZ", "BNEZ"].includes(instruction_name)) {
-          return instruction_name + " R"  + rs1I + " #" + data;
+          return instruction_name + " R" + rs1I + " #" + data;
         }
         if (["BFPT", "BFPF"].includes(instruction_name)) {
           return instruction_name + " #" + data;

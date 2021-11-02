@@ -197,6 +197,18 @@ export type TypeStatusMachine = {
   tagsDebugger: TypeTags,
 }
 
+export type TypePipeline = {
+  // Address
+  IF: string,
+  ID: string,
+  intEX: string,
+  faddEX: { unit: number, address: string }[],
+  fmultEX: { unit: number, address: string }[],
+  fdivEX: { unit: number, address: string }[],
+  MEM: string,
+  WB: string,
+}
+
 export type StepSimulation = {
   step: number,
   instruction: string,
@@ -214,17 +226,7 @@ export type StepSimulation = {
   WB_stall: number,
   WB: number,
 
-  pipeline: {
-    // Address
-    IF: string,
-    ID: string,
-    intEX: string,
-    faddEX: { unit: number, address: string }[],
-    fmultEX: { unit: number, address: string }[],
-    fdivEX: { unit: number, address: string }[],
-    MEM: string,
-    WB: string,
-  },
+  pipeline: TypePipeline,
 
   registers: { register: string, value: string, }[],
 
@@ -239,4 +241,50 @@ export type SimulationResponse = {
   code: TypeTableCode[],
 
   runner: StepSimulation[]
+}
+
+
+export type TypeDataStatistics = {
+  TOTAL: {
+    CYCLES_EXECUTED: { cycles: number },
+    ID_EXECUTED: { instructions: number },
+    INSTRUCTIONS_IN_PIPELINE: { instructions_in_pipeline: number },
+  },
+  HARDWARE: {
+    MEMORY_SIZE: { size: number },
+    FADD_EX_STAGES: { num: number, cycles: number },
+    FMULT_EX_STAGES: { num: number, cycles: number },
+    FDIV_EX_STAGES: { num: number, cycles: number },
+    FORWARDING: { enabled: boolean },
+  },
+  STALLS: {
+    RAW_STALLS: { num: number, per: number },
+    LD_STALLS: { num: number, per: number },
+    BRANCH_STALLS: { num: number, per: number },
+    FLOATING_POINT_STALLS: { num: number, per: number },
+    WAW_STALLS: { num: number, per: number },
+    STRUCTURAL_STALLS: { num: number, per: number },
+    CONTROL_STALLS: { num: number, per: number },
+    TRAP_STALLS: { num: number, per: number },
+    TOTAL: { num: number, per: number },
+  },
+  CONDITIONAL: {
+    TOTAL: { num: number, per: number },
+    TAKEN: { num: number, per: number },
+    NOT_TAKEN: { num: number, per: number },
+  },
+  LOAD_STORE: {
+    TOTAL: { num: number, per: number },
+    LOADS: { num: number, per: number },
+    STORES: { num: number, per: number },
+  },
+  FLOATING: {
+    TOTAL: { num: number, per: number },
+    ADDITIONS: { num: number, per: number },
+    MULTIPLICATIONS: { num: number, per: number },
+    DIVISIONS: { num: number, per: number },
+  },
+  TRAPS: {
+    TOTAL: { num: number, per: number },
+  }
 }

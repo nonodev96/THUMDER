@@ -36,6 +36,8 @@ import { RegisterView } from "./views/register/register.view";
 // Guards
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
+import { CalculatorView } from "./views/_auth/calculator/calculator.view";
+import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 
 
 const routes: Routes = [
@@ -66,9 +68,11 @@ const routes: Routes = [
       {path: "memory", component: MemoryView, data: {breadcrumb: 'Memory'}},
       {path: "code", component: CodeView, data: {breadcrumb: 'Code'}},
       {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
+      {path: "statistics", component: StatisticsView, data: {breadcrumb: 'Statistics'}},
       {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
       {path: "config", component: ConfigView, data: {breadcrumb: 'Config'}},
+      {path: "calculator", component: CalculatorView, data: {breadcrumb: 'Calculator'}},
     ],
   },
   {
@@ -107,7 +111,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),
+    RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'}),
   ],
   exports: [RouterModule]
 })

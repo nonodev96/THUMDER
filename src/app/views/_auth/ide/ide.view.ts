@@ -3,10 +3,10 @@ import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-
 import { XtermComponent } from "../../../components/xterm/xterm.component";
 import { DOCUMENT } from "@angular/common";
 
-
 @Component({
-  selector: "app-ide",
+  selector: "view-ide",
   templateUrl: "./ide.view.html",
+  styleUrls: []
 })
 export class IDEView implements OnInit {
 

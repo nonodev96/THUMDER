@@ -8,7 +8,7 @@ import {
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
-  TypeTableCode
+  TypeTableCode, TypeDataStatistics, TypePipeline
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
@@ -37,8 +37,55 @@ export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageC
 };
 export const DEFAULT_HEXADECIMAL_08_DIGITS = "".padStart(8, '0');
 export const DEFAULT_HEXADECIMAL_16_DIGITS = "".padStart(16, '0');
+export const DEFAULT_BINARY_08_BITS = "".padStart(8, '0');
+export const DEFAULT_BINARY_16_BITS = "".padStart(16, '0');
 export const DEFAULT_BINARY_32_BITS = "".padStart(32, '0');
 export const DEFAULT_BINARY_64_BITS = "".padStart(64, '0');
+
+export const DEFAULT_DATA_STATISTICS: TypeDataStatistics = {
+  TOTAL: {
+    CYCLES_EXECUTED: {cycles: 0},
+    ID_EXECUTED: {instructions: 0},
+    INSTRUCTIONS_IN_PIPELINE: {instructions_in_pipeline: 0}
+  },
+  HARDWARE: {
+    MEMORY_SIZE: {size: 0},
+    FADD_EX_STAGES: {num: 0, cycles: 0},
+    FMULT_EX_STAGES: {num: 0, cycles: 0},
+    FDIV_EX_STAGES: {num: 0, cycles: 0},
+    FORWARDING: {enabled: true}
+  },
+  STALLS: {
+    RAW_STALLS: {num: 0, per: 0},
+    LD_STALLS: {num: 0, per: 0},
+    BRANCH_STALLS: {num: 0, per: 0},
+    FLOATING_POINT_STALLS: {num: 0, per: 0},
+    WAW_STALLS: {num: 0, per: 0},
+    STRUCTURAL_STALLS: {num: 0, per: 0},
+    CONTROL_STALLS: {num: 0, per: 0},
+    TRAP_STALLS: {num: 0, per: 0},
+    TOTAL: {num: 0, per: 0}
+  },
+  CONDITIONAL: {
+    TOTAL: {num: 0, per: 0},
+    TAKEN: {num: 0, per: 0},
+    NOT_TAKEN: {num: 0, per: 0}
+  },
+  LOAD_STORE: {
+    TOTAL: {num: 0, per: 0},
+    LOADS: {num: 0, per: 0},
+    STORES: {num: 0, per: 0}
+  },
+  FLOATING: {
+    TOTAL: {num: 0, per: 0},
+    ADDITIONS: {num: 0, per: 0},
+    MULTIPLICATIONS: {num: 0, per: 0},
+    DIVISIONS: {num: 0, per: 0}
+  },
+  TRAPS: {
+    TOTAL: {num: 0, per: 0}
+  }
+} as const;
 
 export const DEFAULT_CODE: TypeCode = {
   text: "",
@@ -78,6 +125,9 @@ export const STEP_TYPE_DATA = {
   "Double": 0.1
 }
 
+export const DEFAULT_PIPELINE: TypePipeline = {
+  IF: "", ID: "", MEM: "", WB: "", faddEX: [], fdivEX: [], fmultEX: [], intEX: "",
+};
 export const REGISTER_TO_EDIT: TypeRegister = 'Control';
 
 export const REGISTERS_DATA: TypeDataRegister = {
@@ -324,6 +374,13 @@ export const AUTH_ROUTES: PublicRoutesList = [
     data: {breadcrumb: 'Registers'}
   },
   {
+    lang: "STATISTICS",
+    path: "statistics",
+    routerLink: '/auth/statistics',
+    displayName: 'Statistics',
+    data: {breadcrumb: 'Statistics'}
+  },
+  {
     lang: "PROFILE",
     path: "profile",
     routerLink: '/auth/profile',
@@ -343,6 +400,13 @@ export const AUTH_ROUTES: PublicRoutesList = [
     routerLink: '/auth/config',
     displayName: 'Config',
     data: {breadcrumb: 'config'}
+  },
+  {
+    lang: "CALCULATOR",
+    path: "calculator",
+    routerLink: '/auth/calculator',
+    displayName: 'Calculator',
+    data: {breadcrumb: 'calculator'}
   }
 ]
 

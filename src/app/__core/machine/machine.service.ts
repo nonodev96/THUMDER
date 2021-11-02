@@ -7,7 +7,7 @@ import { takeUntil } from "rxjs/operators";
 import {
   SimulationResponse,
   StepSimulation,
-  TypeCode,
+  TypeCode, TypeDataStatistics,
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
@@ -18,7 +18,12 @@ import {
   TypeTableCode,
   TypeTags
 } from "../../types";
-import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS, DEFAULT_TABLE_CODE } from "../../CONSTAST";
+import {
+  DEFAULT_BINARY_32_BITS,
+  DEFAULT_BINARY_64_BITS,
+  DEFAULT_DATA_STATISTICS, DEFAULT_PIPELINE,
+  DEFAULT_TABLE_CODE
+} from "../../CONSTAST";
 import { Utils } from "../../Utils";
 import { StorageService } from "../storage/storage.service";
 import { Registers } from "../DLX/_Registers";
@@ -41,6 +46,7 @@ export class MachineService {
   // La memoria se organiza de directions de 4 bits en 4 bits
   public memory: Memory;
 
+
   // address --> TypeTableCode
   public code: Map<string, TypeTableCode> = new Map();
   public codeText = '';
@@ -59,8 +65,10 @@ export class MachineService {
   public dataCodeArray;
   public codeSimulation$ = new Subject<TypeCode[]>();
   public stepSimulation$ = new Subject<StepSimulation>();
+  public dataStatistics$ = new Subject<TypeDataStatistics>();
   public step$ = new Subject<number>();
-  private privateStep = -1;
+  private dataStatistics: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
+  private privateStep = 0;
   private timer: Observable<number>;
   private readonly timerObserver: PartialObserver<number>;
 
@@ -103,9 +111,9 @@ export class MachineService {
       next: (_: number) => {
         this.log(new Date().getSeconds())
         if (this.isRunning) {
-          this.privateStep++;
           this.checkConditions();
           this.clock();
+          this.privateStep++;
         } else {
           this.stopClick$.next();
           // this.isRunning = false;
@@ -120,6 +128,7 @@ export class MachineService {
   // TODO
   public resetMachineStatus(): Promise<boolean> {
     return new Promise(async (resolve) => {
+      this.log("RESET")
       this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
       // this.pipeline = new PixiTHUMER_Pipeline(
       //   this.floatingPointStageConfiguration.addition.count,
@@ -133,9 +142,12 @@ export class MachineService {
       this.memory = new Memory(this.memorySize);
       this.registers = new Registers();
 
+      this.privateStep = 0;
+      this.dataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
+      this.dataStatistics$.next(this.dataStatistics);
+
       this.code = new Map();
       this.code.clear();
-      this.privateStep = -1;
       this.isComplete = false;
       this.isRunning = false;
       this.stopClick$.next();
@@ -156,6 +168,10 @@ export class MachineService {
 
   public getCodeSimulationObservable(): Observable<TypeCode[]> {
     return this.codeSimulation$.asObservable();
+  }
+
+  public getDataStatisticsObservable(): Observable<TypeDataStatistics> {
+    return this.dataStatistics$.asObservable();
   }
 
   getStatusCycleClockDiagram(stepSimulation: StepSimulation): TypeStatusCycleClockDiagram {
@@ -234,9 +250,9 @@ export class MachineService {
 
   async next(): Promise<void> {
     return new Promise(resolve => {
-      this.privateStep++;
       this.checkConditions();
       this.clock();
+      this.privateStep++;
       resolve();
     })
   }
@@ -337,6 +353,10 @@ export class MachineService {
     //   const {instruction: fdivEX_i} = this.code.get(unit_value.address)
     //   this.pipeline.update_fdivEX_text(unit_value.unit, fdivEX_i);
     // }
+
+    console.log("END")
+    this.dataStatistics.TOTAL.ID_EXECUTED.instructions++;
+    this.dataStatistics$.next(this.dataStatistics);
   }
 
   private checkConditions() {
@@ -367,9 +387,7 @@ export class MachineService {
       return;
     } else {
       if (status.pipeline === undefined) {
-        status.pipeline = {
-          IF: "", ID: "", MEM: "", WB: "", faddEX: [], fdivEX: [], fmultEX: [], intEX: "",
-        }
+        status.pipeline = DEFAULT_PIPELINE;
       }
       return status;
     }

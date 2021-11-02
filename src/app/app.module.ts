@@ -68,6 +68,7 @@ import { IDEView } from "./views/_auth/ide/ide.view";
 import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
 import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "./views/_auth/profile/profile.view";
+import { CalculatorView } from './views/_auth/calculator/calculator.view';
 
 // no _layouts views
 import { DebugView } from './views/debug/debug-view';
@@ -85,6 +86,7 @@ import { MemoryView } from './views/_auth/memory/memory.view';
 
 import * as PIXI from "pixi.js";
 import { ConfigView } from './views/_auth/config/config.view';
+import { StatisticsView } from './views/_auth/statistics/statistics.view';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
@@ -146,6 +148,8 @@ export function markedOptionsFactory(): MarkedOptions {
     DebugView,
 
     ConfigView,
+     CalculatorView,
+     StatisticsView,
   ],
   imports: [
 

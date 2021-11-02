@@ -10,7 +10,61 @@
     "REGISTERS": "Registers",
     "PROFILE": "Profile",
     "DOCUMENTATION": "Documentation",
-    "CONFIG": "Config"
+    "CONFIG": "Config",
+    "CALCULATOR": "Calculator",
+    "STATISTICS": "Statistics"
+  },
+  "ST": {
+    "TOTAL": {
+      "TITLE": "Total",
+      "CYCLES_EXECUTED": "{{ cycles }} Cycle(s) executed",
+      "ID_EXECUTED": "ID Executed by {{ instructions }} Instruction(s)",
+      "INSTRUCTIONS_IN_PIPELINE": "{{ instructions_in_pipeline }} Instruction(s) currently in Pipeline"
+    },
+    "HARDWARE": {
+      "TITLE": "Hardware configuration",
+      "MEMORY_SIZE": "Memory size: {{ size }} Bytes",
+      "FADD_EX_STAGES": "faddEx-Stages: {{ num }}, required cycles: {{ cycles }}",
+      "FMULT_EX_STAGES": "fmultEx-Stages: {{ num }}, required cycles: {{ cycles }}",
+      "FDIV_EX_STAGES": "fdivEx-Stages: {{ num }}, required cycles: {{ cycles }}",
+      "FORWARDING": "Forwarding"
+    },
+    "STALLS": {
+      "TITLE": "Stalls",
+      "RAW_STALLS": "RAW Stalls: {{ num }} ({{ per }}% of all Cycles), thereof",
+      "LD_STALLS": "LD stalls: {{ num }} ({{ per }}% of RAW stalls)",
+      "BRANCH_STALLS": "Branch/Jump stalls: {{ num }} ({{ per }}% of RAW stalls)",
+      "FLOATING_POINT_STALLS": "Floating Point stalls: {{ num }} ({{ per }}% of RAW stalls)",
+      "WAW_STALLS": "LD stalls: {{ num }} ({{ per }}% of all Cycles)",
+      "STRUCTURAL_STALLS": "Structural stalls: {{ num }} ({{ per }}% of all Cycles)",
+      "CONTROL_STALLS": "Control stalls: {{ num }} ({{ per }}% of all Cycles)",
+      "TRAP_STALLS": "Trap stalls: {{ num }} ({{ per }}% of all Cycles)",
+      "TOTAL": "TOTAL: {{ num }} Stall(s) ({{ per }}% of all Cycles)"
+    },
+    "CONDITIONAL": {
+      "TITLE": "Conditional Branches",
+      "TOTAL": "Total: {{ num }} ({{ per }}% of all instructions), thereof",
+      "TAKEN": "Taken: {{ num }} ({{ per }}% of all cond branches)",
+      "NOT_TAKEN": "Not taken: {{ num }} ({{ per }}% of all cond branches)"
+    },
+    "LOAD_STORE": {
+      "TITLE": "Load-/Store-Instructions",
+      "TOTAL": "Total: {{ num }} ({{ per }}% of all instructions), thereof",
+      "LOADS": "Loads: {{ num }} ({{ per }}% of Load-/Store-Instructions)",
+      "STORES": "Stores: {{ num }} ({{ per }}% of Load-/Store-Instructions)"
+    },
+    "FLOATING": {
+      "TITLE": "Floating point stage instruction",
+      "TOTAL": "Total: {{ num }} ({{ per }}% of all instructions), thereof",
+      "ADDITIONS": "Additions: {{ num }} ({{ per }}% of Floating point stage inst.)",
+      "MULTIPLICATIONS": "Multiplications: {{ num }} ({{ per }}% of Floating point stage inst.)",
+      "DIVISIONS": "Divisions: {{ num }} ({{ per }}% of Floating point stage inst.)"
+    },
+    "TRAPS": {
+      "TITLE": "Traps",
+      "TOTAL": "Total: {{ num }} ({{ per }}% of all instructions)"
+    },
+    "KEY": "VALUE"
   },
   "MACHINE": {
     "INDEX": "Index",
@@ -64,7 +118,7 @@
     "TITLE_ERROR_IN_ADDRESS": "Error in address",
     "MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE": "The address must be a multiple of data size ({{text}})",
     "TITLE_ERROR_IN_VALUE_MEMORY": "Error in value memory",
-    "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid" ,
+    "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid",
     "TITLE_ERROR_IN_ADDRESS_MEMORY": "Error in memory",
     "MESSAGE_ERROR_IN_ADDRESS_MEMORY": "Address not valid, out of memory"
   },

@@ -1,0 +1,227 @@
+<div class="card">
+
+  <div class="card-header">
+    <h3 class="card-title">{{'NAVIGATION.CALCULATOR' | translate}}</h3>
+
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body input-font-family-console">
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="byte_value">{{ 'FORM.BYTE' | translate }}</label>
+          <input type="number" class="form-control" id="byte_value"
+                 step="1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary08_Value">
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label for="byte_hex">{{ 'FORM.BYTE' | translate }}</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0x</span>
+            </div>
+            <input type="text" id="byte_hex"
+                   class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [ngModel]="binary08_Hexadecimal"
+                   (ngModelChange)="binary08_Hexadecimal=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in hexadecimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="form-group">
+          <label for="byte_binary">{{ 'FORM.BYTE' | translate }}</label>
+          <input type="text" class="form-control" id="byte_binary"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary08_Binary"
+                 (ngModelChange)="binary08_Binary=$event">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="halfword_value">{{ 'FORM.HALFWORD' | translate }}</label>
+          <input type="number" class="form-control" id="halfword_value"
+                 step="1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary16_Value">
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label for="halfword_hex">{{ 'FORM.HALFWORD' | translate }}</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0x</span>
+            </div>
+            <input type="text" id="halfword_hex"
+                   class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [ngModel]="binary16_Hexadecimal"
+                   (ngModelChange)="binary16_Hexadecimal=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in hexadecimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="form-group">
+          <label for="halfword_binary">{{ 'FORM.HALFWORD' | translate }}</label>
+          <input type="text" class="form-control" id="halfword_binary"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary16_Binary"
+                 (ngModelChange)="binary16_Binary=$event">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="word_value">{{ 'FORM.WORD' | translate }}</label>
+          <input type="number" class="form-control" id="word_value"
+                 step="1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary32_Value">
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label for="word_hex">{{ 'FORM.WORD' | translate }}</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0x</span>
+            </div>
+            <input type="text" id="word_hex"
+                   class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [ngModel]="binary32_Hexadecimal"
+                   (ngModelChange)="binary32_Hexadecimal=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in hexadecimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="form-group">
+          <label for="word_binary">{{ 'FORM.WORD' | translate }}</label>
+          <input type="text" class="form-control" id="word_binary"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary32_Binary"
+                 (ngModelChange)="binary32_Binary=$event">
+        </div>
+      </div>
+    </div>
+
+    <!-- 32 bits -->
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="ieee754_number">{{ 'FORM.IEEE754' | translate }}</label>
+          <input type="number" class="form-control" id="ieee754_number"
+                 step="0.1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary32_IEEE754_Value">
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label for="ieee754_hex">{{ 'FORM.IEEE754' | translate }}</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0x</span>
+            </div>
+            <input type="text" id="ieee754_hex"
+                   class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [ngModel]="binary32_IEEE754_Hexadecimal"
+                   (ngModelChange)="binary32_IEEE754_Hexadecimal=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in hexadecimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="form-group">
+          <label for="ieee754_binary">{{ 'FORM.IEEE754' | translate }}</label>
+          <input type="text" class="form-control" id="ieee754_binary"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary32_IEEE754_Binary"
+                 (ngModelChange)="binary32_IEEE754_Binary=$event">
+        </div>
+      </div>
+    </div>
+    <!-- 64 bits   -->
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="ieee754_number_64">{{ 'FORM.IEEE754_64' | translate }}</label>
+          <input type="number" class="form-control" id="ieee754_number_64"
+                 step="0.1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary64_IEEE754_Value">
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label for="ieee754_hex_64">{{ 'FORM.IEEE754_64' | translate }}</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0x</span>
+            </div>
+            <input type="text" id="ieee754_hex_64"
+                   class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [ngModel]="binary64_IEEE754_Hexadecimal"
+                   (ngModelChange)="binary64_IEEE754_Hexadecimal=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in hexadecimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="form-group">
+          <label for="ieee754_binary_64">{{ 'FORM.IEEE754' | translate }}</label>
+          <input type="text" class="form-control" id="ieee754_binary_64"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary64_IEEE754_Binary"
+                 (ngModelChange)="binary64_IEEE754_Binary=$event">
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="card-footer">
+
+  </div>
+</div>

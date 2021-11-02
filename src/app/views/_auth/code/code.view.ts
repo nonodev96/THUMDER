@@ -5,9 +5,8 @@ import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeCode, TypeStage, TypeTableCode } from "../../../types";
 import { Utils } from "../../../Utils";
 
-
 @Component({
-  selector: 'app-code',
+  selector: 'view-code',
   templateUrl: './code.view.html',
   styleUrls: []
 })

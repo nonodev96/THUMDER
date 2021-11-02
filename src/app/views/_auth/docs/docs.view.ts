@@ -5,9 +5,9 @@ import { ViewportScroller } from "@angular/common";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTAST";
 
 @Component({
-  selector: 'app-docs',
+  selector: 'view-docs',
   templateUrl: './docs.view.html',
-  styleUrls: ['./docs.view.scss']
+  styleUrls: []
 })
 export class DocsView implements OnInit {
 
