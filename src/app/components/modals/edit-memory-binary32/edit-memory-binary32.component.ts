@@ -217,7 +217,7 @@ export class EditMemoryBinary32Component implements OnInit {
           break;
       }
 
-      if (parseInt(this.addressMemory, 16) >= 0 && parseInt(this.addressMemory, 16) <= this.machine.memory.memorySize) {
+      if (parseInt(this.addressMemory, 16) >= 0 && parseInt(this.addressMemory, 16) <= this.machine.memory.memorySizeBytes) {
         this.addressIsValid = true;
         // Recuperamos el dato anterior
         switch (this.typeDataSelected) {

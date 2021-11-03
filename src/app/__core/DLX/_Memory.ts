@@ -4,23 +4,23 @@ import { Utils } from "../../Utils";
 
 export class Memory implements InterfaceMemory {
   // Bytes
-  private _memorySize: number;
+  private _memorySizeBytes: number;
   // private _memory: Array<Int32>;
   private _memoryInt8Array: Uint8Array;
 
-  constructor(memorySize: number) {
-    this._memorySize = memorySize;
-    this._memoryInt8Array = new Uint8Array(this._memorySize);
+  constructor(memorySizeBytes: number) {
+    this._memorySizeBytes = memorySizeBytes;
+    this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
     // this._memory = [...new Array(this._memorySize)].map((v, i, a) => new Int32())
   }
 
-  get memorySize() {
-    return this._memorySize * 4;
+  get memorySizeBytes() {
+    return this._memorySizeBytes * 4;
   }
 
-  set memorySize(memorySize: number) {
-    this._memorySize = memorySize;
-    this._memoryInt8Array = new Uint8Array(this._memorySize);
+  set memorySizeBytes(memorySize: number) {
+    this._memorySizeBytes = memorySize;
+    this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
   }
 
   // WORD - GET
@@ -94,10 +94,11 @@ export class Memory implements InterfaceMemory {
 
   // 0          1          2          3
   // 00000000 - 00000000 - 00000000 - 00000000
+  // Page code.view
   public getAllMemoryWord(): Int32[] {
     const list = [];
     let data;
-    for (let index = 0; index < this._memoryInt8Array.length; index += 4) {
+    for (let index = 0; index <= this._memorySizeBytes; index += 4) {
       data = new Int32();
       data.binary = this.getMemoryWordBinaryByIndex(index);
       list.push(data);
@@ -108,9 +109,10 @@ export class Memory implements InterfaceMemory {
     // })
   }
 
+  // Page memory.view
   public getAllIndexByWord(): number[] {
     const list = [];
-    for (let index = 0; index < this._memoryInt8Array.length; index += 4) {
+    for (let index = 0; index < this._memorySizeBytes; index += 4) {
       list.push(index)
     }
     return list;
