@@ -25,99 +25,27 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" data-accordion="false" role="menu">
-        <li role="menuitem" class="nav-header">Admin</li>
-        <li role="menuitem" class="nav-item has-treeview">
-          <a class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
-            <p>
-              Controller
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview" role="menu">
 
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/admin']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Admin</p>
-              </a>
-            </li>
-
-          </ul>
-        </li>
-
-        <li role="menuitem" class="nav-header">Auth</li>
-        <li role="menuitem" class="nav-item has-treeview">
-          <a class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
-            <p id="ComponentsID">
-              Components
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview" role="menu">
-
-            <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
-              <a class="nav-link" (click)="goToPage($event, menu)">
-                <i class="far fa-circle nav-icon"></i>
-                {{'NAVIGATION.' + menu.lang | translate}}
-              </a>
-            </li>
-
-<!--
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/file-manager']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>File-manager</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/ide']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>IDE</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/cycle-clock-diagram']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Cycle clock diagram</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/pipeline']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Pipeline</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/memory']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Memory</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/registers']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Registers</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/profile']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Profile</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/auth/documentation']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Documentation</p>
-              </a>
-            </li>
--->
-
-
-          </ul>
-        </li>
+        <ng-container *ngIf="authService.isLoggedIn">
+          <li role="menuitem" class="nav-header">Auth</li>
+          <li role="menuitem" class="nav-item has-treeview">
+            <a class="nav-link">
+              <i class="nav-icon fas fa-book"></i>
+              <p id="ComponentsID">
+                Components
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" role="menu">
+              <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
+                <a class="nav-link" (click)="goToPage($event, menu)">
+                  <i class="far fa-circle nav-icon"></i>
+                  {{ 'NAVIGATION.' + menu.lang | translate }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ng-container>
 
         <li role="menuitem" class="nav-header">Externs</li>
         <li role="menuitem" class="nav-item has-treeview">
@@ -129,7 +57,6 @@
             </p>
           </a>
           <ul class="nav nav-treeview" role="menu">
-
             <li role="menuitem" class="nav-item">
               <a [routerLink]="['/login']" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
@@ -148,9 +75,29 @@
                 <p>Forgot password</p>
               </a>
             </li>
-
           </ul>
         </li>
+
+        <li role="menuitem" class="nav-header">{{ 'NAVIGATION.ABOUT'| translate }}</li>
+        <li role="menuitem" class="nav-item has-treeview">
+          <a class="nav-link">
+            <i class="nav-icon fas fa-book"></i>
+            <p>
+              {{ 'NAVIGATION.ABOUT'| translate }}
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview" role="menu">
+
+            <li role="menuitem" class="nav-item">
+              <a [routerLink]="['/landing/about']" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>{{ 'NAVIGATION.ABOUT'| translate }}</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

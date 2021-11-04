@@ -54,7 +54,6 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.document.body.classList.add('login-page');
     this.show = true;
 
     this.fileSystemService.initialize().then((canInit) => {

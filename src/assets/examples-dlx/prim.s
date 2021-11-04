@@ -1,6 +1,6 @@
-;*********** WINDLX EXP.2: GENERATE PRIME NUMBER TABLE *************
-;*********** (C) 1991 GÜNTHER RAIDL		       *************
-;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR	       *************
+;*********** WINDLX EXP.2: GENERATE PRIME NUMBER TABLE  *************
+;*********** (C) 1991 GÜNTHER RAIDL		                *************
+;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR	        *************
 
 ;-------------------------------------------------------------------
 ; PROGRAM BEGINS AT SYMBOL MAIN

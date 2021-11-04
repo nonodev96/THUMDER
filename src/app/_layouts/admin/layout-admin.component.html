@@ -5,6 +5,7 @@
 
   <!-- Main Sidebar Container -->
   <app-aside-left></app-aside-left>
+  <!-- /.aside-left-sidebar -->
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -16,10 +17,15 @@
             <h1 class="m-0 text-dark">{{ 'PAGES.HOME.TITLE' | translate }}</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
+
+            <thumder-breadcrumb></thumder-breadcrumb>
+
+            <!--
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a (click)="log('TODO')">Home</a></li>
+              <li class="breadcrumb-item"><a (click)="log('TO-DO')">Home</a></li>
               <li class="breadcrumb-item active">Dashboard v2</li>
             </ol>
+            -->
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->

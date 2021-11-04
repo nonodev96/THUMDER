@@ -59,6 +59,7 @@ import { NoAuthGuard } from './__shared/guard/no-auth.guard';
 // _layouts
 import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
 import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
+import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
 
 // _admin views
 // _auth views
@@ -73,7 +74,8 @@ import { CalculatorView } from './views/_auth/calculator/calculator.view';
 // no _layouts views
 import { DebugView } from './views/debug/debug-view';
 import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
-import { LandingView } from "./views/landing/landing.view";
+import { LandingView } from "./views/_landing/landing/landing.view";
+import { AboutView } from './views/_landing/about/about.view';
 import { LoginView } from "./views/login/login.view";
 import { RegisterView } from "./views/register/register.view";
 
@@ -124,18 +126,22 @@ export function markedOptionsFactory(): MarkedOptions {
   declarations: [
     AppComponent,
 
+    DebugView,
 
     LayoutAdminComponent,
     LayoutAuthComponent,
+    LayoutLandingComponent,
 
     LoginView,
     RegisterView,
     ForgotPasswordView,
     IndexView,
     LandingView,
+    AboutView,
 
-
+    CalculatorView,
     CodeView,
+    ConfigView,
     DocsView,
     FileManagerView,
     IDEView,
@@ -144,12 +150,7 @@ export function markedOptionsFactory(): MarkedOptions {
     PipelineView,
     ProfileView,
     RegistersView,
-
-    DebugView,
-
-    ConfigView,
-     CalculatorView,
-     StatisticsView,
+    StatisticsView,
   ],
   imports: [
 

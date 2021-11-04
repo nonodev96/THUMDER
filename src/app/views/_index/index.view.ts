@@ -16,8 +16,7 @@ export class IndexView implements OnInit {
   }
 
   ngOnInit(): void {
-    this.document.body.className = "dx-viewport";
-    this.document.body.classList.add('hold-transition', 'sidebar-mini', 'layout-fixed', 'layout-navbar-fixed', 'layout-footer-fixed');
+    this.document.body.classList.add('dx-viewport', 'sidebar-mini', 'layout-fixed', 'layout-footer-fixed');
   }
 
   onItemSelected($event: MouseEvent, menu: any) {
@@ -26,9 +25,5 @@ export class IndexView implements OnInit {
       .then(() => {
         // console.log(value)
       })
-  }
-
-  log(msg: string) {
-    console.log(msg);
   }
 }

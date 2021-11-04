@@ -6,6 +6,7 @@ import { PageNotFoundComponent } from './__shared/components';
 // _layouts
 import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
 import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
+import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
 
 // components
 import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
@@ -13,7 +14,9 @@ import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.
 // _admin views
 
 // _auth views
+import { CalculatorView } from "./views/_auth/calculator/calculator.view";
 import { CodeView } from "./views/_auth/code/code.view";
+import { ConfigView } from "./views/_auth/config/config.view";
 import { DocsView } from "./views/_auth/docs/docs.view";
 import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
 import { IDEView } from "./views/_auth/ide/ide.view";
@@ -22,7 +25,7 @@ import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cy
 import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "./views/_auth/profile/profile.view";
 import { RegistersView } from "./views/_auth/registers/registers.view";
-import { ConfigView } from "./views/_auth/config/config.view";
+import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 
 // no _layouts views
 import { DebugView } from "./views/debug/debug-view";
@@ -30,14 +33,15 @@ import { DebugView } from "./views/debug/debug-view";
 import { IndexView } from "./views/_index/index.view";
 import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
 import { LoginView } from "./views/login/login.view";
-import { LandingView } from "./views/landing/landing.view";
 import { RegisterView } from "./views/register/register.view";
+
+// _landing views
+import { LandingView } from "./views/_landing/landing/landing.view";
+import { AboutView } from "./views/_landing/about/about.view";
 
 // Guards
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
-import { CalculatorView } from "./views/_auth/calculator/calculator.view";
-import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 
 
 const routes: Routes = [
@@ -61,18 +65,28 @@ const routes: Routes = [
     data: {breadcrumb: 'Home'},
     children: [
       {path: "", redirectTo: "login", pathMatch: "full"},
+      {path: "calculator", component: CalculatorView, data: {breadcrumb: 'Calculator'}},
+      {path: "code", component: CodeView, data: {breadcrumb: 'Code'}},
+      {path: "config", component: ConfigView, data: {breadcrumb: 'Config'}},
+      {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
       {path: "file-manager", component: FileManagerView, data: {breadcrumb: 'File Manager'}},
       {path: "ide", component: IDEView, data: {breadcrumb: 'IDE'}},
-      {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
-      {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Pipeline'}},
       {path: "memory", component: MemoryView, data: {breadcrumb: 'Memory'}},
-      {path: "code", component: CodeView, data: {breadcrumb: 'Code'}},
+      {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Pipeline'}},
+      {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
+      {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
       {path: "statistics", component: StatisticsView, data: {breadcrumb: 'Statistics'}},
-      {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
-      {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
-      {path: "config", component: ConfigView, data: {breadcrumb: 'Config'}},
-      {path: "calculator", component: CalculatorView, data: {breadcrumb: 'Calculator'}},
+    ],
+  },
+  // _landing views
+  {
+    path: "landing",
+    component: LayoutLandingComponent,
+    children: [
+      {path: "", redirectTo: "dashboard", pathMatch: "full"},
+      {path: "landing", component: LandingView, data: {breadcrumb: 'Landing'}},
+      {path: "about", component: AboutView, data: {breadcrumb: 'About'}},
     ],
   },
   {
@@ -95,9 +109,6 @@ const routes: Routes = [
     component: DebugView,
     canActivate: []
   },
-  // no layout views
-  {path: "landing", component: LandingView},
-
   {
     path: 'monaco',
     component: MonacoEditorComponent
@@ -117,3 +128,5 @@ const routes: Routes = [
 })
 export class AppRoutingModule {
 }
+
+

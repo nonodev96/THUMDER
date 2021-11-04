@@ -1,6 +1,6 @@
-;*********** WINDLX EX.1: GREATEST COMMON MEASURE *************
-;*********** (C) 1991 GÜNTHER RAIDL		  *************
-;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR	  *************
+;*********** WINDLX EX.1: GREATEST COMMON MEASURE   *************
+;*********** (C) 1991 GÜNTHER RAIDL		            *************
+;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR	    *************
 
 ;------------------------------------------------------------------------
 ; PROGRAM BEGINS AT SYMBOL MAIN
