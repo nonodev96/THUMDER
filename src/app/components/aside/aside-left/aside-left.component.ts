@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AUTH_ROUTES } from "../../../CONSTAST";
 import { PublicRoutes } from "../../../types";
 import { Router } from "@angular/router";
+import { AuthService } from "../../../__core/auth/auth.service";
 
 @Component({
   selector: 'app-aside-left',
@@ -12,7 +13,8 @@ export class AsideLeftComponent implements OnInit {
 
   AUTH_ROUTES_ASIDE = AUTH_ROUTES;
 
-  constructor(private router: Router) {
+  constructor(public authService: AuthService,
+              private router: Router) {
   }
 
   ngOnInit(): void {

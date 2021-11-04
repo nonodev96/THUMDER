@@ -1,10 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { Component, Inject, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { AppComponent } from "../../../app.component";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { AUTH_ROUTES } from "../../../CONSTAST";
-import { Router } from "@angular/router";
 import { PublicRoutes } from "../../../types";
+import { AUTH_ROUTES } from "../../../CONSTAST";
 
 @Component({
   selector: "app-auth-navbar",
@@ -14,7 +15,9 @@ export class AuthNavbarComponent implements OnInit {
   navbarOpen = false;
   AUTH_ROUTES = AUTH_ROUTES;
 
-  constructor(private router: Router,
+  constructor(@Inject(DOCUMENT)
+              private document: Document,
+              private router: Router,
               public app: AppComponent,
               public machine: MachineService,
               public authService: AuthService) {
@@ -56,5 +59,9 @@ export class AuthNavbarComponent implements OnInit {
       .then(() => {
         // console.log(value)
       })
+  }
+
+  toggleCollapsed() {
+
   }
 }

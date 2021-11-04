@@ -2,7 +2,12 @@
   <!-- Left navbar links -->
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a class="nav-link" role="button" aria-labelledby="navbar-button"><i class="fas fa-bars"></i></a>
+      <a class="nav-link" role="button"
+         aria-labelledby="navbar-button"
+         data-widget="pushmenu"
+         (click)="toggleCollapsed()">
+        <i class="fas fa-bars"></i>
+      </a>
     </li>
 
     <li class="nav-item d-none d-sm-inline-block">
@@ -35,9 +40,7 @@
            class="nav-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</a>
         <ul aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow">
           <li *ngFor="let menu of AUTH_ROUTES;">
-            <a class="dropdown-item"
-               title="{{menu.path}}"
-               (click)="goToPage($event, menu)">
+            <a class="dropdown-item" title="{{menu.path}}" (click)="goToPage($event, menu)">
               {{ 'NAVIGATION.' + menu.lang | translate }}
             </a>
           </li>

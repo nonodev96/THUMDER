@@ -1,0 +1,52 @@
+<div class="row">
+  <div class="col-3"></div>
+  <div class="col-6" id="accordion_ABOUT">
+
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse_about">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            0. About
+          </h4>
+        </div>
+      </a>
+      <div id="collapse_about" class="collapse show" data-parent="#accordion_ABOUT">
+        <div class="card-body">
+          <markdown [src]="'assets/md/ABOUT.md'" (load)="onMarkdownLoad('markdownComponentID_ABOUT')" #markdownComponentID_ABOUT></markdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            1. Readme
+          </h4>
+        </div>
+      </a>
+      <div id="collapse_readme" class="collapse" data-parent="#accordion_ABOUT">
+        <div class="card-body">
+          <markdown [src]="'assets/md/README.md'" (load)="onMarkdownLoad('markdownComponentID_README')" #markdownComponentID_README></markdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_LICENSE">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            2. License
+          </h4>
+        </div>
+      </a>
+      <div id="collapseOne_LICENSE" class="collapse" data-parent="#accordion_ABOUT">
+        <div class="card-body">
+          <markdown [src]="'assets/md/LICENSE.md'" (load)="onMarkdownLoad('markdownComponentID_LICENSE')" #markdownComponentID_LICENSE></markdown>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-3"></div>
+</div>

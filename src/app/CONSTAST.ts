@@ -325,6 +325,34 @@ export const CONFIG_WEBSOCKET: SocketIoConfig = {
 
 export const AUTH_ROUTES: PublicRoutesList = [
   {
+    lang: "CALCULATOR",
+    path: "calculator",
+    routerLink: '/auth/calculator',
+    displayName: 'Calculator',
+    data: {breadcrumb: 'calculator'}
+  },
+  {
+    lang: "CODE",
+    path: "code",
+    routerLink: '/auth/code',
+    displayName: 'Code',
+    data: {breadcrumb: 'Code'}
+  },
+  {
+    lang: "CONFIG",
+    path: "config",
+    routerLink: '/auth/config',
+    displayName: 'Config',
+    data: {breadcrumb: 'config'}
+  },
+  {
+    lang: "DOCUMENTATION",
+    path: "documentation",
+    routerLink: '/auth/documentation',
+    displayName: 'Documentation',
+    data: {breadcrumb: 'Documentation'}
+  },
+  {
     lang: 'FILE-MANAGER',
     path: 'file-manager',
     routerLink: '/auth/file-manager',
@@ -339,11 +367,11 @@ export const AUTH_ROUTES: PublicRoutesList = [
     data: {breadcrumb: 'IDE'}
   },
   {
-    lang: "PIPELINE",
-    path: "pipeline",
-    routerLink: '/auth/pipeline',
-    displayName: 'Pipeline',
-    data: {breadcrumb: 'Pipeline'}
+    lang: "MEMORY",
+    path: "memory",
+    routerLink: '/auth/memory',
+    displayName: 'Memory',
+    data: {breadcrumb: 'Memory'}
   },
   {
     lang: "CYCLE-CLOCK-DIAGRAM",
@@ -353,18 +381,18 @@ export const AUTH_ROUTES: PublicRoutesList = [
     data: {breadcrumb: 'Cycle-clock-diagram'}
   },
   {
-    lang: "MEMORY",
-    path: "memory",
-    routerLink: '/auth/memory',
-    displayName: 'Memory',
-    data: {breadcrumb: 'Memory'}
+    lang: "PIPELINE",
+    path: "pipeline",
+    routerLink: '/auth/pipeline',
+    displayName: 'Pipeline',
+    data: {breadcrumb: 'Pipeline'}
   },
   {
-    lang: "CODE",
-    path: "code",
-    routerLink: '/auth/code',
-    displayName: 'Code',
-    data: {breadcrumb: 'Code'}
+    lang: "PROFILE",
+    path: "profile",
+    routerLink: '/auth/profile',
+    displayName: 'Profile',
+    data: {breadcrumb: 'Profile'}
   },
   {
     lang: "REGISTERS",
@@ -380,34 +408,6 @@ export const AUTH_ROUTES: PublicRoutesList = [
     displayName: 'Statistics',
     data: {breadcrumb: 'Statistics'}
   },
-  {
-    lang: "PROFILE",
-    path: "profile",
-    routerLink: '/auth/profile',
-    displayName: 'Profile',
-    data: {breadcrumb: 'Profile'}
-  },
-  {
-    lang: "DOCUMENTATION",
-    path: "documentation",
-    routerLink: '/auth/documentation',
-    displayName: 'Documentation',
-    data: {breadcrumb: 'Documentation'}
-  },
-  {
-    lang: "CONFIG",
-    path: "config",
-    routerLink: '/auth/config',
-    displayName: 'Config',
-    data: {breadcrumb: 'config'}
-  },
-  {
-    lang: "CALCULATOR",
-    path: "calculator",
-    routerLink: '/auth/calculator',
-    displayName: 'Calculator',
-    data: {breadcrumb: 'calculator'}
-  }
 ]
 
 export const PUBLIC_ROUTES: PublicRoutes = {
@@ -445,8 +445,14 @@ export const PUBLIC_ROUTES: PublicRoutes = {
     {
       lang: "LANDING",
       path: "landing",
-      routerLink: '/landing',
+      routerLink: '/landing/landing',
       displayName: 'Landing',
+    },
+    {
+      lang: "ABOUT",
+      path: "about",
+      routerLink: '/landing/about',
+      displayName: 'About',
     },
     // _admin views
     {
