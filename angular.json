@@ -30,10 +30,26 @@
             ],
             "assets": [
               "src/assets",
-              { "glob": "LICENSE.md", "input": "./", "output": "./assets/md/" },
-              { "glob": "README.md", "input": "./", "output": "./assets/md/" },
-              { "glob": "ABOUT.md", "input": "./", "output": "./assets/md/" },
-              { "glob": "Datapath_Schematic.svg", "input": "./assets", "output": "./assets/" }
+              {
+                "glob": "LICENSE.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "README.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "ABOUT.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "Datapath_Schematic.svg",
+                "input": "./assets",
+                "output": "./assets/"
+              }
             ],
             "styles": [
               "src/styles.scss",
@@ -120,7 +136,7 @@
             },
             "production": {
               "optimization": {
-                "scripts": true,
+                "scripts": false,
                 "fonts": {
                   "inline": true
                 },
