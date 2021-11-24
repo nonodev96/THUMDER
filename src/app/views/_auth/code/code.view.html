@@ -1,15 +1,9 @@
+<!-- Card -->
 <div class="card">
-
   <div class="card-header">
     <h3 class="card-title">{{'MACHINE.CODE' | translate}}</h3>
 
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" (click)="test()">
-        <i class="fas fa-bug"></i>
-      </button>
-<!--      <button type="button" class="btn btn-tool" (click)="next()">-->
-<!--        <i class="fas fa-bug"></i>-->
-<!--      </button>-->
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
       </button>
@@ -20,8 +14,6 @@
   </div>
 
   <div class="card-body">
-
-
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
                                  style="height: 800px;"
@@ -67,12 +59,9 @@
         </ng-container>
       </table>
     </cdk-virtual-scroll-viewport>
-
-
   </div>
 
   <div class="card-footer">
     Footer
   </div>
-
 </div>
