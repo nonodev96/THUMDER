@@ -4,23 +4,12 @@
     <h3 class="card-title">Editor</h3>
     <div class="card-tools">
 
-      <ng-container *ngIf="enableDebugger">
-        <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
-          <i class="fas fa-circle"></i>
-        </button>
-        <button type="button" class="btn btn-tool" (click)="debugNextLine()">
-          <i class="fas fa-angle-right"></i>
-        </button>
-        <button type="button" class="btn btn-tool" (click)="debugNextLineWithTag()">
-          <i class="fas fa-angle-double-right"></i>
-        </button>
-      </ng-container>
-
-      <button type="button" class="btn btn-tool" (click)="toggleDebugger()">
-        <i class="fas fa-bug"></i>
+      <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
+        <i class="fas fa-circle"></i>
       </button>
-      <button type="button" class="btn btn-tool" (click)="play()">
-        <i class="fas fa-play"></i>
+
+      <button type="button" class="btn btn-tool" (click)="save()">
+        <i class="fas fa-save"></i>
       </button>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
@@ -56,27 +45,3 @@
   </div>
 </div>
 <!-- /.card -->
-
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">Xterm</h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="card-body">
-    <div id="ide-console">
-      <thumder-xterm #xtermComponent></thumder-xterm>
-    </div>
-  </div>
-
-  <div class="card-footer">
-    Footer
-  </div>
-</div>

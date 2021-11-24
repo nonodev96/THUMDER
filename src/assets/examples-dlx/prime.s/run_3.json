@@ -1,0 +1,40 @@
+{
+  "step": 3,
+  "line": 26,
+  "instruction": "addi r16, r0, 0x10",
+  "IF": 1,
+  "IF_stall": 0,
+  "ID": 1,
+  "ID_stall": 0,
+  "intEX": 1,
+  "intEX_stall": 0,
+  "MEM": 1,
+  "MEM_stall": 0,
+  "WB": 1,
+  "WB_stall": 0,
+  "pipeline": {
+    "IF": "0x00000108",
+    "ID": "0x00000104",
+    "intEX": "0x00000100",
+    "faddEX": [],
+    "fmultEX": [],
+    "fdivEX": [],
+    "MEM": "",
+    "WB": ""
+  },
+  "registers": [
+    {
+      "register": "PC",
+      "value": "0x0000010C"
+    },
+    {
+      "register": "IMAR",
+      "value": "0x00000108"
+    },
+    {
+      "register": "IR",
+      "value": "0x20100010"
+    }
+  ],
+  "memory": []
+}

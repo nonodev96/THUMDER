@@ -1,22 +1,19 @@
-import { THUMDER_goCycleClockDiagram } from "../support/commands/goToPage";
-import { THUMDER_setLangEnglish } from "../support/commands/setLang";
-
 describe('Cycle Clock Diagram', () => {
 
   beforeEach(() => {
     cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
     cy.visit('/'); // Reload page
-    cy.THUMDER_goCycleClockDiagram()
-    cy.THUMDER_setLangEnglish()
+    cy.THUMDER_goCycleClockDiagram();
+    cy.THUMDER_setLangEnglish();
 
-    cy.url().should('contain', '/auth/cycle-clock-diagram')
+    cy.url().should('contain', '/auth/cycle-clock-diagram');
 
     // Define variables with @name
     cy.get('#pixiCardCycleClockDiagram')
-      .as('pixiCardCycleClockDiagram')
+      .as('pixiCardCycleClockDiagram');
     cy.get('#pixiCardCycleClockDiagram button[data-card-widget="collapse"]')
-      .as('pixiCardCycleClockDiagramButtonMinimize')
-  })
+      .as('pixiCardCycleClockDiagramButtonMinimize');
+  });
 
   it('Open and close card', () => {
     cy.contains('Cycle clock diagram');
@@ -24,23 +21,23 @@ describe('Cycle Clock Diagram', () => {
     // Check card
     cy.get('@pixiCardCycleClockDiagram')
       .should(($element) => {
-        expect($element).to.have.class('card')
+        expect($element).to.have.class('card');
       });
 
     // Check collapse
     cy.get('@pixiCardCycleClockDiagramButtonMinimize').click();
     cy.get('@pixiCardCycleClockDiagram')
       .should(($element) => {
-        expect($element).to.have.class('collapsed-card')
-      })
+        expect($element).to.have.class('collapsed-card');
+      });
 
     // Check collapse
-    cy.get('@pixiCardCycleClockDiagramButtonMinimize').click()
+    cy.get('@pixiCardCycleClockDiagramButtonMinimize').click();
     cy.get('@pixiCardCycleClockDiagram')
       .should(($element) => {
-        expect($element).not.to.have.class('collapsed-card')
-      })
+        expect($element).not.to.have.class('collapsed-card');
+      });
 
-  })
+  });
 
-})
+});

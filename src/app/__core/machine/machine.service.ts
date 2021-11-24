@@ -6,7 +6,7 @@ import { interval, Observable, PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {
   SimulationResponse,
-  StepSimulation,
+  TypeStepSimulation,
   TypeCode, TypeDataStatistics,
   TypeFloatingPointStageConfiguration,
   TypeRegister,
@@ -28,6 +28,10 @@ import { Utils } from "../../Utils";
 import { StorageService } from "../storage/storage.service";
 import { Registers } from "../DLX/_Registers";
 import { Memory } from "../DLX/_Memory";
+import { BreakpointManager } from "./debugger/BreakpointManager";
+import { ToastrService } from "ngx-toastr";
+import { TranslateService } from "@ngx-translate/core";
+import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
 
 
 const RegexRegisterInteger = /\b(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31)\b/i;
@@ -43,41 +47,43 @@ export class MachineService {
   public memorySize;
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
   public registers: Registers;
+  public breakpointManager: BreakpointManager;
   // La memoria se organiza de directions de 4 bits en 4 bits
   public memory: Memory;
-
+  public logger: string = "";
 
   // address --> TypeTableCode
   public code: Map<string, TypeTableCode> = new Map();
-  public codeText = '';
-
-  public tagsDebugger: TypeTags = [];
-
-  // public memory: Array<Int32> = Array<Int32>(32764).fill(new Int32());
-  // public code: Array<Int32> = Array<Int32>(32764).fill(new Int32());
-  // public pipeline: PixiTHUMER_Pipeline;
-  // public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
-  // public pipeline: PixiTHUMDER_Pipeline;
 
   // Vector con los pasos de la simulación
   private simulation: SimulationResponse;
-
+  private statusMachineInStep: TypeStepSimulation | null;
   public dataCodeArray;
-  public codeSimulation$ = new Subject<TypeCode[]>();
-  public stepSimulation$ = new Subject<StepSimulation>();
-  public dataStatistics$ = new Subject<TypeDataStatistics>();
-  public step$ = new Subject<number>();
+
+  // Line
+  public isBreakpoint$: Subject<number> = new Subject<number>();
+  public codeSimulation$: Subject<TypeCode[]> = new Subject<TypeCode[]>();
+  public stepSimulation$: Subject<TypeStepSimulation> = new Subject<TypeStepSimulation>();
+  public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
   private dataStatistics: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
+
+
   private privateStep = 0;
+  private privateLine = 0;
   private timer: Observable<number>;
   private readonly timerObserver: PartialObserver<number>;
 
-  stopClick$ = new Subject();
-  pauseClick$ = new Subject();
+  public step$: Subject<number> = new Subject<number>();
+  public line$: Subject<number> = new Subject<number>();
+
+  // stopClick$ = new Subject<void>();
+  isRunning$ = new Subject<boolean>();
+  isComplete$ = new Subject<boolean>();
 
   // Por defecto parado y sin completar
-  isRunning = false;
-  isComplete = false;
+  isRunning: boolean = false;
+  isComplete: boolean = false;
+  isBreakpoint: boolean = false;
 
 
   // 20 de septiembre: Me quiero morir, este código es una locura y no sé hacerlo bonito y entendible por que no
@@ -86,8 +92,12 @@ export class MachineService {
   // 05 de octubre: Nono del pasado sigues siendo un cabron
   // 15 de octubre: Nono, lo has mejorado un poquito, pero sigues siendo un cabron
   // 22 de octubre: Nono tienes que poner ahora las tags del debugger 😂
+  // 7  de noviembre: Nono haz lo que puedas cuando puedas :3
+  // 21 de noviembre: Nono haz las tags y el guardar ficheros pls
   // https://stackblitz.com/edit/angular-play-pause-timer
-  constructor(private store: StorageService) {
+  constructor(private store: StorageService,
+              private translate: TranslateService,
+              private toast: ToastrService) {
     this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
     // this.pipeline = new PixiTHUMER_Pipeline(
     //   this.floatingPointStageConfiguration.addition.count,
@@ -98,37 +108,42 @@ export class MachineService {
     this.memorySize = this.store.getItem('memory_size');
     this.memory = new Memory(this.memorySize);
     this.registers = new Registers();
-    // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-    // this.pipeline = new PixiTHUMDER_CycleClockDiagram();
-    // this.registers.D[0].value = 3.14
+    this.breakpointManager = new BreakpointManager();
 
-    this.timer = interval(250).pipe(
-      takeUntil(this.pauseClick$),
-      takeUntil(this.stopClick$)
+    this.privateStep = 0;
+    this.privateLine = 0;
+
+    const timeSimulation = this.store.getItem('time_simulation');
+    this.timer = interval(timeSimulation).pipe(
+      takeUntil(this.isRunning$),
+      takeUntil(this.isComplete$),
     );
 
     this.timerObserver = {
-      next: (_: number) => {
-        this.log(new Date().getSeconds())
-        if (this.isRunning) {
-          this.checkConditions();
-          this.clock();
-          this.privateStep++;
-        } else {
-          this.stopClick$.next();
-          // this.isRunning = false;
-          // this.isComplete = true;
+      next: async (_: number): Promise<void> => {
+        if (this.isRunning === true) {
+          await this.nextStep();
         }
+        return Promise.resolve();
       }
     };
-
-    this.timer.subscribe(this.timerObserver);
   }
 
   // TODO
-  public resetMachineStatus(): Promise<boolean> {
-    return new Promise(async (resolve) => {
-      this.log("RESET")
+  public async resetMachineStatus(): Promise<boolean> {
+    try {
+      await this.toastMessage('TOAST.TITLE_RESET_MACHINE', 'TOAST.MESSAGE_RESET_MACHINE');
+      this.log("RESET");
+
+      this.memorySize = this.store.getItem('memory_size');
+      this.memory = new Memory(this.memorySize);
+
+      this.registers = new Registers();
+
+      this.breakpointManager = new BreakpointManager();
+      const breakpointsSaved = JSON.parse(localStorage.getItem('breakpoints'));
+      this.breakpointManager.updateManager(breakpointsSaved);
+
       this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
       // this.pipeline = new PixiTHUMER_Pipeline(
       //   this.floatingPointStageConfiguration.addition.count,
@@ -138,11 +153,9 @@ export class MachineService {
       // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
       // this.pipeline = new PixiTHUMDER_Pipeline();
 
-      this.memorySize = this.store.getItem('memory_size');
-      this.memory = new Memory(this.memorySize);
-      this.registers = new Registers();
-
       this.privateStep = 0;
+      this.privateLine = 0;
+
       this.dataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
       this.dataStatistics$.next(this.dataStatistics);
 
@@ -150,19 +163,36 @@ export class MachineService {
       this.code.clear();
       this.isComplete = false;
       this.isRunning = false;
-      this.stopClick$.next();
+      this.isBreakpoint = false;
+
+      const timeSimulation = this.store.getItem('time_simulation');
+      this.timer = null;
+      this.timer = interval(timeSimulation).pipe(
+        takeUntil(this.isRunning$),
+        takeUntil(this.isComplete$),
+      );
 
       await this.loadExamples();
-
-      resolve(true);
-    })
+      return Promise.resolve(true);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error);
+    }
   }
 
   public getStepObservable(): Observable<number> {
     return this.step$.asObservable();
   }
 
-  public getStepSimulationObservable(): Observable<StepSimulation> {
+  public getLineObservable(): Observable<number> {
+    return this.line$.asObservable();
+  }
+
+  public getIsRunningObservable(): Observable<boolean> {
+    return this.isRunning$.asObservable();
+  }
+
+  public getStepSimulationObservable(): Observable<TypeStepSimulation> {
     return this.stepSimulation$.asObservable();
   }
 
@@ -170,11 +200,16 @@ export class MachineService {
     return this.codeSimulation$.asObservable();
   }
 
+  // line
+  public getDebuggerObservable(): Observable<number> {
+    return this.isBreakpoint$.asObservable();
+  }
+
   public getDataStatisticsObservable(): Observable<TypeDataStatistics> {
     return this.dataStatistics$.asObservable();
   }
 
-  getStatusCycleClockDiagram(stepSimulation: StepSimulation): TypeStatusCycleClockDiagram {
+  public getStatusCycleClockDiagram(stepSimulation: TypeStepSimulation): TypeStatusCycleClockDiagram {
     return {
       step: stepSimulation.step,
       instruction: stepSimulation.instruction,
@@ -194,214 +229,228 @@ export class MachineService {
     };
   }
 
-  getListStatusPipeline(stepSimulation: StepSimulation): TypeStatusPipeline[] {
+  public getListStatusPipeline(stepSimulation: TypeStepSimulation): TypeStatusPipeline[] {
     const {IF, ID, intEX, MEM, WB} = stepSimulation.pipeline;
-    let list_elements: TypeStatusPipeline[] = [
-      {address: IF, stage: 'IF'},
-      {address: ID, stage: 'ID'},
-      {address: intEX, stage: 'intEX'},
-      {address: MEM, stage: 'MEM'},
-      {address: WB, stage: 'WB'}
-    ]
+    const list_elements: TypeStatusPipeline[] = [];
+
+    if (IF) list_elements.push({address: IF, stage: 'IF'});
+    if (ID) list_elements.push({address: ID, stage: 'ID'});
+    if (intEX) list_elements.push({address: intEX, stage: 'intEX'});
+    if (MEM) list_elements.push({address: MEM, stage: 'MEM'});
+    if (WB) list_elements.push({address: WB, stage: 'WB'});
+
     for (const f_a of stepSimulation.pipeline.faddEX) {
-      list_elements.push({address: f_a.address, stage: `faddEX_${f_a.unit}` as TypeStage, unit: f_a.unit})
+      list_elements.push({address: f_a.address, stage: `faddEX_${f_a.unit}` as TypeStage, unit: f_a.unit});
     }
     for (const f_m of stepSimulation.pipeline.fmultEX) {
-      list_elements.push({address: f_m.address, stage: `fmultEX_${f_m.unit}` as TypeStage, unit: f_m.unit})
+      list_elements.push({address: f_m.address, stage: `fmultEX_${f_m.unit}` as TypeStage, unit: f_m.unit});
     }
     for (const f_d of stepSimulation.pipeline.fdivEX) {
-      list_elements.push({address: f_d.address, stage: `fdivEX_${f_d.unit}` as TypeStage, unit: f_d.unit})
+      list_elements.push({address: f_d.address, stage: `fdivEX_${f_d.unit}` as TypeStage, unit: f_d.unit});
     }
     return list_elements;
   }
 
   // Navbar
-  async play(): Promise<void> {
-    return new Promise((resolve) => {
-      resolve();
-    })
+
+  public async play(): Promise<void> {
+    return Promise.resolve();
   }
 
-  async reset(): Promise<void> {
-    return new Promise((resolve) => {
-      this.resetMachineStatus()
-      resolve();
-    })
+  public async reset(): Promise<void> {
+    await this.resetMachineStatus();
+    return Promise.resolve();
   }
 
-  async pause(): Promise<void> {
-    return new Promise(resolve => {
-      this.pauseClick$.next();
-      this.isRunning = false;
-      resolve();
-    })
+  public async pause(): Promise<void> {
+    this.isRunning = false;
+    this.isRunning$.next(this.isRunning);
+    return Promise.resolve();
   }
 
-  async resume(): Promise<void> {
-    return new Promise(resolve => {
-      this.isRunning = true;
-      if (this.isComplete) {
-        this.isComplete = false;
-      }
-      this.timer.subscribe(this.timerObserver);
-      resolve();
-    })
-  }
-
-  async next(): Promise<void> {
-    return new Promise(resolve => {
-      this.checkConditions();
-      this.clock();
-      this.privateStep++;
-      resolve();
-    })
-  }
-
-  async end(): Promise<void> {
-    return new Promise(resolve => {
-      this.privateStep = -1;
-
-      this.stopClick$.next();
-      this.isRunning = false;
-      this.isComplete = true;
-      resolve();
-    })
-  }
-
-  clock(): any {
-    if (this.isRunning === false) {
-      return;
+  public async resume(): Promise<void> {
+    if (this.isComplete) {
+      // this.isComplete = false;
+      console.warn("this.isComplete, can't resume");
+      return Promise.resolve();
     }
-    const statusMachineInStep = this.getStepInRunner(this.privateStep);
-    this.step$.next(this.privateStep);
-    this.stepSimulation$.next(statusMachineInStep)
-    const instructionText = statusMachineInStep.instruction;
-    // this.cycleClockDiagram.addInstruction(instructionText);
-    // this.cycleClockDiagram.goToStep(this.privateStep);
 
-    if (statusMachineInStep.registers !== []) {
-      for (const register_value of statusMachineInStep.registers) {
-        const register = register_value.register
-        let value, binary;
+    this.isBreakpoint = false;
+    this.isRunning = true;
+    this.isRunning$.next(this.isRunning);
+
+    this.timer.subscribe(this.timerObserver);
+    return Promise.resolve();
+  }
+
+  public async nextStep(): Promise<void> {
+    this.statusMachineInStep = await MachineService.getStepInRunner(this.privateStep);
+
+    const canNextInstruction = await this.checkConditions();
+    if (canNextInstruction) await this.clock();
+
+    this.privateLine++;
+    this.privateStep++;
+    return Promise.resolve();
+  }
+
+  public async end(): Promise<void> {
+    this.privateStep = -1;
+    this.isRunning = false;
+    this.isComplete = true;
+
+    this.isRunning$.next(this.isRunning);
+    return Promise.resolve();
+  }
+
+  private async checkConditions(): Promise<boolean> {
+    if (this.statusMachineInStep === null) {
+      console.warn('End of status of machine');
+      return Promise.resolve(false);
+    }
+    this.privateStep = this.statusMachineInStep.step;
+    this.privateLine = this.statusMachineInStep.line;
+    this.isComplete = this.statusMachineInStep.isComplete ?? false;
+    this.isBreakpoint = this.breakpointManager.isBreakpoint(this.privateLine);
+    console.debug(this.debug());
+
+    if (this.isComplete) {
+      this.isComplete = true;
+      this.isRunning = false;
+      this.isRunning$.next(this.isRunning);
+      await this.toastMessage('TOAST.TITLE_END_SIMULATION', 'TOAST.MESSAGE_END_SIMULATION');
+      return Promise.resolve(false);
+    }
+
+    if (this.isBreakpoint) {
+      this.line$.next(this.privateLine);
+      this.isRunning = false;
+      this.isRunning$.next(this.isRunning);
+      this.isBreakpoint$.next(this.privateLine);
+      await this.toastMessage('TOAST.TITLE_BREAKPOINT_SIMULATION', 'TOAST.MESSAGE_BREAKPOINT_SIMULATION');
+      return Promise.resolve(false);
+    }
+
+    if (this.isComplete === false && this.isBreakpoint === false) {
+      return Promise.resolve(true);
+    }
+
+    return Promise.resolve(false);
+  }
+
+  private async clock(): Promise<void> {
+    if (this.isComplete === true) {
+      console.warn('isComplete', this.isComplete);
+      return Promise.resolve();
+    }
+
+    if (this.statusMachineInStep.registers !== []) {
+      for (const register_value of this.statusMachineInStep.registers) {
+        const register = register_value.register;
+        let binary;
         if (RegexRegisterInteger.test(register)) {
           const r: number = MachineService.getRegisterNumber(register);
-          value = Utils.hexadecimalToDecimal(register_value.value)
-          binary = Utils.hexadecimalToBinary(register_value.value)
+          binary = Utils.hexadecimalToBinary(register_value.value);
           this.registers.R[r] = new Int32();
-          // this.registers.R[r].value = value;
           this.registers.R[r].binary = binary;
         } else if (RegexRegisterFloat.test(register)) {
           const f: number = MachineService.getRegisterNumber(register);
-          value = Utils.hexadecimalToDecimal(register_value.value)
-          binary = Utils.hexadecimalToBinary(register_value.value)
+          binary = Utils.hexadecimalToBinary(register_value.value);
           this.registers.F[f] = new Float32();
-          // this.registers.F[f].value = value;
           this.registers.F[f].binary = binary;
         } else if (RegexRegisterDouble.test(register)) {
           const d: number = MachineService.getRegisterNumber(register);
-          value = Utils.hexadecimalToDecimal(register_value.value)
-          binary = Utils.hexadecimalToBinary(register_value.value, {maxLength: 64, fillString: '0'})
+          binary = Utils.hexadecimalToBinary(register_value.value, {maxLength: 64, fillString: '0'});
           this.registers.F[d] = new Float32();
-          // this.registers.D[d].value = value;
           this.registers.F[d].binary = binary.substr(0, 32);
           this.registers.F[d + 1].binary = binary.substr(32, 32);
         } else if (RegexRegisterControl.test(register)) {
-          value = Utils.hexadecimalToDecimal(register_value.value)
-          binary = Utils.hexadecimalToBinary(register_value.value)
+          binary = Utils.hexadecimalToBinary(register_value.value);
           this.registers[register] = new Int32();
-          // this.registers[register].value = value;
           this.registers[register].binary = binary;
         }
-        this.log('Registro: ', register, 'con valor', value, 'de la instrucción', instructionText)
+        // this.log('Registro: ', register, 'con valor', value, 'de la instrucción', instructionText);
       }
     }
 
-    if (statusMachineInStep.memory !== []) {
-      for (const memory_value of statusMachineInStep.memory) {
+    if (this.statusMachineInStep.memory !== []) {
+      for (const memory_value of this.statusMachineInStep.memory) {
         const address = memory_value.address;
-        const value = memory_value.value;
-        const data = new Int32();
-        data.binary = parseInt(memory_value.value).toString(2).padStart(32, '0');
-        this.memory.setMemoryWordByAddress(address, data);
-        this.log('Dirección: ', address, 'con valor', value, 'de la instrucción', instructionText)
+        const typeData = memory_value.typeData ?? "word";
+        switch (typeData) {
+          case "byte": {
+            const binary08 = Utils.hexadecimalToBinary(memory_value.value);
+            this.memory.setMemoryByteBinaryByAddress(address, binary08);
+            break;
+          }
+          case "halfword": {
+            const binary16 = Utils.hexadecimalToBinary(memory_value.value);
+            this.memory.setMemoryHalfWordBinaryByAddress(address, binary16);
+            break;
+          }
+          case "word": {
+            const binary32 = Utils.hexadecimalToBinary(memory_value.value);
+            this.memory.setMemoryWordBinaryByAddress(address, binary32);
+            break;
+          }
+          case "float": {
+            const binary08 = Utils.hexadecimalToBinary(memory_value.value);
+            this.memory.setMemoryFloatBinaryByAddress(address, binary08);
+            break;
+          }
+          case "double": {
+            const binary64 = Utils.hexadecimalToBinary(memory_value.value);
+            this.memory.setMemoryDoubleBinaryByAddress(address, binary64);
+            break;
+          }
+        }
+        // this.log('Dirección: ', address, 'con valor', value, 'de la instrucción', instructionText);
       }
     }
 
-    // const {IF, ID, intEX, faddEX, fmultEX, fdivEX, MEM, WB} = statusMachineInStep.pipeline;
-    //
-    // const data_code_IF = this.code.get(IF) ?? DEFAULT_TABLE_CODE
-    // const data_code_ID = this.code.get(ID) ?? DEFAULT_TABLE_CODE
-    // const data_code_intEX = this.code.get(intEX) ?? DEFAULT_TABLE_CODE
-    // const data_code_MEM = this.code.get(MEM) ?? DEFAULT_TABLE_CODE
-    // const data_code_WB = this.code.get(WB) ?? DEFAULT_TABLE_CODE
-    //
-    // this.pipeline.update_IF_text(data_code_IF.instruction);
-    // this.pipeline.update_ID_text(data_code_ID.instruction);
-    // this.pipeline.update_intEX_text(data_code_intEX.instruction);
-    // this.pipeline.update_MEM_text(data_code_MEM.instruction);
-    // this.pipeline.update_WB_text(data_code_WB.instruction);
-    //
-    // for (const unit_value of faddEX) {
-    //   const {instruction: faddEX_i} = this.code.get(unit_value.address)
-    //   this.pipeline.update_faddEX_text(unit_value.unit, faddEX_i);
-    // }
-    // for (const unit_value of fmultEX) {
-    //   const {instruction: fmultEX_i} = this.code.get(unit_value.address)
-    //   this.pipeline.update_fmultEX_text(unit_value.unit, fmultEX_i);
-    // }
-    // for (const unit_value of fdivEX) {
-    //   const {instruction: fdivEX_i} = this.code.get(unit_value.address)
-    //   this.pipeline.update_fdivEX_text(unit_value.unit, fdivEX_i);
-    // }
-
-    console.log("END")
     this.dataStatistics.TOTAL.ID_EXECUTED.instructions++;
     this.dataStatistics$.next(this.dataStatistics);
-  }
+    this.stepSimulation$.next(this.statusMachineInStep);
+    this.step$.next(this.privateStep);
+    this.line$.next(this.privateLine);
 
-  private checkConditions() {
-    if (this.privateStep > this.simulation.steps) {
-      this.isComplete = true;
-      this.isRunning = false;
-    }
+    /**
+     const message = "PrivateLine: " + this.privateLine.toString();
+     const title = "CLOCK";
+     await this.toastMessage(message, title);
+     */
+    return Promise.resolve();
   }
 
   private static getRegisterNumber(str): number {
     return parseInt(str.replace(/\D/g, ''));
   }
 
-  private log(...msg) {
-    console.log(this.privateStep, ...msg)
+  private log(...msg: any) {
+    console.debug('Line :', this.privateLine, 'Step: ', this.privateStep, msg);
+    this.logger = Utils.stringFormat("Private step: {0} \r\n", [this.privateStep, ...msg]);
   }
 
-  /**
-   * DEFAULT STEP
-   *
-   * @param step
-   * @private
-   */
-  private getStepInRunner(step: number): StepSimulation {
-    const status = this.simulation.runner.filter((value) => value.step === step)[0];
+  private static async getStepInRunner(step: number): Promise<TypeStepSimulation | null> {
+    const response = await fetch('./assets/examples-dlx/prime.s/run_' + step + '.json');
+    const status: TypeStepSimulation = await response.json();
+    //const status = this.simulation.runner.filter((value) => value.step === step)[0];
     if (status === undefined) {
       console.error('No hay nada que simular');
-      return;
+      return Promise.reject('No hay nada que simular');
     } else {
       if (status.pipeline === undefined) {
         status.pipeline = DEFAULT_PIPELINE;
       }
-      return status;
+      return Promise.resolve(status);
     }
   }
 
-
-  /**
-   *
-   */
   public getMemory(index: number): Int32 {
     if (this.memory.getMemoryWordByIndex(index) === undefined) {
       this.memory.setMemoryWordByIndex(index, new Int32());
     }
-    return this.memory.getMemoryWordByIndex(index)
+    return this.memory.getMemoryWordByIndex(index);
   }
 
   public getRegister(index: TypeRegisterToEdit, typeRegister: TypeRegister): Int32 | Float32 | Double64 {
@@ -436,7 +485,7 @@ export class MachineService {
 
   public getTableCode(address: string): TypeTableCode {
     if (this.code.get(address) === undefined) {
-      console.warn("Error, dirección de memoria erronea")
+      console.warn("Error, dirección de memoria erronea '%s' | %o", address, this.code.get(address));
       return DEFAULT_TABLE_CODE;
     }
     return this.code.get(address);
@@ -449,7 +498,7 @@ export class MachineService {
 
   getBinaryOfMemory_HalfWord(address: number, module: 0 | 1): string {
     const binary = this.getMemory(address).binary.padStart(32, '0');
-    return binary.substr(16 * module, 16)
+    return binary.substr(16 * module, 16);
   }
 
   getBinaryOfMemory_Word(address: number): string {
@@ -465,40 +514,73 @@ export class MachineService {
     if (part1 === DEFAULT_BINARY_32_BITS) {
       return DEFAULT_BINARY_64_BITS;
     }
-    const part2 = this.getMemory(address + 1).binary.padStart(32, '0')
+    const part2 = this.getMemory(address + 1).binary.padStart(32, '0');
     if (part2 === DEFAULT_BINARY_32_BITS) {
       return DEFAULT_BINARY_64_BITS;
     }
     return part1 + part2;
   }
 
-  private loadExamples(): Promise<void> {
-    return new Promise(async (resolve) => {
-      const response = await fetch('./assets/examples-dlx/example-runner.json');
-      const simulation: SimulationResponse = await response.json()
 
-      this.log(simulation);
-      this.simulation = simulation;
+  private async loadExamples(): Promise<void> {
+    const response = await fetch('./assets/examples-dlx/example-runner.json');
+    const simulation: SimulationResponse = await response.json();
+    this.log(simulation);
 
-      let data_code_array: TypeTableCode[] = [];
-      for (const ins of this.simulation.code) {
-        this.code.set(ins.address, ins);
-        data_code_array.push(ins)
-      }
+    this.simulation = simulation;
+    const data_code_array: TypeTableCode[] = [];
+    for (const ins of this.simulation.code) {
+      const address = ins.address;
+      const binary32 = Utils.hexadecimalToBinary(ins.code);
+      this.memory.setMemoryWordBinaryByAddress(address, binary32);
 
-      this.dataCodeArray = data_code_array
-      this.codeSimulation$.next(data_code_array)
-      resolve()
-    })
+      this.code.set(ins.address, ins);
+      data_code_array.push(ins);
+    }
+    this.dataCodeArray = data_code_array;
+    this.codeSimulation$.next(data_code_array);
+    return Promise.resolve();
   }
 
+  private async toastMessage(key_title: string = 'TOAST.LOGIN_FALSE',
+                             key_message: string = 'TOAST.ACCESS_DENIED'): Promise<void> {
+    const config: Partial<IndividualConfig> = {
+      timeOut: 5000,
+      positionClass: 'toast-bottom-right'
+    };
+    const message = await this.translate.get(key_message).toPromise();
+    const title = await this.translate.get(key_title).toPromise();
+    this.toast.info(title, message, config);
+    return Promise.resolve();
+  }
 
   public getAllStatusMachine(): TypeStatusMachine {
     return {
-      codeText: this.codeText,
       registers: this.registers,
       memory: this.memory,
-      tagsDebugger: this.tagsDebugger,
-    }
+      breakpoints: this.breakpointManager,
+      hello: ''
+    };
+  }
+
+  private debug() {
+    return {
+      'Line: ': this.privateLine,
+      'Step: ': this.privateStep,
+      'isRunning: ': this.isRunning,
+      'isComplete: ': this.isComplete,
+      'isBreakpoint: ': this.breakpointManager.isBreakpoint(this.privateLine),
+    };
+    /*
+      console.debug(
+        'Line: ', this.privateLine,
+        'Step: ', this.privateStep,
+        'isRunning: ', this.isRunning,
+        'isComplete: ', this.isComplete,
+        'isBreakpoint: ', isBreakpoint,
+        'isBreakpoint: ', isBreakpoint,
+        'Status: ', this.statusMachineInStep
+      );
+     */
   }
 }

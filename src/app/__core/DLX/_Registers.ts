@@ -1,4 +1,4 @@
-import { Double64, Float32, Int32 } from "../typesData";
+import { Float32, Int32 } from "../typesData";
 import { InterfaceRegisters } from "./interfaces";
 
 export class Registers implements InterfaceRegisters {

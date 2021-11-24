@@ -7,14 +7,18 @@ import { PixiCycleClockDiagramComponent } from "../../../components/pixi-cycle-c
   templateUrl: "./cycle-clock-diagram.view.html",
 })
 export class CycleClockDiagramView implements OnInit {
-  @ViewChild(PixiCycleClockDiagramComponent)
-  pixi_CycleClockDiagramComponent: PixiCycleClockDiagramComponent;
+  @ViewChild(PixiCycleClockDiagramComponent) pixi_CycleClockDiagramComponent: PixiCycleClockDiagramComponent;
+  public inCanvas = false;
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
+  constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
   ngOnInit(): void {
+  }
+
+  handleInCanvas($event): void {
+    // console.log($event)
+    this.inCanvas = $event as boolean;
   }
 
 }

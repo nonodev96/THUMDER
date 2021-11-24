@@ -8,9 +8,8 @@ describe('PipelinePixiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PixiCycleClockDiagramComponent ]
-    })
-    .compileComponents();
+      declarations: [PixiCycleClockDiagramComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

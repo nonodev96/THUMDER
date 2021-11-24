@@ -115,6 +115,6 @@ describe('Memory page', () => {
       .type('.');             // 3,|1415
 
     // IEEE 754 --> 3,1415 ----->  3,1414999961853027
-    cy.get('@input-hexadecimal').should('have.value', '400921CAC0831400')
+    cy.get('@input-hexadecimal').should('have.value', '400921CAC0831400');
   });
-})
+});

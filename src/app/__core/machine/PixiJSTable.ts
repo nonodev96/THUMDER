@@ -1,6 +1,9 @@
 import * as PIXI from 'pixi.js';
 
 // Version 1.0.4
+interface InterfaceContainer extends PIXI.Container {
+  [key: string]: any;
+}
 
 /**
  * Creates a new table that can have any PIXI.DisplayObject attached to it. The way to address updates is to use rows and cells.
@@ -12,7 +15,7 @@ export class PixiJSTable extends PIXI.Container {
 
   private readonly title: PIXI.Text;
 
-  private readonly rows: any[] | PIXI.Container[];
+  private readonly rows: InterfaceContainer[];
 
   private rowBuffer: number;
 
@@ -88,8 +91,8 @@ export class PixiJSTable extends PIXI.Container {
     const row = this.rows[this.rows.length - 1];
     if (this.rowCount > 1) {
       row.position.set(
-      this.rowStartPosition.x,
-      this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
+        this.rowStartPosition.x,
+        this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
       );
     } else {
       row.position.set(this.rowStartPosition.x, this.rowStartPosition.y);
@@ -111,8 +114,8 @@ export class PixiJSTable extends PIXI.Container {
     const row = this.rows[rowNumber];
     if (this.rowCount > 1) {
       row.position.set(
-      this.rowStartPosition.x,
-      this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
+        this.rowStartPosition.x,
+        this.rows[this.rows.length - 2].y + this.rows[this.rows.length - 2].height,
       );
     } else {
       row.position.set(this.rowStartPosition.x, this.rowStartPosition.y);
@@ -155,7 +158,7 @@ export class PixiJSTable extends PIXI.Container {
    * Deletes a row from the table by row ID. Redraws the entire object by creating a new one.
    * @param {*} rowNumber The row number to delete.
    */
-  deleteRow(rowNumber) {
+  deleteRow(rowNumber: number) {
     this.debugLog('delete row', {rowNumber});
     if (rowNumber > -1 && rowNumber < this.rowCount) {
       this.rows[rowNumber].destroy(true);
@@ -187,8 +190,8 @@ export class PixiJSTable extends PIXI.Container {
       // check to see how long the array is. If it's length of 1, default to (5,5). if not, calculate.
       if (row.cells.length > 1) {
         cell.position.set(
-        row.cells[row.cells.length - 2].x + row.cells[row.cells.length - 2].width + this.columnBuffer, // default to 10 over for a 5 px spacing between cells
-        this.cellStartPosition.y, // default to 5 pixels from the top
+          row.cells[row.cells.length - 2].x + row.cells[row.cells.length - 2].width + this.columnBuffer, // default to 10 over for a 5 px spacing between cells
+          this.cellStartPosition.y, // default to 5 pixels from the top
         );
       } else {
         cell.position.set(this.cellStartPosition.x, this.cellStartPosition.y);
@@ -207,7 +210,7 @@ export class PixiJSTable extends PIXI.Container {
    * @param {*} rowNumber The row number
    * @param {*} cellNumber The cell number
    */
-  deleteCell(rowNumber, cellNumber) {
+  deleteCell(rowNumber: number, cellNumber: number) {
     this.debugLog('delete cell', {
       rowNumber,
       cellNumber,
@@ -265,9 +268,7 @@ export class PixiJSTable extends PIXI.Container {
     // add that to the previous entry, and you're good to go.
     this.rows.forEach((row, index) => {
       rowSeparation.push(0);
-      // @ts-ignore
       if (typeof row.cells !== 'undefined') {
-        // @ts-ignore
         row.cells.forEach((cell) => {
           if (cell.height + _inst.rowBuffer + rowSeparation[index] > rowSeparation[index + 1]) {
             rowSeparation[index + 1] = cell.height + _inst.rowBuffer + rowSeparation[index];

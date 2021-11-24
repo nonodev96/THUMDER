@@ -2,10 +2,6 @@ import { Component } from "@angular/core";
 import {
   Router,
   Event,
-  ActivationStart,
-  ActivationEnd,
-  ActivatedRouteSnapshot,
-  NavigationStart,
   NavigationEnd,
   ActivatedRoute,
   Data
@@ -28,12 +24,12 @@ export class BreadcrumbComponent {
   menuItemsLoaded: Promise<boolean>;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {
-    this.router.events.pipe(
-      filter((event: Event) => event instanceof NavigationEnd),
-    ).subscribe((event) => {
-      this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
-      this.menuItemsLoaded = Promise.resolve(true)
-    });
+    this.router.events
+      .pipe(filter((event: Event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
+        this.menuItemsLoaded = Promise.resolve(true);
+      });
   }
 
   private createBreadcrumbs(route: ActivatedRoute, url: string = '', breadcrumbs: MenuItem[] = []): MenuItem[] {

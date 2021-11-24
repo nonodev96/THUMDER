@@ -10,24 +10,62 @@ skinparam linetype ortho
 
 left to right direction
 'https://www.freeprojectz.com/uml-diagram/chat-application-system-sequence-diagram
-actor "User" as user
+actor "Usuario" as user
+
 rectangle THUMDER-Client {
-  usecase "<<Story Case>>\nCrear una cuenta" as C_UC1
-  usecase "<<Story Case>>\nIniciar sesión" as C_UC2
-  usecase "<<Story Case>>\nCrear carpeta" as C_UC3.1a
-  usecase "<<Story Case>>\nCrear fichero" as C_UC3.2a
-  usecase "<<Story Case>>\nModificar nombre carpeta" as C_UC3.1b
-  usecase "<<Story Case>>\nModificar nombre fichero"" as C_UC3.2b
-  usecase "<<Story Case>>\nEliminar carpeta" as C_UC3.1c
-  usecase "<<Story Case>>\nEliminar fichero" as C_UC3.2c
-  usecase "<<Story Case>>\nEditar contenido fichero" as C_UC4
-  usecase "<<Story Case>>\nSimular" as C_UC5
-  usecase "<<Story Case>>\nMostrar estado maquina" as C_UC6
-  usecase "<<Story Case>>\nActualizar estado maquina" as C_UC7
-'  usecase "<<Story Case>>\nAlterar estado maquina" as C_UC9
-'  usecase "<<Story Case>>\nDebug" as C_UC_Debug
+  usecase "<<Story Case>>\nCrear una cuenta" as S_CU1
+  usecase "<<Story Case>>\nIniciar sesión" as S_CU2
+  usecase "<<Story Case>>\nRecuperar una cuenta" as S_CU3
+  usecase "<<Story Case>>\nModificar una cuenta" as S_CU4
+  usecase "<<Story Case>>\nCrear carpetas" as S_CU5
+  usecase "<<Story Case>>\nCrear ficheros" as S_CU6
+  usecase "<<Story Case>>\nModificar nombre de una carpeta" as S_CU7
+  usecase "<<Story Case>>\nModificar nombre de un fichero" as S_CU8
+  usecase "<<Story Case>>\nEditar contenido de un fichero" as S_CU9
+  usecase "<<Story Case>>\nAuto completar código DLX" as S_CU10
+  usecase "<<Story Case>>\nMostrar documentación del DLX en el editor" as S_CU11
+  usecase "<<Story Case>>\nMostrar errores de código en el editor" as S_CU12
+  usecase "<<Story Case>>\nMostrar logs en la ventana de Xterm.js" as S_CU13
+  usecase "<<Story Case>>\nModificar el estado de la memoria" as S_CU14
+  usecase "<<Story Case>>\nModificar el estado de los registros" as S_CU15
+  usecase "<<Story Case>>\nVisualizar el pipeline" as S_CU16
+  usecase "<<Story Case>>\nVisualizar el diagrama de ciclos" as S_CU17
+  usecase "<<Story Case>>\nVisualizar el código en memoria" as S_CU18
+  usecase "<<Story Case>>\nVisualizar la memoria" as S_CU19
+  usecase "<<Story Case>>\nVisualizar los registros" as S_CU20
+  usecase "<<Story Case>>\nConfigurar la simulación" as S_CU21
+  usecase "<<Story Case>>\nRepresentar datos en distintos formatos y estándares" as S_CU22
+  usecase "<<Story Case>>\nCargar una simulación" as S_CU23
+  usecase "<<Story Case>>\nRealizar una simulación de un código \npor instrucción" as S_CU24
+  usecase "<<Story Case>>\nRealizar una simulación de un código" as S_CU25
 }
 /'
+{cu-01}{Crear una cuenta}}{}
+{cu-02}{Iniciar una sesión}}{}
+{cu-03}{Recuperar una cuenta}}{}
+{cu-04}{Modificar una cuenta}}{}
+{cu-05}{Crear carpetas}}{}
+{cu-06}{Crear ficheros}}{}
+{cu-07}{Modificar nombre de una carpeta}}{}
+{cu-08}{Modificar nombre de una fichero}}{}
+{cu-09}{Editar contenido de un fichero}}{}
+{cu-10}{Auto completar código DLX}}{}
+{cu-11}{Mostrar documentación del DLX en el editor}}{}
+{cu-12}{Mostrar errores de código en el editor}}{}
+{cu-13}{Mostrar logs en la ventana de Xterm.js}}{}
+{cu-14}{Modificar el estado de la memoria}}{}
+{cu-15}{Modificar el estado de los registros}}{}
+{cu-16}{Visualizar el pipeline}}{}
+{cu-17}{Visualizar el diagrama de ciclos}}{}
+{cu-18}{Visualizar el código en memoria}}{}
+{cu-19}{Visualizar la memoria}}{}
+{cu-20}{Visualizar los registros}}{}
+{cu-21}{Configurar la simulación}}{}
+{cu-22}{Representar datos en distintos formatos y estándares}}{}
+{cu-23}{Cargar una simulación}}{}
+{cu-24}{Realizar una simulación de un código por instrucción}}{}
+{cu-25}{Realizar una simulación de un código}}{}
+
 rectangle THUMDER-Server {
   usecase "Recibir" as S_UC00
   usecase "Analizar" as S_UC01
@@ -38,21 +76,30 @@ rectangle THUMDER-Server {
 
 'admin --> UC01
 'admin --> UC02
-user --> C_UC1
-user --> C_UC2
-
-user --> C_UC3.1a
-C_UC3.1a --> C_UC3.2a
-user --> C_UC3.1b
-C_UC3.1b --> C_UC3.2b
-user --> C_UC3.1c
-C_UC3.1c --> C_UC3.2c
-
-user --> C_UC4
-user --> C_UC5
-user --> C_UC6
-user --> C_UC7
-'user --> C_UC9
-'user --> C_UC10
+user --> S_CU1
+user --> S_CU2
+S_CU1 --> S_CU3
+S_CU2 --> S_CU4
+user --> S_CU5
+user --> S_CU6
+S_CU5 --> S_CU7
+S_CU6 --> S_CU8
+user --> S_CU9
+S_CU9 --> S_CU10
+user --> S_CU11
+S_CU11 --> S_CU12
+user --> S_CU13
+user --> S_CU14
+S_CU14 --> S_CU15
+user --> S_CU16
+S_CU16 --> S_CU17
+user --> S_CU18
+S_CU18 --> S_CU19
+S_CU19 --> S_CU20
+user --> S_CU21
+user --> S_CU22
+user --> S_CU23
+S_CU23 --> S_CU24
+S_CU24 --> S_CU25
 
 @enduml

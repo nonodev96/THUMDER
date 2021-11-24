@@ -1,0 +1,35 @@
+{
+  "step": 8,
+  "line": 35,
+  "isComplete": true,
+
+  "instruction": "benz r4, IsPrim",
+  "code_instruction": "0x14800024",
+  "IF": 1,
+  "IF_stall": 1,
+  "ID": 1,
+  "ID_stall": 0,
+  "intEX": 1,
+  "intEX_stall": 0,
+  "MEM": 1,
+  "MEM_stall": 0,
+  "WB": 1,
+  "WB_stall": 0,
+  "pipeline": {
+    "IF": "0x00000118",
+    "ID": "💥",
+    "intEX": "0x00000114",
+    "faddEX": [],
+    "fmultEX": [],
+    "fdivEX": [],
+    "MEM": "0x00000110",
+    "WB": "0x0000010C"
+  },
+  "registers": [
+    {
+      "register": "ALU",
+      "value": "0x00000001"
+    }
+  ],
+  "memory": []
+}

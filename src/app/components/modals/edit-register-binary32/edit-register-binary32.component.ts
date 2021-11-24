@@ -30,8 +30,8 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
 
   maxLengthHexadecimal: number = 8;
   registerToEditHexadecimalValueIsValid: boolean = true;
-  regExp_32bits_hex = new RegExp('\\b[0-9A-F]{8}\\b')
-  regExp_64bits_hex = new RegExp('\\b[0-9A-F]{16}\\b')
+  regExp_32bits_hex = new RegExp('\\b[0-9A-F]{8}\\b');
+  regExp_64bits_hex = new RegExp('\\b[0-9A-F]{16}\\b');
   _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
 
   get registerToEdit_Binary() {
@@ -52,7 +52,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
 
   get registerToEdit_Hexadecimal() {
     const maxLengthHexadecimal = this.registerSelected === 'Double' ? 16 : 8;
-    return parseInt(this._registerToEdit_binary, 2).toString(16).toUpperCase().padStart(maxLengthHexadecimal, '0')
+    return parseInt(this._registerToEdit_binary, 2).toString(16).toUpperCase().padStart(maxLengthHexadecimal, '0');
   }
 
   set registerToEdit_Hexadecimal(hexadecimal: string) {
@@ -97,7 +97,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     this.registerSelected = typeRegister;
     switch (this.registerSelected) {
       case "Control":
-        this.registerToEdit = "PC"
+        this.registerToEdit = "PC";
         this.listRegisters = MACHINE_REGISTERS_C;
         this.aliasTypeRegister = "";
         this.maxLengthHexadecimal = 8;
@@ -135,29 +135,32 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     try {
       let binary;
       if (this.registerSelected === "Integer" && this.registerToEdit === 0) {
-        await this.TOAST_ErrorRegister()
+        await this.TOAST_ErrorRegister();
         return;
       }
       switch (this.registerSelected) {
-        case "Control":
+        case "Control": {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
           this.machine.registers[this.registerToEdit].binary = binary;
           break;
-        case "Integer":
+        }
+        case "Integer": {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
           this.machine.registers.R[this.registerToEdit].binary = binary;
           break;
-        case "Float":
+        }
+        case "Float": {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
           this.machine.registers.F[this.registerToEdit].binary = binary;
           break;
-        case "Double":
+        }
+        case "Double": {
           this.registerToEditHexadecimalValueIsValid = this.regExp_64bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal, {maxLength: 64, fillString: '0'});
           this.registerToEdit_Binary = binary;
@@ -165,15 +168,16 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
           this.machine.registers.F[index].binary = binary.substr(0, 32);
           this.machine.registers.F[index + 1].binary = binary.substr(32, 32);
           break;
+        }
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
   }
 
   async onRegisterToEditChangeHexadecimal(hexadecimal: string) {
     this.registerToEdit_Hexadecimal = hexadecimal;
-    await this.changeRegisterToEditValue(hexadecimal)
+    await this.changeRegisterToEditValue(hexadecimal);
   }
 
   async onRegisterToEditChange_WordFloatDouble(value: number) {
@@ -191,7 +195,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
         this.registerToEdit_Double = value;
         break;
     }
-    await this.changeRegisterToEditValue(this.registerToEdit_Hexadecimal)
+    await this.changeRegisterToEditValue(this.registerToEdit_Hexadecimal);
   }
 
   private async TOAST_ErrorRegister() {

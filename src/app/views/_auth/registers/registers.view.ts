@@ -46,25 +46,25 @@ export class RegistersView implements OnInit, AfterViewInit {
     }
 
     window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
-      .on('expanded.lte.cardwidget', ($event) => {
+      .on('expanded.lte.cardwidget', (/*$event*/) => {
         this.resizeCards(60);
-      })
+      });
     window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
-      .on('minimized.lte.cardwidget', ($event) => {
+      .on('minimized.lte.cardwidget', (/*$event*/) => {
         this.resizeCards(60);
-      })
+      });
     window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
-      .on('maximized.lte.cardwidget', ($event) => {
+      .on('maximized.lte.cardwidget', (/*$event*/) => {
         this.resizeCards(80);
-      })
+      });
   }
 
-  changeTypeDataInTableRegisters(typeData: TypeData) {
+  changeTypeDataInTableRegisters(typeData: TypeData): void {
     this.typeDataSelected = typeData;
     this.displayedColumns[3] = typeData.toString();
   }
 
-  refresh() {
+  refresh(): void {
     this.dataSource.filter = null;
     this.dataSource.data = [...this.dataSource.data];
 
@@ -78,16 +78,16 @@ export class RegistersView implements OnInit, AfterViewInit {
     this.dataSourceD.data = [...this.dataSourceD.data];
   }
 
-  test() {
-    this.dataSource.data.push('PC')
+  test(): void {
+    this.dataSource.data.push('PC');
     console.log(this.dataSource.data);
   }
 
-  applyFilter(filterValue: string) {
+  applyFilter(filterValue: string): void {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  private resizeCards(newHeightCard) {
+  private resizeCards(newHeightCard): void {
     this.maxHeightCard = newHeightCard;
   }
 }

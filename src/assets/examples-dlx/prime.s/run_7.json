@@ -1,0 +1,40 @@
+{
+  "step": 7,
+  "line": 35,
+  "instruction": "benz r4, IsPrim",
+  "IF": 1,
+  "IF_stall": 0,
+  "ID": 1,
+  "ID_stall": 0,
+  "intEX": 1,
+  "intEX_stall": 0,
+  "MEM": 1,
+  "MEM_stall": 0,
+  "WB": 1,
+  "WB_stall": 0,
+  "pipeline": {
+    "IF": "0x00000118",
+    "ID": "0x00000114",
+    "intEX": "0x00000110",
+    "faddEX": [],
+    "fmultEX": [],
+    "fdivEX": [],
+    "MEM": "0x0000010C",
+    "WB": "0x00000108"
+  },
+  "registers": [
+    {
+      "register": "PC",
+      "value": "0x0000011C"
+    },
+    {
+      "register": "IMAR",
+      "value": "0x00000118"
+    },
+    {
+      "register": "IR",
+      "value": "0x14800024"
+    }
+  ],
+  "memory": []
+}

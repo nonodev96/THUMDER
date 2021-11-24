@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
+import { Utils } from "../../Utils";
 
 @Component({
   selector: 'thumder-pixi-pipeline',
@@ -15,9 +16,9 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   private pipeline: PixiTHUMDER_Pipeline;
 
   constructor(private machine: MachineService) {
-    let faddEX_count = machine.floatingPointStageConfiguration.addition.count;
-    let fmultEX_count = machine.floatingPointStageConfiguration.multiplication.count;
-    let fdivEX_count = machine.floatingPointStageConfiguration.division.count;
+    const faddEX_count = machine.floatingPointStageConfiguration.addition.count;
+    const fmultEX_count = machine.floatingPointStageConfiguration.multiplication.count;
+    const fdivEX_count = machine.floatingPointStageConfiguration.division.count;
     this.pipeline = new PixiTHUMDER_Pipeline(faddEX_count, fmultEX_count, fdivEX_count);
   }
 
@@ -26,7 +27,8 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const list_elements = this.machine.getListStatusPipeline(stepSimulation);
       for (const e of list_elements) {
-        const instruction = this.machine.getTableCode(e.address).instruction;
+        const code = this.machine.getTableCode(e.address).code;
+        const instruction = Utils.convertHexCodeToTextMachineInstructionDLX(code);
         switch (e.stage) {
           case "IF":
             this.pipeline.update_IF_text(instruction);
@@ -60,8 +62,8 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    let width = 1600;
-    let height = 975;
+    const width = 1600;
+    const height = 975;
     this.pApp = new PIXI.Application({
       width: width,
       height: height,
@@ -85,40 +87,9 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.resize();
   }
 
-  @HostListener('document:keypress', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    switch (event.key) {
-      case '1':
-        this.pipeline.update_IF_text("Prueba");
-        break;
-      case '2':
-        this.pipeline.update_ID_text("Prueba");
-        break;
-      case '3':
-        this.pipeline.update_intEX_text("Prueba");
-        break;
-      case '4':
-        this.pipeline.update_faddEX_text(0, "Prueba");
-        break;
-      case '5':
-        this.pipeline.update_fmultEX_text(0, "Prueba");
-        break;
-      case '6':
-        this.pipeline.update_fdivEX_text(0, "Prueba");
-        break;
-      case '7':
-        this.pipeline.update_MEM_text("Prueba");
-        break;
-      case '8':
-        this.pipeline.update_WB_text("Prueba");
-        break;
-    }
-  }
 
   private resize() {
-    let width = this.pixiContainer.nativeElement.offsetWidth;
+    const width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
     height = height === 0 ? 900 : height;
     this.pApp.renderer.resize(width, height);

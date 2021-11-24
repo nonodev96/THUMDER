@@ -26,21 +26,21 @@ export class SocketProviderConnectService {
 
     this.socket.ioSocket.on('connect', () => {
       const connect = this.socket.connect();
-      this.connectSubject.next(connect)
+      this.connectSubject.next(connect);
       if (connect.connected) {
         this.socket.ioSocket.on('message', (res) => {
-          this.publicMessageSubject.next(res)
-        })
+          this.publicMessageSubject.next(res);
+        });
         this.socket.ioSocket.on(this.socket.ioSocket.id, (res) => {
-          this.privateMessageSubject.next(res)
-        })
+          this.privateMessageSubject.next(res);
+        });
       }
     });
 
     this.socket.ioSocket.on('connect_error', async () => {
-      const title_server_down_lang = await this.translate.get('TOAST.TITLE_SERVER_DOWN').toPromise()
-      const message_server_down_lang = await this.translate.get('TOAST.MESSAGE_SERVER_DOWN').toPromise()
-      this.toast.warning(message_server_down_lang, title_server_down_lang, DEFAULT_CONFIG_TOAST)
+      const title_server_down_lang = await this.translate.get('TOAST.TITLE_SERVER_DOWN').toPromise();
+      const message_server_down_lang = await this.translate.get('TOAST.MESSAGE_SERVER_DOWN').toPromise();
+      this.toast.warning(message_server_down_lang, title_server_down_lang, DEFAULT_CONFIG_TOAST);
     });
     this.socket.ioSocket.on('connect_failed', err => SocketProviderConnectService.handleErrors(err));
     this.socket.ioSocket.on('disconnect', err => SocketProviderConnectService.handleErrors(err));
@@ -52,6 +52,6 @@ export class SocketProviderConnectService {
   }
 
   private static handleErrors(err) {
-    console.error(err)
+    console.error(err);
   }
 }

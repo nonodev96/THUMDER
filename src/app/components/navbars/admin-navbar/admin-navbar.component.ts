@@ -11,7 +11,7 @@ export class AdminNavbarComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  log(msg: string) {
-    console.log(msg)
+  log(msg: string): void {
+    console.log(msg);
   }
 }

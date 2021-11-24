@@ -42,12 +42,12 @@ export class Memory implements InterfaceMemory {
       this._memoryInt8Array[index].toString(2).padStart(8, '0') +
       this._memoryInt8Array[index + 1].toString(2).padStart(8, '0') +
       this._memoryInt8Array[index + 2].toString(2).padStart(8, '0') +
-      this._memoryInt8Array[index + 3].toString(2).padStart(8, '0')
+      this._memoryInt8Array[index + 3].toString(2).padStart(8, '0');
   }
 
   // WORD - SET
   public setMemoryWordByIndex(index: number, data: Int32) {
-    this.setMemoryWordBinaryByIndex(index, data.binary)
+    this.setMemoryWordBinaryByIndex(index, data.binary);
   }
 
   public setMemoryWordByAddress(address: string, data: Int32): void {
@@ -55,11 +55,16 @@ export class Memory implements InterfaceMemory {
     this.setMemoryWordBinaryByIndex(index, data.binary);
   }
 
-  public setMemoryWordBinaryByIndex(index: number, binary: string): void {
-    const p0 = binary.substr(0, 8);
-    const p1 = binary.substr(8, 8);
-    const p2 = binary.substr(16, 8);
-    const p3 = binary.substr(24, 8);
+  public setMemoryWordBinaryByAddress(address: string, binary32: string): void {
+    const index = Utils.hexadecimalToDecimal(address);
+    this.setMemoryWordBinaryByIndex(index, binary32);
+  }
+
+  public setMemoryWordBinaryByIndex(index: number, binary32: string): void {
+    const p0 = binary32.substr(0, 8);
+    const p1 = binary32.substr(8, 8);
+    const p2 = binary32.substr(16, 8);
+    const p3 = binary32.substr(24, 8);
     this._memoryInt8Array[index] = parseInt(p0, 2);
     this._memoryInt8Array[index + 1] = parseInt(p1, 2);
     this._memoryInt8Array[index + 2] = parseInt(p2, 2);
@@ -77,6 +82,12 @@ export class Memory implements InterfaceMemory {
     this._memoryInt8Array[index] = parseInt(p0, 2);
   }
 
+  public setMemoryByteBinaryByAddress(address: string, binary08: string): void {
+    const p0 = binary08.substr(0, 8);
+    const index = Utils.hexadecimalToDecimal(address);
+    this._memoryInt8Array[index] = parseInt(p0, 2);
+  }
+
   // HALF WORD - GET
   public getMemoryHalfWordBinaryByIndex(index: number): string {
     return "" +
@@ -85,11 +96,38 @@ export class Memory implements InterfaceMemory {
   }
 
   // HALF WORD - SET
-  public setMemoryHalfWordBinaryByIndex(index: number, binary: string): void {
-    const p0 = binary.substr(0, 8);
-    const p1 = binary.substr(8, 8);
+  public setMemoryHalfWordBinaryByIndex(index: number, binary16: string): void {
+    const p0 = binary16.substr(0, 8);
+    const p1 = binary16.substr(8, 8);
     this._memoryInt8Array[index] = parseInt(p0, 2);
     this._memoryInt8Array[index + 1] = parseInt(p1, 2);
+  }
+
+  public setMemoryHalfWordBinaryByAddress(address: string, binary16: string): void {
+    const index = Utils.hexadecimalToDecimal(address);
+    const p0 = binary16.substr(0, 8);
+    const p1 = binary16.substr(8, 8);
+    this._memoryInt8Array[index] = parseInt(p0, 2);
+    this._memoryInt8Array[index + 1] = parseInt(p1, 2);
+  }
+
+
+  // HALF WORD - SET
+  public setMemoryFloatBinaryByAddress(address: string, binary32: string): void {
+    const index = Utils.hexadecimalToDecimal(address);
+    this.setMemory_stringBinary_ByIndex(index, binary32);
+  }
+
+  public setMemoryDoubleBinaryByAddress(address: string, binary64: string): void {
+    const index = Utils.hexadecimalToDecimal(address);
+    this.setMemory_stringBinary_ByIndex(index, binary64);
+  }
+
+  private setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void {
+    for (let pos = 0; pos < binary_08_16_32_64.length; pos += 8) {
+      const p0 = binary_08_16_32_64.substr(pos, 8);
+      this._memoryInt8Array[index + (pos % 8)] = parseInt(p0, 2);
+    }
   }
 
   // 0          1          2          3
@@ -113,7 +151,7 @@ export class Memory implements InterfaceMemory {
   public getAllIndexByWord(): number[] {
     const list = [];
     for (let index = 0; index < this._memorySizeBytes; index += 4) {
-      list.push(index)
+      list.push(index);
     }
     return list;
   }

@@ -31,8 +31,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: "v${{ steps.package_version.outputs.version }}"
-          MESSAGE: "Release v${{ steps.package_version.outputs.version }}"
-          NAME: "Release v${{ steps.package_version.outputs.version }}"
+          MESSAGE: "Pre release v${{ steps.package_version.outputs.version }}"
+          NAME: "Pre release v${{ steps.package_version.outputs.version }}"
 
       - id: step_version
         run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
@@ -49,7 +49,6 @@ jobs:
             asset_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
-            # by electron-builder  |
             artifact_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe

@@ -1,4 +1,4 @@
-import { Double64, Float32, Int32 } from "../typesData";
+import { Float32, Int32 } from "../typesData";
 import { stringOfLength, StringOfLength } from "../../types";
 
 export interface InterfaceRegisters {
@@ -21,6 +21,7 @@ export interface InterfaceRegisters {
   R: Int32[];
   F: Float32[];
 }
+
 
 export interface InterfaceMemory {
 
@@ -60,7 +61,7 @@ export class InstructionTypeI implements InterfaceInstructionTypeI {
   }
 
   public toString() {
-    return this.codeOP + this.rs1 + this.rd + this.inmediato;
+    return this.codeOP.toString() + this.rs1.toString() + this.rd.toString() + this.inmediato.toString();
   }
 }
 
@@ -80,7 +81,7 @@ export class InstructionTypeR implements InstructionTypeR {
   }
 
   public toString() {
-    return this.codeOP + this.rs1 + this.rs2 + this.rd + this.func;
+    return this.codeOP.toString() + this.rs1.toString() + this.rs2.toString() + this.rd.toString() + this.func.toString();
   }
 }
 
@@ -94,7 +95,7 @@ export class InstructionTypeJ implements InterfaceInstructionTypeJ {
   }
 
   public toString() {
-    return this.codeOP + this.des;
+    return this.codeOP.toString() + this.des.toString();
   }
 }
 
@@ -113,5 +114,4 @@ export abstract class Operation implements InterfaceOperation {
   get name() {
     return this._name;
   }
-
 }

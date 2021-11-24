@@ -42,6 +42,8 @@ import { AboutView } from "./views/_landing/about/about.view";
 // Guards
 import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
+import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
+import { LoggerView } from "./views/_auth/logger/logger.view";
 
 
 const routes: Routes = [
@@ -71,12 +73,14 @@ const routes: Routes = [
       {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
       {path: "file-manager", component: FileManagerView, data: {breadcrumb: 'File Manager'}},
       {path: "ide", component: IDEView, data: {breadcrumb: 'IDE'}},
+      {path: "logger", component: LoggerView, data: {breadcrumb: 'Logger'}},
       {path: "memory", component: MemoryView, data: {breadcrumb: 'Memory'}},
       {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Pipeline'}},
       {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
       {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
       {path: "statistics", component: StatisticsView, data: {breadcrumb: 'Statistics'}},
+      {path: "multiview", component: MultiplesViewsComponent, data: {breadcrumb: 'Multiview'}},
     ],
   },
   // _landing views

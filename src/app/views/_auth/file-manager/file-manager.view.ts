@@ -1,21 +1,11 @@
 import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DOCUMENT } from "@angular/common";
 import { NavigationExtras, Router } from "@angular/router";
-import { TasksService } from "../../../__core/services/tasks/tasks.service";
-import { FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
+import { FileItem, FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
 import { DxFileManagerComponent } from 'devextreme-angular';
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
 import FileSystemItem from "devextreme/file_management/file_system_item";
-
-export type FileItem = {
-  name?: string,
-  size?: number,
-  dateModified?: string,
-  thumbnail?: string,
-  isDirectory?: boolean,
-  hasSubDirectories?: boolean,
-  items?: FileItem[]
-}
+import FileManager from "devextreme/ui/file_manager";
 
 export type FileMenuOptions = {
   items: {
@@ -31,6 +21,28 @@ export type FileMenuOptions = {
   onItemClick: () => void
 };
 
+export type TypeEventSelectedFileOpened = {
+  file?: FileItem
+}
+
+export type TypeOnContextMenuItemClick = {
+  component: FileManager,
+  element: HTMLElement,
+  event: Event,
+  fileSystemItem: FileSystemItem,
+  itemData: any,
+  itemElement: HTMLElement,
+  itemIndex: number,
+  model: any,
+  viewArea: 'navPane' | 'itemView',
+}
+
+export type TypeOnContentReady = {
+  component: FileManager,
+  element: HTMLElement,
+  model: any
+}
+
 @Component({
   selector: 'view-file-manager',
   templateUrl: './file-manager.view.html',
@@ -40,16 +52,13 @@ export class FileManagerView implements OnInit, OnDestroy {
   @ViewChild(DxFileManagerComponent, {static: false})
   fileManager: DxFileManagerComponent;
 
-  fileItems: FileSystemItem[] = [];
   newFileMenuOptions: FileMenuOptions;
   changeCategoryMenuOptions: FileMenuOptions;
   customFileProvider: CustomFileSystemProvider;
   show: boolean
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
+  constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
-              private tasksService: TasksService,
               private fileSystemService: FileSystemService) {
   }
 
@@ -121,22 +130,26 @@ export class FileManagerView implements OnInit, OnDestroy {
     this.changeCategoryMenuOptions = null;
   }
 
-  onSelectedFileOpened($event: { file?: string }) {
-    let extras: NavigationExtras = {
-      state: {
-        'file': $event.file
+  onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
+    const index2 = this.fileSystemService.ITEMS.findIndex(value => $event.file.key === value.key)
+    if (index2 > -1) {
+      const interfaceFileItem = this.fileSystemService.ITEMS[index2]
+      const extras: NavigationExtras = {
+        state: {
+          'interfaceFileItem': interfaceFileItem,
+        }
       }
+      this.router.navigateByUrl('/auth/ide', extras).then((r) => {
+        console.log(r)
+      });
     }
-    this.router.navigateByUrl('/auth/ide', extras).then(r => {
-      console.log(r)
-    });
   }
 
-  onContentReady($event) {
+  onContentReady($event: TypeOnContentReady): void {
     console.log($event);
   }
 
-  async onContextMenuItemClick($event) {
+  async onContextMenuItemClick($event: TypeOnContextMenuItemClick): Promise<void>  {
     const {itemData, viewArea, fileSystemItem} = $event
     let updated = false;
     const extension = itemData.options ? itemData.options.extension : undefined;
@@ -151,19 +164,19 @@ export class FileManagerView implements OnInit, OnDestroy {
     }
     if (updated) {
       this.fileManager.instance.refresh().then(() => {
+
       });
     }
+
+    return Promise.resolve()
   }
 
-  height(): number | Function | string {
+  height(): number | string {
     return window.innerHeight / 1.25;
   }
 
-  log() {
-    console.log(this.fileItems)
-  }
-
-  debug() {
-    this.tasksService.debug()
+  log(): void {
+    console.log(this.fileSystemService.items)
+    console.log(this.fileSystemService.ITEMS)
   }
 }

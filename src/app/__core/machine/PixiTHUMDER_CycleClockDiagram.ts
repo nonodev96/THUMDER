@@ -57,7 +57,7 @@ export type TypeArrowDirection = {
 export type TypeCellPosition = {
   instructionPosition: number,
   stepPosition: number
-}
+};
 
 export type TypeCycleType = {
   IF?: number,
@@ -88,23 +88,23 @@ class MyMap<K, V> {
   }
 
   set(key: K, data: V) {
-    const k = JSON.stringify(key)
+    const k = JSON.stringify(key);
     this._map.set(k, data);
   }
 
   get(key: K) {
-    const k = JSON.stringify(key)
+    const k = JSON.stringify(key);
     return this._map.get(k);
   }
 
   has(key: K): boolean {
-    const k = JSON.stringify(key)
-    return this._map.has(k)
+    const k = JSON.stringify(key);
+    return this._map.has(k);
   }
 
   delete(key: K): boolean {
-    const k = JSON.stringify(key)
-    return this._map.delete(k)
+    const k = JSON.stringify(key);
+    return this._map.delete(k);
   }
 }
 
@@ -164,11 +164,11 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   }
 
   set borderTopWidth(width: number) {
-    this.borderTop.width = width
+    this.borderTop.width = width;
   }
 
   set borderLeftHeight(height: number) {
-    this.borderLeft.height = height
+    this.borderLeft.height = height;
   }
 
   public reset() {
@@ -298,7 +298,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     const start_y = initDistance_y + (arrowDirection.start.instruction * 37.5);
     const to_x = initDistance_x + (arrowDirection.to.step * 87.5);
     const to_y = initDistance_y + (arrowDirection.to.instruction * 37.5);
-    const bezierArrow = PixiUtils.drawArrow(start_x, start_y, to_x, to_y, color)
+    const bezierArrow = PixiUtils.drawArrow(start_x, start_y, to_x, to_y, color);
     this.arrows.addChild(bezierArrow);
   }
 
@@ -356,7 +356,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
       key = {
         instructionPosition: this.instructions,
         stepPosition: this.last
-      }
+      };
     }
     if (code === '') {
       if (!this.timerVoid.has(key)) {
