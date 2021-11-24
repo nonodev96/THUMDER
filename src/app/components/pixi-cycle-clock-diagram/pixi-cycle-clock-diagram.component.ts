@@ -1,5 +1,14 @@
 import * as PIXI from 'pixi.js';
-import { Component, HostListener, OnInit, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  OnInit,
+  AfterViewInit,
+  ViewChild,
+  OnDestroy,
+  Output,
+  EventEmitter
+} from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_CycleClockDiagram, TypeArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
 
@@ -10,13 +19,21 @@ import { PixiTHUMDER_CycleClockDiagram, TypeArrowDirection } from "../../__core/
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('pixiContainer') public pixiContainer;
+  @ViewChild('pixiContainer')
+  public pixiContainer;
+
   public pApp: PIXI.Application;
+  private inCanvas: boolean = false;
   private cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
   private loader: PIXI.Loader;
   private ticker: PIXI.Ticker;
-  Keyboard
-  Mouse
+  private Keyboard;
+  private Mouse;
+
+  private readonly idCanvas = "pixi-cycle-clock-diagram-id";
+
+  @Output()
+  public inCanvasEventEmitter = new EventEmitter<boolean>();
 
   constructor(public machine: MachineService) {
     this.Keyboard = require('pixi.js-keyboard');
@@ -27,19 +44,23 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   ngOnInit(): void {
     this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const cycle = this.machine.getStatusCycleClockDiagram(stepSimulation);
-      this.cycleClockDiagram.addInstruction(cycle.instruction, cycle.cycle, cycle.stepsToWait)
-      this.cycleClockDiagram.nextStep(cycle.step)
+      this.cycleClockDiagram.addInstruction(cycle.instruction, cycle.cycle, cycle.stepsToWait);
+      this.cycleClockDiagram.nextStep(cycle.step);
     });
   }
 
-  ngAfterViewInit() {
-    let width = 1600;
-    let height = 975;
+  ngAfterViewInit(): void {
+    const width = 1600;
+    const height = 975;
+    const canvas = document.createElement("canvas");
+    canvas.id = this.idCanvas;
+
     this.pApp = new PIXI.Application({
       width: width,
       height: height,
       backgroundColor: 0x1099BB,
       resolution: 1,
+      view: canvas
     });
     this.pApp.stage.addChild(this.cycleClockDiagram.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
@@ -94,7 +115,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   //   console.log("setup")
   // }
 
-  private gameLoop(delta: number) {
+  private gameLoop(delta: number): void {
     // Update the current game state:
     this.play(delta);
 
@@ -102,7 +123,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     this.Mouse.update();
   }
 
-  private play(delta: number) {
+  private play(delta: number): void {
     if (this.Keyboard.isKeyDown('ArrowLeft', 'KeyA', 'KeyJ')) {
       this.cycleClockDiagram.moveRight();
     }
@@ -132,7 +153,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
+  onResize(event: any): void {
     event.preventDefault();
     event.stopPropagation();
     this.resize();
@@ -140,55 +161,74 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   // Detengo el movimiento de desplazamiento
   @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    event.preventDefault();
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (this.inCanvas && event.key === 'ArrowDown') {
+      event.preventDefault();
+    }
+    if (this.inCanvas && event.key === 'ArrowUp') {
+      event.preventDefault();
+    }
   }
 
-  moveBottom() {
+  @HostListener('document:click', ['$event', '$event.target'])
+  handleOnClick(event: MouseEvent, targetElement: HTMLElement): void {
+    // console.log(event, targetElement)
+    if (!targetElement) {
+      return;
+    }
+    this.inCanvas = targetElement.id === this.idCanvas;
+    this.inCanvasEventEmitter.emit(this.inCanvas);
+    // const clickedInside = this.elementRef.nativeElement.contains(targetElement);
+    // if (!clickedInside) {
+    //   this.clickOutside.emit(event);
+    // }
+  }
+
+  moveBottom(): void {
     this.cycleClockDiagram.moveBottom();
   }
 
-  moveTop() {
+  moveTop(): void {
     this.cycleClockDiagram.moveTop();
   }
 
-  moveRight() {
+  moveRight(): void {
     this.cycleClockDiagram.moveRight();
   }
 
-  moveLeft() {
+  moveLeft(): void {
     this.cycleClockDiagram.moveLeft();
   }
 
-  nextStep() {
+  nextStep(): void {
     this.cycleClockDiagram.nextStep();
   }
 
-  nextStepX10() {
+  nextStepX10(): void {
     for (let i = 0; i < 10; i++) {
       this.cycleClockDiagram.nextStep();
     }
   }
 
-  addArrow(instructionArrow: TypeArrowDirection) {
+  addArrow(instructionArrow: TypeArrowDirection): void {
     this.cycleClockDiagram.addArrow(instructionArrow);
   }
 
-  reset() {
+  reset(): void {
     this.cycleClockDiagram.reset();
   }
 
-  debug() {
+  debug(): void {
     this.cycleClockDiagram.addInstruction("instruction 1");
     this.cycleClockDiagram.addInstruction("instruction 2");
     this.cycleClockDiagram.addInstruction("instruction 3");
     this.cycleClockDiagram.addInstruction("instruction 4");
   }
 
-  private resize() {
+  private resize(): void {
     const width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
-    height = height === 0 ? 900 : height
+    height = height === 0 ? 900 : height;
     this.pApp.renderer.resize(width, height);
     this.cycleClockDiagram.borderTopWidth = width;
     this.cycleClockDiagram.borderLeftHeight = height;

@@ -10,7 +10,7 @@ export class Product {
   type: number;
 }
 
-let productTypes: ProductType[] = [{
+const productTypes: ProductType[] = [{
   id: 1,
   text: "All"
 }, {

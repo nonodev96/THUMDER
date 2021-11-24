@@ -46,8 +46,8 @@ export class ElectronService {
   }
 
   public static get isServer(): boolean {
-    let location_href = window.location.href;
-    let localhost = '//localhost';
+    const location_href = window.location.href;
+    const localhost = '//localhost';
     return location_href.includes(localhost);
   }
 
@@ -92,7 +92,7 @@ export class ElectronService {
     return this.electron ? this.electron.shell : null;
   }
 
-  public static get debug(): Object {
+  public static get debug(): any {
     return {
       'isElectronApp': ElectronService.isElectronApp,
       'isServer': ElectronService.isServer,

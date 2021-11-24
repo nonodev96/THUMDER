@@ -20,10 +20,8 @@ export class AsideLeftComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  goToPage($event: MouseEvent, menu: PublicRoutes) {
-    this.router.navigateByUrl(menu.routerLink)
-      .then(() => {
-        // console.log(value)
-      })
+  async goToPage($event: MouseEvent, menu: PublicRoutes): Promise<boolean> {
+    const data = this.router.navigateByUrl(menu.routerLink);
+    return Promise.resolve(data);
   }
 }

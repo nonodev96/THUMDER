@@ -7,6 +7,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EditMemoryBinary32Component } from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { TypeData } from "../../../types";
 import { StorageService } from "../../../__core/storage/storage.service";
+import { Utils } from "../../../Utils";
 
 @Component({
   selector: 'view-memory',
@@ -23,14 +24,14 @@ export class MemoryView implements OnInit, AfterViewInit {
   displayedColumnsMemory: string[] = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Word'];
   dataSourceMemory = new TableVirtualScrollDataSource<number>();
 
-  typeDataSelected: TypeData = "Word"
+  typeDataSelected: TypeData = "Word";
   public maxHeightCard = 75;
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
               private storage: StorageService,
               private toastService: ToastrService) {
-    this.dataSourceMemory.filter = null
+    this.dataSourceMemory.filter = null;
     this.dataSourceMemory.sort = this.sort;
   }
 
@@ -41,52 +42,49 @@ export class MemoryView implements OnInit, AfterViewInit {
           this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
           break;
       }
-    })
+    });
   }
 
   ngAfterViewInit(): void {
     this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
 
-    window.jQuery('#card-Memory')
-      .on('expanded.lte.cardwidget', ($event) => {
-        this.resizeCard(75);
-      })
-    window.jQuery('#card-Memory')
-      .on('minimized.lte.cardwidget', ($event) => {
-        this.resizeCard(75);
-      })
-    window.jQuery('#card-Memory')
-      .on('maximized.lte.cardwidget', ($event) => {
-        this.resizeCard(85);
-      })
+    window.jQuery('#card-Memory').on('expanded.lte.cardwidget', (/*$event*/) => {
+      this.resizeCard(75);
+    });
+    window.jQuery('#card-Memory').on('minimized.lte.cardwidget', () => {
+      this.resizeCard(75);
+    });
+    window.jQuery('#card-Memory').on('maximized.lte.cardwidget', () => {
+      this.resizeCard(85);
+    });
   }
 
-  changeTypeDataInTable(typeData: TypeData) {
+  changeTypeDataInTable(typeData: TypeData): void {
     // Word, HalfWord, Float, Double, Bytes
     this.typeDataSelected = typeData;
     switch (typeData) {
       case "Byte":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary','Address-0', 'Address-1', 'Address-2', 'Address-3', 'Bytes']
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Bytes'];
         break;
       case "HalfWord":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'HalfWord-0', 'HalfWord-1', 'HalfWord']
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'HalfWord-0', 'HalfWord-1', 'HalfWord'];
         break;
       case "Word":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Word']
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Word'];
         break;
       case "ASCII":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'ASCII']
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'Binary', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'ASCII'];
         break;
       case "Float":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryFloat', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float']
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryFloat', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float'];
         break;
       case "Double":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryDouble', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float']
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryDouble', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float'];
         break;
     }
   }
 
-  refresh() {
+  refresh(): void {
     this.dataSourceMemory.filter = null;
     this.dataSourceMemory.data = [...this.dataSourceMemory.data];
   }

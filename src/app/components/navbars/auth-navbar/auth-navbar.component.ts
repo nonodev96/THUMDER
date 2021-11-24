@@ -13,55 +13,66 @@ import { AUTH_ROUTES } from "../../../CONSTAST";
 })
 export class AuthNavbarComponent implements OnInit {
   navbarOpen = false;
+  isRunning = false;
   AUTH_ROUTES = AUTH_ROUTES;
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
+  constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
               public app: AppComponent,
               public machine: MachineService,
               public authService: AuthService) {
+
+    this.machine.getIsRunningObservable().subscribe((isRunning) => {
+      this.isRunning = isRunning;
+    });
   }
 
   ngOnInit(): void {
   }
 
-  setNavbarOpen() {
+  setNavbarOpen(): void {
     this.navbarOpen = !this.navbarOpen;
   }
 
-  async togglePlayPause() {
+  async togglePlayPause(): Promise<void> {
     if (this.machine.isRunning === false) {
-      await this.machine.resume()
+      await this.machine.resume();
     } else {
-      await this.machine.pause()
+      await this.machine.pause();
     }
   }
 
-  async reset() {
-    await this.machine.reset()
+  async reset(): Promise<void> {
+    await this.machine.reset();
+    return Promise.resolve();
   }
 
-  async play() {
-    await this.machine.play()
+  async play(): Promise<void> {
+    await this.machine.play();
+    return Promise.resolve();
   }
 
-  async next() {
-    await this.machine.next()
+  async nextStep(): Promise<void> {
+    await this.machine.nextStep();
+    return Promise.resolve();
   }
 
-  async end() {
-    await this.machine.end()
+  async end(): Promise<void> {
+    await this.machine.end();
+    return Promise.resolve();
   }
 
-  goToPage($event: MouseEvent, menu: PublicRoutes) {
-    this.router.navigateByUrl(menu.routerLink)
-      .then(() => {
-        // console.log(value)
-      })
+  async debug(): Promise<void> {
+    console.log(this.machine.getAllStatusMachine());
+    return Promise.resolve();
   }
 
-  toggleCollapsed() {
+  async goToPage($event: MouseEvent, menu: PublicRoutes): Promise<boolean> {
+    const data = await this.router.navigateByUrl(menu.routerLink);
+    return Promise.resolve(data);
+  }
+
+  toggleCollapsed(): void {
 
   }
 }

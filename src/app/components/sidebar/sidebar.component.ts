@@ -10,10 +10,10 @@ export class SidebarComponent implements OnInit {
   constructor() {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  toggleCollapseShow(classes) {
+  toggleCollapseShow(classes): void {
     this.collapseShow = classes;
   }
 }

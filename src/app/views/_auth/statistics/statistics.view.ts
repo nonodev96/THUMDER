@@ -12,7 +12,7 @@ import { Utils } from "../../../Utils";
 })
 export class StatisticsView implements OnInit {
 
-  _data: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
+  public _data: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
 
   constructor(private translate: TranslateService,
               private machine: MachineService) {

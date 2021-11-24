@@ -121,7 +121,11 @@
     "TITLE_ERROR_IN_VALUE_MEMORY": "Error in value memory",
     "MESSAGE_ERROR_IN_VALUE_MEMORY": "Value in section not valid",
     "TITLE_ERROR_IN_ADDRESS_MEMORY": "Error in memory",
-    "MESSAGE_ERROR_IN_ADDRESS_MEMORY": "Address not valid, out of memory"
+    "MESSAGE_ERROR_IN_ADDRESS_MEMORY": "Address not valid, out of memory",
+    "TITLE_SAVE_FILE": "Saved file",
+    "MESSAGE_SAVE_FILE": "success",
+    "TITLE_ERROR_SAVE_FILE": "File not save",
+    "MESSAGE_ERROR_SAVE_FILE": "error"
   },
   "CONFIG": {
     "LANG": "Language",

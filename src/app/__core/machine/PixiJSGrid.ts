@@ -35,6 +35,8 @@ export class PixiJSGrid extends PIXI.Graphics {
 
   _gridWidth;
 
+  private interactive: boolean;
+
   /**
    *
    * @param {number} width number. Required.
@@ -83,12 +85,13 @@ export class PixiJSGrid extends PIXI.Graphics {
 
     this.cellSize = cellSize;
 
-    const lConfig = { ...DEFAULT_LINE_STYLE, ...(lineConfig || {}) };
+    const lConfig = {...DEFAULT_LINE_STYLE, ...(lineConfig || {})};
 
     this.lineStyle(lConfig.width, lConfig.color, lConfig.alpha, lConfig.alignment, lConfig.native);
 
     // handle mouse move
     this.interactive = true;
+    /*
     this.on('mousemove', (evt) => {
       const mouseCoords = evt.data.global;
       // check if the mouse is within the bounds of this grid. If not, do nothing.
@@ -105,22 +108,26 @@ export class PixiJSGrid extends PIXI.Graphics {
         this.onMousemove(evt, gridCoords);
       }
     });
+    */
   }
 
   /**
    * @param {number} cellSize number. Optional. default: the square root of the grid's side length
    */
-  set cellSize(cellSize) {
+  // @ts-ignore
+  set cellSize(cellSize): void {
     this._cellSize = cellSize || Math.sqrt(<number>this._correctedWidth);
   }
 
-  get cellSize() {
+  // @ts-ignore
+  get cellSize(): number {
     return this._cellSize;
   }
 
   /**
    * The amount of equally spaced lines along the grid's side.
    */
+  // @ts-ignore
   get amtLines() {
     return Math.floor(this.gridWidth / this.cellSize);
   }
@@ -128,6 +135,7 @@ export class PixiJSGrid extends PIXI.Graphics {
   /**
    * The requested width of the grid given by the `width` constructor parameter.
    */
+  // @ts-ignore
   get originalWidth() {
     return this._gridWidth;
   }
@@ -136,10 +144,12 @@ export class PixiJSGrid extends PIXI.Graphics {
    * The corrected width of the grid, which is the smallest square root number larger than
    * the corrected width.
    */
+  // @ts-ignore
   get correctedWidth() {
     return this._correctedWidth;
   }
 
+  // @ts-ignore
   get useCorrectedWidth() {
     return this._useCorrectedWidth;
   }
@@ -149,6 +159,7 @@ export class PixiJSGrid extends PIXI.Graphics {
    * @returns {{ x1: number, y1: number, x2: number, y2: number}}
    * The leftmost (**x1**), topmost (**y1**), rightmost (**x2**), and bottommost (**y2**) coordinates.
    */
+  // @ts-ignore
   get bounds(): { x1: number, y1: number, x2: number, y2: number } {
     return {
       x1: this.x,
@@ -158,10 +169,12 @@ export class PixiJSGrid extends PIXI.Graphics {
     };
   }
 
+  // @ts-ignore
   set drawBoundaries(drawBoundaries) {
     this._drawBoundaries = drawBoundaries;
   }
 
+  // @ts-ignore
   get drawBoundaries() {
     return this._drawBoundaries;
   }
@@ -171,6 +184,7 @@ export class PixiJSGrid extends PIXI.Graphics {
    * When the `cellSize` is not the default, the width of the grid will be the
    * width given in the `width` constructor. Otherwise, it is the corrected width.
    */
+  // @ts-ignore
   get gridWidth() {
     if (!this.useCorrectedWidth) {
       return this._gridWidth;

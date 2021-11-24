@@ -8,15 +8,14 @@ import { AuthService } from "../../../__core/auth/auth.service";
   styleUrls: []
 })
 export class ProfileView implements OnInit {
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
+  constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService) {
   }
 
   ngOnInit(): void {
   }
 
-  log(msg: string) {
+  log(msg: string): void {
     console.log(msg);
   }
 }

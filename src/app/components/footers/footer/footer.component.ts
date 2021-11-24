@@ -18,6 +18,6 @@ export class FooterComponent implements OnInit {
     this.lang = this.storageService.getItem('lang');
     this.storageService.watchStorage().subscribe((update_key) => {
       this.lang = this.storageService.getItem('lang');
-    })
+    });
   }
 }

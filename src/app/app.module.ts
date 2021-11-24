@@ -63,32 +63,34 @@ import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.compon
 
 // _admin views
 // _auth views
+import { MultiplesViewsComponent } from './views/_auth/_views/multiples-views.component';
+import { CalculatorView } from './views/_auth/calculator/calculator.view';
+import { CodeView } from './views/_auth/code/code.view';
+import { ConfigView } from './views/_auth/config/config.view';
 import { DocsView } from './views/_auth/docs/docs.view';
 import { FileManagerView } from './views/_auth/file-manager/file-manager.view';
 import { IDEView } from "./views/_auth/ide/ide.view";
+import { LoggerView } from "./views/_auth/logger/logger.view";
+import { MemoryView } from './views/_auth/memory/memory.view';
 import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
 import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "./views/_auth/profile/profile.view";
-import { CalculatorView } from './views/_auth/calculator/calculator.view';
+import { RegistersView } from './views/_auth/registers/registers.view';
+import { StatisticsView } from './views/_auth/statistics/statistics.view';
 
 // no _layouts views
+import { AboutView } from './views/_landing/about/about.view';
+import { LandingView } from "./views/_landing/landing/landing.view";
 import { DebugView } from './views/debug/debug-view';
 import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
-import { LandingView } from "./views/_landing/landing/landing.view";
-import { AboutView } from './views/_landing/about/about.view';
 import { LoginView } from "./views/login/login.view";
 import { RegisterView } from "./views/register/register.view";
 
 // Index
 import { IndexView } from "./views/_index/index.view";
-import { RegistersView } from './views/_auth/registers/registers.view';
-import { CodeView } from './views/_auth/code/code.view';
-import { MemoryView } from './views/_auth/memory/memory.view';
 // AoT requires an exported function for factories
 
 import * as PIXI from "pixi.js";
-import { ConfigView } from './views/_auth/config/config.view';
-import { StatisticsView } from './views/_auth/statistics/statistics.view';
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
@@ -127,6 +129,7 @@ export function markedOptionsFactory(): MarkedOptions {
     AppComponent,
 
     DebugView,
+    MultiplesViewsComponent,
 
     LayoutAdminComponent,
     LayoutAuthComponent,
@@ -145,6 +148,7 @@ export function markedOptionsFactory(): MarkedOptions {
     DocsView,
     FileManagerView,
     IDEView,
+    LoggerView,
     MemoryView,
     CycleClockDiagramView,
     PipelineView,

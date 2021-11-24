@@ -8,7 +8,7 @@ import {
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
-  TypeTableCode, TypeDataStatistics, TypePipeline
+  TypeTableCode, TypeDataStatistics, TypePipeline, TypeStepSimulation
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
@@ -18,6 +18,8 @@ export const REGEX_IS_ABSOLUTE_HREF = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)',
 export const REGEX_HEXADECIMAL_08 = new RegExp('^(0x|0X|)?([a-fA-F0-9]{08})$', 'i');
 export const REGEX_HEXADECIMAL_16 = new RegExp('^(0x|0X|)?([a-fA-F0-9]{16})$', 'i');
 
+export const DEFAULT_TIME_SIMULATION: number = 250;
+export const DEFAULT_AUTO_SAVE: boolean = true;
 export const DEFAULT_LANG: TypeLang = 'en';
 // 0x8000 --> 32768
 export const DEFAULT_MEMORY_SIZE: number = 32768;
@@ -41,6 +43,39 @@ export const DEFAULT_BINARY_08_BITS = "".padStart(8, '0');
 export const DEFAULT_BINARY_16_BITS = "".padStart(16, '0');
 export const DEFAULT_BINARY_32_BITS = "".padStart(32, '0');
 export const DEFAULT_BINARY_64_BITS = "".padStart(64, '0');
+
+export const DEFAULT_PIPELINE: TypePipeline = {
+  IF: "",
+  ID: "",
+  intEX: "",
+  MEM: "",
+  WB: "",
+  faddEX: [],
+  fdivEX: [],
+  fmultEX: [],
+};
+
+export const DEFAULT_STEP_SIMULATION: TypeStepSimulation = {
+  IF: 0,
+  IF_stall: 0,
+  ID: 0,
+  ID_stall: 0,
+  intEX: 0,
+  intEX_stall: 0,
+  MEM: 0,
+  MEM_stall: 0,
+  WB: 0,
+  WB_stall: 0,
+
+  line: 0,
+  step: 0,
+  stage: "other",
+  instruction: "----------",
+  codeInstruction: "0x00000000",
+  pipeline: DEFAULT_PIPELINE,
+  memory: [],
+  registers: []
+};
 
 export const DEFAULT_DATA_STATISTICS: TypeDataStatistics = {
   TOTAL: {
@@ -92,7 +127,7 @@ export const DEFAULT_CODE: TypeCode = {
   instruction: "",
   address: "",
   code: ""
-}
+};
 
 export const DEFAULT_TABLE_CODE: TypeTableCode = {
   text: "",
@@ -101,13 +136,13 @@ export const DEFAULT_TABLE_CODE: TypeTableCode = {
   address: "",
   stage: "",
   // binary: "00000000000000000000000000000000"
-}
+};
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   progressBar: true,
   progressAnimation: 'decreasing',
   closeButton: true
-}
+};
 
 export const MAX_VALUE_TYPE_DATA = {
   "Byte": 255,
@@ -115,7 +150,7 @@ export const MAX_VALUE_TYPE_DATA = {
   "Word": 4294967295,
   "Float": 4294967295,
   "Double": 18446744073709551615
-}
+};
 
 export const STEP_TYPE_DATA = {
   "Byte": 1,
@@ -123,10 +158,6 @@ export const STEP_TYPE_DATA = {
   "Word": 1,
   "Float": 0.1,
   "Double": 0.1
-}
-
-export const DEFAULT_PIPELINE: TypePipeline = {
-  IF: "", ID: "", MEM: "", WB: "", faddEX: [], fdivEX: [], fmultEX: [], intEX: "",
 };
 export const REGISTER_TO_EDIT: TypeRegister = 'Control';
 
@@ -160,11 +191,11 @@ export const REGISTERS_DATA: TypeDataRegister = {
 
 export const MACHINE_TYPE_REGISTERS: TypeRegister[] = [
   "Control", "Integer", "Float", "Double"
-]
+];
 
 export const MACHINE_REGISTERS_C: TypeRegisterToEdit[] = [
   "PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"
-]
+];
 
 export const MACHINE_REGISTERS_R: TypeRegisterToEdit[] = [
   0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
@@ -313,7 +344,7 @@ export const ASCII_TABLE = [
   {hex: "7D", binary: "01111101", ascii: "}"},
   {hex: "7E", binary: "01111110", ascii: "~"},
   {hex: "7F", binary: "01111111", ascii: "DEL"}
-]
+];
 
 export const CONFIG_WEBSOCKET: SocketIoConfig = {
   url: 'http://localhost:3000',
@@ -367,6 +398,13 @@ export const AUTH_ROUTES: PublicRoutesList = [
     data: {breadcrumb: 'IDE'}
   },
   {
+    lang: "LOGGER",
+    path: "logger",
+    routerLink: '/auth/logger',
+    displayName: 'Logger',
+    data: {breadcrumb: 'Logger'}
+  },
+  {
     lang: "MEMORY",
     path: "memory",
     routerLink: '/auth/memory',
@@ -408,7 +446,14 @@ export const AUTH_ROUTES: PublicRoutesList = [
     displayName: 'Statistics',
     data: {breadcrumb: 'Statistics'}
   },
-]
+  {
+    lang: "MULTIVIEW",
+    path: "multiview",
+    routerLink: '/auth/multiview',
+    displayName: 'Multiview',
+    data: {breadcrumb: 'Multiview'}
+  },
+];
 
 export const PUBLIC_ROUTES: PublicRoutes = {
   lang: '/',

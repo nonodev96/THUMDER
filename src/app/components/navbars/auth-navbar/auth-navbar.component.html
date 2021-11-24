@@ -68,6 +68,11 @@
     <ng-container *ngIf="authService.isLoggedIn">
 
       <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" (click)="debug()">
+          <i class="fas fa-bug"></i>
+        </a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="reset()">
           <i class="fas fa-sync"></i>
         </a>
@@ -75,25 +80,28 @@
 
       <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="togglePlayPause()">
-          <ng-container *ngIf="machine.isRunning === true">
+          <ng-container *ngIf="isRunning === true">
             <i class="fas fa-pause"></i>
           </ng-container>
-          <ng-container *ngIf="machine.isRunning === false">
+          <ng-container *ngIf="isRunning === false">
             <i class="fas fa-play"></i>
           </ng-container>
         </a>
       </li>
 
       <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="next()">
+        <a class="nav-link" (click)="nextStep()">
           <i class="fas fa-angle-right"></i>
         </a>
       </li>
+
+      <!--
       <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="end()">
           <i class="fas fa-angle-double-right"></i>
         </a>
       </li>
+      -->
 
     </ng-container>
 

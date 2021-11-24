@@ -13,6 +13,10 @@
 
   <div class="card-body">
     <form>
+
+      <p>{{ 'CONFIG.MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
+      <p>{{ 'CONFIG.MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
+
       <table class="table">
         <tr>
           <th></th>
@@ -79,21 +83,52 @@
                    class="form-control" min="512" max="1048576" step="8">
           </td>
         </tr>
+
+        <tr>
+          <th></th>
+          <th colspan="2">{{ 'CONFIG.AUTO_SAVE' | translate }}</th>
+        </tr>
+        <tr>
+          <th>{{ 'CONFIG.AUTO_SAVE' | translate }}</th>
+          <td colspan="2">
+            <div class="form-check">
+              <input type="checkbox"
+                     [ngModelOptions]="{standalone: true}"
+                     [(ngModel)]="autoSave"
+                     (change)="updateAutoSave($event.target)"
+                     class="form-check-input"
+                     id="autoSaveCheck_ID">
+              <label class="form-check-label" for="autoSaveCheck_ID">{{ 'CONFIG.AUTO_SAVE' | translate }}</label>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <th></th>
+          <th colspan="2">{{ 'CONFIG.TIME_SIMULATION' | translate }}</th>
+        </tr>
+        <tr>
+          <th>{{ 'CONFIG.TIME_SIMULATION' | translate }}</th>
+          <td colspan="2">
+            <input type="number"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="timeSimulation"
+                   (change)="updateTimeSimulation($event.target)"
+                   class="form-control" min="100" max="10000" step="50">
+          </td>
+
+        </tr>
       </table>
 
-      <p>{{ 'CONFIG.MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
-      <p>{{ 'CONFIG.MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
-
-      <div class="col-md-12">
-        <button type="reset" class="btn btn-secondary"
-                (click)="resetConfiguration()">{{ "FORMS.RESET" | translate }}</button>
-        <button type="submit" class="btn btn-primary float-right"
-                (click)="updateConfiguration()">{{ "FORMS.SAVE" | translate }}</button>
-      </div>
     </form>
   </div>
 
-  <div class="card-footer"></div>
+  <div class="card-footer">
+    <button type="reset" class="btn btn-secondary"
+            (click)="resetConfiguration()">{{ "FORMS.RESET" | translate }}</button>
+    <button type="submit" class="btn btn-primary float-right"
+            (click)="updateConfiguration()">{{ "FORMS.SAVE" | translate }}</button>
+  </div>
 </div>
 
 <!-- Button trigger modal -->

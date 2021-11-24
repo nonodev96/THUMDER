@@ -35,8 +35,8 @@ export class TasksService implements OnDestroy {
         name: "Client",
         localName: "Client-" + this.coreAgentsClient.clientID,
         address: this.coreAgentsClient.clientID
-      })
-    })
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -55,27 +55,25 @@ export class TasksService implements OnDestroy {
    * @param key
    * @param newFile
    */
-  createNewFile(path: string, key: string, newFile: string = 'example_00.s'): Promise<TaskContainer> {
-    return new Promise(async (resolve, reject) => {
-      const createFile = new CreateFile(path, key, newFile);
-      const createFile_string = JSON.stringify(createFile);
+  async createNewFile(path: string, key: string, newFile: string = 'example_00.s'): Promise<TaskContainer> {
+    const createFile = new CreateFile(path, key, newFile);
+    const createFile_string = JSON.stringify(createFile);
 
-      const message = new ACLMessage();
-      message.setSender(this.sender);
-      message.setPerformative(Performative.REQUEST);
-      message.setOntology(new Ontology("Create-File"));
-      message.setAction("CreateFile");
-      message.setContent(createFile_string);
+    const message = new ACLMessage();
+    message.setSender(this.sender);
+    message.setPerformative(Performative.REQUEST);
+    message.setOntology(new Ontology("Create-File"));
+    message.setAction("CreateFile");
+    message.setContent(createFile_string);
 
-      const taskContainer = await this.coreAgentsClient.addTask(
-        new Task_CreateFile_RequestInitiator("Create-File", message)
-      );
-      if (taskContainer.status === 'ok') {
-        resolve(taskContainer)
-      } else {
-        reject(taskContainer)
-      }
-    })
+    const taskContainer = await this.coreAgentsClient.addTask(
+      new Task_CreateFile_RequestInitiator("Create-File", message)
+    );
+    if (taskContainer.status === 'ok') {
+      return Promise.resolve(taskContainer);
+    } else {
+      return Promise.reject(taskContainer);
+    }
   }
 
   /**
@@ -85,27 +83,25 @@ export class TasksService implements OnDestroy {
    * @param key
    * @param newFolder
    */
-  createNewFolder(path: string, key: string, newFolder: string = 'example_folder'): Promise<TaskContainer> {
-    return new Promise(async (resolve, reject) => {
-      const createFolder = new CreateFolder(path, key, newFolder);
-      const createFolder_string = JSON.stringify(createFolder);
+  async createNewFolder(path: string, key: string, newFolder: string = 'example_folder'): Promise<TaskContainer> {
+    const createFolder = new CreateFolder(path, key, newFolder);
+    const createFolder_string = JSON.stringify(createFolder);
 
-      const message = new ACLMessage();
-      message.setSender(this.sender);
-      message.setPerformative(Performative.REQUEST);
-      message.setOntology(new Ontology("Create-Folder"));
-      message.setAction("CreateFolder");
-      message.setContent(createFolder_string);
+    const message = new ACLMessage();
+    message.setSender(this.sender);
+    message.setPerformative(Performative.REQUEST);
+    message.setOntology(new Ontology("Create-Folder"));
+    message.setAction("CreateFolder");
+    message.setContent(createFolder_string);
 
-      const taskContainer = await this.coreAgentsClient.addTask(
-        new Task_CreateFolder_RequestInitiator("Create-Folder", message)
-      );
-      if (taskContainer.status === 'ok') {
-        resolve(taskContainer)
-      } else {
-        reject(taskContainer)
-      }
-    })
+    const taskContainer = await this.coreAgentsClient.addTask(
+      new Task_CreateFolder_RequestInitiator("Create-Folder", message)
+    );
+    if (taskContainer.status === 'ok') {
+      return Promise.resolve(taskContainer);
+    } else {
+      return Promise.reject(taskContainer);
+    }
   }
 
   /**
@@ -115,28 +111,26 @@ export class TasksService implements OnDestroy {
    * @param key ==> FileSystemItem.key
    * @param newName
    */
-  modifyFile(path: string, key: string, newName: string): Promise<TaskContainer> {
-    return new Promise<TaskContainer>(async (resolve, reject) => {
-      const modifyFile = new ModifyFile(path, key, newName);
-      const modifyFile_string = JSON.stringify(modifyFile);
+  async modifyFile(path: string, key: string, newName: string): Promise<TaskContainer> {
+    const modifyFile = new ModifyFile(path, key, newName);
+    const modifyFile_string = JSON.stringify(modifyFile);
 
-      const message = new ACLMessage();
-      message.setSender(this.sender);
-      message.setPerformative(Performative.REQUEST);
-      message.setOntology(new Ontology("Modify-File"));
-      message.setAction("ModifyFile");
-      message.setContent(modifyFile_string);
+    const message = new ACLMessage();
+    message.setSender(this.sender);
+    message.setPerformative(Performative.REQUEST);
+    message.setOntology(new Ontology("Modify-File"));
+    message.setAction("ModifyFile");
+    message.setContent(modifyFile_string);
 
-      const taskContainer = await this.coreAgentsClient.addTask(
-        new Task_ModifyFile_RequestInitiator("Modify-File", message)
-      );
-      if (taskContainer.status === 'ok') {
-        resolve(taskContainer)
-      } else {
-        reject(taskContainer)
-      }
+    const taskContainer = await this.coreAgentsClient.addTask(
+      new Task_ModifyFile_RequestInitiator("Modify-File", message)
+    );
+    if (taskContainer.status === 'ok') {
+      return Promise.resolve(taskContainer);
+    } else {
+      return Promise.reject(taskContainer);
+    }
 
-    })
   }
 
   /**
@@ -146,27 +140,25 @@ export class TasksService implements OnDestroy {
    * @param key ==> FileSystemItem.key
    * @param newName
    */
-  modifyFolder(path: string, key: string, newName: string): Promise<TaskContainer> {
-    return new Promise<TaskContainer>(async (resolve, reject) => {
-      const modifyFolder = new ModifyFolder(path, key, newName);
-      const modifyFolder_string = JSON.stringify(modifyFolder);
+  async modifyFolder(path: string, key: string, newName: string): Promise<TaskContainer> {
+    const modifyFolder = new ModifyFolder(path, key, newName);
+    const modifyFolder_string = JSON.stringify(modifyFolder);
 
-      const message = new ACLMessage();
-      message.setSender(this.sender);
-      message.setPerformative(Performative.REQUEST);
-      message.setOntology(new Ontology("Modify-Folder"));
-      message.setAction("ModifyFolder");
-      message.setContent(modifyFolder_string);
+    const message = new ACLMessage();
+    message.setSender(this.sender);
+    message.setPerformative(Performative.REQUEST);
+    message.setOntology(new Ontology("Modify-Folder"));
+    message.setAction("ModifyFolder");
+    message.setContent(modifyFolder_string);
 
-      const taskContainer = await this.coreAgentsClient.addTask(
-        new Task_ModifyFolder_RequestInitiator("Modify-Folder", message)
-      );
-      if (taskContainer.status === 'ok') {
-        resolve(taskContainer)
-      } else {
-        reject(taskContainer)
-      }
-    })
+    const taskContainer = await this.coreAgentsClient.addTask(
+      new Task_ModifyFolder_RequestInitiator("Modify-Folder", message)
+    );
+    if (taskContainer.status === 'ok') {
+      return Promise.resolve(taskContainer);
+    } else {
+      return Promise.reject(taskContainer);
+    }
   }
 
   /**
@@ -176,28 +168,24 @@ export class TasksService implements OnDestroy {
    * @param key ==> FileSystemItem.key
    * @param newContent
    */
-  editFile(path: string, key: string, newContent: string[]): Promise<TaskContainer> {
-    return new Promise<TaskContainer>(async (resolve, reject) => {
-      const editFile = new EditFile(path, key, newContent);
-      const editFile_string = JSON.stringify(editFile);
+  async editFile(path: string, key: string, newContent: string[]): Promise<TaskContainer> {
+    const editFile = new EditFile(path, key, newContent);
+    const editFile_string = JSON.stringify(editFile);
 
-      const message = new ACLMessage();
-      message.setSender(this.sender);
-      message.setPerformative(Performative.REQUEST);
-      message.setOntology(new Ontology("Edit-File"));
-      message.setAction("EditFile");
-      message.setContent(editFile_string);
+    const message = new ACLMessage();
+    message.setSender(this.sender);
+    message.setPerformative(Performative.REQUEST);
+    message.setOntology(new Ontology("Edit-File"));
+    message.setAction("EditFile");
+    message.setContent(editFile_string);
 
-      const taskContainer = await this.coreAgentsClient.addTask(
-        new Task_EditFile_RequestInitiator("Edit-File", message)
-      );
-      if (taskContainer.status === 'ok') {
-        resolve(taskContainer)
-      } else {
-        reject(taskContainer)
-      }
-    })
+    const taskContainer = await this.coreAgentsClient.addTask(
+      new Task_EditFile_RequestInitiator("Edit-File", message)
+    );
+    if (taskContainer.status === 'ok') {
+      return Promise.resolve(taskContainer);
+    } else {
+      return Promise.reject(taskContainer);
+    }
   }
-
-
 }

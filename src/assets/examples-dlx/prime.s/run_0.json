@@ -1,0 +1,32 @@
+{
+  "step": 0,
+  "line": 0,
+  "instruction": "",
+  "IF": 1,
+  "IF_stall": 0,
+  "ID": 1,
+  "ID_stall": 0,
+  "intEX": 1,
+  "intEX_stall": 0,
+  "MEM": 1,
+  "MEM_stall": 0,
+  "WB": 1,
+  "WB_stall": 0,
+  "pipeline": {
+    "IF": "",
+    "ID": "",
+    "intEX": "",
+    "faddEX": [],
+    "fmultEX": [],
+    "fdivEX": [],
+    "MEM": "",
+    "WB": ""
+  },
+  "registers": [
+    {
+      "register": "PC",
+      "value": "0x00000100"
+    }
+  ],
+  "memory": []
+}

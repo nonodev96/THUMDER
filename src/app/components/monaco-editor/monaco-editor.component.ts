@@ -1,28 +1,28 @@
-import MonacoConfig from "../../../monaco-config";
-import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { TypeTags } from "../../types";
-import { MachineService } from "../../__core/machine/machine.service";
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subject } from "rxjs";
 import * as monaco from "monaco-editor";
+import { TypeComponentStatus, TypeTags } from "../../types";
+import MonacoConfig from "../../../monaco-config";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import IModelDecoration = monaco.editor.IModelDecoration;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
+
+export type TypeBreakpoints = {
+  [line: number]: boolean
+};
 
 @Component({
   selector: 'thumder-monaco-editor',
   templateUrl: './monaco-editor.component.html',
   styleUrls: ['./monaco-editor.component.scss']
 })
-export class MonacoEditorComponent implements OnInit {
+export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   // export function create(domElement: HTMLElement, options?: IStandaloneEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneCodeEditor;
-
-  private httpClient: HttpClient;
-
   public readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions = MonacoConfig.defaultOptions;
 
   public _height = 70;
 
-  public code_asm: string = '';
+  public content: string = '';
+  public initialized$: Subject<boolean> = new Subject<boolean>();
 
   private editor: IStandaloneCodeEditor;
   // private oldDecorationDebugTag_targetId: { line: number, target_id: string } []= [];
@@ -30,9 +30,11 @@ export class MonacoEditorComponent implements OnInit {
   private oldDecorationDebugLine: string[] = [];
   private iteratorLine: number = 1;
 
-  constructor(private http: HttpClient,
-              private machine: MachineService) {
-    this.httpClient = http;
+  public breakpoints: TypeBreakpoints = {};
+  public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();
+  public componentStatus$: Subject<TypeComponentStatus> = new Subject<TypeComponentStatus>();
+
+  constructor() {
   }
 
   set height(value: number) {
@@ -40,24 +42,25 @@ export class MonacoEditorComponent implements OnInit {
     this.editor.layout();
   }
 
-  get height() {
+  get height(): number {
     return this._height;
   }
 
   ngOnInit(): void {
-    this.httpClient.get('assets/examples-dlx/prim.s', {responseType: 'text'})
-      .subscribe(data => {
-        // console.log(data)
-        this.code_asm = data;
-      });
+    this.componentStatus$.next('OnInit');
   }
 
-  editorInitialized($event: IStandaloneCodeEditor) {
-    console.log('editorInitialized', $event);
+  ngAfterViewInit(): void {
+    this.componentStatus$.next('AfterViewInit');
+  }
+
+  ngOnDestroy(): void {
+    this.componentStatus$.next('OnDestroy');
+  }
+
+  editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
-
     this.editor.layout();
-
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
 
     });
@@ -68,30 +71,51 @@ export class MonacoEditorComponent implements OnInit {
 
     });
     this.editor.onDidChangeModelDecorations((e) => {
-
+      this.breakpoints = this.getAllBreakpoints();
+      this.breakpoints$.next(this.breakpoints);
     });
+    this.initialized$.next(true);
   }
 
-  editorLanguageChanged() {
+  getInitializedObservable(): Observable<boolean> {
+    return this.initialized$.asObservable();
+  }
+
+  getBreakpointsObservable(): Observable<TypeBreakpoints> {
+    return this.breakpoints$.asObservable();
+  }
+
+  getComponentStatusObservable(): Observable<TypeComponentStatus> {
+    return this.componentStatus$.asObservable();
+  }
+
+  async updateContent(content: string): Promise<void> {
+    this.content = content;
+    this.editor.setValue(this.content);
+    return Promise.resolve();
+  }
+
+  editorLanguageChanged(): void {
     // console.log('editorLanguageChanged');
   }
 
-  editorConfigurationChanged() {
+  editorConfigurationChanged(): void {
     // console.log('editorConfigurationChanged');
   }
 
-  editorValueChange() {
+  editorValueChange(): void {
     // console.log('editorValueChange');
   }
 
-  callBackFunc($event_text: any) {
+  callBackFunc($event_text: any): void {
     // console.log('callBackFunc', $event_text)
   }
 
   /*
    * Controllers
    */
-  public debug() {
+
+  public debug(): void {
     const line = this.editor.getPosition().lineNumber ?? 1;
     const decorations = this.editor.getModel().getLineDecorations(line);
     const decorations_target_id = decorations.map(v => v.id);
@@ -104,82 +128,104 @@ export class MonacoEditorComponent implements OnInit {
     console.log("decorations.some( fas fa-circle color-red )", decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red"));
   }
 
-  public toggleDebuggerTag() {
-    const line = this.editor.getPosition().lineNumber ?? 1;
+  public toggleDebuggerTag(line: number = null): void {
+    line = line ?? this.editor.getPosition().lineNumber ?? 1;
     const decorations = this.editor.getModel().getLineDecorations(line);
     const decorations_target_id = decorations.map(v => v.id);
-
     if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
-      // Eliminamos la tag
+      // remove the tag
+      this.breakpoints[line] = false;
       this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
     } else {
-      // Añadimos la tag
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [
-          {
-            range: new monaco.Range(line, 0, line, 0),
-            options: {
-              isWholeLine: true,
-              // inlineClassName: 'fas fa-circle color-red',
-              glyphMarginClassName: 'fas fa-circle color-red',
-            }
-          }
-        ]
-      );
+      // add the tag
+      this.breakpoints[line] = true;
+      const newDecoration = {
+        range: new monaco.Range(line, 0, line, 0),
+        options: {
+          isWholeLine: true,
+          // inlineClassName: 'fas fa-circle color-red',
+          glyphMarginClassName: 'fas fa-circle color-red',
+        }
+      };
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [newDecoration]);
     }
-
-    this.machine.tagsDebugger = this.getListOfTags();
-
+    localStorage.setItem('breakpoints', JSON.stringify(this.breakpoints));
   }
 
   public getListOfTags(): TypeTags {
     const vectorOfInstructions: TypeTags = [];
     const lineCount = this.editor.getModel().getLineCount();
-
     for (let line = 0; line < lineCount; line++) {
       const decorations = this.editor.getModel().getLineDecorations(line);
       if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
-
         vectorOfInstructions.push({
           line: line,
           content: this.editor.getModel().getLineContent(line),
         });
-
       }
     }
     return vectorOfInstructions;
   }
 
-
-  public debugNextLine() {
-    const lineCount = this.editor.getModel().getLineCount()
+  public debugNextLine(): void {
+    const lineCount = this.editor.getModel().getLineCount();
     this.iteratorLine = this.iteratorLine % lineCount === 0 ? 1 : this.iteratorLine + 1;
-    this.printLine(this.iteratorLine)
+    this.printLine(this.iteratorLine);
+  }
+
+  public debugToLine(iteratorLine: number): void {
+    console.log('debugToLine');
+    const lineCount = this.editor.getModel().getLineCount();
+    this.iteratorLine = iteratorLine % lineCount;
+    this.printLine(this.iteratorLine);
   }
 
   /**
    * Este método busca las lineas marcadas como debug y va iterando en ellas
    */
-  public debugNextLineWithTag() {
+  public debugNextLineWithTag(): void {
     const listOfTags = this.getListOfTags();
-    const listOfTags_filter = listOfTags.filter(value => value.line > this.iteratorLine)
+    const listOfTags_filter = listOfTags.filter(value => value.line > this.iteratorLine);
     this.iteratorLine = listOfTags_filter.length > 0 ? listOfTags_filter.shift().line : 1;
-    this.printLine(this.iteratorLine)
+    this.printLine(this.iteratorLine);
+  }
+
+  getAllBreakpoints(): TypeBreakpoints {
+    const allDecorations = this.editor.getModel().getAllDecorations();
+    const tags: { [line: number]: boolean } = {};
+    for (const decoration of allDecorations) {
+      if (decoration.options.glyphMarginClassName === "fas fa-circle color-red") {
+        tags[decoration.range.startLineNumber] = true;
+      }
+    }
+    return tags;
+  }
+
+  clearBreakpoints() {
+    this.breakpoints = {};
   }
 
   /**
-   * Este método pinta una linea en concreto de rojo
+   * Este método pinta una linea en concreto con un fondo azul
    *
    * @param line
    * @private
    */
-  private printLine(line: number) {
-    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [{
-        range: new monaco.Range(line, 1, line, 1),
-        options: {
-          isWholeLine: true,
-          className: 'debugLine'
-        }
-      }]
-    );
+  printLine(line: number): void {
+    const newDecoration = {
+      range: new monaco.Range(line, 1, line, 1),
+      options: {
+        isWholeLine: true,
+        className: 'debugLine'
+      }
+    };
+    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
+  }
+
+  setBreakpoints(breakpoints: TypeBreakpoints) {
+    this.breakpoints = breakpoints;
+    for (const [line, enabled] of Object.entries(this.breakpoints)) {
+      this.toggleDebuggerTag(parseInt(line));
+    }
   }
 }

@@ -2,7 +2,7 @@
 
 <div class="card" id="pixiCardCycleClockDiagram">
   <div class="card-header">
-    <h3 class="card-title">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</h3>
+    <h3 class="card-title">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}} | {{ inCanvas }}</h3>
     <div class="card-tools">
 
       <button type="button" class="btn btn-tool" (click)="this.pixi_CycleClockDiagramComponent.moveBottom()">
@@ -41,29 +41,10 @@
   </div>
 
   <div class="card-body">
-
-    <thumder-pixi-cycle-clock-diagram></thumder-pixi-cycle-clock-diagram>
-
+    <thumder-pixi-cycle-clock-diagram (inCanvasEventEmitter)="handleInCanvas($event)"></thumder-pixi-cycle-clock-diagram>
   </div>
 
-<!--  <div class="card-footer">-->
-<!--    Footer-->
-<!--  </div>-->
-</div>
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">Manual</h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="card-body">
+  <div class="card-footer">
     <h2>Short cuts</h2>
     <ol>
       <li><strong>r</strong>: Reset</li>
@@ -79,5 +60,3 @@
       </li>
     </ol>
   </div>
-
-</div>

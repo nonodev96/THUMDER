@@ -8,6 +8,7 @@ import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pi
   styleUrls: []
 })
 export class PipelineView implements OnInit {
+
   @ViewChild(PixiPipelineComponent) pixi_CycleClockDiagramComponent: PixiPipelineComponent;
 
   constructor(@Inject(DOCUMENT) private document: Document) {

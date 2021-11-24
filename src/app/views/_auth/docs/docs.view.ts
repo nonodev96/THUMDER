@@ -27,7 +27,7 @@ export class DocsView implements OnInit {
   ngOnDestroy(): void {
   }
 
-  public onMarkdownLoad() {
+  public onMarkdownLoad(): void {
     // because MarkdownComponent isn't 'compiled' the links don't use the angular router,
     // so I'll catch the link click events here and pass them to the router...
     if (this.markdownComponentID) {
@@ -45,7 +45,7 @@ export class DocsView implements OnInit {
     }
   }
 
-  scrollToAnchor(scrollToAnchor: string) {
+  scrollToAnchor(scrollToAnchor: string): void {
     this.scroller.scrollToAnchor(scrollToAnchor);
   }
 }
