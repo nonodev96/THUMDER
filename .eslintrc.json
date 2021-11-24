@@ -98,7 +98,7 @@
     },
     {
       "files": [
-        "*.component.html"
+        "*.html"
       ],
       "parser": "@angular-eslint/template-parser",
       "plugins": [
