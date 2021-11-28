@@ -30,12 +30,12 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
   ) {
     this.pending = true;
     this.disabled = false;
-    console.log(this._elementRef)
+    console.log(this._elementRef);
   }
 
   @HostListener('click')
   onClick() {
-    console.log('click')
+    console.log('click');
     if (typeof this.clickFunc === 'function') {
       this.subscribe(this.clickFunc());
     }
@@ -74,7 +74,7 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
         next: noop,
         complete: enable,
         error: enable
-      })
+      });
     } else if (typeof r.then === 'function') {
       (<Promise<any>>r).then(enable).catch(enable);
       this.subscription = null;

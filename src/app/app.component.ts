@@ -1,6 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { DOCUMENT } from "@angular/common";
-import { NavigationEnd, Router } from "@angular/router";
+import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 
 import { TranslateService } from '@ngx-translate/core';
 import { ElectronService } from './__core/services';
@@ -10,6 +10,7 @@ import MonacoConfig from "../monaco-config";
 import { DEFAULT_LANG } from "./CONSTAST";
 import { MachineService } from "./__core/machine/machine.service";
 import { TypeLang } from "./types";
+import { AuthService } from "./__core/auth/auth.service";
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent {
   lang: string = DEFAULT_LANG;
 
   constructor(@Inject(DOCUMENT) private document: Document,
+              public auth: AuthService,
               private storageService: StorageService,
               private machine: MachineService,
               private electronService: ElectronService,
@@ -34,7 +36,7 @@ export class AppComponent {
     this.translate.setDefaultLang(this.lang);
     // clean the route class when you travel and end de navigation
     this.router.events.subscribe((route) => {
-      if (route instanceof NavigationEnd) {
+      if (route instanceof NavigationStart) {
         this.document.body.className = "";
       }
     });

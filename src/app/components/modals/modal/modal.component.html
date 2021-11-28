@@ -1,0 +1,30 @@
+<button type="button" class="btn btn-default {{buttonSize}}" data-toggle="modal" [attr.data-target]="'#' + modalID">
+  {{ buttonText | translate }}
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="{{modalID}}" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog {{modalType}}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ modalTitle | translate }}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ng-content></ng-content>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          {{ buttonCloseText | translate }}
+        </button>
+        <button type="button" class="btn btn-primary">
+          {{ buttonSaveText | translate }}
+        </button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>

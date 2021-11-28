@@ -67,12 +67,12 @@ export class MachineService {
   public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
   private dataStatistics: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
 
-
   private privateStep = 0;
   private privateLine = 0;
   private timer: Observable<number>;
   private readonly timerObserver: PartialObserver<number>;
 
+  public logger$: Subject<string> = new Subject<string>();
   public step$: Subject<number> = new Subject<number>();
   public line$: Subject<number> = new Subject<number>();
 
@@ -209,6 +209,10 @@ export class MachineService {
     return this.dataStatistics$.asObservable();
   }
 
+  getLoggerObservable(): Observable<string> {
+    return this.logger$.asObservable();
+  }
+
   public getStatusCycleClockDiagram(stepSimulation: TypeStepSimulation): TypeStatusCycleClockDiagram {
     return {
       step: stepSimulation.step,
@@ -312,7 +316,7 @@ export class MachineService {
     this.privateLine = this.statusMachineInStep.line;
     this.isComplete = this.statusMachineInStep.isComplete ?? false;
     this.isBreakpoint = this.breakpointManager.isBreakpoint(this.privateLine);
-    console.debug(this.debug());
+    this.log(this.debug());
 
     if (this.isComplete) {
       this.isComplete = true;
@@ -428,7 +432,8 @@ export class MachineService {
 
   private log(...msg: any) {
     console.debug('Line :', this.privateLine, 'Step: ', this.privateStep, msg);
-    this.logger = Utils.stringFormat("Private step: {0} \r\n", [this.privateStep, ...msg]);
+    this.logger = Utils.stringFormat("Step: {0} Line: {1} | {2} ", this.privateStep, this.privateLine, ...msg);
+    this.logger$.next(this.logger);
   }
 
   private static async getStepInRunner(step: number): Promise<TypeStepSimulation | null> {
@@ -509,6 +514,7 @@ export class MachineService {
     return this.getMemory(address).binary.padStart(32, '0');
   }
 
+
   getBinaryOfMemory_Double(address: number): string {
     const part1 = this.getMemory(address).binary.padStart(32, '0');
     if (part1 === DEFAULT_BINARY_32_BITS) {
@@ -520,7 +526,6 @@ export class MachineService {
     }
     return part1 + part2;
   }
-
 
   private async loadExamples(): Promise<void> {
     const response = await fetch('./assets/examples-dlx/example-runner.json');
@@ -546,11 +551,11 @@ export class MachineService {
                              key_message: string = 'TOAST.ACCESS_DENIED'): Promise<void> {
     const config: Partial<IndividualConfig> = {
       timeOut: 5000,
-      positionClass: 'toast-bottom-right'
+      positionClass: 'toast-bottom-left'
     };
     const message = await this.translate.get(key_message).toPromise();
     const title = await this.translate.get(key_title).toPromise();
-    this.toast.info(title, message, config);
+    this.toast.info(message, title, config);
     return Promise.resolve();
   }
 

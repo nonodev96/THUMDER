@@ -23,6 +23,9 @@ export namespace Utils {
 
   export function stringFormat(msg: string, ...args: any) {
     return msg.replace(/{([0-9]+)}/g, function (match, index) {
+      if (typeof args[index] == 'object') {
+        return JSON.stringify(args[index]);
+      }
       return typeof args[index] == 'undefined' ? match : args[index];
     });
   }

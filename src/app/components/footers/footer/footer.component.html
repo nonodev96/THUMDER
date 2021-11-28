@@ -1,6 +1,27 @@
 <footer class="main-footer">
+  <strong>Copyright &copy; 2020-2021 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong>
+  All rights reserved. |
+  <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" data-target="#modal-p-bottom">
+    Debug
+  </button>
   <div class="float-right d-none d-sm-block">
-    <b>{{ 'CONFIG.LANG' | translate }}</b> {{lang}} | <b>Version</b> {{version}}
+    <b>{{ 'CONFIG.LANG' | translate }}</b> {{lang}} |
+    <b>{{ 'CONFIG.VERSION' | translate }}</b> {{version}}
   </div>
-  <strong>Copyright &copy; 2020-2021 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong> All rights reserved.
 </footer>
+
+<!-- Modal -->
+<div class="modal fade modal-p-bottom" id="modal-p-bottom">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p *ngFor="let line of logger">{{line}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">
+          {{ 'FORMS.CLOSE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -16,32 +16,33 @@
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
 import * as f_goToPage from './commands/goToPage';
 import * as f_setLang from './commands/setLang';
-import { THUMDER_openNavigation } from "./commands/goToPage";
+import { THUMDER_goMultiview, THUMDER_openNavigation } from "./commands/goToPage";
 
-// this is another example.
+function THUMDER_SignOut(): void {
+  cy.wait(2000);
+  cy.get("body").then($body => {
+    if ($body.find("#buttonSignOutID").length > 0) {
+      cy.get('#buttonSignOutID').click();
+    }
+  });
+  cy.wait(2000);
+}
 
-
-function THUMDER_login(username: string = Cypress.env('USER_EMAIL'), password: string = Cypress.env('USER_PASSWORD')): void {
-  cy.visit('/login')
-
-  cy.get('#userEmail')
-    .type(username)
-
-  cy.get('#userPassword')
-    .type(password, {log: false})
-
-  cy.get('#buttonSignInID')
-    .click()
-
-  cy.url().should('contain', '/')
+function THUMDER_login(email: string = Cypress.env('USER_EMAIL'), password: string = Cypress.env('USER_PASSWORD')): void {
+  cy.get('#userEmail').type(email);
+  cy.get('#userPassword').type(password, {log: false});
+  cy.get('#buttonSignInID').click();
+  cy.wait(2000);
 }
 
 
 Cypress.Commands.add('THUMDER_openNavigation', THUMDER_openNavigation);
 Cypress.Commands.add('THUMDER_login', THUMDER_login);
+Cypress.Commands.add('THUMDER_SignOut', THUMDER_SignOut);
 
 Cypress.Commands.add('THUMDER_goHome', f_goToPage.THUMDER_goHome);
 Cypress.Commands.add('THUMDER_goFileManager', f_goToPage.THUMDER_goFileManager);
+Cypress.Commands.add('THUMDER_goCalculator', f_goToPage.THUMDER_goCalculator);
 Cypress.Commands.add('THUMDER_goIDE', f_goToPage.THUMDER_goIDE);
 Cypress.Commands.add('THUMDER_goPipeline', f_goToPage.THUMDER_goPipeline);
 Cypress.Commands.add('THUMDER_goCycleClockDiagram', f_goToPage.THUMDER_goCycleClockDiagram);
@@ -51,6 +52,7 @@ Cypress.Commands.add('THUMDER_goRegisters', f_goToPage.THUMDER_goRegisters);
 Cypress.Commands.add('THUMDER_goProfile', f_goToPage.THUMDER_goProfile);
 Cypress.Commands.add('THUMDER_goDocumentation', f_goToPage.THUMDER_goDocumentation);
 Cypress.Commands.add('THUMDER_goConfig', f_goToPage.THUMDER_goConfig);
+Cypress.Commands.add('THUMDER_goMultiview', f_goToPage.THUMDER_goMultiview);
 
 Cypress.Commands.add('THUMDER_setLangSpanish', f_setLang.THUMDER_setLangSpanish);
 Cypress.Commands.add('THUMDER_setLangEnglish', f_setLang.THUMDER_setLangEnglish);
@@ -75,6 +77,8 @@ declare global {
     interface Chainable<Subject> {
       THUMDER_login(email?: string, password?: string): void;
 
+      THUMDER_SignOut(): void;
+
       THUMDER_setLangSpanish(): void;
 
       THUMDER_setLangEnglish(): void;
@@ -82,6 +86,8 @@ declare global {
       THUMDER_openNavigation(): void;
 
       THUMDER_goHome(): void;
+
+      THUMDER_goCalculator(): void;
 
       THUMDER_goFileManager(): void;
 
@@ -102,6 +108,8 @@ declare global {
       THUMDER_goDocumentation(): void;
 
       THUMDER_goConfig(): void;
+
+      THUMDER_goMultiview(): void;
     }
   }
 }

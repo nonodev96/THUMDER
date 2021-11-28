@@ -20,12 +20,14 @@ export class AuthGuard implements CanActivate {
     if (!this.authService.isLoggedIn) {
       const config: Partial<IndividualConfig> = {
         progressBar: true,
+        positionClass: 'toast-bottom-left',
         progressAnimation: 'decreasing',
         closeButton: true
       };
       const lang_access_denied = await this.translate.get('TOAST.ACCESS_DENIED').toPromise();
       const lang_login_false = await this.translate.get('TOAST.LOGIN_FALSE').toPromise();
       this.toast.warning(lang_login_false, lang_access_denied, config);
+      await this.router.navigate(['/login']);
     }
     return Promise.resolve(this.authService.isLoggedIn);
   }

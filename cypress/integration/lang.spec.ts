@@ -1,8 +1,9 @@
 describe('Tests lang', () => {
 
   beforeEach(() => {
-    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
     cy.visit('/');
+    cy.THUMDER_SignOut();
+    cy.THUMDER_login();
   });
 
   it('check spanish', () => {

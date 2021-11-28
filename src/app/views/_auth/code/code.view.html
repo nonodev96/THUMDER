@@ -20,7 +20,15 @@
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceCode" [ngClass]="'table-layout'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;" [ngClass]="'stage-' + row.stage "></tr>
+
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;"
+            [class.stage-IF]="checkIfContains(row.address, 'IF')"
+            [class.stage-ID]="checkIfContains(row.address, 'ID')"
+            [class.stage-intEX]="checkIfContains(row.address, 'intEX')"
+            [class.stage-MEM]="checkIfContains(row.address, 'MEM')"
+            [class.stage-WB]="checkIfContains(row.address, 'WB')"
+        ></tr>
+
         <ng-container matColumnDef="Address">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.ADDRESS' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">

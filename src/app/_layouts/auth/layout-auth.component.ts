@@ -7,15 +7,15 @@ import { DOCUMENT } from "@angular/common";
 })
 export class LayoutAuthComponent implements OnInit, AfterViewInit {
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
+  constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
   ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
     this.document.body.classList.add('dx-viewport', 'sidebar-mini', 'layout-fixed', 'layout-footer-fixed');
   }
 
+  ngAfterViewInit(): void {
+    const trees: any = window.jQuery('[data-widget="treeview"]');
+    trees.Treeview('toggleRow');
+  }
 }
