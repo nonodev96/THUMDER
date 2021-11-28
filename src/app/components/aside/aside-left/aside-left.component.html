@@ -40,43 +40,44 @@
               <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
                 <a class="nav-link" (click)="goToPage($event, menu)">
                   <i class="far fa-circle nav-icon"></i>
-                  {{ 'NAVIGATION.' + menu.lang | translate }}
+                  <p>{{ 'NAVIGATION.' + menu.lang | translate }}</p>
                 </a>
               </li>
             </ul>
           </li>
         </ng-container>
 
-        <li role="menuitem" class="nav-header">Externs</li>
-        <li role="menuitem" class="nav-item has-treeview">
-          <a class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
-            <p>
-              Pages
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview" role="menu">
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/login']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Login</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/register']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Register</p>
-              </a>
-            </li>
-            <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/forgot-password']" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Forgot password</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+        <ng-container *ngIf="!authService.isLoggedIn">
+          <li role="menuitem" class="nav-header">Externs</li>
+          <li role="menuitem" class="nav-item has-treeview">
+            <a class="nav-link">
+              <i class="nav-icon fas fa-book"></i>
+              <p>Pages
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview" role="menu">
+              <li role="menuitem" class="nav-item">
+                <a class="nav-link" [routerLink]="['/login']">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Login</p>
+                </a>
+              </li>
+              <li role="menuitem" class="nav-item">
+                <a class="nav-link" [routerLink]="['/register']">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Register</p>
+                </a>
+              </li>
+              <li role="menuitem" class="nav-item">
+                <a class="nav-link" [routerLink]="['/forgot-password']">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Forgot password</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ng-container>
 
         <li role="menuitem" class="nav-header">{{ 'NAVIGATION.ABOUT'| translate }}</li>
         <li role="menuitem" class="nav-item has-treeview">
@@ -88,15 +89,32 @@
             </p>
           </a>
           <ul class="nav nav-treeview" role="menu">
-
             <li role="menuitem" class="nav-item">
-              <a [routerLink]="['/landing/about']" class="nav-link">
+              <a class="nav-link" [routerLink]="['/landing/about']">
                 <i class="far fa-circle nav-icon"></i>
-                <p>{{ 'NAVIGATION.ABOUT'| translate }}</p>
+                <p>{{ 'NAVIGATION.ABOUT' | translate }}</p>
               </a>
             </li>
           </ul>
         </li>
+
+        <ng-container *ngIf="authService.isLoggedIn">
+          <li class="nav-header">{{ 'ACCOUNT.ACCOUNT' | translate }}</li>
+
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/profile'">
+              <i class="nav-icon fas fa-user"></i>
+              <p>{{ 'ACCOUNT.PROFILE' | translate }}</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" (click)="authService.SignOut()">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>{{ 'ACCOUNT.SIGN_OUT' | translate }}</p>
+            </a>
+          </li>
+        </ng-container>
 
       </ul>
     </nav>

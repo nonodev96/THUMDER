@@ -1,8 +1,12 @@
 describe('Cycle Clock Diagram', () => {
 
+  before(() => {
+  });
+
   beforeEach(() => {
-    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
-    cy.visit('/'); // Reload page
+    cy.visit('/login');
+    cy.THUMDER_SignOut();
+    cy.THUMDER_login();
     cy.THUMDER_goCycleClockDiagram();
     cy.THUMDER_setLangEnglish();
 
@@ -19,10 +23,12 @@ describe('Cycle Clock Diagram', () => {
     cy.contains('Cycle clock diagram');
 
     // Check card
+    /*
     cy.get('@pixiCardCycleClockDiagram')
       .should(($element) => {
         expect($element).to.have.class('card');
-      });
+    });
+    */
 
     // Check collapse
     cy.get('@pixiCardCycleClockDiagramButtonMinimize').click();

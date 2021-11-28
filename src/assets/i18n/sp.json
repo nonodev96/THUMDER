@@ -16,7 +16,8 @@
     "ABOUT": "Sobre nosotros"
   },
   "CONFIG": {
-    "LANG": "Idioma"
+    "LANG": "Idioma",
+    "VERSION": "Versión"
   },
   "ST": {
   },

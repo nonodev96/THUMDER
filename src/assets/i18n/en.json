@@ -1,4 +1,9 @@
 {
+  "ACCOUNT": {
+    "ACCOUNT": "Account",
+    "PROFILE": "Profile",
+    "SIGN_OUT": "Sign out"
+  },
   "NAVIGATION": {
     "PAGES": "Pages",
     "FILE-MANAGER": "File manager",
@@ -13,7 +18,9 @@
     "CONFIG": "Config",
     "CALCULATOR": "Calculator",
     "STATISTICS": "Statistics",
-    "ABOUT": "About"
+    "ABOUT": "About",
+    "MULTIVIEW": "Multiview",
+    "LOGGER": "Logger"
   },
   "ST": {
     "TOTAL": {
@@ -103,6 +110,13 @@
     "SIMPLE_FLOATING_POINT": "Simple floating point",
     "DOUBLE_FLOATING_POINT": "Double floating point"
   },
+  "TYPE_DATA": {
+    "BYTE": "Byte",
+    "HALF_WORD": "Half word",
+    "WORD": "Word",
+    "IEEE754": "IEEE 754 32 bits",
+    "IEEE754_64": "IEEE 754 64 bits"
+  },
   "FORMS": {
     "ENTER_VALUE": "Enter Value",
     "SAVE": "Save",
@@ -125,10 +139,27 @@
     "TITLE_SAVE_FILE": "Saved file",
     "MESSAGE_SAVE_FILE": "success",
     "TITLE_ERROR_SAVE_FILE": "File not save",
-    "MESSAGE_ERROR_SAVE_FILE": "error"
+    "MESSAGE_ERROR_SAVE_FILE": "error",
+    "TITLE_RESET_MACHINE": "Reset machine",
+    "MESSAGE_RESET_MACHINE": "Reset machine success",
+    "TITLE_END_SIMULATION": "End of simulation",
+    "MESSAGE_END_SIMULATION": "End of simulation success"
+  },
+  "MODAL": {
+    "TEXT": "Text",
+    "INFO": "Info",
+    "TITLE": "Title",
+    "CLOSE": "Close",
+    "OK": "Ok"
   },
   "CONFIG": {
     "LANG": "Language",
+    "VERSION": "Version",
+    "AUTO_SAVE": "Auto save",
+    "COUNT": "Count",
+    "DELAY": "Delay",
+    "MEMORY_SIZE": "Memory size",
+    "TIME_SIMULATION": "Time simulation step",
     "FLOATING_POINT_STAGE_CONFIGURATION": "Floating point stage configuration",
     "COUNT_CONFIG": "Count config",
     "COUNT_DELAY": "Count delay",
@@ -142,7 +173,7 @@
   },
   "PAGES": {
     "HOME": {
-      "TITLE": "App works!",
+      "TITLE": "THUMDER",
       "GO_TO_DETAIL": "Go to Detail"
     },
     "DETAIL": {

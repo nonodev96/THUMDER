@@ -21,13 +21,12 @@ export class AuthNavbarComponent implements OnInit {
               public app: AppComponent,
               public machine: MachineService,
               public authService: AuthService) {
-
-    this.machine.getIsRunningObservable().subscribe((isRunning) => {
-      this.isRunning = isRunning;
-    });
   }
 
   ngOnInit(): void {
+    this.machine.getIsRunningObservable().subscribe((isRunning) => {
+      this.isRunning = isRunning;
+    });
   }
 
   setNavbarOpen(): void {

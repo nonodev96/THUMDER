@@ -1,6 +1,8 @@
 describe('Auth access', () => {
 
   beforeEach(() => {
+    cy.visit('/login');
+    cy.THUMDER_SignOut();
     cy.THUMDER_login();
   });
 
@@ -9,9 +11,7 @@ describe('Auth access', () => {
   });
 
   it('should actually not be accessible', () => {
-    cy.visit('/login');
     cy.location('pathname').should('not.eq', '/login');
-    cy.location('pathname').should('eq', '/');
   });
 
 });

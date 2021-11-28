@@ -22,7 +22,7 @@ const styleFontTextPipe = new PIXI.TextStyle({
 
 const styleFontTextBox = new PIXI.TextStyle({
   fontFamily: 'Arial',
-  fontSize: 18,
+  fontSize: 16,
   fill: 'black',
   stroke: '#000000',
   // strokeThickness: 0,
@@ -82,46 +82,46 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
 
   private initTexts() {
     this.InstStages_text.position.x = 175 - (this.InstStages_text.width) / 2;
-    this.InstStages_text.position.y = 20;
+    this.InstStages_text.position.y = 25;
     this.addChild(this.InstStages_text);
 
     this.drawText(this.IF_text, {
       x: 100 + 5,
-      y: 100
+      y: 115
     });
     this.drawText(this.ID_text, {
       x: 100 + 5,
-      y: 200
+      y: 215
     });
     this.drawText(this.intEX_text, {
       x: 100 + 5,
-      y: 300
+      y: 315
     });
     this.drawText(this.MEM_text, {
       x: 100 + 5,
-      y: 400
+      y: 415
     });
     this.drawText(this.WB_text, {
       x: 100 + 5,
-      y: 500
+      y: 515
     });
 
     for (let i = 0; i < this.faddEX_count; i++) {
       this.drawText(this.faddEX_array[i], {
         x: 400 + 5,
-        y: 100 + (i * 100)
+        y: 115 + (i * 100)
       });
     }
     for (let i = 0; i < this.fmultEX_count; i++) {
       this.drawText(this.fmultEX_array[i], {
         x: 650 + 5,
-        y: 100 + (i * 100)
+        y: 115 + (i * 100)
       });
     }
     for (let i = 0; i < this.fdivEX_count; i++) {
       this.drawText(this.fdivEX_array[i], {
         x: 900 + 5,
-        y: 100 + (i * 100)
+        y: 115 + (i * 100)
       });
     }
   }
@@ -328,7 +328,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
 
     const pixi_text = new PIXI.Text(text, styleFontTextPipe);
     pixi_text.position.x = (positionStart.x - (pixi_text.width + 10));
-    pixi_text.position.y = (positionStart.y);
+    pixi_text.position.y = (positionStart.y) + 15;
     rectangle.addChild(pixi_text);
     this.addChild(rectangle);
   }
@@ -339,7 +339,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     const to_x = to.x;
     const to_y = to.y;
     const bezierArrow = new PIXI.Graphics();
-    bezierArrow.lineStyle(2, 0x000000);
+    bezierArrow.lineStyle(3, 0x000000);
     bezierArrow.moveTo(start_x, start_y);
     bezierArrow.lineTo(to_x, to_y);
 

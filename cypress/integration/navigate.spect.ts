@@ -24,13 +24,17 @@ describe('Visit pages no auth', () => {
 describe('Visit pages auth', () => {
 
   before(() => {
-    cy.visit('/');
+    cy.visit('/login');
   });
 
   beforeEach(() => {
-    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
-    cy.visit('/'); // Reload page
+    cy.THUMDER_SignOut();
+    cy.THUMDER_login();
     // cy.THUMDER_login()
+  });
+
+  it('can visit calculator', () => {
+    cy.THUMDER_goCalculator();
   });
 
   it('can visit file-manager', () => {
@@ -71,6 +75,10 @@ describe('Visit pages auth', () => {
 
   it('can visit Config', () => {
     cy.THUMDER_goConfig();
+  });
+
+  it('can visit Multiview', () => {
+    cy.THUMDER_goMultiview();
   });
 
 });

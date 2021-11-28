@@ -49,7 +49,8 @@ import { LoggerView } from "./views/_auth/logger/logger.view";
 const routes: Routes = [
   {
     path: '',
-    component: IndexView
+    component: IndexView,
+    canActivate: [AuthGuard]
   },
   // _admin views
   {
@@ -75,7 +76,7 @@ const routes: Routes = [
       {path: "ide", component: IDEView, data: {breadcrumb: 'IDE'}},
       {path: "logger", component: LoggerView, data: {breadcrumb: 'Logger'}},
       {path: "memory", component: MemoryView, data: {breadcrumb: 'Memory'}},
-      {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Pipeline'}},
+      {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Cycle Clock Diagram'}},
       {path: "pipeline", component: PipelineView, data: {breadcrumb: 'Pipeline'}},
       {path: "profile", component: ProfileView, data: {breadcrumb: 'Profile'}},
       {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
@@ -117,6 +118,7 @@ const routes: Routes = [
     path: 'monaco',
     component: MonacoEditorComponent
   },
+
   {
     path: '**',
     component: PageNotFoundComponent

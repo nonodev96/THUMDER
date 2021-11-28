@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from "@angular/router";
 import { AUTH_ROUTES } from "../../../CONSTAST";
 import { PublicRoutes } from "../../../types";
-import { Router } from "@angular/router";
 import { AuthService } from "../../../__core/auth/auth.service";
 
 @Component({
@@ -11,7 +11,7 @@ import { AuthService } from "../../../__core/auth/auth.service";
 })
 export class AsideLeftComponent implements OnInit {
 
-  AUTH_ROUTES_ASIDE = AUTH_ROUTES;
+  public readonly AUTH_ROUTES_ASIDE = AUTH_ROUTES;
 
   constructor(public authService: AuthService,
               private router: Router) {

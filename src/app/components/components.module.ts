@@ -27,7 +27,9 @@ import { SharedModule } from "../__shared/shared.module";
 import { PixiPipelineComponent } from './pixi-pipeline/pixi-pipeline.component';
 import { EditMemoryBinary32Component } from './modals/edit-memory-binary32/edit-memory-binary32.component';
 import { EditRegisterBinary32Component } from "./modals/edit-register-binary32/edit-register-binary32.component";
+import { ModalBottomComponent } from './modals/modal-bottom/modal-bottom.component';
 import { CovalentCodeEditorModule } from "@covalent/code-editor";
+import { ModalComponent } from './modals/modal/modal.component';
 
 
 @NgModule({
@@ -73,6 +75,8 @@ import { CovalentCodeEditorModule } from "@covalent/code-editor";
 
     EditMemoryBinary32Component,
     EditRegisterBinary32Component,
+    ModalBottomComponent,
+    ModalComponent,
   ],
   exports: [
     // Aside
@@ -96,7 +100,9 @@ import { CovalentCodeEditorModule } from "@covalent/code-editor";
     PixiPipelineComponent,
 
     EditMemoryBinary32Component,
-    EditRegisterBinary32Component
+    EditRegisterBinary32Component,
+    ModalComponent,
+    ModalBottomComponent,
   ]
 })
 export class ComponentsModule {

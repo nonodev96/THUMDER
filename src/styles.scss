@@ -326,8 +326,41 @@ span.underline-text:after {
   font-size: 10px;
   line-height: 10px;
 }
+
 // Page Calculator
 
 .input-font-family-console input {
   font-family: Consolas, Menlo, Monaco, 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', 'Courier New', monospace, serif;
+}
+
+// modal-p-bottom
+
+
+.modal-p-bottom {
+  // &.show{
+  //   overflow: hidden;
+  // }
+  .modal-dialog {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100% !important;
+    margin: 0;
+    transform: translateY(100%) !important;
+
+    .modal-content {
+      border-radius: .3rem .3rem 0 0;
+    }
+  }
+
+  &.show {
+    overflow: hidden;
+
+    .modal-dialog {
+      transform: translateY(0%) !important;
+      min-height: 80px;
+    }
+
+  }
 }

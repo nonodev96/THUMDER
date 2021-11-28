@@ -182,7 +182,7 @@ export type TypeTableCode = {
   address: string;
   instruction: string;  // 0x00000000
   code: string;         // 0x00000000
-  stage: TypeStage;
+  stage?: TypeStage;
   index?: number;
 };
 

@@ -24,6 +24,7 @@ export class AuthService implements OnInit, OnDestroy {
     this.subscriptions$.add(
       this.afAuth.authState.subscribe(user => {
         if (user) {
+          window.document.body.className = "";
           this.userData = user;
           localStorage.setItem('user', JSON.stringify(this.userData));
           JSON.parse(localStorage.getItem('user'));
@@ -44,31 +45,30 @@ export class AuthService implements OnInit, OnDestroy {
   }
 
   // Sign in with email/password
-  async SignIn(email, password): Promise<UserCredential> {
+  async SignIn(email, password): Promise<boolean> {
     try {
       const userCredential = await this.afAuth.signInWithEmailAndPassword(email, password);
       await this.SetUserData(userCredential);
-      this.ngZone.run(() => {
-        this.router.navigate(['/']);
-      });
-      return userCredential;
+      return Promise.resolve(true);
     } catch (error) {
       console.error(error);
     }
+    return Promise.resolve(false);
   }
 
   // Sign up with email/password
-  async SignUp(email, password): Promise<UserCredential> {
+  async SignUp(email, password): Promise<UserCredential | void> {
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
       /* Call the SendVerificationMail(userCredential) function when new user sign
       up and returns promise */
       await this.SendVerificationMail(userCredential);
       await this.SetUserData(userCredential);
-      return userCredential;
+      return Promise.resolve(userCredential);
     } catch (error) {
       console.error(error);
     }
+    return Promise.resolve();
   }
 
   // Send email verification when new user sign up
@@ -85,7 +85,7 @@ export class AuthService implements OnInit, OnDestroy {
   // Reset Forgot password
   async ForgotPassword(passwordResetEmail): Promise<void> {
     try {
-      const result_void = await this.afAuth.sendPasswordResetEmail(passwordResetEmail);
+      await this.afAuth.sendPasswordResetEmail(passwordResetEmail);
       window.alert('Password reset email sent, check your inbox.');
     } catch (error) {
       console.error(error);

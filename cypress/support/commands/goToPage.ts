@@ -7,6 +7,12 @@ export function THUMDER_openNavigation() {
   cy.get('#dropdownSubMenuNavigation').click();
 }
 
+export function THUMDER_goCalculator() {
+  THUMDER_openNavigation();
+  cy.get('a[title="calculator"]').click();
+  cy.location('pathname').should('eq', '/auth/calculator');
+}
+
 export function THUMDER_goFileManager() {
   THUMDER_openNavigation();
   cy.get('a[title="file-manager"]').click();
@@ -65,4 +71,11 @@ export function THUMDER_goConfig() {
   THUMDER_openNavigation();
   cy.get('a[title="config"]').click();
   cy.location('pathname').should('eq', '/auth/config');
+}
+
+
+export function THUMDER_goMultiview() {
+  THUMDER_openNavigation();
+  cy.get('a[title="multiview"]').click();
+  cy.location('pathname').should('eq', '/auth/multiview');
 }

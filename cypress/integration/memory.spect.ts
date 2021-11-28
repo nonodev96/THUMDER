@@ -1,13 +1,15 @@
 describe('Memory page', () => {
 
   before(() => {
-    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
-    cy.visit('/'); // Reload page
-    cy.THUMDER_goMemory();
-    cy.get('#editMemoryModalButton').click();
   });
 
   beforeEach(() => {
+    cy.visit('/');
+    cy.THUMDER_SignOut();
+    cy.THUMDER_login();
+    cy.wait(1000);
+    cy.THUMDER_goMemory();
+    cy.get('#editMemoryModalButton').click();
     cy.get('#itemSelectedEditMemoryValueHexadecimalId').as('input-hexadecimal');
     cy.get('#itemSelectedEditMemoryId').as('input-address');
     // cy.get('#itemSelectedEditMemoryValueDecimalId').as('input-memory-decimal');

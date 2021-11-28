@@ -11,7 +11,6 @@ import { BehaviorSubject, Subject } from "rxjs";
 })
 export class SocketProviderConnectService {
 
-
   private connectSubject = new Subject();
   private publicMessageSubject = new Subject();
   private privateMessageSubject = new Subject();

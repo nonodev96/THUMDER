@@ -4,6 +4,7 @@ import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeCode, TypeStage, TypeTableCode } from "../../../types";
 import { Utils } from "../../../Utils";
+import { Queue } from "datastructures-js";
 
 @Component({
   selector: 'view-code',
@@ -16,6 +17,8 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
   displayedColumnsMemory: string[] = ['Address', 'Text', 'Binary', 'Hexadecimal', 'Stage', 'Instruction'];
   dataSourceCode = new TableVirtualScrollDataSource<TypeTableCode>();
+
+  listRowActives: { address: string, stage: TypeStage }[] = [];
 
   private privateStep = 0;
 
@@ -40,6 +43,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       this.privateStep = step;
     });
 
+    // TODO FIX
     this.machine.getCodeSimulationObservable().subscribe((typeTableCode) => {
       for (const data_code of typeTableCode) {
         const index = Math.round(Utils.hexadecimalToDecimal(data_code.address) / 4);
@@ -50,12 +54,10 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     // TODO
     this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const stepSimulationPipeline = this.machine.getListStatusPipeline(stepSimulation);
-
-      for (const element of stepSimulationPipeline) {
-        if (element != undefined && element.address !== "") {
-          const index = Math.round(Utils.hexadecimalToDecimal(element.address) / 4);
-          const data_code = this.machine.code.get(element.address);
-          this.setRow(index, data_code, element.stage);
+      for (const step of stepSimulationPipeline) {
+        const length = this.listRowActives.push({address: step.address, stage: step.stage});
+        if (length >= 5) {
+          this.listRowActives = this.listRowActives.slice(1);
         }
       }
     });
@@ -65,7 +67,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     const array = Utils.MapToArray(this.machine.code);
     for (const code_memory of array) {
       const index = Utils.addressToIndex(code_memory.value.address);
-      const stage = code_memory.value.stage;
+      const stage = code_memory.value.stage ?? "";
       const code: TypeCode = {
         address: code_memory.value.address,
         instruction: code_memory.value.instruction,
@@ -106,6 +108,12 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       index: index,
     };
     this.refreshDataSourceCode();
+  }
+
+  checkIfContains(address: string, stage: TypeStage): boolean {
+    return this.listRowActives.some(
+      (v) => (v.address === address) && (v.stage === stage)
+    );
   }
 
 }

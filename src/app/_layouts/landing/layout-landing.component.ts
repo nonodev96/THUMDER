@@ -7,15 +7,14 @@ import { DOCUMENT } from "@angular/common";
 })
 export class LayoutLandingComponent implements OnInit, AfterViewInit {
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
+  constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
   ngOnInit(): void {
+    this.document.body.classList.add('dx-viewport', 'sidebar-mini', 'layout-fixed', 'layout-footer-fixed');
   }
 
   ngAfterViewInit(): void {
-    this.document.body.classList.add('dx-viewport', 'sidebar-mini', 'layout-fixed', 'layout-footer-fixed');
     window.jQuery('[data-widget="pushmenu"]').PushMenu('collapse');
   }
 }

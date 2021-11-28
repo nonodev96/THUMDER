@@ -37,7 +37,7 @@ export class FileSystemStorageService {
     }
     console.log('FileSystem isInitialize');
 
-    const listNameExamples = ['base.s', 'fact.s', 'gcm.s', 'input.s', 'prim.s'];
+    const listNameExamples = ['prim.s', 'base.s', 'fact.s', 'gcm.s', 'input.s'];
     for (const filename of listNameExamples) {
       const defaultFile = new FileItem('', false, []);
       defaultFile.name = filename;
