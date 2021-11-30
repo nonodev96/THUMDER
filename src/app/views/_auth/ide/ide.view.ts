@@ -2,12 +2,13 @@ import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from "
 import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
-import { TypeExtrasIDE } from "../../../types";
+import { InterfaceFileItem, TypeExtrasIDE } from "../../../types";
 import { FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
 import { Utils } from "../../../Utils";
 import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
 import { MachineService } from "../../../__core/machine/machine.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "view-ide",
@@ -20,6 +21,27 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
   isMaximize = false;
 
   extrasIDE: TypeExtrasIDE;
+  interfaceFileItem: InterfaceFileItem = {
+    $key: '',
+    content: "",
+    dataItem: undefined,
+    dateModified: undefined,
+    description: "",
+    e1_uid: "",
+    f_id: "",
+    hasSubDirectories: false,
+    isDirectory: false,
+    key: "",
+    name: "",
+    path: "",
+    pathKeys: [],
+    size: 0,
+    thumbnail: ""
+  };
+  private initializedSubscription: Subscription = new Subscription();
+  private breakpointSubscription: Subscription = new Subscription();
+  private debuggerSubscription: Subscription = new Subscription();
+  private lineSubscription: Subscription = new Subscription();
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -28,7 +50,6 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
               private translate: TranslateService,
               private toastService: ToastrService) {
     this.extrasIDE = this.router.getCurrentNavigation().extras.state as TypeExtrasIDE;
-
   }
 
   ngOnInit(): void {
@@ -42,30 +63,34 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+
   ngAfterViewInit(): void {
-    this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
+    this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
         let content = '';
+        let interfaceFileItem: InterfaceFileItem;
         if (this.extrasIDE) {
-          const interfaceFileItem = this.extrasIDE.interfaceFileItem ?? Utils.new_InterfaceFileItem();
+          interfaceFileItem = this.extrasIDE.interfaceFileItem ?? Utils.new_InterfaceFileItem();
           content = interfaceFileItem.content;
           localStorage.setItem('interfaceFileItem', JSON.stringify(interfaceFileItem));
         } else {
-          content = JSON.parse(localStorage.getItem('interfaceFileItem')).content ?? '';
+          interfaceFileItem = JSON.parse(localStorage.getItem('interfaceFileItem')) as InterfaceFileItem;
+          content = interfaceFileItem.content ?? '';
         }
+        this.interfaceFileItem = interfaceFileItem;
         await this.monacoEditorComponent.updateContent(content);
         const breakpoints = JSON.parse(localStorage.getItem('breakpoints'));
         this.monacoEditorComponent.setBreakpoints(breakpoints);
         return Promise.resolve();
       }
     });
-    this.monacoEditorComponent.getBreakpointsObservable().subscribe((breakpoints) => {
+    this.breakpointSubscription = this.monacoEditorComponent.getBreakpointsObservable().subscribe((breakpoints) => {
       this.machine.breakpointManager.updateManager(breakpoints);
     });
-    this.machine.getDebuggerObservable().subscribe((line) => {
+    this.debuggerSubscription = this.machine.getDebuggerObservable().subscribe((line) => {
       this.monacoEditorComponent.printLine(line);
     });
-    this.machine.getLineObservable().subscribe((line) => {
+    this.lineSubscription = this.machine.getLineObservable().subscribe((line) => {
       this.monacoEditorComponent.printLine(line);
     });
   }
@@ -78,6 +103,10 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
     } else {
       localStorage.setItem('breakpoints', JSON.stringify({}));
     }
+    this.initializedSubscription.unsubscribe();
+    this.breakpointSubscription.unsubscribe();
+    this.debuggerSubscription.unsubscribe();
+    this.lineSubscription.unsubscribe();
     return Promise.resolve();
   }
 
@@ -86,7 +115,7 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getListOfTags(): void {
-    console.log(this.monacoEditorComponent.getListOfTags());
+    this.machine.log(this.monacoEditorComponent.getListOfTags());
   }
 
   changeHeight(): void {
@@ -108,12 +137,18 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
 
       const title = await this.translate.get('TOAST.TITLE_SAVE_FILE').toPromise();
       const message = await this.translate.get('TOAST.MESSAGE_SAVE_FILE').toPromise();
-      this.toastService.success(message, title, {timeOut: 1500});
+      this.toastService.success(message, title, {
+        timeOut: 1500,
+        positionClass: 'toast-bottom-left'
+      });
     } catch (error) {
       console.error(error);
       const title = await this.translate.get('TOAST.TITLE_ERROR_SAVE_FILE').toPromise();
       const message = await this.translate.get('TOAST.MESSAGE_ERROR_SAVE_FILE').toPromise();
-      this.toastService.error(message, title, {timeOut: 2500});
+      this.toastService.error(message, title, {
+        timeOut: 2500,
+        positionClass: 'toast-bottom-left'
+      });
     }
 
     return Promise.resolve();

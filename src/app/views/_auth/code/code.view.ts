@@ -4,7 +4,7 @@ import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeCode, TypeStage, TypeTableCode } from "../../../types";
 import { Utils } from "../../../Utils";
-import { Queue } from "datastructures-js";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'view-code',
@@ -15,12 +15,14 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  displayedColumnsMemory: string[] = ['Address', 'Text', 'Binary', 'Hexadecimal', 'Stage', 'Instruction'];
-  dataSourceCode = new TableVirtualScrollDataSource<TypeTableCode>();
+  public displayedColumnsMemory: string[] = ['Address', 'Text', 'Binary', 'Hexadecimal', 'Stage', 'Instruction'];
+  public dataSourceCode = new TableVirtualScrollDataSource<TypeTableCode>();
 
-  listRowActives: { address: string, stage: TypeStage }[] = [];
-
+  public listRowActives: { address: string, stage: TypeStage }[] = [];
   private privateStep = 0;
+  private stepSubscription: Subscription = new Subscription();
+  private stepSimulationSubscription: Subscription = new Subscription();
+  private codeSimulationSubscription: Subscription = new Subscription();
 
   constructor(public machine: MachineService) {
     this.dataSourceCode.filter = null;
@@ -38,21 +40,13 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
         code: "0x00000000"
       };
     });
-
-    this.machine.getStepObservable().subscribe((step) => {
-      this.privateStep = step;
-    });
-
-    // TODO FIX
-    this.machine.getCodeSimulationObservable().subscribe((typeTableCode) => {
+    this.codeSimulationSubscription = this.machine.getCodeSimulationObservable().subscribe((typeTableCode) => {
       for (const data_code of typeTableCode) {
         const index = Math.round(Utils.hexadecimalToDecimal(data_code.address) / 4);
         this.setRow(index, data_code);
       }
     });
-
-    // TODO
-    this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
+    this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const stepSimulationPipeline = this.machine.getListStatusPipeline(stepSimulation);
       for (const step of stepSimulationPipeline) {
         const length = this.listRowActives.push({address: step.address, stage: step.stage});
@@ -60,6 +54,9 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
           this.listRowActives = this.listRowActives.slice(1);
         }
       }
+    });
+    this.stepSubscription = this.machine.getStepObservable().subscribe((step) => {
+      this.privateStep = step;
     });
   }
 
@@ -80,6 +77,9 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.stepSubscription.unsubscribe();
+    this.codeSimulationSubscription.unsubscribe();
+    this.stepSimulationSubscription.unsubscribe();
   }
 
 

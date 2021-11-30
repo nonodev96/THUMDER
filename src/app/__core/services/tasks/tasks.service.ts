@@ -29,7 +29,7 @@ export class TasksService implements OnDestroy {
 
   constructor(private socketProviderConnectService: SocketProviderConnectService) {
     this.subscription = this.socketProviderConnectService.connectObservable.subscribe((connect) => {
-      console.log('socketProviderConnectService connect ', connect)
+      console.log('socketProviderConnectService connect ', connect);
       this.coreAgentsClient = new CoreAgentsClient(<any>this.socketProviderConnectService.socket.ioSocket);
       this.sender = new AID({
         name: "Client",
@@ -40,12 +40,12 @@ export class TasksService implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe()
+    this.subscription.unsubscribe();
   }
 
   debug() {
-    console.log("ioSocket: ", this.socketProviderConnectService.socket.ioSocket)
-    console.log("coreAgentsClient: ", this.coreAgentsClient)
+    console.log("ioSocket: ", this.socketProviderConnectService.socket.ioSocket);
+    console.log("coreAgentsClient: ", this.coreAgentsClient);
   }
 
   /**

@@ -216,7 +216,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       range: new monaco.Range(line, 1, line, 1),
       options: {
         isWholeLine: true,
-        className: 'debugLine'
+        className: 'debug-line'
       }
     };
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);

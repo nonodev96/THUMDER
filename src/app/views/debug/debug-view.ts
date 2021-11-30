@@ -21,7 +21,6 @@ export class DebugView implements OnInit {
     "ADDI   R2, R0, #2",
     "ADDI   R16, R0, #16",
     "ADDI   R18, R0, #8",
-    "ADD    R2, R2, R2",
     "NEXTVALUE:",
     "ADDI   R3, R0, #0",
     "LOOP:",

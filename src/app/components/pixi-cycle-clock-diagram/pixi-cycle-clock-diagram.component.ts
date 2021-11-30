@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_CycleClockDiagram, TypeArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'thumder-pixi-cycle-clock-diagram',
@@ -29,6 +30,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   private ticker: PIXI.Ticker;
   private Keyboard;
   private Mouse;
+  private stepSimulationSubscription: Subscription = new Subscription();
 
   private readonly idCanvas = "pixi-cycle-clock-diagram-id";
 
@@ -42,7 +44,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   ngOnInit(): void {
-    this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
+    this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const cycle = this.machine.getStatusCycleClockDiagram(stepSimulation);
       this.cycleClockDiagram.addInstruction(cycle.instruction, cycle.cycle, cycle.stepsToWait);
       this.cycleClockDiagram.nextStep(cycle.step);
@@ -68,26 +70,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     this.loader = PIXI.Loader.shared;
     this.ticker = PIXI.Ticker.shared;
 
-    // this.loader.onComplete.add(this.setup);
     this.loader.load((loader, resources) => {
-      // Container
-      // const table = new PixiJSTable(true, 10, 10, { x: 0, y: 0 }, { x: 0, y: 0 }, new Text(""))
-      // table.addCell(new PIXI.Text("This is a large bit of text without word wrap to show you what happens when there's a large cell", styleNoWrap));
-      // app.stage.addChild(table.draw())
-
-      // Graphics
-      // const grid = new PixiJSGrid(1024, 64, { width: 1, color: 0xffffff, alpha: 1, alignment: 0.5, native: true }, true, true)
-      // app.stage.addChild(grid.drawGrid())
-
-      // Graphics
-      // app.stage.addChild(cycleClockDiagram.draw());
-
-      // app.stage.addChild(pipeline.draw());
-
-      // const cycleClockDiagram2 = new PixiJScycleClockDiagram(5, 10)
-      // cycleClockDiagram2.table.position.x += 0
-      // cycleClockDiagram2.table.position.y += 200
-      // app.stage.addChild(cycleClockDiagram2.draw())
 
       this.resize();
       const fps = new PIXI.Text('FPS: 0', {fill: 0xFFFFFF, fontSize: 12});
@@ -96,14 +79,8 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
       fps.zIndex = 100;
       this.pApp.stage.addChild(fps);
 
-      // const container = new PIXI.Container();
-      // const text = new PIXI.Text("Texto")
-      // container.addChild(text)
-      // app.stage.addChild(container)
       this.pApp.ticker.add((delta) => {
         fps.text = `FPS: ${this.ticker.FPS.toFixed(2)}`;
-        // hero.direction = getNextEntityDirection(app.view.width, hero);
-        // hero.sprite.x = getNextEntityPosition(hero);
       });
       this.pApp.ticker.add((delta) => this.gameLoop(delta));
 
@@ -111,14 +88,15 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   }
 
-  // setup() {
-  //   console.log("setup")
-  // }
+  ngOnDestroy(): void {
+    this.pApp.stage.destroy();
+    this.pApp.destroy();
+    this.stepSimulationSubscription.unsubscribe();
+  }
 
   private gameLoop(delta: number): void {
     // Update the current game state:
     this.play(delta);
-
     this.Keyboard.update();
     this.Mouse.update();
   }
@@ -147,11 +125,6 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     }
   }
 
-  ngOnDestroy(): void {
-    // this.pApp.stage.destroy();
-    // this.pApp.destroy();
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize(event: any): void {
     event.preventDefault();
@@ -172,16 +145,11 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   @HostListener('document:click', ['$event', '$event.target'])
   handleOnClick(event: MouseEvent, targetElement: HTMLElement): void {
-    // console.log(event, targetElement)
     if (!targetElement) {
       return;
     }
     this.inCanvas = targetElement.id === this.idCanvas;
     this.inCanvasEventEmitter.emit(this.inCanvas);
-    // const clickedInside = this.elementRef.nativeElement.contains(targetElement);
-    // if (!clickedInside) {
-    //   this.clickOutside.emit(event);
-    // }
   }
 
   moveBottom(): void {

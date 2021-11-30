@@ -39,6 +39,13 @@ export class AppComponent {
       if (route instanceof NavigationStart) {
         this.document.body.className = "";
       }
+      if (route instanceof NavigationEnd) {
+        const cards: any = window.jQuery('.card');
+        cards.on('expanded.lte.cardwidget', () => {
+          const resize = window.dispatchEvent(new Event('resize'));
+          console.log('resize', resize);
+        });
+      }
     });
     MonacoConfig.onMonacoLoad();
   }

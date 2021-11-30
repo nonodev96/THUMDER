@@ -430,7 +430,7 @@ export class MachineService {
     return parseInt(str.replace(/\D/g, ''));
   }
 
-  private log(...msg: any) {
+  public log(...msg: any) {
     console.debug('Line :', this.privateLine, 'Step: ', this.privateStep, msg);
     this.logger = Utils.stringFormat("Step: {0} Line: {1} | {2} ", this.privateStep, this.privateLine, ...msg);
     this.logger$.next(this.logger);

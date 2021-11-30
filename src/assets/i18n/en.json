@@ -143,7 +143,9 @@
     "TITLE_RESET_MACHINE": "Reset machine",
     "MESSAGE_RESET_MACHINE": "Reset machine success",
     "TITLE_END_SIMULATION": "End of simulation",
-    "MESSAGE_END_SIMULATION": "End of simulation success"
+    "MESSAGE_END_SIMULATION": "End of simulation success",
+    "TITLE_BREAKPOINT_SIMULATION": "Breakpoint",
+    "MESSAGE_BREAKPOINT_SIMULATION": "Stop simulation"
   },
   "MODAL": {
     "TEXT": "Text",

@@ -29,6 +29,12 @@
       </li>
 
       <li class="nav-item d-none d-sm-inline-block">
+        <a [routerLink]="['/auth/ide']" class="nav-link" title="ide">
+          {{ 'NAVIGATION.IDE' | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item d-none d-sm-inline-block">
         <a [routerLink]="['/auth/multiview']" class="nav-link" title="Multiview">
           {{ 'NAVIGATION.MULTIVIEW' | translate }}
         </a>

@@ -1,20 +1,22 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AppComponent } from "../../../app.component";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { PublicRoutes } from "../../../types";
 import { AUTH_ROUTES } from "../../../CONSTAST";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-auth-navbar",
   templateUrl: "./auth-navbar.component.html",
 })
-export class AuthNavbarComponent implements OnInit {
-  navbarOpen = false;
-  isRunning = false;
-  AUTH_ROUTES = AUTH_ROUTES;
+export class AuthNavbarComponent implements OnInit, OnDestroy {
+  public navbarOpen = false;
+  public isRunning = false;
+  public readonly AUTH_ROUTES = AUTH_ROUTES;
+  private isRunningSubscription: Subscription = new Subscription();
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -24,9 +26,13 @@ export class AuthNavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.machine.getIsRunningObservable().subscribe((isRunning) => {
+    this.isRunningSubscription = this.machine.getIsRunningObservable().subscribe((isRunning) => {
       this.isRunning = isRunning;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.isRunningSubscription.unsubscribe();
   }
 
   setNavbarOpen(): void {

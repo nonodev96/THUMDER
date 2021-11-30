@@ -4,6 +4,16 @@
     <h3 class="card-title">Editor</h3>
     <div class="card-tools">
 
+      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="changeHeight()">
+        Change Height
+      </button>
+      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="getListOfTags()">
+        Get List Of Tags
+      </button>
+      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="toggleDebuggerTag()">
+        Toggle Debugger in cursor
+      </button>
+
       <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
         <i class="fas fa-circle"></i>
       </button>
@@ -39,9 +49,9 @@
   </div>
 
   <div class="card-footer">
-    <button type="button" class="btn btn-success" (click)="changeHeight()">Change Height</button>
-    <button type="button" class="btn btn-success" (click)="getListOfTags()">Get List Of Tags</button>
-    <button type="button" class="btn btn-success" (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>
+    <p> Name: {{interfaceFileItem.name ?? ''}} </p>
+    <p> Path: {{interfaceFileItem.path ?? ''}} </p>
+    <p> Key: {{interfaceFileItem.key ?? ''}} </p>
   </div>
 </div>
 <!-- /.card -->

@@ -3,6 +3,7 @@ import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } 
 import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 import { Utils } from "../../Utils";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: 'thumder-pixi-pipeline',
@@ -14,6 +15,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('pixiContainer') public pixiContainer;
   public pApp: PIXI.Application;
   private pipeline: PixiTHUMDER_Pipeline;
+  private stepSimulationSubscription: Subscription = new Subscription();
 
   constructor(private machine: MachineService) {
     const faddEX_count = machine.floatingPointStageConfiguration.addition.count;
@@ -24,7 +26,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
+    this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const list_elements = this.machine.getListStatusPipeline(stepSimulation);
       for (const e of list_elements) {
         const code = this.machine.getTableCode(e.address).code;
@@ -78,6 +80,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.pApp.stage.destroy();
     this.pApp.destroy();
+    this.stepSimulationSubscription.unsubscribe();
   }
 
   @HostListener('window:resize', ['$event'])
