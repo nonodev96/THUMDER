@@ -6,6 +6,7 @@ import { Utils } from '../../../Utils';
 import { InterfaceFileItem } from "../../../types";
 import firebase from "firebase/app";
 import Timestamp = firebase.firestore.Timestamp;
+import { Observable, Subject } from "rxjs";
 
 export class FileItem extends FileSystemItem {
 
@@ -23,6 +24,7 @@ export class FileSystemService {
   public items: FileItem[] = [];
   public ITEMS: InterfaceFileItem[] = [];
   private readonly UID: string;
+  private updateUI$: Subject<void> = new Subject<void>();
 
   constructor(private fileSystemStorageService: FileSystemStorageService) {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -34,8 +36,13 @@ export class FileSystemService {
     this.fileSystemStorageService.getInterfaceFileItems().subscribe((items) => {
       this.ITEMS = items;
       this.items = Utils.MAP_InterfaceFileItemArray_TO_FileItemArray(this.ITEMS);
+      this.updateUI$.next();
     });
     return Promise.resolve(true);
+  }
+
+  public getUpdateUIObservable(): Observable<void> {
+    return this.updateUI$.asObservable();
   }
 
   public async getItems(path: FileSystemItem): Promise<Array<FileItem>> {

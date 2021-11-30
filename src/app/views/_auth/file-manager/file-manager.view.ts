@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DOCUMENT } from "@angular/common";
 import { NavigationExtras, Router } from "@angular/router";
 import { FileItem, FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
@@ -6,6 +6,7 @@ import { DxFileManagerComponent } from 'devextreme-angular';
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import FileManager from "devextreme/ui/file_manager";
+import { Subscription } from "rxjs";
 
 export type FileMenuOptions = {
   items: {
@@ -23,7 +24,7 @@ export type FileMenuOptions = {
 
 export type TypeEventSelectedFileOpened = {
   file?: FileItem
-}
+};
 
 export type TypeOnContextMenuItemClick = {
   component: FileManager,
@@ -35,27 +36,27 @@ export type TypeOnContextMenuItemClick = {
   itemIndex: number,
   model: any,
   viewArea: 'navPane' | 'itemView',
-}
+};
 
 export type TypeOnContentReady = {
   component: FileManager,
   element: HTMLElement,
   model: any
-}
+};
 
 @Component({
   selector: 'view-file-manager',
   templateUrl: './file-manager.view.html',
   styleUrls: []
 })
-export class FileManagerView implements OnInit, OnDestroy {
-  @ViewChild(DxFileManagerComponent, {static: false})
-  fileManager: DxFileManagerComponent;
+export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild(DxFileManagerComponent, {static: false}) fileManager: DxFileManagerComponent;
 
   newFileMenuOptions: FileMenuOptions;
   changeCategoryMenuOptions: FileMenuOptions;
   customFileProvider: CustomFileSystemProvider;
-  show: boolean
+  show: boolean;
+  updateUISubscription: Subscription = new Subscription();
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -121,26 +122,33 @@ export class FileManagerView implements OnInit, OnDestroy {
     };
   }
 
+  ngAfterViewInit(): void {
+    this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(() => {
+      this.fileManager?.instance?.refresh();
+    });
+  }
+
   ngOnDestroy(): void {
     // Fix memory leak
-    this.show = false
+    this.show = false;
     this.fileManager = null;
     this.customFileProvider = null;
     this.newFileMenuOptions = null;
     this.changeCategoryMenuOptions = null;
+    this.updateUISubscription.unsubscribe();
   }
 
   onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
-    const index2 = this.fileSystemService.ITEMS.findIndex(value => $event.file.key === value.key)
+    const index2 = this.fileSystemService.ITEMS.findIndex(value => $event.file.key === value.key);
     if (index2 > -1) {
-      const interfaceFileItem = this.fileSystemService.ITEMS[index2]
+      const interfaceFileItem = this.fileSystemService.ITEMS[index2];
       const extras: NavigationExtras = {
         state: {
           'interfaceFileItem': interfaceFileItem,
         }
-      }
+      };
       this.router.navigateByUrl('/auth/ide', extras).then((r) => {
-        console.log(r)
+        console.log(r);
       });
     }
   }
@@ -149,8 +157,8 @@ export class FileManagerView implements OnInit, OnDestroy {
     console.log($event);
   }
 
-  async onContextMenuItemClick($event: TypeOnContextMenuItemClick): Promise<void>  {
-    const {itemData, viewArea, fileSystemItem} = $event
+  async onContextMenuItemClick($event: TypeOnContextMenuItemClick): Promise<void> {
+    const {itemData, viewArea, fileSystemItem} = $event;
     let updated = false;
     const extension = itemData.options ? itemData.options.extension : undefined;
     const category = itemData.options ? itemData.options.category : undefined;
@@ -163,12 +171,10 @@ export class FileManagerView implements OnInit, OnDestroy {
       updated = await this.fileSystemService.updateCategory(directory, selectedItems, category, viewArea);
     }
     if (updated) {
-      this.fileManager.instance.refresh().then(() => {
-
-      });
+      this.fileManager.instance.refresh();
     }
 
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   height(): number | string {
@@ -176,7 +182,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   log(): void {
-    console.log(this.fileSystemService.items)
-    console.log(this.fileSystemService.ITEMS)
+    console.log(this.fileSystemService.items);
+    console.log(this.fileSystemService.ITEMS);
   }
 }
