@@ -31,7 +31,8 @@ import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { CookieService } from "ngx-cookie-service";
 // ngx-markdown
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
-
+// ngx-cookieconsent
+import { NgcCookieConsentModule, NgcCookieConsentConfig } from 'ngx-cookieconsent';
 
 // Services
 import { UtilityService } from "./__core/utility.service";
@@ -94,6 +95,23 @@ import * as PIXI from "pixi.js";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
+import * as environment from './../environments/environment';
+
+const cookieConfig: NgcCookieConsentConfig = {
+  cookie: {
+    domain: 'localhost' // it is recommended to set your domain, for cookies to work properly
+  },
+  palette: {
+    popup: {
+      background: '#000'
+    },
+    button: {
+      background: '#f1d600'
+    }
+  },
+  theme: 'edgeless',
+  type: 'opt-out'
+};
 
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -169,6 +187,7 @@ export function markedOptionsFactory(): MarkedOptions {
     RouterModule,
 
     AppRoutingModule,
+    NgcCookieConsentModule.forRoot(cookieConfig),
 
     MarkdownModule.forRoot({
       sanitize: SecurityContext.NONE,
