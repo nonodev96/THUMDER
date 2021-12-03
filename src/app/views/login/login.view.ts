@@ -36,8 +36,7 @@ export class LoginView implements OnInit {
     this.loginForm = this.formBuilder.group({
       email: new FormControl('', Validators.compose([
         Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(30)
+        Validators.email
       ])),
       password: new FormControl('', Validators.compose([
         Validators.required,
@@ -45,12 +44,15 @@ export class LoginView implements OnInit {
         Validators.maxLength(30)
       ])),
     }, {});
+
+    this.authService.getIsLoggingObservable().subscribe((isLogging) => {
+      if (isLogging) {
+        this.router.navigateByUrl('/');
+      }
+    });
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedIn) {
-      this.document.body.classList.add('login-page');
-    }
   }
 
   async SignIn(email: string, password: string): Promise<void> {

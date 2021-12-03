@@ -1,4 +1,13 @@
 {
+  "cookie": {
+    "header": "¡Este sitio usa cookies 😘!",
+    "message": "Este sitio web utiliza cookies para garantizar que obtenga la mejor experiencia en nuestro sitio web",
+    "dismiss": "¡Entiendo!",
+    "allow": "Permitir cookies",
+    "deny": "Denegar",
+    "link": "Mas información",
+    "policy": "Política de cookies"
+  },
   "NAVIGATION": {
     "PAGES": "Páginas",
     "FILE-MANAGER": "Gestor de ficheros",

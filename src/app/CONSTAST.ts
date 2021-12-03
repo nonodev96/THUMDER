@@ -1,4 +1,5 @@
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
+import npm from '../../package.json';
 import {
   PublicRoutes,
   PublicRoutesList,
@@ -8,11 +9,29 @@ import {
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
-  TypeTableCode, TypeDataStatistics, TypePipeline, TypeStepSimulation
+  TypeTableCode, TypeDataStatistics, TypePipeline, TypeStepSimulation, InterfaceFileItem, TypeMultiviewConfiguration
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
-export const NPM_VERSION = '1.2.7';
+export const NPM_VERSION = npm.version.toString();
+export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
+  $key: "",
+  content: "",
+  dataItem: undefined,
+  dateModified: undefined,
+  description: "",
+  e1_uid: "",
+  f_id: "",
+  hasSubDirectories: false,
+  isDirectory: false,
+  key: "",
+  name: "",
+  path: "",
+  pathKeys: [],
+  size: 0,
+  thumbnail: ""
+
+};
 
 export const REGEX_IS_ABSOLUTE_HREF = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)', 'i');
 export const REGEX_HEXADECIMAL_08 = new RegExp('^(0x|0X|)?([a-fA-F0-9]{08})$', 'i');
@@ -23,6 +42,16 @@ export const DEFAULT_AUTO_SAVE: boolean = true;
 export const DEFAULT_LANG: TypeLang = 'en';
 // 0x8000 --> 32768
 export const DEFAULT_MEMORY_SIZE: number = 32768;
+export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
+  calculator: false,
+  code: true,
+  cycle_clock: true,
+  memory: true,
+  pipeline: true,
+  registers: true,
+  statistics: false
+
+};
 export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageConfiguration = {
   addition: {
     count: 1,
@@ -350,7 +379,10 @@ export const CONFIG_WEBSOCKET: SocketIoConfig = {
   url: 'http://localhost:3000',
   options: {
     transports: ['websocket'],
-    reconnection: false
+    reconnection: true,
+    reconnectionDelay: 20000,
+    reconnectionDelayMax: 25000,
+    reconnectionAttempts: 5
   }
 };
 
@@ -384,7 +416,7 @@ export const AUTH_ROUTES: PublicRoutesList = [
     data: {breadcrumb: 'Documentation'}
   },
   {
-    lang: 'FILE-MANAGER',
+    lang: 'FILE_MANAGER',
     path: 'file-manager',
     routerLink: '/auth/file-manager',
     displayName: 'file-manager',
@@ -412,7 +444,7 @@ export const AUTH_ROUTES: PublicRoutesList = [
     data: {breadcrumb: 'Memory'}
   },
   {
-    lang: "CYCLE-CLOCK-DIAGRAM",
+    lang: "CYCLE_CLOCK_DIAGRAM",
     path: "cycle-clock-diagram",
     routerLink: '/auth/cycle-clock-diagram',
     displayName: 'Cycle clock diagram',
@@ -452,6 +484,13 @@ export const AUTH_ROUTES: PublicRoutesList = [
     routerLink: '/auth/multiview',
     displayName: 'Multiview',
     data: {breadcrumb: 'Multiview'}
+  },
+  {
+    lang: "DEBUG",
+    path: "debug",
+    routerLink: '/auth/debug',
+    displayName: 'Debug',
+    data: {breadcrumb: 'Debug'}
   },
 ];
 

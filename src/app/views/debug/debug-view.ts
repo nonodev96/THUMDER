@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from "ngx-toastr";
 import { Utils } from "../../Utils";
 import { FileItem } from "../../__core/services/file-system-nonodev96/file-system.service";
-import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
 
+import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
-import { TypeCode } from "../../types";
+import { TypeCode, TypeData, TypeMemoryToUpdate, TypeRegister } from "../../types";
 
 @Component({
   selector: 'app-debug',
@@ -15,7 +15,7 @@ import { TypeCode } from "../../types";
 export class DebugView implements OnInit {
 
   public socketID: string = "";
-  public testRequest: string = [
+  public testCodeRequest: string = [
     "main:",
     "ADDI   R1, R0, #0",
     "ADDI   R2, R0, #2",
@@ -49,17 +49,17 @@ export class DebugView implements OnInit {
     "TRAP   #0"
   ].join("\n");
 
-  public testResponse: TypeCode[] = [];
+  public testCodeResponse: TypeCode[] = [];
 
   constructor(private toast: ToastrService,
-              private socketProviderConnect: SocketProviderConnectService) {
+              public socketProviderConnect: SocketProviderConnectService) {
     console.log("ioSocket: ", this.socketProviderConnect.socket.ioSocket);
   }
 
   ngOnInit(): void {
-    this.socketProviderConnect.socket.ioSocket.on("CodeResponse", (response) => {
+    this.socketProviderConnect.socket.on("CodeResponse", (response) => {
       const code = JSON.parse(response) as TypeCode[];
-      this.testResponse = code.map((v) => {
+      this.testCodeResponse = code.map((v) => {
         return {
           address: v.address,
           code: v.code,
@@ -68,8 +68,17 @@ export class DebugView implements OnInit {
         };
       });
     });
-  }
 
+    this.socketProviderConnect.socket.on("UpdateRegisterResponse", (response) => {
+      const registers = JSON.parse(response) as TypeMemoryToUpdate[];
+      console.log("Registers", registers);
+    });
+
+    this.socketProviderConnect.socket.on("UpdateMemoryResponse", (response) => {
+      const memory = JSON.parse(response) as TypeMemoryToUpdate[];
+      console.log("Memory", memory);
+    });
+  }
 
   showToast() {
     this.toast.success('Hello world!', 'Toast fun!', DEFAULT_CONFIG_TOAST);
@@ -91,19 +100,63 @@ export class DebugView implements OnInit {
     localStorage.setItem('FileSystem', value);
   }
 
-  debugSocket() {
-    console.log(this.socketProviderConnect.socket.ioSocket);
-    this.socketID = this.socketProviderConnect.socket.ioSocket.id;
-    const file = {
-      content: this.testRequest
-    };
-    this.socketProviderConnect.socket.emit("CodeRequest", JSON.stringify(file));
+  debugCodeRequestSocket() {
+    try {
+      const file = {
+        content: this.testCodeRequest
+      };
+      this.socketProviderConnect.emitMessage("CodeRequest", JSON.stringify(file));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
-  debugLanguage() {
+  async updateRegisterServer(typeRegister: TypeRegister, register: string, value: string): Promise<boolean> {
+    try {
+      const payload = JSON.stringify({
+        typeRegister: typeRegister,
+        register: register,
+        value: value
+      });
+      this.socketProviderConnect.emitMessage('UpdateRegisterRequest', payload);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+    return Promise.resolve(true);
+  }
+
+  async updateMemoryServer(typeData: TypeData, address: string, value: string): Promise<boolean> {
+    try {
+      const payload = JSON.stringify({
+        typeData: typeData,
+        address: address,
+        value: value
+      });
+      this.socketProviderConnect.emitMessage('UpdateMemoryRequest', payload);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+    return Promise.resolve(true);
+  }
+
+  async nextStep(): Promise<boolean> {
+    try {
+      const payload = JSON.stringify({});
+      this.socketProviderConnect.emitMessage('UpdateMemoryRequest', payload);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+    return Promise.resolve(true);
   }
 
   async getSomethingFromRemoteP(): Promise<void> {
     return Promise.resolve();
+  }
+
+  tr(value: string): TypeRegister {
+    return value as TypeRegister;
   }
 }

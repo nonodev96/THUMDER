@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from "rxjs";
 import {
   DEFAULT_AUTO_SAVE,
-  DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
+  DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION, DEFAULT_INTERFACE_FILE_ITEM,
   DEFAULT_LANG,
-  DEFAULT_MEMORY_SIZE, DEFAULT_TIME_SIMULATION
+  DEFAULT_MEMORY_SIZE, DEFAULT_MULTIVIEW_CONFIGURATION, DEFAULT_TIME_SIMULATION
 } from "../../CONSTAST";
 
 @Injectable({
@@ -39,6 +39,9 @@ export class StorageService {
     if (!this.hasItem('floating_point_stage_configuration')) {
       this.setItem('floating_point_stage_configuration', DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
     }
+    if (!this.hasItem('multiview_configuration')) {
+      this.setItem('multiview_configuration', DEFAULT_MULTIVIEW_CONFIGURATION);
+    }
     if (!this.hasItem('memory_size')) {
       this.setItem('memory_size', DEFAULT_MEMORY_SIZE);
     }
@@ -50,6 +53,9 @@ export class StorageService {
     }
     if (!this.hasItem('auto_save')) {
       this.setItem('auto_save', DEFAULT_AUTO_SAVE);
+    }
+    if (!this.hasItem('interfaceFileItem')) {
+      this.setItem('interfaceFileItem', DEFAULT_INTERFACE_FILE_ITEM);
     }
   }
 }

@@ -4,7 +4,7 @@ import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { ElectronService } from "../services";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import firebase from 'firebase/app';
 import UserCredential = firebase.auth.UserCredential;
 
@@ -13,6 +13,8 @@ import UserCredential = firebase.auth.UserCredential;
 })
 
 export class AuthService implements OnInit, OnDestroy {
+  public isLogging$: Subject<boolean> = new Subject<boolean>();
+
   public userData: InterfaceUser; // Save logged in user data
   private subscriptions$ = new Subscription();
 
@@ -28,9 +30,11 @@ export class AuthService implements OnInit, OnDestroy {
           this.userData = user;
           localStorage.setItem('user', JSON.stringify(this.userData));
           JSON.parse(localStorage.getItem('user'));
+          this.isLogging$.next(true);
         } else {
           localStorage.setItem('user', null);
           JSON.parse(localStorage.getItem('user'));
+          this.isLogging$.next(false);
         }
       })
     );
@@ -42,6 +46,10 @@ export class AuthService implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions$.unsubscribe();
+  }
+
+  public getIsLoggingObservable(): Observable<boolean> {
+    return this.isLogging$.asObservable();
   }
 
   // Sign in with email/password

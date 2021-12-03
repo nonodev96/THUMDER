@@ -110,7 +110,17 @@ const cookieConfig: NgcCookieConsentConfig = {
     }
   },
   theme: 'edgeless',
-  type: 'opt-out'
+  type: 'opt-out',
+  content: {
+    href: "#",
+  },
+  elements: {
+    messagelink: `
+    <span id="cookieconsent:desc" class="cc-message">{{message}}&nbsp;
+        <a id="cookieconsent:link" aria-label="learn more about cookies" tabindex="0" class="cc-link">{{link}}</a>
+    </span>
+     `
+  }
 };
 
 

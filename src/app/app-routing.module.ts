@@ -48,9 +48,12 @@ import { LoggerView } from "./views/_auth/logger/logger.view";
 
 const routes: Routes = [
   {
-    path: '',
-    component: IndexView,
-    canActivate: [AuthGuard]
+    path: "",
+    component: LayoutAuthComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {path: "", component: IndexView, pathMatch: "full"},
+    ]
   },
   // _admin views
   {
@@ -82,6 +85,8 @@ const routes: Routes = [
       {path: "registers", component: RegistersView, data: {breadcrumb: 'Registers'}},
       {path: "statistics", component: StatisticsView, data: {breadcrumb: 'Statistics'}},
       {path: "multiview", component: MultiplesViewsComponent, data: {breadcrumb: 'Multiview'}},
+
+      {path: "debug", component: DebugView, data: {breadcrumb: 'Debug'}},
     ],
   },
   // _landing views
@@ -110,25 +115,20 @@ const routes: Routes = [
     canActivate: [NoAuthGuard]
   },
   {
-    path: "debug",
-    component: DebugView,
-    canActivate: []
-  },
-  {
     path: 'monaco',
     component: MonacoEditorComponent
   },
 
-  {
-    path: '**',
-    component: PageNotFoundComponent
-  },
+  // {
+  //   path: '**',
+  //   component: PageNotFoundComponent
+  // },
 
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'}),
+    RouterModule.forRoot(routes),
   ],
   exports: [RouterModule]
 })

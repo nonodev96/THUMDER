@@ -79,7 +79,7 @@ export class MemoryView implements OnInit, AfterViewInit {
         this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryFloat', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float'];
         break;
       case "Double":
-        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryDouble', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Float'];
+        this.displayedColumnsMemory = ['Address', 'Hexadecimal', 'BinaryDouble', 'Address-0', 'Address-1', 'Address-2', 'Address-3', 'Double'];
         break;
     }
   }

@@ -1,12 +1,13 @@
 describe('Memory page', () => {
 
   before(() => {
+    cy.visit('/');
   });
 
   beforeEach(() => {
-    cy.visit('/');
-    cy.THUMDER_SignOut();
-    cy.THUMDER_login();
+    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
+    cy.visit('/'); // Reload page
+
     cy.wait(1000);
     cy.THUMDER_goMemory();
     cy.get('#editMemoryModalButton').click();

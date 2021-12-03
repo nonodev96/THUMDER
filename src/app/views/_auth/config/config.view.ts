@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { TypeFloatingPointStageConfiguration } from "../../../types";
+import { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration } from "../../../types";
 import { StorageService } from "../../../__core/storage/storage.service";
 import {
   DEFAULT_AUTO_SAVE,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
-  DEFAULT_MEMORY_SIZE,
+  DEFAULT_MEMORY_SIZE, DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION
 } from "../../../CONSTAST";
 import { MachineService } from "../../../__core/machine/machine.service";
@@ -20,6 +20,7 @@ interface EventTargetInput extends EventTarget {
 })
 export class ConfigView implements OnInit {
 
+  multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
   memorySize: number;
   timeSimulation: number;
@@ -27,6 +28,7 @@ export class ConfigView implements OnInit {
 
   constructor(private storage: StorageService,
               private machine: MachineService) {
+    this.multiviewConfiguration = this.storage.getItem('multiview_configuration');
     this.floatingPointStageConfiguration = this.storage.getItem('floating_point_stage_configuration');
     this.memorySize = this.storage.getItem('memory_size');
     this.timeSimulation = this.storage.getItem('time_simulation');
@@ -48,11 +50,15 @@ export class ConfigView implements OnInit {
         case 'auto_save':
           this.autoSave = this.storage.getItem('auto_save');
           break;
+        case 'multiview_configuration':
+          this.multiviewConfiguration = this.storage.getItem('multiview_configuration');
+          break;
       }
     });
   }
 
   async updateConfiguration(): Promise<void> {
+    this.storage.setItem('multiview_configuration', this.multiviewConfiguration);
     this.storage.setItem('floating_point_stage_configuration', this.floatingPointStageConfiguration);
     this.storage.setItem('memory_size', this.memorySize);
     this.storage.setItem('time_simulation', this.timeSimulation);
@@ -62,6 +68,7 @@ export class ConfigView implements OnInit {
   }
 
   async resetConfiguration(): Promise<void> {
+    this.storage.setItem('multiview_configuration', DEFAULT_MULTIVIEW_CONFIGURATION);
     this.storage.setItem('floating_point_stage_configuration', DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
     this.storage.setItem('memory_size', DEFAULT_MEMORY_SIZE);
     this.storage.setItem('time_simulation', DEFAULT_TIME_SIMULATION);
@@ -102,6 +109,10 @@ export class ConfigView implements OnInit {
   }
 
   updateTimeSimulation(target: EventTargetInput | any) {
-    this.timeSimulation = parseInt(target.value.toString())
+    this.timeSimulation = parseInt(target.value.toString());
+  }
+
+  updateMultiviewConfig(target: EventTarget | any) {
+
   }
 }

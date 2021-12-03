@@ -1,6 +1,28 @@
-<view-cycle-clock-diagram></view-cycle-clock-diagram>
-<view-pipeline></view-pipeline>
-<view-memory></view-memory>
-<view-registers></view-registers>
-<view-code></view-code>
-<view-statistics></view-statistics>
+<ng-container *ngIf="multiviewConfiguration.calculator">
+  <view-calculator></view-calculator>
+</ng-container>
+
+<ng-container *ngIf="multiviewConfiguration.pipeline">
+  <view-pipeline></view-pipeline>
+</ng-container>
+
+<ng-container *ngIf="multiviewConfiguration.cycle_clock">
+  <view-cycle-clock-diagram></view-cycle-clock-diagram>
+</ng-container>
+
+<ng-container *ngIf="multiviewConfiguration.memory">
+  <view-memory></view-memory>
+</ng-container>
+
+<ng-container *ngIf="multiviewConfiguration.registers">
+  <view-registers></view-registers>
+</ng-container>
+
+<ng-container *ngIf="multiviewConfiguration.code">
+  <view-code></view-code>
+</ng-container>
+
+<ng-container *ngIf="multiviewConfiguration.statistics">
+  <view-statistics></view-statistics>
+</ng-container>
+

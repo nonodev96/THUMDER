@@ -31,6 +31,12 @@ export function THUMDER_goPipeline() {
   cy.location('pathname').should('eq', '/auth/pipeline');
 }
 
+export function THUMDER_goLogger() {
+  THUMDER_openNavigation();
+  cy.get('a[title="logger"]').click();
+  cy.location('pathname').should('eq', '/auth/logger');
+}
+
 export function THUMDER_goCycleClockDiagram() {
   THUMDER_openNavigation();
   cy.get('a[title="cycle-clock-diagram"]').click();
@@ -53,6 +59,13 @@ export function THUMDER_goRegisters() {
   THUMDER_openNavigation();
   cy.get('a[title="registers"]').click();
   cy.location('pathname').should('eq', '/auth/registers');
+}
+
+
+export function THUMDER_goStatistics() {
+  THUMDER_openNavigation();
+  cy.get('a[title="statistics"]').click();
+  cy.location('pathname').should('eq', '/auth/statistics');
 }
 
 export function THUMDER_goProfile() {

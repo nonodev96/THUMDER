@@ -58,14 +58,14 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
   show: boolean;
   updateUISubscription: Subscription = new Subscription();
 
+  private _filesSelected: any[] = [];
+
   constructor(@Inject(DOCUMENT) private document: Document,
-              private router: Router,
-              private fileSystemService: FileSystemService) {
+              public fileSystemService: FileSystemService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
-    this.show = true;
-
     this.fileSystemService.initialize().then((canInit) => {
       if (canInit) {
         this.customFileProvider = new CustomFileSystemProvider({
@@ -112,17 +112,20 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
     };
     this.changeCategoryMenuOptions = {
       items: [
-        {
-          text: 'Category',
-          icon: 'tags',
-          items: []
-        }
+        //  {
+        //    text: 'Category',
+        //    icon: 'tags',
+        //    items: []
+        //  }
       ],
       onItemClick: this.onContextMenuItemClick.bind(this)
     };
+    this.show = true;
+
   }
 
   ngAfterViewInit(): void {
+    this.generateDefaultFiles();
     this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(() => {
       this.fileManager?.instance?.refresh();
     });
@@ -136,6 +139,17 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
     this.newFileMenuOptions = null;
     this.changeCategoryMenuOptions = null;
     this.updateUISubscription.unsubscribe();
+  }
+
+  generateDefaultFiles() {
+    this.fileSystemService.generateDefaultFiles().then((code) => {
+      if (code === 0) {
+        console.debug("Se han generado los ficheros por defecto");
+      }
+      if (code === 1) {
+        console.debug("No se han generado los ficheros por defecto");
+      }
+    });
   }
 
   onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
@@ -184,5 +198,13 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
   log(): void {
     console.log(this.fileSystemService.items);
     console.log(this.fileSystemService.ITEMS);
+  }
+
+  get filesSelected() {
+    return this._filesSelected.map(v => v.name);
+  }
+
+  onSelectionChanged($event: any) {
+    this._filesSelected = this.fileManager.instance.getSelectedItems();
   }
 }

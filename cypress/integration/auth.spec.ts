@@ -1,7 +1,13 @@
 describe('Auth access', () => {
 
+  before(() => {
+    cy.visit('/');
+  });
+
   beforeEach(() => {
-    cy.visit('/login');
+    cy.setCookie('user', JSON.stringify(null));
+    cy.visit('/'); // Reload page
+
     cy.THUMDER_SignOut();
     cy.THUMDER_login();
   });

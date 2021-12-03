@@ -22,6 +22,10 @@ export class BreakpointManager {
   }
 
   public updateManager(breakpoints: TypeBreakpoints): void {
+    if (breakpoints === null || breakpoints === undefined) {
+      console.warn('Error, breakpoints null');
+      return;
+    }
     this.breakpoints = {};
     for (const [line, enabled] of Object.entries(breakpoints)) {
       this.breakpoints[line] = enabled;

@@ -380,31 +380,35 @@ export class MachineService {
     if (this.statusMachineInStep.memory !== []) {
       for (const memory_value of this.statusMachineInStep.memory) {
         const address = memory_value.address;
-        const typeData = memory_value.typeData ?? "word";
+        const typeData = memory_value.typeData ?? "Word";
         switch (typeData) {
-          case "byte": {
+          case "Byte": {
             const binary08 = Utils.hexadecimalToBinary(memory_value.value);
             this.memory.setMemoryByteBinaryByAddress(address, binary08);
             break;
           }
-          case "halfword": {
+          case "HalfWord": {
             const binary16 = Utils.hexadecimalToBinary(memory_value.value);
             this.memory.setMemoryHalfWordBinaryByAddress(address, binary16);
             break;
           }
-          case "word": {
+          case "Word": {
             const binary32 = Utils.hexadecimalToBinary(memory_value.value);
             this.memory.setMemoryWordBinaryByAddress(address, binary32);
             break;
           }
-          case "float": {
+          case "Float": {
             const binary08 = Utils.hexadecimalToBinary(memory_value.value);
             this.memory.setMemoryFloatBinaryByAddress(address, binary08);
             break;
           }
-          case "double": {
+          case "Double": {
             const binary64 = Utils.hexadecimalToBinary(memory_value.value);
             this.memory.setMemoryDoubleBinaryByAddress(address, binary64);
+            break;
+          }
+          case "ASCII": {
+
             break;
           }
         }

@@ -193,6 +193,15 @@ export type TypeCode = {
   code: string;         // 0x00000000
 };
 
+export type TypeMultiviewConfiguration = {
+  calculator: boolean;
+  pipeline: boolean;
+  cycle_clock: boolean;
+  memory: boolean;
+  registers: boolean;
+  code: boolean;
+  statistics: boolean;
+};
 export type TypeFloatingPointStageConfiguration = {
   addition: {
     count: number;
@@ -243,6 +252,18 @@ export type TypePipeline = {
   WB: string;
 };
 
+export type TypeRegisterToUpdate = {
+  typeRegister: TypeRegister;
+  register: string;
+  value: string;
+};
+
+export type TypeMemoryToUpdate = {
+  typeData: TypeData;
+  address: string;
+  value: string;
+};
+
 export type TypeStepSimulation = {
   step: number;
   instruction: string;
@@ -263,15 +284,8 @@ export type TypeStepSimulation = {
   WB_stall: number;
 
   pipeline: TypePipeline;
-  registers: {
-    register: string;
-    value: string;
-  }[];
-  memory: {
-    typeData: "byte" | "halfword" | "word" | "float" | "double";
-    address: string;
-    value: string;
-  }[];
+  registers: TypeRegisterToUpdate[];
+  memory: TypeMemoryToUpdate[];
 };
 
 export type SimulationResponse = {
