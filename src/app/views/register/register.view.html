@@ -1,91 +1,129 @@
-<div class="register-box">
-  <div class="register-logo">
-    <h2>THUMDER</h2>
-  </div>
+<ng-container *ngIf="authService.isLoggedIn === true">
+  Login but isLoggedIn
+</ng-container>
 
-  <div class="card">
-    <div class="card-body register-card-body">
-      <p class="login-box-msg">Register a new membership</p>
+<div class="register-page">
+  <div class="register-box">
+    <div class="register-logo">
+      <h2>THUMDER</h2>
+    </div>
 
-      <form [formGroup]="registerForm">
+    <div class="card">
+      <div class="card-body register-card-body">
+        <p class="login-box-msg">Register a new membership</p>
 
-        <div class="input-group mb-3">
-          <input type="text" class="form-control" placeholder="Full name" formControlName="first_name" #userName>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
+        <form [formGroup]="registerForm">
+
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Full name" formControlName="first_name" #userName>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email" formControlName="email" #userEmail>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+          <div class="error-messages">
+            <ng-container *ngFor="let error of error_messages.first_name">
+              <div class="error-message" *ngIf="registerForm.get('first_name').hasError(error.type)">
+                {{ error.message }}
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email" formControlName="email" #userEmail>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" formControlName="password" #userPwd>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+          <div class="error-messages">
+            <ng-container *ngFor="let error of error_messages.email">
+              <div class="error-message" *ngIf="registerForm.get('email').hasError(error.type)">
+                {{ error.message }}
+              </div>
+            </ng-container>
+            <div *ngIf="this.registerForm.get('email').errors?.pattern">
+              Email not valid.
             </div>
           </div>
-        </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Retype password" formControlName="confirm_password"
-                 #userConfirmPassword>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Password" formControlName="password" #userPwd>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-8">
-            <!--<div class="icheck-primary">
-              <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
-              <label for="agreeTerms">
-                I agree to the <b>terms</b>
-              </label>
-            </div>-->
+          <div class="error-messages">
+            <ng-container *ngFor="let error of error_messages.password">
+              <div class="error-message" *ngIf="registerForm.get('password').hasError(error.type)">
+                {{ error.message }}
+              </div>
+            </ng-container>
           </div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block" [disabled]="!registerForm.valid"
-                    (click)="authService.SignUp(userEmail.value, userPwd.value)">Register
-            </button>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Retype password" formControlName="confirm_password"
+                   #userConfirmPassword>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
           </div>
-          <!-- /.col -->
-        </div>
-      </form>
+          <div class="error-messages">
+            <ng-container *ngFor="let error of error_messages.confirm_password">
+              <div class="error-message" *ngIf="registerForm.get('confirm_password').hasError(error.type)">
+                {{ error.message }}
+              </div>
+            </ng-container>
+          </div>
+          <div class="row">
+            <div class="col-8">
+              <!--<div class="icheck-primary">
+                <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
+                <label for="agreeTerms">
+                  I agree to the <b>terms</b>
+                </label>
+              </div>-->
+            </div>
+            <!-- /.col -->
+            <div class="col-4">
+              <button type="submit" class="btn btn-primary btn-block" [disabled]="!registerForm.valid"
+                      (click)="authService.SignUp(userEmail.value, userPwd.value)">Register
+              </button>
+            </div>
+            <!-- /.col -->
+          </div>
+        </form>
 
 
-      <ng-container *ngIf="!electronService.isElectronApp">
-        <div class="social-auth-links text-center">
-          <p>- OR -</p>
-          <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
-            <i class="fab fa-google-plus mr-2"></i>
-            Sign up using Google+
-          </a>
-          <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
-            <i class="fab fa-github mr-2"></i>
-            Sign up using Github
-          </a>
+        <ng-container *ngIf="!electronService.isElectronApp">
+          <div class="social-auth-links text-center">
+            <p>- OR -</p>
+            <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
+              <i class="fab fa-google-plus mr-2"></i>
+              Sign up using Google+
+            </a>
+            <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
+              <i class="fab fa-github mr-2"></i>
+              Sign up using Github
+            </a>
+          </div>
+        </ng-container>
+
+        <a [routerLink]="['/login']" class="text-center">I already have a membership</a>
+      </div>
+      <!-- /.form-box -->
+
+      <ng-container *ngIf="showSpinner">
+        <div class="overlay">
+          <i class="fas fa-2x fa-sync-alt fa-spin"></i>
         </div>
       </ng-container>
 
-      <a [routerLink]="['/login']" class="text-center">I already have a membership</a>
-    </div>
-    <!-- /.form-box -->
-
-    <ng-container *ngIf="showSpinner">
-      <div class="overlay">
-        <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-      </div>
-    </ng-container>
-
-  </div><!-- /.card -->
+    </div><!-- /.card -->
+  </div>
 </div>
 <!-- /.register-box -->

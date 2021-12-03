@@ -16,7 +16,7 @@
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
 import * as f_goToPage from './commands/goToPage';
 import * as f_setLang from './commands/setLang';
-import { THUMDER_goMultiview, THUMDER_openNavigation } from "./commands/goToPage";
+import { THUMDER_goMultiview, THUMDER_goStatistics, THUMDER_openNavigation } from "./commands/goToPage";
 
 function THUMDER_SignOut(): void {
   cy.wait(2000);
@@ -41,18 +41,20 @@ Cypress.Commands.add('THUMDER_login', THUMDER_login);
 Cypress.Commands.add('THUMDER_SignOut', THUMDER_SignOut);
 
 Cypress.Commands.add('THUMDER_goHome', f_goToPage.THUMDER_goHome);
-Cypress.Commands.add('THUMDER_goFileManager', f_goToPage.THUMDER_goFileManager);
+Cypress.Commands.add('THUMDER_goMultiview', f_goToPage.THUMDER_goMultiview);
 Cypress.Commands.add('THUMDER_goCalculator', f_goToPage.THUMDER_goCalculator);
+Cypress.Commands.add('THUMDER_goCode', f_goToPage.THUMDER_goCode);
+Cypress.Commands.add('THUMDER_goConfig', f_goToPage.THUMDER_goConfig);
+Cypress.Commands.add('THUMDER_goDocumentation', f_goToPage.THUMDER_goDocumentation);
+Cypress.Commands.add('THUMDER_goFileManager', f_goToPage.THUMDER_goFileManager);
 Cypress.Commands.add('THUMDER_goIDE', f_goToPage.THUMDER_goIDE);
 Cypress.Commands.add('THUMDER_goPipeline', f_goToPage.THUMDER_goPipeline);
-Cypress.Commands.add('THUMDER_goCycleClockDiagram', f_goToPage.THUMDER_goCycleClockDiagram);
+Cypress.Commands.add('THUMDER_goLogger', f_goToPage.THUMDER_goLogger);
 Cypress.Commands.add('THUMDER_goMemory', f_goToPage.THUMDER_goMemory);
-Cypress.Commands.add('THUMDER_goCode', f_goToPage.THUMDER_goCode);
-Cypress.Commands.add('THUMDER_goRegisters', f_goToPage.THUMDER_goRegisters);
+Cypress.Commands.add('THUMDER_goCycleClockDiagram', f_goToPage.THUMDER_goCycleClockDiagram);
 Cypress.Commands.add('THUMDER_goProfile', f_goToPage.THUMDER_goProfile);
-Cypress.Commands.add('THUMDER_goDocumentation', f_goToPage.THUMDER_goDocumentation);
-Cypress.Commands.add('THUMDER_goConfig', f_goToPage.THUMDER_goConfig);
-Cypress.Commands.add('THUMDER_goMultiview', f_goToPage.THUMDER_goMultiview);
+Cypress.Commands.add('THUMDER_goRegisters', f_goToPage.THUMDER_goRegisters);
+Cypress.Commands.add('THUMDER_goStatistics', f_goToPage.THUMDER_goStatistics);
 
 Cypress.Commands.add('THUMDER_setLangSpanish', f_setLang.THUMDER_setLangSpanish);
 Cypress.Commands.add('THUMDER_setLangEnglish', f_setLang.THUMDER_setLangEnglish);
@@ -79,37 +81,41 @@ declare global {
 
       THUMDER_SignOut(): void;
 
+      THUMDER_openNavigation(): void;
+
       THUMDER_setLangSpanish(): void;
 
       THUMDER_setLangEnglish(): void;
 
-      THUMDER_openNavigation(): void;
-
       THUMDER_goHome(): void;
 
+      THUMDER_goMultiview(): void;
+
       THUMDER_goCalculator(): void;
+
+      THUMDER_goCode(): void;
+
+      THUMDER_goConfig(): void;
+
+      THUMDER_goDocumentation(): void;
 
       THUMDER_goFileManager(): void;
 
       THUMDER_goIDE(): void;
 
-      THUMDER_goPipeline(): void;
-
-      THUMDER_goCycleClockDiagram(): void;
+      THUMDER_goLogger(): void;
 
       THUMDER_goMemory(): void;
 
-      THUMDER_goCode(): void;
+      THUMDER_goCycleClockDiagram(): void;
 
-      THUMDER_goRegisters(): void;
+      THUMDER_goPipeline(): void;
 
       THUMDER_goProfile(): void;
 
-      THUMDER_goDocumentation(): void;
+      THUMDER_goRegisters(): void;
 
-      THUMDER_goConfig(): void;
-
-      THUMDER_goMultiview(): void;
+      THUMDER_goStatistics(): void;
     }
   }
 }

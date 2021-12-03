@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">{{ 'CONFIG.FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</h3>
+    <h3 class="card-title">{{ 'NAVIGATION.CONFIG' | translate }}</h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -14,12 +14,9 @@
   <div class="card-body">
     <form>
 
-      <p>{{ 'CONFIG.MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
-      <p>{{ 'CONFIG.MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
-
       <table class="table">
         <tr>
-          <th></th>
+          <th>{{ 'CONFIG.FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</th>
           <th>{{ 'CONFIG.COUNT' | translate }}</th>
           <th>{{ 'CONFIG.DELAY' | translate }}</th>
         </tr>
@@ -70,6 +67,13 @@
         </tr>
 
         <tr>
+          <td colspan="3">{{ 'CONFIG.MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</td>
+        </tr>
+        <tr>
+          <td colspan="3">{{ 'CONFIG.MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</td>
+        </tr>
+
+        <tr>
           <th></th>
           <th colspan="2">{{ 'CONFIG.SIZE' | translate }}</th>
         </tr>
@@ -116,7 +120,64 @@
                    (change)="updateTimeSimulation($event.target)"
                    class="form-control" min="100" max="10000" step="50">
           </td>
+        </tr>
 
+        <tr>
+          <th></th>
+          <th colspan="2">{{ 'CONFIG.MULTIVIEW' | translate }}</th>
+        </tr>
+        <tr>
+          <th>{{ 'CONFIG.MULTIVIEW' | translate }}</th>
+
+          <td colspan="2">
+            <div class="form-group">
+
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.calculator">
+                <label class="form-check-label">{{ 'NAVIGATION.CALCULATOR' | translate }}</label>
+              </div>
+
+               <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.pipeline">
+                <label class="form-check-label">{{ 'NAVIGATION.PIPELINE' | translate }}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.cycle_clock">
+                <label class="form-check-label">{{ 'NAVIGATION.CYCLE_CLOCK_DIAGRAM' | translate }}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.memory">
+                <label class="form-check-label">{{ 'NAVIGATION.MEMORY' | translate }}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.registers">
+                <label class="form-check-label">{{ 'NAVIGATION.REGISTERS' | translate }}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.code">
+                <label class="form-check-label">{{ 'NAVIGATION.CODE' | translate }}</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox"
+                       [ngModelOptions]="{standalone: true}"
+                       [(ngModel)]="multiviewConfiguration.statistics">
+                <label class="form-check-label">{{ 'NAVIGATION.STATISTICS' | translate }}</label>
+              </div>
+            </div>
+
+          </td>
         </tr>
       </table>
 
@@ -131,12 +192,11 @@
   </div>
 </div>
 
-<!-- Button trigger modal -->
+<!--
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#configModal">
   Launch demo modal
 </button>
 
-<!-- Modal -->
 <div class="modal fade" id="configModal" tabindex="-1" role="dialog" aria-labelledby="configModalLabel"
      aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -157,3 +217,4 @@
     </div>
   </div>
 </div>
+-->

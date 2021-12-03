@@ -13,8 +13,5 @@ export class ForgotPasswordView implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedIn) {
-      this.document.body.classList.add('login-page');
-    }
   }
 }

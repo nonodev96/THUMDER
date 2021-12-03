@@ -1,97 +1,102 @@
-<ng-container *ngIf="!authService.isLoggedIn">
-  <div class="login-box">
-    <div class="login-logo">
-      <h2>THUMDER</h2>
-    </div>
-    <!-- /.login-logo -->
-    <div class="card">
-      <div class="card-body login-card-body">
-        <p class="login-box-msg">Sign in to start your session</p>
-        <form [formGroup]="loginForm">
-          <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="Email" formControlName="email"
-                   id="userEmail" #userEmail>
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-envelope"></span>
+<ng-container *ngIf="authService.isLoggedIn === true">
+  Login but isLoggedIn
+</ng-container>
+<ng-container *ngIf="authService.isLoggedIn === false">
+  <div class="login-page">
+    <div class="login-box">
+      <div class="login-logo">
+        <h2>THUMDER</h2>
+      </div>
+      <!-- /.login-logo -->
+      <div class="card">
+        <div class="card-body login-card-body">
+          <p class="login-box-msg">Sign in to start your session</p>
+          <form [formGroup]="loginForm">
+            <div class="input-group mb-3">
+              <input type="email" class="form-control" placeholder="Email" formControlName="email"
+                     id="userEmail" #userEmail>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="error-messages">
-            <ng-container *ngFor="let error of error_messages.email">
-              <div class="error-message"
-                   *ngIf="loginForm.get('email').hasError(error.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
-                {{ error.message }}
-              </div>
-            </ng-container>
-          </div>
+            <div class="error-messages">
+              <ng-container *ngFor="let error of error_messages.email">
+                <div class="error-message"
+                     *ngIf="loginForm.get('email').hasError(error.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+                  {{ error.message }}
+                </div>
+              </ng-container>
+            </div>
 
-          <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Password" formControlName="password"
-                   id="userPassword" #userPassword>
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
+            <div class="input-group mb-3">
+              <input type="password" class="form-control" placeholder="Password" formControlName="password"
+                     id="userPassword" #userPassword>
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="error-messages">
-            <ng-container *ngFor="let error of error_messages.password">
-              <div class="error-message"
-                   *ngIf="loginForm.get('password').hasError(error.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
-                {{ error.message }}
-              </div>
-            </ng-container>
-          </div>
-        </form>
+            <div class="error-messages">
+              <ng-container *ngFor="let error of error_messages.password">
+                <div class="error-message"
+                     *ngIf="loginForm.get('password').hasError(error.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                  {{ error.message }}
+                </div>
+              </ng-container>
+            </div>
+          </form>
 
-        <div class="row">
-          <div class="col-8">
-            <!--<div class="icheck-primary">
-              <input type="checkbox" id="remember">
-              <label for="remember">
-                Remember Me
-              </label>
-            </div>-->
+          <div class="row">
+            <div class="col-8">
+              <!--<div class="icheck-primary">
+                <input type="checkbox" id="remember">
+                <label for="remember">
+                  Remember Me
+                </label>
+              </div>-->
+            </div>
+            <!-- /.col -->
+            <div class="col-4">
+              <button type="submit" class="btn btn-primary btn-block"
+                      id="buttonSignInID"
+                      [disabled]="!loginForm.valid"
+                      (click)="SignIn(userEmail.value, userPassword.value)">Sign In
+              </button>
+            </div>
+            <!-- /.col -->
           </div>
-          <!-- /.col -->
-          <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block"
-                    id="buttonSignInID"
-                    [disabled]="!loginForm.valid"
-                    (click)="SignIn(userEmail.value, userPassword.value)">Sign In
-            </button>
-          </div>
-          <!-- /.col -->
+
+          <ng-container *ngIf="!electronService.isElectronApp">
+            <div class="social-auth-links text-center mb-3">
+              <p>- OR -</p>
+              <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
+                <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+              </a>
+              <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
+                <i class="fab fa-github mr-2"></i> Sign in using Github
+              </a>
+            </div>
+          </ng-container>
+          <!-- /.social-_auth-links -->
+
+          <p class="mb-1">
+            <a [routerLink]="['/forgot-password']">I forgot my password</a>
+          </p>
+          <p class="mb-0">
+            <a [routerLink]="['/register']" class="text-center">Register a new membership</a>
+          </p>
         </div>
+        <!-- /.login-card-body -->
 
-        <ng-container *ngIf="!electronService.isElectronApp">
-          <div class="social-auth-links text-center mb-3">
-            <p>- OR -</p>
-            <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
-              <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-            </a>
-            <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
-              <i class="fab fa-github mr-2"></i> Sign in using Github
-            </a>
+        <ng-container *ngIf="showSpinner">
+          <div class="overlay">
+            <i class="fas fa-2x fa-sync-alt fa-spin"></i>
           </div>
         </ng-container>
-        <!-- /.social-_auth-links -->
-
-        <p class="mb-1">
-          <a [routerLink]="['/forgot-password']">I forgot my password</a>
-        </p>
-        <p class="mb-0">
-          <a [routerLink]="['/register']" class="text-center">Register a new membership</a>
-        </p>
       </div>
-      <!-- /.login-card-body -->
-
-      <ng-container *ngIf="showSpinner">
-        <div class="overlay">
-          <i class="fas fa-2x fa-sync-alt fa-spin"></i>
-        </div>
-      </ng-container>
     </div>
   </div>
 

@@ -1,79 +1,126 @@
-<div class="container">
-  <div class="row">
-
-    <div class="col-lg-12">
-
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">{{'DEBUG' | translate}} 1</h3>
-          <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="maximize">
-              <i class="fas fa-expand"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-              <i class="fas fa-minus"></i>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <button class="btn btn-outline-primary mr-1" (click)="showToast()">Show Toast</button>
-          <button class="btn btn-outline-primary mr-1" (click)="debugLocalStorage()">Debug Localstorage</button>
-          <button class="btn btn-outline-primary mr-1" [asyncClick]="getSomethingFromRemoteP">Promise</button>
-        </div>
-        <div class="card-footer"></div>
-      </div>
-
-      <hr>
-
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">{{'DEBUG' | translate}} 2</h3>
-          <div class="card-tools">
-            <button class="btn btn-tool btn-xs btn-outline-primary mr-1" (click)="debugSocket()">Debug Socket</button>
-            <button type="button" class="btn btn-tool" data-card-widget="maximize">
-              <i class="fas fa-expand"></i>
-            </button>
-            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-              <i class="fas fa-minus"></i>
-            </button>
-          </div>
-        </div>
-        <div class="card-body">
-          <textarea class="form-control"
-                    style="font-family: monospace;"
-                    name="message"
-                    rows="8"
-                    [(ngModel)]="testRequest"></textarea>
-          <!--
-          <textarea class="form-control"
-                    style="font-family: monospace;"
-                    name="message"
-                    rows="8"
-                    [(ngModel)]="testResponse"></textarea>
-          -->
-          <table class="table">
-            <tr>
-              <th>{{ 'ADDRESS' | translate }}</th>
-              <th>{{ 'TEXT' | translate }}</th>
-              <th>{{ 'INSTRUCTION' | translate }}</th>
-              <th>{{ 'CODE' | translate }}</th>
-            </tr>
-
-            <tr *ngFor="let item of testResponse">
-              <td>{{item.address}}</td>
-              <td>{{item.text}}</td>
-              <td>{{item.instruction}}</td>
-              <td>{{item.code}}</td>
-            </tr>
-          </table>
-
-        </div>
-        <div class="card-footer">
-          <p>SocketID: {{socketID}}</p>
-        </div>
-      </div>
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{'DEBUG' | translate}} 1</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
     </div>
+  </div>
+  <div class="card-body">
+    <button class="btn btn-outline-primary mr-1" (click)="showToast()">Show Toast</button>
+    <button class="btn btn-outline-primary mr-1" (click)="debugLocalStorage()">Debug Localstorage</button>
+    <button class="btn btn-outline-primary mr-1" [asyncClick]="getSomethingFromRemoteP">Promise</button>
+  </div>
+  <div class="card-footer">
+    <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
+  </div>
+</div>
 
+<hr>
 
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{'DEBUG' | translate}} 2</h3>
+    <div class="card-tools">
+      <button class="btn btn-xs btn-outline-primary mr-1"
+              (click)="updateRegisterServer($any(typeRegister.value), register.value, registerValue.value)">
+        Debug - Update register
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <form>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label for="typeRegisterID">Register type</label>
+              <input type="text" class="form-control" id="typeRegisterID" #typeRegister>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="registerID">Register</label>
+              <input type="text" class="form-control" id="registerID" #register>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="registerValueID">Register value</label>
+              <input type="text" class="form-control" id="registerValueID" #registerValue>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <div class="card-footer">
+    <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
+  </div>
+</div>
+
+<hr>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{'DEBUG' | translate}} 3</h3>
+    <div class="card-tools">
+
+      <button class="btn btn-xs btn-outline-primary mr-1"
+              (click)="debugCodeRequestSocket()">Debug Code Request Socket
+      </button>
+
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+          <textarea class="form-control"
+                    style="font-family: monospace;"
+                    name="message"
+                    rows="8"
+                    [(ngModel)]="testCodeRequest"></textarea>
+    <!--
+    <textarea class="form-control"
+              style="font-family: monospace;"
+              name="message"
+              rows="8"
+              [(ngModel)]="testResponse"></textarea>
+    -->
+    <table class="table">
+      <tr>
+        <th>{{ 'ADDRESS' | translate }}</th>
+        <th>{{ 'TEXT' | translate }}</th>
+        <th>{{ 'INSTRUCTION' | translate }}</th>
+        <th>{{ 'CODE' | translate }}</th>
+      </tr>
+
+      <tr *ngFor="let item of testCodeResponse">
+        <td>{{item.address}}</td>
+        <td>{{item.text}}</td>
+        <td>{{item.instruction}}</td>
+        <td>{{item.code}}</td>
+      </tr>
+    </table>
+
+  </div>
+  <div class="card-footer">
+    <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
   </div>
 </div>

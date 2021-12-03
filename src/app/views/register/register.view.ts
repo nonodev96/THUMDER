@@ -13,26 +13,27 @@ export class RegisterView implements OnInit {
   showSpinner: boolean;
 
   error_messages = {
-    'first_name': [
+    first_name: [
       {type: 'required', message: 'First Name is required.'},
     ],
-    'email': [
+    email: [
       {type: 'required', message: 'Email is required.'},
       {type: 'minlength', message: 'Email length.'},
       {type: 'maxlength', message: 'Email length.'},
       {type: 'required', message: 'please enter a valid email address.'}
     ],
-    'password': [
+    password: [
       {type: 'required', message: 'password is required.'},
       {type: 'minlength', message: 'password length.'},
       {type: 'maxlength', message: 'password length.'}
     ],
-    'confirm_password': [
+    confirm_password: [
       {type: 'required', message: 'password is required.'},
       {type: 'minlength', message: 'password length.'},
       {type: 'maxlength', message: 'password length.'}
     ],
-  }
+  };
+  private emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService,
@@ -47,8 +48,8 @@ export class RegisterView implements OnInit {
       // ])),
       email: new FormControl('', Validators.compose([
         Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(30)
+        Validators.email,
+        Validators.pattern(this.emailPattern)
       ])),
       password: new FormControl('', Validators.compose([
         Validators.required,
@@ -67,7 +68,6 @@ export class RegisterView implements OnInit {
   }
 
   ngOnInit(): void {
-    this.document.body.classList.add('register-page')
   }
 
   checkPassword(formGroup: FormGroup) {
@@ -79,9 +79,9 @@ export class RegisterView implements OnInit {
   async GoogleAuth() {
     this.showSpinner = true;
     try {
-      await this.authService.GoogleAuth()
+      await this.authService.GoogleAuth();
     } catch (e) {
-      console.error(e)
+      console.error(e);
     } finally {
       this.showSpinner = false;
     }
@@ -90,9 +90,9 @@ export class RegisterView implements OnInit {
   async GithubAuth() {
     this.showSpinner = true;
     try {
-      await this.authService.GithubAuth()
+      await this.authService.GithubAuth();
     } catch (e) {
-      console.error(e)
+      console.error(e);
     } finally {
       this.showSpinner = false;
     }

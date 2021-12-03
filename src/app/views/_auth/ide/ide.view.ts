@@ -9,6 +9,7 @@ import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { Subscription } from "rxjs";
+import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTAST";
 
 @Component({
   selector: "view-ide",
@@ -20,28 +21,12 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) monacoEditorComponent: MonacoEditorComponent;
   isMaximize = false;
 
-  extrasIDE: TypeExtrasIDE;
-  interfaceFileItem: InterfaceFileItem = {
-    $key: '',
-    content: "",
-    dataItem: undefined,
-    dateModified: undefined,
-    description: "",
-    e1_uid: "",
-    f_id: "",
-    hasSubDirectories: false,
-    isDirectory: false,
-    key: "",
-    name: "",
-    path: "",
-    pathKeys: [],
-    size: 0,
-    thumbnail: ""
-  };
+  public interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
   private initializedSubscription: Subscription = new Subscription();
   private breakpointSubscription: Subscription = new Subscription();
   private debuggerSubscription: Subscription = new Subscription();
   private lineSubscription: Subscription = new Subscription();
+  private readonly extrasIDE: TypeExtrasIDE;
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -68,7 +53,7 @@ export class IDEView implements OnInit, AfterViewInit, OnDestroy {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
         let content = '';
-        let interfaceFileItem: InterfaceFileItem;
+        let interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
         if (this.extrasIDE) {
           interfaceFileItem = this.extrasIDE.interfaceFileItem ?? Utils.new_InterfaceFileItem();
           content = interfaceFileItem.content;

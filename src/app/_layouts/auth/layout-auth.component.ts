@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 
 @Component({
-  selector: "app-auth",
+  selector: "THUMDER-auth",
   templateUrl: "./layout-auth.component.html",
 })
 export class LayoutAuthComponent implements OnInit, AfterViewInit {

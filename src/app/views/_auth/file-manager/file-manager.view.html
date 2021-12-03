@@ -1,14 +1,18 @@
+<button class="btn btn-xs btn-outline-primary mr-1" (click)="this.log()">Log</button>
+<button class="btn btn-xs btn-outline-primary mr-1" (click)="this.generateDefaultFiles()">Generate default files</button>
+<hr>
 <dx-file-manager id="fileManager"
                  currentPath="Widescreen"
                  *ngIf="show"
                  [fileSystemProvider]="customFileProvider"
                  [height]="height()"
                  (onContextMenuItemClick)="onContextMenuItemClick($event)"
+                 (onSelectionChanged)="onSelectionChanged($event)"
                  (onSelectedFileOpened)="onSelectedFileOpened($event)">
-<!--                 (onContextMenuItemClick)="onItemClick($event)"-->
-<!--                 (onContentReady)="onContentReady($event)"-->
-<!--                 (onSelectedFileOpened)="onSelectedFileOpened($event)"-->
-<!--&gt;-->
+  <!--                 (onContextMenuItemClick)="onItemClick($event)"-->
+  <!--                 (onContentReady)="onContentReady($event)"-->
+  <!--                 (onSelectedFileOpened)="onSelectedFileOpened($event)"-->
+  <!--&gt;-->
 
   <dxo-permissions
     create="true"
@@ -33,7 +37,7 @@
   <dxo-toolbar>
     <dxi-item name="showNavPane" visible="true"></dxi-item>
     <dxi-item name="separator"></dxi-item>
-<!--    <dxi-item name="create"></dxi-item>-->
+    <!--    <dxi-item name="create"></dxi-item>-->
     <dxi-item widget="dxMenu" location="before"
               [options]="newFileMenuOptions"></dxi-item>
     <dxi-item name="refresh"></dxi-item>
@@ -52,7 +56,7 @@
   </dxo-toolbar>
 
   <dxo-context-menu>
-<!--    <dxi-item name="create"></dxi-item>-->
+    <!--    <dxi-item name="create"></dxi-item>-->
     <dxi-item text="Create new file" icon="plus">
       <dxi-item text="WinDLX Document" [options]="{ extension: '.s' }"></dxi-item>
     </dxi-item>
@@ -64,7 +68,27 @@
   </dxo-context-menu>
 </dx-file-manager>
 
-<button class="btn btn-primary" (click)="this.log()">Log</button>
+<hr>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{'DEBUG' | translate}}</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <p>Files selected: {{filesSelected}}</p>
+  </div>
+  <div class="card-footer">
+
+  </div>
+</div>
 <!--
 <dx-popup id="photo-popup"
           maxHeight="600"

@@ -1,10 +1,13 @@
 describe('Cycle Clock Diagram', () => {
 
   before(() => {
+    cy.visit('/');
   });
 
   beforeEach(() => {
-    cy.visit('/login');
+    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
+    cy.visit('/'); // Reload page
+
     cy.THUMDER_SignOut();
     cy.THUMDER_login();
     cy.THUMDER_goCycleClockDiagram();

@@ -46,7 +46,7 @@ export class FileSystemService {
   }
 
   public async getItems(path: FileSystemItem): Promise<Array<FileItem>> {
-    const results = this.ITEMS.filter(value => Utils.arrayIsEqual(value.pathKeys, path.pathKeys));
+    const results = this.ITEMS;
     const fileItems = results.map((value) => {
       const item: FileItem = new FileItem('', false, []);
       item.key = value.key;
@@ -164,28 +164,15 @@ export class FileSystemService {
   }
 
   public async deleteItem(item: FileSystemItem): Promise<FileItem> {
-    const index1 = this.items.findIndex(value => value.key === item.key);
-    if (index1 > -1) {
-      if (item.isDirectory) {
-        const listElementsToDelete = this.items.filter(value => Utils.isSubset(value.pathKeys, item.pathKeys));
-        for (const fileItemToDelete of listElementsToDelete) {
-          const indexToDelete = this.items.findIndex(value => value.key === fileItemToDelete.key);
-          this.items.splice(indexToDelete, 1);
-        }
-      }
-      this.items.splice(index1, 1);
-
-      const index2 = this.ITEMS.findIndex(value => value.key === item.key);
-      if (item.isDirectory) {
-        const listElementsToDelete = this.ITEMS.filter(value => Utils.isSubset(value.pathKeys, item.pathKeys));
-        for (const fileItemToDelete of listElementsToDelete) {
-          const indexToDelete2 = this.ITEMS.findIndex(value => value.key === fileItemToDelete.key);
-          const {$key} = this.ITEMS[indexToDelete2];
-          await this.fileSystemStorageService.deleteFileItem($key);
-          this.ITEMS.splice(indexToDelete2, 1);
-        }
-      }
-      this.ITEMS.splice(index2, 1);
+    const indexToDelete1 = this.items.findIndex(value => value.key === item.key);
+    if (indexToDelete1 > -1) {
+      this.items.splice(indexToDelete1, 1);
+    }
+    const indexToDelete2 = this.ITEMS.findIndex(value => value.key === item.key);
+    if (indexToDelete2 > -1) {
+      const {$key} = this.ITEMS[indexToDelete2];
+      await this.fileSystemStorageService.deleteFileItem($key);
+      this.ITEMS.splice(indexToDelete2, 1);
     }
     return Promise.resolve(item);
   }
@@ -200,6 +187,11 @@ export class FileSystemService {
 
   public downloadItem(items: Array<FileSystemItem>): void {
     console.log('TODO', items);
+  }
+
+  public async generateDefaultFiles(): Promise<number> {
+    const code = await this.fileSystemStorageService.generateDefaultFiles();
+    return Promise.resolve(code);
   }
 
 }

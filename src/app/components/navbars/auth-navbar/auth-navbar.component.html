@@ -29,13 +29,19 @@
       </li>
 
       <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/ide']" class="nav-link" title="ide">
+        <a [routerLink]="['/auth/file-manager']" class="nav-link" title="AUTH-NAVBAR-FILE-MANAGER">
+          {{ 'NAVIGATION.FILE_MANAGER' | translate }}
+        </a>
+      </li>
+
+      <li class="nav-item d-none d-sm-inline-block">
+        <a [routerLink]="['/auth/ide']" class="nav-link" title="AUTH-NAVBAR-IDE">
           {{ 'NAVIGATION.IDE' | translate }}
         </a>
       </li>
 
       <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/multiview']" class="nav-link" title="Multiview">
+        <a [routerLink]="['/auth/multiview']" class="nav-link" title="VIEW-MULTIVIEW">
           {{ 'NAVIGATION.MULTIVIEW' | translate }}
         </a>
       </li>

@@ -1,9 +1,12 @@
 describe('My First Test', () => {
 
   before(() => {
-    cy.visit('/login');
-    cy.THUMDER_SignOut();
-    cy.THUMDER_login();
+    cy.visit('/');
+  });
+
+  beforeEach(() => {
+    cy.setCookie('user', JSON.stringify(Cypress.env('USER_COOKIES')));
+    cy.visit('/'); // Reload page
   });
 
   it('Visits the initial project page', () => {
