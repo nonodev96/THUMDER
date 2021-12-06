@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Double64, Float32, Int32 } from "../typesData";
-// import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
-// import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
+import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
+import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import { interval, Observable, PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {
@@ -26,13 +26,13 @@ import {
 } from "../../CONSTAST";
 import { Utils } from "../../Utils";
 import { StorageService } from "../storage/storage.service";
-import { Registers } from "../DLX/_Registers";
-import { Memory } from "../DLX/_Memory";
-import { BreakpointManager } from "./debugger/BreakpointManager";
+import { ManagerRegisters } from "../DLX/ManagerRegisters";
+import { ManagerMemory } from "../DLX/ManagerMemory";
+import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
 import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
-
+import { TypeBreakpoints } from "../../components/monaco-editor/monaco-editor.component";
 
 const RegexRegisterInteger = /\b(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31)\b/i;
 const RegexRegisterFloat = /\b(F0|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14|F15|F16|F17|F18|F19|F20|F21|F22|F23|F24|F25|F26|F27|F28|F29|F30|F31)\b/i;
@@ -44,13 +44,15 @@ const RegexRegisterControl = /(pc|imar|ir|a|ahi|b|bhi|bta|alu|aluhi|fpsr|dmar|sd
   providedIn: 'root'
 })
 export class MachineService {
-  public memorySize;
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
-  public registers: Registers;
-  public breakpointManager: BreakpointManager;
+  public pipeline: PixiTHUMDER_Pipeline;
+  public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
+
   // La memoria se organiza de directions de 4 bits en 4 bits
-  public memory: Memory;
-  public logger: string = "";
+  public registers: ManagerRegisters;
+  public memory: ManagerMemory;
+  public memorySize;
+  public breakpointManager: ManagerBreakpoints;
 
   // address --> TypeTableCode
   public code: Map<string, TypeTableCode> = new Map();
@@ -58,7 +60,6 @@ export class MachineService {
   // Vector con los pasos de la simulación
   private simulation: SimulationResponse;
   private statusMachineInStep: TypeStepSimulation | null;
-  public dataCodeArray;
 
   // Line
   public isBreakpoint$: Subject<number> = new Subject<number>();
@@ -67,11 +68,13 @@ export class MachineService {
   public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
   private dataStatistics: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
 
-  private privateStep = 0;
-  private privateLine = 0;
+  public logger: string = "";
+  private privateStep: number = 0;
+  private privateLine: number = 0;
   private timer: Observable<number>;
   private readonly timerObserver: PartialObserver<number>;
 
+  public reset$: Subject<void> = new Subject<void>();
   public logger$: Subject<string> = new Subject<string>();
   public step$: Subject<number> = new Subject<number>();
   public line$: Subject<number> = new Subject<number>();
@@ -99,16 +102,23 @@ export class MachineService {
               private translate: TranslateService,
               private toast: ToastrService) {
     this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
-    // this.pipeline = new PixiTHUMER_Pipeline(
+    // this.pipeline = new PixiTHUDER_Pipeline(
     //   this.floatingPointStageConfiguration.addition.count,
     //   this.floatingPointStageConfiguration.multiplication.count,
     //   this.floatingPointStageConfiguration.division.count
     // );
 
+    this.pipeline = new PixiTHUMDER_Pipeline(
+      this.floatingPointStageConfiguration.addition.count,
+      this.floatingPointStageConfiguration.multiplication.count,
+      this.floatingPointStageConfiguration.division.count
+    );
+    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
+
     this.memorySize = this.store.getItem('memory_size');
-    this.memory = new Memory(this.memorySize);
-    this.registers = new Registers();
-    this.breakpointManager = new BreakpointManager();
+    this.memory = new ManagerMemory(this.memorySize);
+    this.registers = new ManagerRegisters();
+    this.breakpointManager = new ManagerBreakpoints();
 
     this.privateStep = 0;
     this.privateLine = 0;
@@ -134,29 +144,28 @@ export class MachineService {
     try {
       await this.toastMessage('TOAST.TITLE_RESET_MACHINE', 'TOAST.MESSAGE_RESET_MACHINE');
       this.log("RESET");
+      this.reset$.next();
 
       this.memorySize = this.store.getItem('memory_size');
-      this.memory = new Memory(this.memorySize);
+      this.memory = new ManagerMemory(this.memorySize);
+      this.registers = new ManagerRegisters();
 
-      this.registers = new Registers();
-
-      this.breakpointManager = new BreakpointManager();
-      const breakpointsSaved = JSON.parse(localStorage.getItem('breakpoints'));
+      this.breakpointManager.reset();
+      const breakpointsSaved = this.store.getItem('breakpoints') as TypeBreakpoints;
       this.breakpointManager.updateManager(breakpointsSaved);
 
-      this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
-      // this.pipeline = new PixiTHUMER_Pipeline(
-      //   this.floatingPointStageConfiguration.addition.count,
-      //   this.floatingPointStageConfiguration.multiplication.count,
-      //   this.floatingPointStageConfiguration.division.count
-      // );
-      // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-      // this.pipeline = new PixiTHUMDER_Pipeline();
+      this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration') as TypeFloatingPointStageConfiguration;
+      this.pipeline.reset(
+        this.floatingPointStageConfiguration.addition.count,
+        this.floatingPointStageConfiguration.multiplication.count,
+        this.floatingPointStageConfiguration.division.count
+      );
+      this.cycleClockDiagram.reset();
 
       this.privateStep = 0;
       this.privateLine = 0;
 
-      this.dataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
+      this.dataStatistics = Utils.clone(DEFAULT_DATA_STATISTICS) as TypeDataStatistics;
       this.dataStatistics$.next(this.dataStatistics);
 
       this.code = new Map();
@@ -165,7 +174,7 @@ export class MachineService {
       this.isRunning = false;
       this.isBreakpoint = false;
 
-      const timeSimulation = this.store.getItem('time_simulation');
+      const timeSimulation = this.store.getItem('time_simulation') as number;
       this.timer = null;
       this.timer = interval(timeSimulation).pipe(
         takeUntil(this.isRunning$),
@@ -178,6 +187,10 @@ export class MachineService {
       console.error(error);
       return Promise.reject(error);
     }
+  }
+
+  public getResetObservable(): Observable<void> {
+    return this.reset$.asObservable();
   }
 
   public getStepObservable(): Observable<number> {
@@ -351,27 +364,33 @@ export class MachineService {
     if (this.statusMachineInStep.registers !== []) {
       for (const register_value of this.statusMachineInStep.registers) {
         const register = register_value.register;
-        let binary;
-        if (RegexRegisterInteger.test(register)) {
-          const r: number = MachineService.getRegisterNumber(register);
-          binary = Utils.hexadecimalToBinary(register_value.value);
-          this.registers.R[r] = new Int32();
-          this.registers.R[r].binary = binary;
-        } else if (RegexRegisterFloat.test(register)) {
-          const f: number = MachineService.getRegisterNumber(register);
-          binary = Utils.hexadecimalToBinary(register_value.value);
-          this.registers.F[f] = new Float32();
-          this.registers.F[f].binary = binary;
-        } else if (RegexRegisterDouble.test(register)) {
-          const d: number = MachineService.getRegisterNumber(register);
-          binary = Utils.hexadecimalToBinary(register_value.value, {maxLength: 64, fillString: '0'});
-          this.registers.F[d] = new Float32();
-          this.registers.F[d].binary = binary.substr(0, 32);
-          this.registers.F[d + 1].binary = binary.substr(32, 32);
-        } else if (RegexRegisterControl.test(register)) {
-          binary = Utils.hexadecimalToBinary(register_value.value);
-          this.registers[register] = new Int32();
-          this.registers[register].binary = binary;
+        const typeRegister: TypeRegister | "" = MachineService.getTypeRegister(register);
+        switch (typeRegister) {
+          case "Control": {
+            this.registers[register] = new Int32();
+            this.registers[register].binary = Utils.hexadecimalToBinary(register_value.value);
+            break;
+          }
+          case "Integer": {
+            const r: number = MachineService.getRegisterNumber(register);
+            this.registers.R[r] = new Int32();
+            this.registers.R[r].binary = Utils.hexadecimalToBinary(register_value.value);
+            break;
+          }
+          case "Float": {
+            const f: number = MachineService.getRegisterNumber(register);
+            this.registers.F[f] = new Float32();
+            this.registers.F[f].binary = Utils.hexadecimalToBinary(register_value.value);
+            break;
+          }
+          case "Double": {
+            const d: number = MachineService.getRegisterNumber(register);
+            const binary = Utils.hexadecimalToBinary(register_value.value, {maxLength: 64, fillString: '0'});
+            this.registers.F[d] = new Float32();
+            this.registers.F[d].binary = binary.substr(0, 32);
+            this.registers.F[d + 1].binary = binary.substr(32, 32);
+            break;
+          }
         }
         // this.log('Registro: ', register, 'con valor', value, 'de la instrucción', instructionText);
       }
@@ -546,7 +565,7 @@ export class MachineService {
       this.code.set(ins.address, ins);
       data_code_array.push(ins);
     }
-    this.dataCodeArray = data_code_array;
+
     this.codeSimulation$.next(data_code_array);
     return Promise.resolve();
   }
@@ -580,16 +599,20 @@ export class MachineService {
       'isComplete: ': this.isComplete,
       'isBreakpoint: ': this.breakpointManager.isBreakpoint(this.privateLine),
     };
-    /*
-      console.debug(
-        'Line: ', this.privateLine,
-        'Step: ', this.privateStep,
-        'isRunning: ', this.isRunning,
-        'isComplete: ', this.isComplete,
-        'isBreakpoint: ', isBreakpoint,
-        'isBreakpoint: ', isBreakpoint,
-        'Status: ', this.statusMachineInStep
-      );
-     */
+  }
+
+  private static getTypeRegister(register: string): TypeRegister {
+    if (RegexRegisterInteger.test(register)) {
+      return "Integer";
+    }
+    if (RegexRegisterFloat.test(register)) {
+      return "Float";
+    }
+    if (RegexRegisterDouble.test(register)) {
+      return "Double";
+    }
+    if (RegexRegisterControl.test(register)) {
+      return "Control";
+    }
   }
 }

@@ -22,6 +22,9 @@ export interface InterfaceRegisters {
   F: Float32[];
 }
 
+export interface InterfaceBreakpoints {
+
+}
 
 export interface InterfaceMemory {
 

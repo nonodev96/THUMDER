@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+User -> InterfaceUI: Open Calculator
+activate InterfaceUI
+User <- InterfaceUI: Show Calculator
+
+User -> InterfaceUI: Write number in input byte
+InterfaceUI -> System: Write number in input byte
+activate System
+InterfaceUI <- System: Transform number to input byte
+deactivate System
+
+
+User -> InterfaceUI: Write number in input halfword
+InterfaceUI -> System: Write number in input halfword
+activate System
+InterfaceUI <- System: Transform number to input halfword
+deactivate System
+
+
+User -> InterfaceUI: Write number in input word
+InterfaceUI -> System: Write number in input word
+activate System
+InterfaceUI <- System: Transform number to input word
+deactivate System
+
+
+User -> InterfaceUI: Write number in input float
+InterfaceUI -> System: Write number in input float
+activate System
+InterfaceUI <- System: Transform number to input float
+deactivate System
+
+
+User -> InterfaceUI: Write number in input double
+InterfaceUI -> System: Write number in input double
+activate System
+InterfaceUI <- System: Transform number to input double
+deactivate System
+
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml

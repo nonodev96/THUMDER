@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+User -> InterfaceUI: Open login
+activate InterfaceUI
+User <- InterfaceUI: Show form login
+
+loop Form
+  loop Input user data
+    User -> InterfaceUI: Input user data
+    alt #LightGreen User data valid
+      User <- InterfaceUI: Ok
+    else #Pink User data not valid
+      User <- InterfaceUI: Please repeat
+    end
+  end
+
+  User -> InterfaceUI: User data
+
+  alt #LightGreen User data successful
+    InterfaceUI -> System: Authentication request
+    activate System
+
+    System -> Firebase: Authentication request
+
+    activate Firebase
+    System <- Firebase: Authentication response
+
+    deactivate Firebase
+    alt #LightGreen successful case
+      InterfaceUI <- System: Authentication accepted
+      User <- InterfaceUI: Authentication accepted
+    else #Pink Account error
+      InterfaceUI <- System: Authentication failure
+      deactivate System
+      User x<- InterfaceUI: Notification error
+    end
+  else #Pink Error in User data
+    User x<- InterfaceUI: Notification error in user data
+    deactivate InterfaceUI
+  end
+
+end
+
+
+
+deactivate User
+
+@enduml

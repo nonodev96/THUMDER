@@ -18,10 +18,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   private stepSimulationSubscription: Subscription = new Subscription();
 
   constructor(private machine: MachineService) {
-    const faddEX_count = machine.floatingPointStageConfiguration.addition.count;
-    const fmultEX_count = machine.floatingPointStageConfiguration.multiplication.count;
-    const fdivEX_count = machine.floatingPointStageConfiguration.division.count;
-    this.pipeline = new PixiTHUMDER_Pipeline(faddEX_count, fmultEX_count, fdivEX_count);
+    this.pipeline = this.machine.pipeline;
   }
 
 

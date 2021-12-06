@@ -1,6 +1,7 @@
-import { TypeBreakpoints } from "../../../components/monaco-editor/monaco-editor.component";
+import { TypeBreakpoints } from "../../components/monaco-editor/monaco-editor.component";
+import { InterfaceBreakpoints } from "./interfaces";
 
-export class BreakpointManager {
+export class ManagerBreakpoints implements InterfaceBreakpoints {
   // Line numbers are 1-indexed
   private breakpoints: TypeBreakpoints = {};
 
@@ -44,7 +45,7 @@ export class BreakpointManager {
     return this.breakpoints[line] ?? false;
   }
 
-  public clear(): void {
+  public reset(): void {
     this.breakpoints = {};
   }
 

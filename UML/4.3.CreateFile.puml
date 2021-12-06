@@ -1,0 +1,38 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+
+User -> InterfaceUI: Open file manager
+activate InterfaceUI
+User <- InterfaceUI: Show file manager
+deactivate InterfaceUI
+
+User -> InterfaceUI: Create file
+InterfaceUI -> System: Create file
+System -> Firebase: Create file
+
+alt #LightGreen Ok
+  System <- Firebase: Create file successful
+  InterfaceUI <- System: Create file successful
+  User <- InterfaceUI: Create file successful
+else #Pink error
+  System <- Firebase: Create file error
+  InterfaceUI <- System: Create file error
+  User x<- InterfaceUI: Create file error
+end
+
+deactivate User
+
+@enduml

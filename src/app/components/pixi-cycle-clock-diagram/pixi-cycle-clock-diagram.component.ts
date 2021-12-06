@@ -40,7 +40,8 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   constructor(public machine: MachineService) {
     this.Keyboard = require('pixi.js-keyboard');
     this.Mouse = require('pixi.js-mouse');
-    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
+    // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
+    this.cycleClockDiagram = this.machine.cycleClockDiagram;
   }
 
   ngOnInit(): void {

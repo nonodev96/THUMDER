@@ -15,7 +15,21 @@
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme_table_DLX">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            0. Table DLX OPCODES
+          </h4>
+        </div>
+      </a>
+      <div id="collapse_readme_table_DLX" class="collapse show" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/md/DLX-TABLE-Instructions.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse">
         <div class="card-header">
           <h4 class="card-title w-100">
             1. The Register window

@@ -1,8 +1,8 @@
 import { TypeCycleType } from "./__core/machine/PixiTHUMDER_CycleClockDiagram";
-import { InterfaceMemory, InterfaceRegisters } from "./__core/DLX/interfaces";
+import { InterfaceMemory, InterfaceRegisters, InterfaceBreakpoints } from "./__core/DLX/interfaces";
+import { ManagerBreakpoints } from "./__core/DLX/ManagerBreakpoints";
 import firebase from "firebase/app";
 import Timestamp = firebase.firestore.Timestamp;
-import { BreakpointManager } from "./__core/machine/debugger/BreakpointManager";
 
 declare global {
   interface Window {
@@ -232,12 +232,12 @@ export type TypeStatusCycleClockDiagram = {
   stepsToWait: number;
 };
 
-
+// DEBUG
 export type TypeStatusMachine = {
   registers: InterfaceRegisters;
   memory: InterfaceMemory;
-  breakpoints: BreakpointManager;
-  [data: string]: any
+  breakpoints: InterfaceBreakpoints;
+  [data: string]: any; // any to any
 };
 
 export type TypePipeline = {
@@ -289,13 +289,24 @@ export type TypeStepSimulation = {
 };
 
 export type SimulationResponse = {
-  name_file: string;
+  filename: string;
+  id: string;
   date: string;
   steps: number;
   lines: number;
 
   code: TypeTableCode[];
   runner: TypeStepSimulation[];
+};
+
+export type SimulationRequest = {
+  filename: string;
+  id: string;
+  date: string;
+  content: string;
+
+  registers: TypeRegisterToUpdate[];
+  memory: TypeMemoryToUpdate[];
 };
 
 

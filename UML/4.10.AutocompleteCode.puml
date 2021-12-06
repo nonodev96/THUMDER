@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+
+User -> InterfaceUI: Open Editor
+activate InterfaceUI
+User <- InterfaceUI: Show Editor
+User -> InterfaceUI: Write in file
+InterfaceUI -> System: Write in file
+activate System
+
+InterfaceUI <- System: Autocomplete code options
+User <- InterfaceUI: Show autocomplete options
+alt #LightGreen User select option
+  User -> InterfaceUI: Select autocomplete option
+  InterfaceUI -> System: Select autocomplete option
+  System -> System: Write text
+  InterfaceUI <- System: Write text
+  'User <- InterfaceUI: Whow Write text
+else #Pink User not select option
+end
+
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml

@@ -1,0 +1,108 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+User -> InterfaceUI: Open Config
+activate InterfaceUI
+User <- InterfaceUI: Show Config
+User -> InterfaceUI: Set count floating point unit
+InterfaceUI -> System: Set count floating point unit
+activate System
+alt #LightGreen Ok
+  InterfaceUI <- System: Set delay floating point unit
+else #Pink Error
+  InterfaceUI <- System: Set count floating point unit to default
+end
+deactivate System
+
+User -> InterfaceUI: Set delay floating point unit
+InterfaceUI -> System: Set delay floating point unit
+activate System
+alt #LightGreen Ok
+  InterfaceUI <- System: Set delay floating point unit
+else #Pink Error
+  InterfaceUI <- System: Set delay floating point unit to default
+end
+deactivate System
+
+User -> InterfaceUI: Set memory size
+InterfaceUI -> System: Set memory size
+activate System
+alt #LightGreen Ok
+  InterfaceUI <- System: Set memory size
+else #Pink Error
+  InterfaceUI <- System: Set memory size to default
+end
+deactivate System
+
+User -> InterfaceUI: Set auto save
+InterfaceUI -> System: Set auto save
+activate System
+alt #LightGreen Ok
+  InterfaceUI <- System: Set auto save
+else #Pink Error
+  InterfaceUI <- System: Set auto save to default
+end
+deactivate System
+
+User -> InterfaceUI: Set time simulation step
+InterfaceUI -> System: Set time simulation step
+activate System
+alt #LightGreen Ok
+  InterfaceUI <- System: Set time simulation step
+else #Pink Error
+  InterfaceUI <- System: Set time simulation step to default
+end
+deactivate System
+
+User -> InterfaceUI: Set config multiview
+InterfaceUI -> System: Set config multiview
+activate System
+alt #LightGreen Ok
+  InterfaceUI <- System: Set config multiview
+else #Pink Error
+  InterfaceUI <- System: Set config multiview to default
+end
+deactivate System
+
+User -> InterfaceUI: Select save or reset
+group #SkyBlue Select save
+  InterfaceUI -> System: Save
+  activate System
+  alt #LightGreen Ok
+    System -> System: Reset machine
+    InterfaceUI <- System: Save ok
+    User <- InterfaceUI: Notification save
+  else #Pink Error
+    InterfaceUI <- System: Save error
+    User x<- InterfaceUI: Notification error
+  end
+end
+
+group #SkyBlue Select reset
+  InterfaceUI -> System: Reset
+  alt #LightGreen Ok
+    System -> System: Reset machine
+    InterfaceUI <- System: Reset ok
+    User <- InterfaceUI: Notification reset
+  else #Pink Error
+    InterfaceUI <- System: Save error
+    User x<- InterfaceUI: Notification error
+  end
+  deactivate System
+end
+deactivate InterfaceUI
+deactivate User
+
+@enduml

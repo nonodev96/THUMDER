@@ -19,6 +19,12 @@ export class AboutView implements OnInit {
   @ViewChild('markdownComponentID_ABOUT', {static: false})
   private markdownComponentID_ABOUT: MarkdownComponent;
 
+  @ViewChild('markdownComponentID_COOKIES', {static: false})
+  private markdownComponentID_COOKIES: MarkdownComponent;
+
+  @ViewChild('markdownComponentID_CHANGELOG', {static: false})
+  private markdownComponentID_CHANGELOG: MarkdownComponent;
+
   private listenObj: any;
 
   constructor(private markdownService: MarkdownService,
@@ -41,6 +47,12 @@ export class AboutView implements OnInit {
         break;
       case 'markdownComponentID_README':
         markdownComponent = this.markdownComponentID_README;
+        break;
+      case 'markdownComponentID_COOKIES':
+        markdownComponent = this.markdownComponentID_COOKIES;
+        break;
+      case 'markdownComponentID_CHANGELOG':
+        markdownComponent = this.markdownComponentID_CHANGELOG;
         break;
     }
     // because MarkdownComponent isn't 'compiled' the links don't use the angular router,

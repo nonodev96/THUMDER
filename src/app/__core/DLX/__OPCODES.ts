@@ -2,7 +2,8 @@ import { Operation } from "./interfaces";
 import { HaltOperation } from "./HaltOperation";
 import { Operation_Register } from "./Operation_Register";
 
-export type TypeOperation = "debug"
+export type TypeOperation =
+  "debug"
   | "nop" | "add" | "addu" | "and" | "movd" | "movf" | "movfp2i" | "movi2fp" | "movi2s" | "movs2i" | "or" | "seq"
   | "sge" | "sgeu" | "sgt" | "sgtu" | "sle" | "sleu" | "sll" | "slt" | "sltu" | "sne" | "sra" | "srl" | "sub" | "subu"
   | "xor"
@@ -17,7 +18,7 @@ export type TypeOperation = "debug"
   | "eqd" | "eqf" | "ged" | "gef" | "gtd" | "gtf" | "led" | "lef" | "ltd" | "ltf" | "mult" | "multd" | "multf" | "multu"
   | "ned" | "nef" | "subd" | "subf";
 
-export type TypeOperationUppercase = Uppercase<TypeOperation>
+export type TypeOperationUppercase = Uppercase<TypeOperation>;
 
 
 /*@formatter:off*/
@@ -105,8 +106,9 @@ export const OPCODES_TYPE_R_OPCODE_0 = [
   { bits: "011001", name: "MULTU"         },
   { bits: "011010", name: "DIV"           },
   { bits: "011011", name: "DIVU"          },
-]
-//DLX floating-poing instructions (opcode = 1): only the least-significant 6 bits in the function field are used.
+];
+
+// DLX floating-poing instructions (opcode = 1): only the least-significant 6 bits in the function field are used.
 export const OPCODES_TYPE_R_OPCODE_1 = [
   { bits: "000000", name: "ADDF"          },
   { bits: "000001", name: "SUBF"          },
@@ -141,145 +143,112 @@ export const OPCODES_TYPE_R_OPCODE_1 = [
 /*@formatter:on*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export const OPCODES: { [code in Partial<TypeOperationUppercase>]: Operation[] } = {
-  ADD:      [new Operation_Register("ADD",(a, b) => a + b)],
-  ADDD:     [],
-  ADDF:     [],
-  ADDI:     [],
-  ADDU:     [],
-  ADDUI:    [],
-  AND:      [],
-  ANDI:     [],
-  BEQZ:     [],
-  BFPF:     [],
-  BFPT:     [],
-  BNEZ:     [],
-  CVTD2F:   [],
-  CVTD2I:   [],
-  CVTF2D:   [],
-  CVTF2I:   [],
-  CVTI2D:   [],
-  CVTI2F:   [],
-  DEBUG:    [],
-  DIV:      [],
-  DIVD:     [],
-  DIVF:     [],
-  DIVU:     [],
-  EQD:      [],
-  EQF:      [],
-  FPARITH:  [],
-  GED:      [],
-  GEF:      [],
-  GTD:      [],
-  GTF:      [],
-  J:        [],
-  JAL:      [],
-  JALR:     [],
-  JR:       [],
-  LA:       [],
-  LB:       [],
-  LBU:      [],
-  LD:       [],
-  LED:      [],
-  LEF:      [],
-  LF:       [],
-  LH:       [],
-  LHI:      [],
-  LHU:      [],
-  LTD:      [],
-  LTF:      [],
-  LW:       [],
-  MOVD:     [],
-  MOVF:     [],
-  MOVFP2I:  [],
-  MOVI2FP:  [],
-  MOVI2S:   [],
-  MOVS2I:   [],
-  MULT:     [],
-  MULTD:    [],
-  MULTF:    [],
-  MULTU:    [],
-  NED:      [],
-  NEF:      [],
-  NOP:      [],
-  OR:       [],
-  ORI:      [],
-  RFE:      [],
-  SB:       [],
-  SD:       [],
-  SEQ:      [],
-  SEQI:     [],
-  SF:       [],
-  SGE:      [],
-  SGEI:     [],
-  SGEU:     [],
-  SGEUI:    [],
-  SGT:      [],
-  SGTI:     [],
-  SGTU:     [],
-  SGTUI:    [],
-  SH:       [],
-  SLE:      [],
-  SLEI:     [],
-  SLEU:     [],
-  SLEUI:    [],
-  SLL:      [],
-  SLLI:     [],
-  SLT:      [],
-  SLTI:     [],
-  SLTU:     [],
-  SLTUI:    [],
-  SNE:      [],
-  SNEI:     [],
-  SPECIAL:  [],
-  SRA:      [],
-  SRAI:     [],
-  SRL:      [],
-  SRLI:     [],
-  SUB:      [],
-  SUBD:     [],
-  SUBF:     [],
-  SUBI:     [],
-  SUBU:     [],
-  SUBUI:    [],
-  SW:       [],
-  TRAP:     [],
-  XOR:      [],
-  XORI:     [],
-  HALT:     [new HaltOperation("HALT")]
-}
+  ADD: [new Operation_Register("ADD", (a, b) => a + b)],
+  ADDD: [],
+  ADDF: [],
+  ADDI: [],
+  ADDU: [],
+  ADDUI: [],
+  AND: [],
+  ANDI: [],
+  BEQZ: [],
+  BFPF: [],
+  BFPT: [],
+  BNEZ: [],
+  CVTD2F: [],
+  CVTD2I: [],
+  CVTF2D: [],
+  CVTF2I: [],
+  CVTI2D: [],
+  CVTI2F: [],
+  DEBUG: [],
+  DIV: [],
+  DIVD: [],
+  DIVF: [],
+  DIVU: [],
+  EQD: [],
+  EQF: [],
+  FPARITH: [],
+  GED: [],
+  GEF: [],
+  GTD: [],
+  GTF: [],
+  J: [],
+  JAL: [],
+  JALR: [],
+  JR: [],
+  LA: [],
+  LB: [],
+  LBU: [],
+  LD: [],
+  LED: [],
+  LEF: [],
+  LF: [],
+  LH: [],
+  LHI: [],
+  LHU: [],
+  LTD: [],
+  LTF: [],
+  LW: [],
+  MOVD: [],
+  MOVF: [],
+  MOVFP2I: [],
+  MOVI2FP: [],
+  MOVI2S: [],
+  MOVS2I: [],
+  MULT: [],
+  MULTD: [],
+  MULTF: [],
+  MULTU: [],
+  NED: [],
+  NEF: [],
+  NOP: [],
+  OR: [],
+  ORI: [],
+  RFE: [],
+  SB: [],
+  SD: [],
+  SEQ: [],
+  SEQI: [],
+  SF: [],
+  SGE: [],
+  SGEI: [],
+  SGEU: [],
+  SGEUI: [],
+  SGT: [],
+  SGTI: [],
+  SGTU: [],
+  SGTUI: [],
+  SH: [],
+  SLE: [],
+  SLEI: [],
+  SLEU: [],
+  SLEUI: [],
+  SLL: [],
+  SLLI: [],
+  SLT: [],
+  SLTI: [],
+  SLTU: [],
+  SLTUI: [],
+  SNE: [],
+  SNEI: [],
+  SPECIAL: [],
+  SRA: [],
+  SRAI: [],
+  SRL: [],
+  SRLI: [],
+  SUB: [],
+  SUBD: [],
+  SUBF: [],
+  SUBI: [],
+  SUBU: [],
+  SUBUI: [],
+  SW: [],
+  TRAP: [],
+  XOR: [],
+  XORI: [],
+  HALT: [new HaltOperation("HALT")]
+};
 
 /*@formatter:on*/
