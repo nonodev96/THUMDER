@@ -70,7 +70,7 @@ import { CodeView } from './views/_auth/code/code.view';
 import { ConfigView } from './views/_auth/config/config.view';
 import { DocsView } from './views/_auth/docs/docs.view';
 import { FileManagerView } from './views/_auth/file-manager/file-manager.view';
-import { IDEView } from "./views/_auth/ide/ide.view";
+import { EditorView } from "./views/_auth/editor/editor.view";
 import { LoggerView } from "./views/_auth/logger/logger.view";
 import { MemoryView } from './views/_auth/memory/memory.view';
 import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
@@ -175,7 +175,7 @@ export function markedOptionsFactory(): MarkedOptions {
     ConfigView,
     DocsView,
     FileManagerView,
-    IDEView,
+    EditorView,
     LoggerView,
     MemoryView,
     CycleClockDiagramView,

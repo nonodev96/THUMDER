@@ -1,22 +1,22 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
+import { ToastrService } from "ngx-toastr";
+import { Subscription } from "rxjs";
 import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
 import { InterfaceFileItem, TypeExtrasIDE } from "../../../types";
 import { FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
 import { Utils } from "../../../Utils";
-import { ToastrService } from "ngx-toastr";
-import { TranslateService } from "@ngx-translate/core";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { Subscription } from "rxjs";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTAST";
 
 @Component({
-  selector: "view-ide",
-  templateUrl: "./ide.view.html",
+  selector: "view-editor",
+  templateUrl: "./editor.view.html",
   styleUrls: []
 })
-export class IDEView implements OnInit, AfterViewInit, OnDestroy {
+export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MonacoEditorComponent) monacoEditorComponent: MonacoEditorComponent;
   isMaximize = false;

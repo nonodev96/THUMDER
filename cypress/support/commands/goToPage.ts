@@ -19,10 +19,10 @@ export function THUMDER_goFileManager() {
   cy.location('pathname').should('eq', '/auth/file-manager');
 }
 
-export function THUMDER_goIDE() {
+export function THUMDER_goEditor() {
   THUMDER_openNavigation();
-  cy.get('a[title="ide"]').click();
-  cy.location('pathname').should('eq', '/auth/ide');
+  cy.get('a[title="editor"]').click();
+  cy.location('pathname').should('eq', '/auth/editor');
 }
 
 export function THUMDER_goPipeline() {
