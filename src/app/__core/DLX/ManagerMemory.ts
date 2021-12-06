@@ -2,7 +2,7 @@ import { InterfaceMemory } from "./interfaces";
 import { Int32 } from "../typesData";
 import { Utils } from "../../Utils";
 
-export class Memory implements InterfaceMemory {
+export class ManagerMemory implements InterfaceMemory {
   // Bytes
   private _memorySizeBytes: number;
   // private _memory: Array<Int32>;

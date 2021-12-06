@@ -1,75 +1,40 @@
 @startuml
 'https://plantuml.com/class-diagram
 skinparam defaultFontName consolas
+skinparam defaultTextAlignment center
 skinparam minClassWidth 100
 skinparam conditionStyle inside
-'skinparam defaultTextAlignment center
 skinparam linetype polyline
 skinparam linetype ortho
-'left to right direction
+skinparam nodesep 50
+skinparam ranksep 130
+left to right direction
 '!include styles.puml
+hide circle
 
-
-'class Users <<(T,red)>> {
-'  Users table
-'  ==
-'  -uid: int
-'  -email: string
-'  -displayName: string
-'  -photoURL: string
-'  -emailVerified: boolean
-'}
-'
-'class FileItem <<(T,red)>> {
-'  FileItem table
-'  ==
-'  #uid: int
-'  -name: string
-'  -path: string
-'  -content: string
-'  -pathKeys: string as JSON
-'  -key: string
-'  -dateModified: Date
-'  -size: number
-'  -isDirectory: boolean
-'  -hasSubDirectories: boolean
-'  -thumbnail: string
-'  -dataItem: string as JSON
-'  'any
-'}
-
-'e01 ||..o{ e02
-'one and only one <-->  zero or many
-
-
-entity "Users" as e01 {
-  *uid : number <<generated>>
-  --
-  email: text
-  displayName: text
-  photoURL: text
-  emailVerified: boolean
+entity "Machine" as e00 {
+  Breakpoints
+  Registers
+  Memory
 }
 
-entity "FileItems" as e02 {
-  *f_id : number <<generated>>
-  key : text
-  pathKeys: text as JSON
-  --
-  description: text
-  name: text
-  path: text
-  content: text
-  dateModified: Date
-  size: number
-  isDirectory: boolean
-  hasSubDirectories: boolean
-  thumbnail: text
-  dataItem: text as JSON
-  e1_uid: number <<FK>>
+entity "User" as e01 {
+
 }
 
-e01 ||..o{ e02
+entity "File Manager" as e02 {
+  Files
+}
+
+entity "Editor" as e03 {
+  File
+}
+
+e01 ||--|| e03: Edit
+e01 ||--|| e00: Simulate
+e01 ||--|| e02: Manage
+e02 ||--|| e03: Load file
+e03 ||-up-|| e00: Load code
 
 
 @enduml

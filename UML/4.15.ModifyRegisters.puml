@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+User -> InterfaceUI: Open Registers
+activate InterfaceUI
+
+User <- InterfaceUI: Show Registers
+User -> InterfaceUI: Open Registers Editor
+User <- InterfaceUI: Show Registers Editor
+
+User -> InterfaceUI: Select type register
+InterfaceUI -> System: Select type register
+activate System
+InterfaceUI <- System: Update form UI
+deactivate System
+
+User -> InterfaceUI: Select register
+InterfaceUI -> System: Select register
+activate System
+User -> InterfaceUI: Set value register
+InterfaceUI -> System: Set value register
+alt #LightGreen Valid value memory
+  InterfaceUI <- System: Set value in register ok
+  User <- InterfaceUI: Notification value in register
+else #Pink Not valid value memory
+  System -> System: Set value in register null
+  InterfaceUI <- System: Set value in register error
+  User x<- InterfaceUI: Notification value in register  error
+  deactivate System
+end
+
+
+
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml

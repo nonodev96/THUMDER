@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+'!pragma teoz true &
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+group#Gold Select file to load
+
+end
+alt#Gold Set configuration
+
+end
+
+User -> InterfaceUI: Synchronize file
+activate InterfaceUI
+InterfaceUI -> System: Synchronize file
+activate System
+System -> Server: Synchronize file
+activate Server
+System <- Server: Instruction code response
+deactivate Server
+InterfaceUI <- System: Update memory with instruction code
+deactivate System
+
+
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml

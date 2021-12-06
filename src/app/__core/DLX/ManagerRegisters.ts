@@ -1,7 +1,7 @@
 import { Float32, Int32 } from "../typesData";
 import { InterfaceRegisters } from "./interfaces";
 
-export class Registers implements InterfaceRegisters {
+export class ManagerRegisters implements InterfaceRegisters {
   PC: Int32;
   IMAR: Int32;
   IR: Int32;

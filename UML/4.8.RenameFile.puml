@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+
+User -> InterfaceUI: Open file manager
+activate InterfaceUI
+User <- InterfaceUI: Show file manager
+deactivate InterfaceUI
+
+User -> InterfaceUI: Rename file
+InterfaceUI -> System: Rename file
+System -> Firebase: Rename file
+
+alt #LightGreen Ok
+  System <- Firebase: Rename file successful
+  InterfaceUI <- System: Rename file successful
+  User <- InterfaceUI: Rename file successful
+else #Pink Error
+  System <- Firebase: Rename file error
+  InterfaceUI <- System: Rename file error
+  User x<- InterfaceUI: Rename file error
+end
+
+
+
+
+deactivate User
+
+@enduml

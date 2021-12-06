@@ -47,6 +47,36 @@
       </div>
     </div>
 
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_COOKIES">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            3. Cookies
+          </h4>
+        </div>
+      </a>
+      <div id="collapseOne_COOKIES" class="collapse" data-parent="#accordion_ABOUT">
+        <div class="card-body">
+          <markdown [src]="'assets/md/COOKIES.md'" (load)="onMarkdownLoad('markdownComponentID_COOKIES')" #markdownComponentID_COOKIES></markdown>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_CHANGELOG">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            4. Changelog
+          </h4>
+        </div>
+      </a>
+      <div id="collapseOne_CHANGELOG" class="collapse" data-parent="#accordion_ABOUT">
+        <div class="card-body">
+          <markdown [src]="'assets/md/CHANGELOG.md'" (load)="onMarkdownLoad('markdownComponentID_CHANGELOG')" #markdownComponentID_CHANGELOG></markdown>
+        </div>
+      </div>
+    </div>
+
   </div>
   <div class="col-2"></div>
 </div>

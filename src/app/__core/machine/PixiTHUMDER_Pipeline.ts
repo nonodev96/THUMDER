@@ -39,17 +39,16 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
   private readonly IF_text: PIXI.Text;
   private readonly ID_text: PIXI.Text;
   private readonly intEX_text: PIXI.Text;
-
-  private readonly faddEX_array: Array<PIXI.Text>;
-  private readonly fmultEX_array: Array<PIXI.Text>;
-  private readonly fdivEX_array: Array<PIXI.Text>;
-
   private readonly MEM_text: PIXI.Text;
   private readonly WB_text: PIXI.Text;
 
-  private readonly faddEX_count;
-  private readonly fmultEX_count;
-  private readonly fdivEX_count;
+  private faddEX_array: Array<PIXI.Text>;
+  private fmultEX_array: Array<PIXI.Text>;
+  private fdivEX_array: Array<PIXI.Text>;
+
+  private faddEX_count;
+  private fmultEX_count;
+  private fdivEX_count;
 
   constructor(faddEX_count = 1, fmultEX_count = 1, fdivEX_count = 1) {
     super();
@@ -408,5 +407,37 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
       "fmultEX_array": fmultEX_array,
       "fdivEX_array": fdivEX_array,
     });
+  }
+
+  public reset(faddEX_count: number, fmultEX_count: number, fdivEX_count: number) {
+    for (let i = this.children.length - 1; i >= 0; i--) {
+      this.removeChild(this.children[i]);
+    }
+
+    this.faddEX_count = faddEX_count;
+    this.fmultEX_count = fmultEX_count;
+    this.fdivEX_count = fdivEX_count;
+
+    this.faddEX_array = new Array<PIXI.Text>(this.faddEX_count);
+    for (let i = 0; i < this.faddEX_count; i++) {
+      this.faddEX_array[i] = new PIXI.Text("", styleFontTextBox);
+    }
+    this.fmultEX_array = new Array<PIXI.Text>(this.fmultEX_count);
+    for (let i = 0; i < this.fmultEX_count; i++) {
+      this.fmultEX_array[i] = new PIXI.Text("", styleFontTextBox);
+    }
+    this.fdivEX_array = new Array<PIXI.Text>(this.fdivEX_count);
+    for (let i = 0; i < this.fdivEX_count; i++) {
+      this.fdivEX_array[i] = new PIXI.Text("", styleFontTextBox);
+    }
+    this.IF_text.text = "";
+    this.ID_text.text = "";
+    this.intEX_text.text = "";
+    this.MEM_text.text = "";
+    this.WB_text.text = "";
+
+    this.initBoxes();
+    this.initArrows();
+    this.initTexts();
   }
 }

@@ -17,9 +17,9 @@ rectangle THUMDER-Client {
   usecase "<<Story Case>>\nIniciar sesión" as S_CU2
   usecase "<<Story Case>>\nRecuperar una cuenta" as S_CU3
   usecase "<<Story Case>>\nModificar una cuenta" as S_CU4
-  usecase "<<Story Case>>\nCrear carpetas" as S_CU5
+  ''usecase "<<Story Case>>\nCrear carpetas" as S_CU5
   usecase "<<Story Case>>\nCrear ficheros" as S_CU6
-  usecase "<<Story Case>>\nModificar nombre de una carpeta" as S_CU7
+  ''usecase "<<Story Case>>\nModificar nombre de una carpeta" as S_CU7
   usecase "<<Story Case>>\nModificar nombre de un fichero" as S_CU8
   usecase "<<Story Case>>\nEditar contenido de un fichero" as S_CU9
   usecase "<<Story Case>>\nAuto completar código DLX" as S_CU10
@@ -80,9 +80,9 @@ user --> S_CU1
 user --> S_CU2
 S_CU1 --> S_CU3
 S_CU2 --> S_CU4
-user --> S_CU5
+''user --> S_CU5
 user --> S_CU6
-S_CU5 --> S_CU7
+''S_CU5 --> S_CU7
 S_CU6 --> S_CU8
 user --> S_CU9
 S_CU9 --> S_CU10
@@ -90,7 +90,7 @@ user --> S_CU11
 S_CU11 --> S_CU12
 user --> S_CU13
 user --> S_CU14
-S_CU14 --> S_CU15
+user --> S_CU15
 user --> S_CU16
 S_CU16 --> S_CU17
 user --> S_CU18

@@ -1,0 +1,46 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+User -> InterfaceUI: Open Editor
+activate InterfaceUI
+User <- InterfaceUI: Show Editor
+User -> InterfaceUI: Select text in file
+InterfaceUI -> System: Select text in file
+activate System
+
+alt #LightGreen keyword in database
+  InterfaceUI <- System: Show documentation code options
+  User <- InterfaceUI: Show documentation options
+  alt #LightGreen User select option
+    User -> InterfaceUI: Select documentation option
+    InterfaceUI -> System: Select documentation option
+    InterfaceUI <- System: Show documentation of instruction
+    User <- InterfaceUI: Show documentation of instruction
+    'User <- InterfaceUI: Whow Write text
+  else #Pink User not select option
+    deactivate System
+  end
+  critical pepe
+
+  end
+else #Pink keyword not in database
+  'InterfaceUI <- System: Edit file error
+  'User x<- InterfaceUI: Edit file error
+end
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml

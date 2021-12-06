@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+
+User -> InterfaceUI: Open Editor
+activate InterfaceUI
+User <- InterfaceUI: Show Editor
+deactivate InterfaceUI
+
+User -> InterfaceUI: Save file
+InterfaceUI -> System: Edit file
+System -> Firebase: Edit file
+
+alt #LightGreen Ok
+  System <- Firebase: Edit file successful
+  InterfaceUI <- System: Edit file successful
+  User <- InterfaceUI: Edit file successful
+else #Pink Error
+  System <- Firebase: Edit file error
+  InterfaceUI <- System: Edit file error
+  User x<- InterfaceUI: Edit file error
+end
+
+
+
+
+deactivate User
+
+@enduml

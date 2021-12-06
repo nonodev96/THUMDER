@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+User -> InterfaceUI: Open Memory
+activate InterfaceUI
+
+User <- InterfaceUI: Show Memory
+User -> InterfaceUI: Open Memory Editor
+User <- InterfaceUI: Show Memory Editor
+
+User -> InterfaceUI: Select type data
+InterfaceUI -> System: Select type data
+activate System
+InterfaceUI <- System: Update form UI
+deactivate System
+User -> InterfaceUI: Select address memory
+InterfaceUI -> System: Select address memory
+activate System
+InterfaceUI <- System: Select address memory status
+deactivate System
+
+alt #LightGreen Valid address memory
+  User <- InterfaceUI: Select address memory ok
+  User -> InterfaceUI: Set value in address memory
+  InterfaceUI -> System: Set value in address memory
+  activate System
+  alt #LightGreen Valid value memory
+    InterfaceUI <- System: Set value in address memory ok
+    User <- InterfaceUI: Notification value in address memory
+  else #Pink Not valid value memory
+    System -> System: Set value in address memory null
+    InterfaceUI <- System: Set value in address memory error
+    User <- InterfaceUI: Notification value in address memory  error
+    deactivate System
+  end
+else #Pink Not valid address memory
+  User <- InterfaceUI: Notification address memory error
+end
+
+
+
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml
