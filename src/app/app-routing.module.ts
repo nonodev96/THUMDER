@@ -19,7 +19,7 @@ import { CodeView } from "./views/_auth/code/code.view";
 import { ConfigView } from "./views/_auth/config/config.view";
 import { DocsView } from "./views/_auth/docs/docs.view";
 import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
-import { IDEView } from "./views/_auth/ide/ide.view";
+import { EditorView } from "./views/_auth/editor/editor.view";
 import { MemoryView } from "./views/_auth/memory/memory.view";
 import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
 import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
@@ -76,7 +76,7 @@ const routes: Routes = [
       {path: "config", component: ConfigView, data: {breadcrumb: 'Config'}},
       {path: "documentation", component: DocsView, data: {breadcrumb: 'Documentation'}},
       {path: "file-manager", component: FileManagerView, data: {breadcrumb: 'File Manager'}},
-      {path: "ide", component: IDEView, data: {breadcrumb: 'IDE'}},
+      {path: "editor", component: EditorView, data: {breadcrumb: 'Editor'}},
       {path: "logger", component: LoggerView, data: {breadcrumb: 'Logger'}},
       {path: "memory", component: MemoryView, data: {breadcrumb: 'Memory'}},
       {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: 'Cycle Clock Diagram'}},

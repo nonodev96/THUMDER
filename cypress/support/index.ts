@@ -47,7 +47,7 @@ Cypress.Commands.add('THUMDER_goCode', f_goToPage.THUMDER_goCode);
 Cypress.Commands.add('THUMDER_goConfig', f_goToPage.THUMDER_goConfig);
 Cypress.Commands.add('THUMDER_goDocumentation', f_goToPage.THUMDER_goDocumentation);
 Cypress.Commands.add('THUMDER_goFileManager', f_goToPage.THUMDER_goFileManager);
-Cypress.Commands.add('THUMDER_goIDE', f_goToPage.THUMDER_goIDE);
+Cypress.Commands.add('THUMDER_goIDE', f_goToPage.THUMDER_goEditor);
 Cypress.Commands.add('THUMDER_goPipeline', f_goToPage.THUMDER_goPipeline);
 Cypress.Commands.add('THUMDER_goLogger', f_goToPage.THUMDER_goLogger);
 Cypress.Commands.add('THUMDER_goMemory', f_goToPage.THUMDER_goMemory);

@@ -419,15 +419,15 @@ export const AUTH_ROUTES: PublicRoutesList = [
     lang: 'FILE_MANAGER',
     path: 'file-manager',
     routerLink: '/auth/file-manager',
-    displayName: 'file-manager',
+    displayName: 'File Manager',
     data: {breadcrumb: 'File Manager'}
   },
   {
-    lang: "IDE",
-    path: "ide",
-    routerLink: '/auth/ide',
-    displayName: 'IDE',
-    data: {breadcrumb: 'IDE'}
+    lang: "EDITOR",
+    path: "editor",
+    routerLink: '/auth/editor',
+    displayName: 'Editor',
+    data: {breadcrumb: 'Editor'}
   },
   {
     lang: "LOGGER",

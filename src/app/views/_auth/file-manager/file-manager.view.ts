@@ -153,15 +153,15 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
-    const index2 = this.fileSystemService.ITEMS.findIndex(value => $event.file.key === value.key);
-    if (index2 > -1) {
-      const interfaceFileItem = this.fileSystemService.ITEMS[index2];
+    const index1 = this.fileSystemService.ITEMS.findIndex(value => $event.file.key === value.key);
+    if (index1 > -1) {
+      const interfaceFileItem = this.fileSystemService.ITEMS[index1];
       const extras: NavigationExtras = {
         state: {
           'interfaceFileItem': interfaceFileItem,
         }
       };
-      this.router.navigateByUrl('/auth/ide', extras).then((r) => {
+      this.router.navigateByUrl('/auth/editor', extras).then((r) => {
         console.log(r);
       });
     }

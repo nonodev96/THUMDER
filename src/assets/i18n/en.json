@@ -20,7 +20,7 @@
   "NAVIGATION": {
     "PAGES": "Pages",
     "FILE_MANAGER": "File manager",
-    "IDE": "IDE",
+    "EDITOR": "Editor",
     "PIPELINE": "Pipeline",
     "CYCLE_CLOCK_DIAGRAM": "Cycle Clock Diagram",
     "MEMORY": "Memory",
