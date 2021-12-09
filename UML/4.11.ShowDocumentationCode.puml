@@ -32,10 +32,7 @@ alt #LightGreen keyword in database
   else #Pink User not select option
     deactivate System
   end
-  critical pepe
-
-  end
-else #Pink keyword not in database
+else #Pink Keyword not in database
   'InterfaceUI <- System: Edit file error
   'User x<- InterfaceUI: Edit file error
 end

@@ -17,7 +17,7 @@ loop Form
   loop Input user data
     User -> InterfaceUI: Input user data
     alt #LightGreen User data valid
-        User <- InterfaceUI: Ok
+      User <- InterfaceUI: Ok
     else #Pink User data not valid
       User <- InterfaceUI: Please repeat
     end
@@ -30,17 +30,19 @@ loop Form
     activate System
     System -> Firebase: Create account request
     activate Firebase
-    System <- Firebase: Create account response
-    deactivate Firebase
     alt #LightGreen successful case
-        InterfaceUI <- System: Create account accepted
-        User <- InterfaceUI: Create account accepted
+      System <-- Firebase: Create account successful
+      InterfaceUI <- System: Create account accepted
+      User <- InterfaceUI: Create account accepted
     else #Pink Account error
-        InterfaceUI <- System: Create account failure
-        deactivate System
-        User x<- InterfaceUI: Notification error
+      System <-- Firebase: Create account error
+      deactivate Firebase
+      InterfaceUI <- System: Create account error
+      deactivate System
+      User x<- InterfaceUI: Notification error
     end
-  else #Pink
+  else #Pink Error in user data
+    InterfaceUI <- System: Error in user data
     User <- InterfaceUI: Notification error in user data
     deactivate InterfaceUI
   end

@@ -1,6 +1,7 @@
 import { InterfaceMemory } from "./interfaces";
 import { Int32 } from "../typesData";
 import { Utils } from "../../Utils";
+import { TypeMemoryToUpdate } from "../../types";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes
@@ -21,6 +22,46 @@ export class ManagerMemory implements InterfaceMemory {
   set memorySizeBytes(memorySize: number) {
     this._memorySizeBytes = memorySize;
     this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
+  }
+
+  processResponse(response: TypeMemoryToUpdate[]) {
+    for (const memoryToUpdate of response) {
+      const {typeData, address, value} = memoryToUpdate;
+      switch (typeData) {
+        case "Byte": {
+          const binary = Utils.hexadecimalToBinary(value);
+          this.setMemoryByteBinaryByAddress(address, binary);
+          break;
+        }
+        case "HalfWord": {
+          const binary = Utils.hexadecimalToBinary(value);
+          this.setMemoryHalfWordBinaryByAddress(address, binary);
+          break;
+        }
+        case "Word": {
+          const binary = Utils.hexadecimalToBinary(value);
+          this.setMemoryWordBinaryByAddress(address, binary);
+          break;
+        }
+        case "Float": {
+          const binary = Utils.hexadecimalToBinary(value);
+          this.setMemoryFloatBinaryByAddress(address, binary);
+          break;
+        }
+        case "Double": {
+          const binary = Utils.hexadecimalToBinary(value);
+          this.setMemoryDoubleBinaryByAddress(address, binary);
+          break;
+        }
+        case "ASCII": {
+          break;
+        }
+        default: {
+          console.warn("Can't process memory", typeData, address, value);
+          break;
+        }
+      }
+    }
   }
 
   // WORD - GET

@@ -5,12 +5,14 @@ import { ToastrService } from "ngx-toastr";
 
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
 import { Subject } from "rxjs";
+import firebase from "firebase";
+import functions = firebase.functions;
 
 @Injectable({
   providedIn: 'root'
 })
 export class SocketProviderConnectService {
-
+  public socketID: string;
   private connect$ = new Subject();
   private publicMessage$ = new Subject();
   private privateMessage$ = new Subject();
@@ -31,6 +33,7 @@ export class SocketProviderConnectService {
     // When the client successfully connects.
     this.socket.ioSocket.on('connect', () => {
       const connect = this.socket.connect();
+      this.socketID = this.socket.ioSocket.id;
       this.connect$.next(connect);
       if (connect.connected) {
         this.socket.ioSocket.on(this.socket.ioSocket.id, (res) => {
@@ -90,8 +93,8 @@ export class SocketProviderConnectService {
     });
   }
 
-  emitMessage(event = 'default', payload = {}) {
-    this.socket.ioSocket.emit(event, payload);
+  public emitMessage(event = 'default', payload = {}, callback?: (...response) => void) {
+    this.socket.ioSocket.emit(event, payload, callback);
   }
 
   private static handleErrors(err) {

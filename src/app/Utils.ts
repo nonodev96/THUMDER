@@ -14,6 +14,10 @@ export namespace Utils {
     return Promise.resolve();
   }
 
+  export function getRegisterNumber(str: string): number {
+    return parseInt(str.replace(/\D/g, ""), 10);
+  }
+
   export function MapToArray<K, V>(map: Map<K, V>): { key: K; value: V }[] {
     return Array.from(map, ([key, value]) => ({
       key,

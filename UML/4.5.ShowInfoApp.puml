@@ -1,0 +1,43 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+
+User -> InterfaceUI: Open About page
+activate InterfaceUI
+User <- InterfaceUI: Show About page
+deactivate InterfaceUI
+
+'User -> InterfaceUI: Select content to read
+
+alt #LightBlue Select Cookies
+  User -> InterfaceUI: Select content to read Cookies
+  User <- InterfaceUI: Open content Cookies
+else #LightBlue Select About
+  User -> InterfaceUI: Select content to read about
+  User <- InterfaceUI: Open content about
+else #LightBlue Select Readme
+  User -> InterfaceUI: Select content to read readme
+  User <- InterfaceUI: Open content readme
+else #LightBlue Select Changelog
+  User -> InterfaceUI: Select content to read changelog
+  User <- InterfaceUI: Open content changelog
+else #LightBlue Select License
+  User -> InterfaceUI: Select content to read license
+  User <- InterfaceUI: Open content license
+end
+
+deactivate User
+
+@enduml

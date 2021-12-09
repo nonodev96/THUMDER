@@ -9,7 +9,7 @@ import {
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
-  TypeTableCode, TypeDataStatistics, TypePipeline, TypeStepSimulation, InterfaceFileItem, TypeMultiviewConfiguration
+  TypeTableCode, TypeDataStatistics, TypePipeline, TypeSimulationStep, InterfaceFileItem, TypeMultiviewConfiguration
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
@@ -84,7 +84,7 @@ export const DEFAULT_PIPELINE: TypePipeline = {
   fmultEX: [],
 };
 
-export const DEFAULT_STEP_SIMULATION: TypeStepSimulation = {
+export const DEFAULT_STEP_SIMULATION: TypeSimulationStep = {
   IF: 0,
   IF_stall: 0,
   ID: 0,
@@ -98,7 +98,7 @@ export const DEFAULT_STEP_SIMULATION: TypeStepSimulation = {
 
   line: 0,
   step: 0,
-  stage: "other",
+  // stage: "other",
   instruction: "----------",
   codeInstruction: "0x00000000",
   pipeline: DEFAULT_PIPELINE,

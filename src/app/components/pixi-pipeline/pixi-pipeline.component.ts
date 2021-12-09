@@ -26,7 +26,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const list_elements = this.machine.getListStatusPipeline(stepSimulation);
       for (const e of list_elements) {
-        const code = this.machine.getTableCode(e.address).code;
+        const code = this.machine.getCode(e.address).code;
         const instruction = Utils.convertHexCodeToTextMachineInstructionDLX(code);
         switch (e.stage) {
           case "IF":

@@ -1,29 +1,28 @@
 import { Injectable } from '@angular/core';
-import { Double64, Float32, Int32 } from "../typesData";
+import { Float32, Int32 } from "../typesData";
 import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
 import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import { interval, Observable, PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import {
-  SimulationResponse,
-  TypeStepSimulation,
-  TypeCode, TypeDataStatistics,
+  TypeAllMemory,
+  TypeAllRegisters,
+  TypeCode,
+  TypeConfigurationMachine,
+  TypeDataStatistics,
   TypeFloatingPointStageConfiguration,
+  TypeMemoryToUpdate,
   TypeRegister,
-  TypeRegisterToEdit,
+  TypeRegisterToUpdate,
+  TypeSimulationInitRequest,
+  TypeSimulationInitResponse,
+  TypeSimulationStep,
   TypeStage,
   TypeStatusCycleClockDiagram,
   TypeStatusMachine,
-  TypeStatusPipeline,
-  TypeTableCode,
-  TypeTags
+  TypeStatusPipeline
 } from "../../types";
-import {
-  DEFAULT_BINARY_32_BITS,
-  DEFAULT_BINARY_64_BITS,
-  DEFAULT_DATA_STATISTICS, DEFAULT_PIPELINE,
-  DEFAULT_TABLE_CODE
-} from "../../CONSTAST";
+import { DEFAULT_DATA_STATISTICS, DEFAULT_PIPELINE, DEFAULT_TABLE_CODE } from "../../CONSTAST";
 import { Utils } from "../../Utils";
 import { StorageService } from "../storage/storage.service";
 import { ManagerRegisters } from "../DLX/ManagerRegisters";
@@ -33,6 +32,7 @@ import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
 import { TypeBreakpoints } from "../../components/monaco-editor/monaco-editor.component";
+import { SocketProviderConnectService } from "../services/socket-provider-connect.service";
 
 const RegexRegisterInteger = /\b(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31)\b/i;
 const RegexRegisterFloat = /\b(F0|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14|F15|F16|F17|F18|F19|F20|F21|F22|F23|F24|F25|F26|F27|F28|F29|F30|F31)\b/i;
@@ -54,17 +54,17 @@ export class MachineService {
   public memorySize;
   public breakpointManager: ManagerBreakpoints;
 
-  // address --> TypeTableCode
-  public code: Map<string, TypeTableCode> = new Map();
+  // address --> TypeCode
+  public code: Map<string, TypeCode> = new Map();
 
   // Vector con los pasos de la simulación
-  private simulation: SimulationResponse;
-  private statusMachineInStep: TypeStepSimulation | null;
+  private simulation: TypeSimulationInitResponse;
+  private statusMachineInStep: TypeSimulationStep | null;
 
   // Line
   public isBreakpoint$: Subject<number> = new Subject<number>();
   public codeSimulation$: Subject<TypeCode[]> = new Subject<TypeCode[]>();
-  public stepSimulation$: Subject<TypeStepSimulation> = new Subject<TypeStepSimulation>();
+  public stepSimulation$: Subject<TypeSimulationStep> = new Subject<TypeSimulationStep>();
   public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
   private dataStatistics: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
 
@@ -99,6 +99,7 @@ export class MachineService {
   // 21 de noviembre: Nono haz las tags y el guardar ficheros pls
   // https://stackblitz.com/edit/angular-play-pause-timer
   constructor(private store: StorageService,
+              private socketProviderConnect: SocketProviderConnectService,
               private translate: TranslateService,
               private toast: ToastrService) {
     this.floatingPointStageConfiguration = this.store.getItem('floating_point_stage_configuration');
@@ -123,6 +124,39 @@ export class MachineService {
     this.privateStep = 0;
     this.privateLine = 0;
 
+    //  this.socketProviderConnect.socket.on("SimulationInitResponse", (response) => {
+    //    const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
+    //    console.log("Simulation Init", simulationInit);
+    //  });
+    //  this.socketProviderConnect.socket.on("SimulationNextStepResponse", (response) => {
+    //    const simulationStep = JSON.parse(response) as TypeSimulationStep;
+    //    console.log("Simulation Step", simulationStep);
+    //  });
+    // TODO CHECK
+    this.socketProviderConnect.socket.on("UpdateRegisterResponse", (response) => {
+      const registers = JSON.parse(response) as TypeRegisterToUpdate[];
+      this.registers.processResponse(registers);
+      console.log("Registers update", registers);
+    });
+    // TODO CHECK
+    this.socketProviderConnect.socket.on("UpdateMemoryResponse", (response) => {
+      const memory = JSON.parse(response) as TypeMemoryToUpdate[];
+      this.memory.processResponse(memory);
+      console.log("Memory update", memory);
+    });
+    this.socketProviderConnect.socket.on("GetAllRegistersResponse", (response) => {
+      const allRegisters = JSON.parse(response) as TypeAllRegisters;
+      console.log("GetAllRegisters", allRegisters);
+    });
+    this.socketProviderConnect.socket.on("GetAllMemoryResponse", (response) => {
+      const allMemory = JSON.parse(response) as TypeAllMemory;
+      console.log("GetAllMemory", allMemory);
+    });
+    this.socketProviderConnect.socket.on("UpdateConfigurationMachineResponse", (response) => {
+      const configurationMachine = JSON.parse(response) as TypeConfigurationMachine[];
+      console.log("Configuration machine", configurationMachine);
+    });
+
     const timeSimulation = this.store.getItem('time_simulation');
     this.timer = interval(timeSimulation).pipe(
       takeUntil(this.isRunning$),
@@ -132,7 +166,7 @@ export class MachineService {
     this.timerObserver = {
       next: async (_: number): Promise<void> => {
         if (this.isRunning === true) {
-          await this.nextStep();
+          await this.SimulationNextStep();
         }
         return Promise.resolve();
       }
@@ -143,6 +177,7 @@ export class MachineService {
   public async resetMachineStatus(): Promise<boolean> {
     try {
       await this.toastMessage('TOAST.TITLE_RESET_MACHINE', 'TOAST.MESSAGE_RESET_MACHINE');
+      await this.SimulationInit();
       this.log("RESET");
       this.reset$.next();
 
@@ -180,8 +215,7 @@ export class MachineService {
         takeUntil(this.isRunning$),
         takeUntil(this.isComplete$),
       );
-
-      await this.loadExamples();
+      // await this.loadExamples();
       return Promise.resolve(true);
     } catch (error) {
       console.error(error);
@@ -205,7 +239,7 @@ export class MachineService {
     return this.isRunning$.asObservable();
   }
 
-  public getStepSimulationObservable(): Observable<TypeStepSimulation> {
+  public getStepSimulationObservable(): Observable<TypeSimulationStep> {
     return this.stepSimulation$.asObservable();
   }
 
@@ -213,7 +247,6 @@ export class MachineService {
     return this.codeSimulation$.asObservable();
   }
 
-  // line
   public getDebuggerObservable(): Observable<number> {
     return this.isBreakpoint$.asObservable();
   }
@@ -222,11 +255,11 @@ export class MachineService {
     return this.dataStatistics$.asObservable();
   }
 
-  getLoggerObservable(): Observable<string> {
+  public getLoggerObservable(): Observable<string> {
     return this.logger$.asObservable();
   }
 
-  public getStatusCycleClockDiagram(stepSimulation: TypeStepSimulation): TypeStatusCycleClockDiagram {
+  public getStatusCycleClockDiagram(stepSimulation: TypeSimulationStep): TypeStatusCycleClockDiagram {
     return {
       step: stepSimulation.step,
       instruction: stepSimulation.instruction,
@@ -246,16 +279,14 @@ export class MachineService {
     };
   }
 
-  public getListStatusPipeline(stepSimulation: TypeStepSimulation): TypeStatusPipeline[] {
+  public getListStatusPipeline(stepSimulation: TypeSimulationStep): TypeStatusPipeline[] {
     const {IF, ID, intEX, MEM, WB} = stepSimulation.pipeline;
     const list_elements: TypeStatusPipeline[] = [];
-
     if (IF) list_elements.push({address: IF, stage: 'IF'});
     if (ID) list_elements.push({address: ID, stage: 'ID'});
     if (intEX) list_elements.push({address: intEX, stage: 'intEX'});
     if (MEM) list_elements.push({address: MEM, stage: 'MEM'});
     if (WB) list_elements.push({address: WB, stage: 'WB'});
-
     for (const f_a of stepSimulation.pipeline.faddEX) {
       list_elements.push({address: f_a.address, stage: `faddEX_${f_a.unit}` as TypeStage, unit: f_a.unit});
     }
@@ -291,24 +322,60 @@ export class MachineService {
       console.warn("this.isComplete, can't resume");
       return Promise.resolve();
     }
-
     this.isBreakpoint = false;
     this.isRunning = true;
     this.isRunning$.next(this.isRunning);
-
     this.timer.subscribe(this.timerObserver);
     return Promise.resolve();
   }
 
-  public async nextStep(): Promise<void> {
-    this.statusMachineInStep = await MachineService.getStepInRunner(this.privateStep);
+  private async SimulationInit(): Promise<boolean> {
+    try {
+      const data = await fetch('assets/examples-dlx/prim.s');
+      const content = await data.text();
+      const payload = JSON.stringify({
+        id: this.socketProviderConnect.socket.ioSocket.id,
+        filename: "prim.s",
+        date: new Date().toLocaleDateString(),
+        content: content,
+        registers: [],
+        memory: []
+      } as TypeSimulationInitRequest);
+      this.socketProviderConnect.emitMessage('SimulationInitRequest', payload, (response) => {
+        const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
+        console.log("Simulation init", simulationInit);
+        const data_code_array: TypeCode[] = [];
+        for (const ins of simulationInit.code) {
+          const address = ins.address;
+          const binary32 = Utils.hexadecimalToBinary(ins.code);
+          this.memory.setMemoryWordBinaryByAddress(address, binary32);
+          this.code.set(ins.address, ins);
+          data_code_array.push(ins);
+        }
+        this.codeSimulation$.next(data_code_array);
+      });
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+    return Promise.resolve(true);
+  }
 
-    const canNextInstruction = await this.checkConditions();
-    if (canNextInstruction) await this.clock();
-
-    this.privateLine++;
-    this.privateStep++;
-    return Promise.resolve();
+  public SimulationNextStep(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const payload = JSON.stringify({
+        step: this.privateStep
+      });
+      this.socketProviderConnect.emitMessage('SimulationNextStepRequest', payload, async (response) => {
+        this.statusMachineInStep = JSON.parse(response) as TypeSimulationStep;
+        const canNextInstruction = await this.checkConditions();
+        if (canNextInstruction) await this.clock();
+        console.log("MachineInStep: ", this.statusMachineInStep);
+        this.privateLine++;
+        this.privateStep++;
+        resolve();
+      });
+    });
   }
 
   public async end(): Promise<void> {
@@ -329,8 +396,7 @@ export class MachineService {
     this.privateLine = this.statusMachineInStep.line;
     this.isComplete = this.statusMachineInStep.isComplete ?? false;
     this.isBreakpoint = this.breakpointManager.isBreakpoint(this.privateLine);
-    this.log(this.debug());
-
+    // this.log(this.debug());
     if (this.isComplete) {
       this.isComplete = true;
       this.isRunning = false;
@@ -338,7 +404,6 @@ export class MachineService {
       await this.toastMessage('TOAST.TITLE_END_SIMULATION', 'TOAST.MESSAGE_END_SIMULATION');
       return Promise.resolve(false);
     }
-
     if (this.isBreakpoint) {
       this.line$.next(this.privateLine);
       this.isRunning = false;
@@ -347,11 +412,9 @@ export class MachineService {
       await this.toastMessage('TOAST.TITLE_BREAKPOINT_SIMULATION', 'TOAST.MESSAGE_BREAKPOINT_SIMULATION');
       return Promise.resolve(false);
     }
-
     if (this.isComplete === false && this.isBreakpoint === false) {
       return Promise.resolve(true);
     }
-
     return Promise.resolve(false);
   }
 
@@ -360,92 +423,17 @@ export class MachineService {
       console.warn('isComplete', this.isComplete);
       return Promise.resolve();
     }
-
     if (this.statusMachineInStep.registers !== []) {
-      for (const register_value of this.statusMachineInStep.registers) {
-        const register = register_value.register;
-        const typeRegister: TypeRegister | "" = MachineService.getTypeRegister(register);
-        switch (typeRegister) {
-          case "Control": {
-            this.registers[register] = new Int32();
-            this.registers[register].binary = Utils.hexadecimalToBinary(register_value.value);
-            break;
-          }
-          case "Integer": {
-            const r: number = MachineService.getRegisterNumber(register);
-            this.registers.R[r] = new Int32();
-            this.registers.R[r].binary = Utils.hexadecimalToBinary(register_value.value);
-            break;
-          }
-          case "Float": {
-            const f: number = MachineService.getRegisterNumber(register);
-            this.registers.F[f] = new Float32();
-            this.registers.F[f].binary = Utils.hexadecimalToBinary(register_value.value);
-            break;
-          }
-          case "Double": {
-            const d: number = MachineService.getRegisterNumber(register);
-            const binary = Utils.hexadecimalToBinary(register_value.value, {maxLength: 64, fillString: '0'});
-            this.registers.F[d] = new Float32();
-            this.registers.F[d].binary = binary.substr(0, 32);
-            this.registers.F[d + 1].binary = binary.substr(32, 32);
-            break;
-          }
-        }
-        // this.log('Registro: ', register, 'con valor', value, 'de la instrucción', instructionText);
-      }
+      this.registers.processResponse(this.statusMachineInStep.registers);
     }
-
     if (this.statusMachineInStep.memory !== []) {
-      for (const memory_value of this.statusMachineInStep.memory) {
-        const address = memory_value.address;
-        const typeData = memory_value.typeData ?? "Word";
-        switch (typeData) {
-          case "Byte": {
-            const binary08 = Utils.hexadecimalToBinary(memory_value.value);
-            this.memory.setMemoryByteBinaryByAddress(address, binary08);
-            break;
-          }
-          case "HalfWord": {
-            const binary16 = Utils.hexadecimalToBinary(memory_value.value);
-            this.memory.setMemoryHalfWordBinaryByAddress(address, binary16);
-            break;
-          }
-          case "Word": {
-            const binary32 = Utils.hexadecimalToBinary(memory_value.value);
-            this.memory.setMemoryWordBinaryByAddress(address, binary32);
-            break;
-          }
-          case "Float": {
-            const binary08 = Utils.hexadecimalToBinary(memory_value.value);
-            this.memory.setMemoryFloatBinaryByAddress(address, binary08);
-            break;
-          }
-          case "Double": {
-            const binary64 = Utils.hexadecimalToBinary(memory_value.value);
-            this.memory.setMemoryDoubleBinaryByAddress(address, binary64);
-            break;
-          }
-          case "ASCII": {
-
-            break;
-          }
-        }
-        // this.log('Dirección: ', address, 'con valor', value, 'de la instrucción', instructionText);
-      }
+      this.memory.processResponse(this.statusMachineInStep.memory);
     }
-
     this.dataStatistics.TOTAL.ID_EXECUTED.instructions++;
     this.dataStatistics$.next(this.dataStatistics);
     this.stepSimulation$.next(this.statusMachineInStep);
     this.step$.next(this.privateStep);
     this.line$.next(this.privateLine);
-
-    /**
-     const message = "PrivateLine: " + this.privateLine.toString();
-     const title = "CLOCK";
-     await this.toastMessage(message, title);
-     */
     return Promise.resolve();
   }
 
@@ -459,115 +447,13 @@ export class MachineService {
     this.logger$.next(this.logger);
   }
 
-  private static async getStepInRunner(step: number): Promise<TypeStepSimulation | null> {
-    const response = await fetch('./assets/examples-dlx/prime.s/run_' + step + '.json');
-    const status: TypeStepSimulation = await response.json();
-    //const status = this.simulation.runner.filter((value) => value.step === step)[0];
-    if (status === undefined) {
-      console.error('No hay nada que simular');
-      return Promise.reject('No hay nada que simular');
-    } else {
-      if (status.pipeline === undefined) {
-        status.pipeline = DEFAULT_PIPELINE;
-      }
-      return Promise.resolve(status);
-    }
-  }
-
-  public getMemory(index: number): Int32 {
-    if (this.memory.getMemoryWordByIndex(index) === undefined) {
-      this.memory.setMemoryWordByIndex(index, new Int32());
-    }
-    return this.memory.getMemoryWordByIndex(index);
-  }
-
-  public getRegister(index: TypeRegisterToEdit, typeRegister: TypeRegister): Int32 | Float32 | Double64 {
-    let register: Int32 | Float32 | Double64;
-    let binary = "";
-    switch (typeRegister) {
-      case "Control":
-        binary = this.registers[index].binary;
-        register = new Int32();
-        register.binary = binary;
-        break;
-      case "Integer":
-        binary = this.registers.R[index].binary;
-        register = new Int32();
-        register.binary = binary;
-        break;
-      case "Float":
-        binary = this.registers.F[index].binary;
-        register = new Float32();
-        register.binary = binary;
-        break;
-      case "Double":
-        binary += this.registers.F[index].binary;
-        binary += this.registers.F[index].binary;
-        register = new Double64();
-        register.binary = binary;
-        break;
-    }
-
-    return register;
-  }
-
-  public getTableCode(address: string): TypeTableCode {
+  public getCode(address: string): TypeCode {
     if (this.code.get(address) === undefined) {
       console.warn("Error, dirección de memoria erronea '%s' | %o", address, this.code.get(address));
+      console.warn("Code: %o", Array.from(this.code));
       return DEFAULT_TABLE_CODE;
     }
     return this.code.get(address);
-  }
-
-  getBinaryOfMemory_Byte(address: number, module: 0 | 1 | 2 | 3): string {
-    const binary = this.getMemory(address).binary.padStart(32, '0');
-    return binary.substr(8 * module, 8);
-  }
-
-  getBinaryOfMemory_HalfWord(address: number, module: 0 | 1): string {
-    const binary = this.getMemory(address).binary.padStart(32, '0');
-    return binary.substr(16 * module, 16);
-  }
-
-  getBinaryOfMemory_Word(address: number): string {
-    return this.getMemory(address).binary.padStart(32, '0');
-  }
-
-  getBinaryOfMemory_Float(address: number): string {
-    return this.getMemory(address).binary.padStart(32, '0');
-  }
-
-
-  getBinaryOfMemory_Double(address: number): string {
-    const part1 = this.getMemory(address).binary.padStart(32, '0');
-    if (part1 === DEFAULT_BINARY_32_BITS) {
-      return DEFAULT_BINARY_64_BITS;
-    }
-    const part2 = this.getMemory(address + 1).binary.padStart(32, '0');
-    if (part2 === DEFAULT_BINARY_32_BITS) {
-      return DEFAULT_BINARY_64_BITS;
-    }
-    return part1 + part2;
-  }
-
-  private async loadExamples(): Promise<void> {
-    const response = await fetch('./assets/examples-dlx/example-runner.json');
-    const simulation: SimulationResponse = await response.json();
-    this.log(simulation);
-
-    this.simulation = simulation;
-    const data_code_array: TypeTableCode[] = [];
-    for (const ins of this.simulation.code) {
-      const address = ins.address;
-      const binary32 = Utils.hexadecimalToBinary(ins.code);
-      this.memory.setMemoryWordBinaryByAddress(address, binary32);
-
-      this.code.set(ins.address, ins);
-      data_code_array.push(ins);
-    }
-
-    this.codeSimulation$.next(data_code_array);
-    return Promise.resolve();
   }
 
   private async toastMessage(key_title: string = 'TOAST.LOGIN_FALSE',
@@ -589,6 +475,44 @@ export class MachineService {
       breakpoints: this.breakpointManager,
       hello: ''
     };
+  }
+
+  /**
+   * TODO - DEBUG
+   */
+  private static async getStepInRunner(step: number): Promise<TypeSimulationStep | null> {
+    const response = await fetch('./assets/examples-dlx/prime.s/run_' + step + '.json');
+    const status: TypeSimulationStep = await response.json();
+    //const status = this.simulation.runner.filter((value) => value.step === step)[0];
+    if (status === undefined) {
+      console.error('No hay nada que simular');
+      return Promise.reject('No hay nada que simular');
+    } else {
+      if (status.pipeline === undefined) {
+        status.pipeline = DEFAULT_PIPELINE;
+      }
+      return Promise.resolve(status);
+    }
+  }
+
+  /**
+   * TODO - DEBUG
+   */
+  private async loadExamples(): Promise<void> {
+    const response = await fetch('./assets/examples-dlx/example-runner.json');
+    const simulation: TypeSimulationInitResponse = await response.json();
+    this.log(simulation);
+    this.simulation = simulation;
+    const data_code_array: TypeCode[] = [];
+    for (const ins of this.simulation.code) {
+      const address = ins.address;
+      const binary32 = Utils.hexadecimalToBinary(ins.code);
+      this.memory.setMemoryWordBinaryByAddress(address, binary32);
+      this.code.set(ins.address, ins);
+      data_code_array.push(ins);
+    }
+    this.codeSimulation$.next(data_code_array);
+    return Promise.resolve();
   }
 
   private debug() {

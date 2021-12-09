@@ -56,10 +56,18 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
       'disabled',
       'true'
     );
+    this._renderer.addClass(
+      this._elementRef.nativeElement,
+      'disabled',
+    );
   }
 
   enable() {
     this._renderer.removeAttribute(
+      this._elementRef.nativeElement,
+      'disabled'
+    );
+    this._renderer.removeClass(
       this._elementRef.nativeElement,
       'disabled'
     );
