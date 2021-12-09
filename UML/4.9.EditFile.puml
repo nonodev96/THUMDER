@@ -24,11 +24,11 @@ InterfaceUI -> System: Edit file
 System -> Firebase: Edit file
 
 alt #LightGreen Ok
-  System <- Firebase: Edit file successful
+  System <-- Firebase: Edit file successful
   InterfaceUI <- System: Edit file successful
   User <- InterfaceUI: Edit file successful
 else #Pink Error
-  System <- Firebase: Edit file error
+  System <-- Firebase: Edit file error
   InterfaceUI <- System: Edit file error
   User x<- InterfaceUI: Edit file error
 end

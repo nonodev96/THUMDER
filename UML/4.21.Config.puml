@@ -80,7 +80,9 @@ User -> InterfaceUI: Select save or reset
 group #SkyBlue Select save
   InterfaceUI -> System: Save
   activate System
+  System -> Server: Save machine with configuration
   alt #LightGreen Ok
+    System <-- Server: Save machine with configuration ok
     System -> System: Reset machine
     InterfaceUI <- System: Save ok
     User <- InterfaceUI: Notification save
@@ -92,12 +94,15 @@ end
 
 group #SkyBlue Select reset
   InterfaceUI -> System: Reset
+  System -> Server: Reset machine with configuration
   alt #LightGreen Ok
+    System <-- Server: Reset machine with configuration ok
     System -> System: Reset machine
     InterfaceUI <- System: Reset ok
     User <- InterfaceUI: Notification reset
   else #Pink Error
-    InterfaceUI <- System: Save error
+    System <-- Server: Reset machine with configuration error
+    InterfaceUI <- System: Reset error
     User x<- InterfaceUI: Notification error
   end
   deactivate System

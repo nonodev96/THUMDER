@@ -24,11 +24,11 @@ InterfaceUI -> System: Delete file
 System -> Firebase: Delete file
 
 alt #LightGreen Ok
-  System <- Firebase: Delete file successful
+  System <-- Firebase: Delete file successful
   InterfaceUI <- System: Delete file successful
   User <- InterfaceUI: Delete file successful
 else #Pink Error
-  System <- Firebase: Delete file error
+  System <-- Firebase: Delete file error
   InterfaceUI <- System: Delete file error
   User x<- InterfaceUI: Delete file error
 end

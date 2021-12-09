@@ -1,5 +1,7 @@
 import { Float32, Int32 } from "../typesData";
 import { InterfaceRegisters } from "./interfaces";
+import { TypeRegisterToUpdate } from "../../types";
+import { Utils } from "../../Utils";
 
 export class ManagerRegisters implements InterfaceRegisters {
   PC: Int32;
@@ -48,6 +50,46 @@ export class ManagerRegisters implements InterfaceRegisters {
     for (let i = 0; i < 32; i++) {
       this.R[i] = new Int32();
       this.F[i] = new Float32();
+    }
+  }
+
+  processResponse(response: TypeRegisterToUpdate[]) {
+    for (const registerToUpdate of response) {
+      const {typeRegister, register, hexadecimalValue} = registerToUpdate;
+      switch (typeRegister) {
+        case "Control": {
+          const binary = Utils.hexadecimalToBinary(hexadecimalValue);
+          this[register] = new Int32();
+          this[register].binary = binary;
+          break;
+        }
+        case "Integer": {
+          const binary = Utils.hexadecimalToBinary(hexadecimalValue);
+          const index = Utils.getRegisterNumber(register);
+          this.R[index] = new Int32();
+          this.R[index].binary = binary;
+          break;
+        }
+        case "Float": {
+          const binary = Utils.hexadecimalToBinary(hexadecimalValue);
+          const index = Utils.getRegisterNumber(register);
+          this.F[index] = new Float32();
+          this.F[index].binary = binary;
+          break;
+        }
+        case "Double": {
+          const binary = Utils.hexadecimalToBinary(hexadecimalValue);
+          const index = Utils.getRegisterNumber(register);
+          this.F[index] = new Float32();
+          this.F[index].binary = binary.substr(0, 32);
+          this.F[index + 1].binary = binary.substr(32, 32);
+          break;
+        }
+        default: {
+          console.warn("Can't process register %s, %s, %s", typeRegister, register, hexadecimalValue);
+          break;
+        }
+      }
     }
   }
 }

@@ -58,7 +58,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
   }
 
   async nextStep(): Promise<void> {
-    await this.machine.nextStep();
+    await this.machine.SimulationNextStep();
     return Promise.resolve();
   }
 

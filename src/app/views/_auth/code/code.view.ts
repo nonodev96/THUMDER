@@ -2,9 +2,15 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { TypeCode, TypeStage, TypeTableCode } from "../../../types";
+import { TypeCode, TypeStage } from "../../../types";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
+
+
+type TypeTableCode = TypeCode & {
+  stage?: TypeStage;
+  index?: number;
+};
 
 @Component({
   selector: 'view-code',
@@ -64,7 +70,6 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     const array = Utils.MapToArray(this.machine.code);
     for (const code_memory of array) {
       const index = Utils.addressToIndex(code_memory.value.address);
-      const stage = code_memory.value.stage ?? "";
       const code: TypeCode = {
         address: code_memory.value.address,
         instruction: code_memory.value.instruction,
@@ -72,7 +77,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
         text: code_memory.value.text
       };
 
-      this.setRow(index, code, stage);
+      this.setRow(index, code);
     }
   }
 

@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+'!pragma teoz true &
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+
+end
+group#Gold Select file to load
+
+end
+group#Gold Set configuration
+
+end
+group#Gold Synchronize file
+
+end
+
+User -> InterfaceUI: Next step
+InterfaceUI -> System: Next step
+System -> Server: Next step request
+
+alt #LightGreen Response Ok
+  System <-- Server: Next step response successful
+  InterfaceUI <- System: Update memory
+  InterfaceUI <- System: Update registers
+  InterfaceUI <- System: Update cycle clock diagram
+  InterfaceUI <- System: Update pipeline
+  InterfaceUI <- System: Update statistics
+else #LightBlue  Response Stop
+  System <-- Server: Next step response stop
+  System -> System: Set is running to false
+  InterfaceUI <- System: Stop simulation
+  InterfaceUI <- System: Update statistics
+  User <- InterfaceUI: Notification stop simulation
+else #Pink  Response Error
+  System <-- Server: Next step response error
+  System -> System: Set is running to false
+  InterfaceUI <- System: Stop simulation
+  User x<- InterfaceUI: Notification error
+end
+
+
+
+deactivate InterfaceUI
+deactivate User
+
+@enduml

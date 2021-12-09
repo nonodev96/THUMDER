@@ -33,18 +33,19 @@ loop Form
     System -> Firebase: Authentication request
 
     activate Firebase
-    System <- Firebase: Authentication response
-
-    deactivate Firebase
     alt #LightGreen successful case
+      System <- Firebase: Authentication successful
       InterfaceUI <- System: Authentication accepted
       User <- InterfaceUI: Authentication accepted
     else #Pink Account error
-      InterfaceUI <- System: Authentication failure
+      System <- Firebase: Authentication error
+      deactivate Firebase
+      InterfaceUI <- System: Authentication error
       deactivate System
       User x<- InterfaceUI: Notification error
     end
   else #Pink Error in User data
+    InterfaceUI <- System: Error in user data
     User x<- InterfaceUI: Notification error in user data
     deactivate InterfaceUI
   end

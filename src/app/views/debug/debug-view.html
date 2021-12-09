@@ -11,9 +11,12 @@
     </div>
   </div>
   <div class="card-body">
+    <button class="btn btn-outline-primary mr-1" (click)="socketReconnect()">Socket reconnect</button>
     <button class="btn btn-outline-primary mr-1" (click)="showToast()">Show Toast</button>
     <button class="btn btn-outline-primary mr-1" (click)="debugLocalStorage()">Debug Localstorage</button>
     <button class="btn btn-outline-primary mr-1" [asyncClick]="getSomethingFromRemoteP">Promise</button>
+    <button class="btn btn-outline-primary mr-1" (click)="simulationInit()">Promise simulation init</button>
+    <button class="btn btn-outline-primary mr-1" (click)="simulationNextStep()">Promise simulation next step</button>
   </div>
   <div class="card-footer">
     <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
@@ -24,11 +27,14 @@
 
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} 2</h3>
+    <h3 class="card-title">{{'DEBUG' | translate}} Registers</h3>
     <div class="card-tools">
       <button class="btn btn-xs btn-outline-primary mr-1"
               (click)="updateRegisterServer($any(typeRegister.value), register.value, registerValue.value)">
         Debug - Update register
+      </button>
+      <button class="btn btn-xs btn-outline-primary mr-1" (click)="getAllRegisters()">
+        Debug - Get all registers
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -38,8 +44,8 @@
       </button>
     </div>
   </div>
-  <div class="card-body">
 
+  <div class="card-body">
     <form>
       <div class="container-fluid">
         <div class="row">
@@ -64,8 +70,8 @@
         </div>
       </div>
     </form>
-
   </div>
+
   <div class="card-footer">
     <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
   </div>
@@ -75,7 +81,62 @@
 
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} 3</h3>
+    <h3 class="card-title">{{'DEBUG' | translate}} Memory</h3>
+    <div class="card-tools">
+      <button class="btn btn-xs btn-outline-primary mr-1"
+              (click)="updateMemoryServer($any(memoryTypeData.value), memoryAddress.value, memoryValue.value)">
+        Debug - Update memory
+      </button>
+      <button class="btn btn-xs btn-outline-primary mr-1"
+              (click)="getAllMemory()">
+        Debug - Get all memory
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group">
+              <label for="memoryTypeDataID">Data type</label>
+              <input type="text" class="form-control" id="memoryTypeDataID" #memoryTypeData>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="memoryAddressID">Address</label>
+              <input type="text" class="form-control" id="memoryAddressID" #memoryAddress>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group">
+              <label for="memoryValueID">Memory value</label>
+              <input type="text" class="form-control" id="memoryValueID" #memoryValue>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="card-footer">
+    <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
+  </div>
+</div>
+
+<hr>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{'DEBUG' | translate}} Code</h3>
     <div class="card-tools">
 
       <button class="btn btn-xs btn-outline-primary mr-1"
@@ -118,6 +179,32 @@
         <td>{{item.code}}</td>
       </tr>
     </table>
+
+  </div>
+  <div class="card-footer">
+    <p>Socket ID: {{ socketProviderConnect?.socket?.ioSocket?.id?.toString() ?? '' }}</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{'DEBUG' | translate}} Config</h3>
+    <div class="card-tools">
+
+      <button class="btn btn-xs btn-outline-primary mr-1"
+              (click)="debugUpdateConfigRequestSocket()">Debug Update Config Request Socket
+      </button>
+
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+
 
   </div>
   <div class="card-footer">

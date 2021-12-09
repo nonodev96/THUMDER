@@ -21,14 +21,14 @@ InterfaceUI -> System: Analyze code
   activate System
   System -> Server: Analyze code
   activate Server
-  System <- Server: Analyze code response
+  System <-- Server: Analyze code response
   deactivate Server
   InterfaceUI <- System: Analyze code response
   deactivate System
 
   alt #LightGreen Have error
     User <- InterfaceUI: Show error in code
-  else #Pink No error in code
+  else #LightBlue No error in code
     User <- InterfaceUI: Show code
   end
 

@@ -28,7 +28,6 @@ alt #LightGreen User select option
   InterfaceUI -> System: Select autocomplete option
   System -> System: Write text
   InterfaceUI <- System: Write text
-  'User <- InterfaceUI: Whow Write text
 else #Pink User not select option
 end
 

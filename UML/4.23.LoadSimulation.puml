@@ -16,7 +16,7 @@ end
 group#Gold Select file to load
 
 end
-alt#Gold Set configuration
+group#Gold Set configuration
 
 end
 
@@ -30,6 +30,8 @@ System <- Server: Instruction code response
 deactivate Server
 InterfaceUI <- System: Update memory with instruction code
 deactivate System
+
+User <- InterfaceUI: Show memory with instruction code
 
 
 

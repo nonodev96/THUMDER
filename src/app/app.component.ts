@@ -43,7 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
               private electronService: ElectronService,
               private translate: TranslateService,
               private router: Router) {
-    console.log("ElectronService.debug: ", ElectronService.debug);
+    // console.log("ElectronService.debug: ", ElectronService.debug);
 
     // clean the route class when you travel and end de navigation
     this.router.events.subscribe((route) => {
@@ -83,7 +83,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.initializeSubscription = this.ccService.initialize$.subscribe(
       (event: NgcInitializeEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log(`initialize: ${JSON.stringify(event)}`);
+        // console.log(`initialize: ${JSON.stringify(event)}`);
       });
 
     this.statusChangeSubscription = this.ccService.statusChange$.subscribe(

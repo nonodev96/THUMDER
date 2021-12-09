@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor User
+boundary InterfaceUI
+participant System
+participant Server
+participant Firebase
+
+activate User
+group#Gold User login
+end
+
+User -> InterfaceUI: Open Logger
+activate InterfaceUI
+User <- InterfaceUI: Show Logger
+deactivate InterfaceUI
+
+deactivate User
+
+@enduml
