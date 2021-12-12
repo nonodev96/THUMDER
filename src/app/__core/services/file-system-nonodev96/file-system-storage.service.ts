@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
@@ -14,7 +14,7 @@ import Timestamp = firebase.firestore.Timestamp;
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class FileSystemStorageService {
   private fileItems_Collections: AngularFirestoreCollection<InterfaceFileItem>;
@@ -23,9 +23,9 @@ export class FileSystemStorageService {
   constructor(private httpClient: HttpClient,
               private afs: AngularFirestore,
               private db: AngularFireDatabase) {
-    const userData = JSON.parse(localStorage.getItem('user')) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     this.UID = userData.uid;
-    this.fileItems_Collections = this.afs.collection<InterfaceFileItem>('/fileitems', (ref) => {
+    this.fileItems_Collections = this.afs.collection<InterfaceFileItem>("/fileitems", (ref) => {
       return ref.where("e1_uid", "==", this.UID);
     });
   }
@@ -35,7 +35,7 @@ export class FileSystemStorageService {
     if (await this.isInitialize()) {
       return Promise.resolve(1);
     }
-    console.log('FileSystem isInitialize');
+    console.log("FileSystem isInitialize");
     return Promise.resolve(0);
   }
 
@@ -43,21 +43,21 @@ export class FileSystemStorageService {
     if (await this.isInitialize()) {
       return Promise.resolve(1);
     }
-    const filename = 'prim.s';
-    const defaultFileItem = new FileItem('', false, []);
+    const filename = "prim.s";
+    const defaultFileItem = new FileItem("", false, []);
     defaultFileItem.name = filename;
     defaultFileItem.key = Utils.uuidv4();
 
-    const content = await this.httpClient.get('assets/examples-dlx/' + filename, {responseType: 'text'}).toPromise();
+    const content = await this.httpClient.get("assets/examples-dlx/" + filename, {responseType: "text"}).toPromise();
     const defaultInterfaceFileItem: InterfaceFileItem = {
       ...defaultFileItem,
       dateModified: Timestamp.fromDate(new Date()),
       e1_uid: this.UID,
       content: content,
-      f_id: '',
-      path: '',
+      f_id: "",
+      path: "",
       pathKeys: [],
-      description: ''
+      description: ""
     };
     console.debug("Se quiere crear un fichero con los siguientes datos %o", defaultInterfaceFileItem);
     await this.addFileItem(defaultInterfaceFileItem);
@@ -71,7 +71,7 @@ export class FileSystemStorageService {
         return changes.map((c) => {
           return {
             $key: c.payload.doc.id,
-            ...c.payload.doc.data(),
+            ...c.payload.doc.data()
           } as InterfaceFileItem;
         });
       })
@@ -83,21 +83,21 @@ export class FileSystemStorageService {
   public async addFileItem(interfaceFileItem: InterfaceFileItem): Promise<void> {
     try {
       const clearItem: InterfaceFileItem = {
-        key: interfaceFileItem.key ?? '',
+        key: interfaceFileItem.key ?? "",
         pathKeys: interfaceFileItem.pathKeys ?? [],
-        path: interfaceFileItem.path ?? '',
-        name: interfaceFileItem.name ?? '',
+        path: interfaceFileItem.path ?? "",
+        name: interfaceFileItem.name ?? "",
         isDirectory: interfaceFileItem.isDirectory ?? false,
         hasSubDirectories: interfaceFileItem.hasSubDirectories ?? false,
         dateModified: interfaceFileItem.dateModified ?? Timestamp.fromDate(new Date()),
-        thumbnail: interfaceFileItem.thumbnail ?? '',
+        thumbnail: interfaceFileItem.thumbnail ?? "",
         size: interfaceFileItem.size ?? 0,
         dataItem: interfaceFileItem.dataItem ?? {},
 
         e1_uid: this.UID,
-        f_id: interfaceFileItem.f_id ?? '',
-        description: interfaceFileItem.description ?? '',
-        content: interfaceFileItem.content ?? ''
+        f_id: interfaceFileItem.f_id ?? "",
+        description: interfaceFileItem.description ?? "",
+        content: interfaceFileItem.content ?? ""
       };
       const id = this.afs.createId();
       console.log("El nuevo fichero con ID", id, clearItem);
@@ -132,7 +132,7 @@ export class FileSystemStorageService {
   }
 
   private async isInitialize(): Promise<boolean> {
-    const citiesRef: AngularFirestoreCollection<InterfaceFileItem> = this.afs.collection('/fileitems', ref => ref.where('e1_uid', '==', this.UID));
+    const citiesRef: AngularFirestoreCollection<InterfaceFileItem> = this.afs.collection("/fileitems", ref => ref.where("e1_uid", "==", this.UID));
     const vector = await citiesRef.get().toPromise();
     return Promise.resolve(vector.size > 0);
   }

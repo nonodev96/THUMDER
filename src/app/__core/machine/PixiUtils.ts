@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
 export namespace PixiUtils {
-  export function getRandomInt(min: number, max: number): number {
+  export function getRandomInt(min, max): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  export function getAngleTo(mx: number, my: number, px: number, py: number): number {
+  export function getAngleTo(mx, my, px, py) {
     // var self = that;
     const distX = my - py;
     const distY = mx - px;
@@ -16,15 +16,41 @@ export namespace PixiUtils {
     // const degrees = angle * 180/ Math.PI;
   }
 
-  export function getAngleX(length: number, angle: number): number {
+  export function getAngleX(length, angle) {
     return Math.cos(angle) * length;
   }
 
-  export function getAngleY(length: number, angle: number): number {
+  export function getAngleY(length, angle) {
     return Math.sin(angle) * length;
   }
 
-  export function drawArrow(start_x: number, start_y: number, to_x: number, to_y: number, color: number = 0xFF0000, angle: number = 35): PIXI.Graphics {
+  export function MapToArray<K, V>(map: Map<K, V>): { key: K; value: V }[] {
+    return Array.from(map, ([key, value]) => ({
+      key,
+      value
+    }));
+  }
+
+  export function cloneObject(obj) {
+    //Edge case
+    if (obj == null || typeof obj !== "object") {
+      return obj;
+    }
+
+    const result = {};
+    const keys_ = Object.getOwnPropertyNames(obj);
+
+    for (let i = 0; i < keys_.length; i++) {
+      const key = keys_[i];
+      result[key] = cloneObject(obj[key]);
+    }
+
+    Object.setPrototypeOf(result, obj.__proto__);
+
+    return result;
+  }
+
+  export function drawArrow(start_x: number, start_y: number, to_x: number, to_y: number, color = 0xFF0000, angle = 35): PIXI.Graphics {
     const L = Math.sqrt((to_x - start_x) ** 2 + (to_y - start_y) ** 2);
     const x3 = to_x + (15 / L) * ((start_x - to_x) * Math.abs(Math.cos(angle)) + (start_y - to_y) * Math.abs(Math.sin(angle)));
     const y3 = to_y + (15 / L) * ((start_y - to_y) * Math.abs(Math.cos(angle)) - (start_x - to_x) * Math.abs(Math.sin(angle)));
@@ -39,5 +65,33 @@ export namespace PixiUtils {
     bezierArrow.moveTo(x4, y4);
     bezierArrow.lineTo(to_x, to_y);
     return bezierArrow;
+  }
+
+  export class THUMDER_Map<K, V> {
+    private _map: Map<string, V>;
+
+    constructor() {
+      this._map = new Map();
+    }
+
+    set(key: K, data: V) {
+      const k = JSON.stringify(key);
+      this._map.set(k, data);
+    }
+
+    get(key: K) {
+      const k = JSON.stringify(key);
+      return this._map.get(k);
+    }
+
+    has(key: K): boolean {
+      const k = JSON.stringify(key);
+      return this._map.has(k);
+    }
+
+    delete(key: K): boolean {
+      const k = JSON.stringify(key);
+      return this._map.delete(k);
+    }
   }
 }

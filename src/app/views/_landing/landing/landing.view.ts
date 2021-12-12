@@ -3,7 +3,7 @@ import { DOCUMENT } from "@angular/common";
 
 @Component({
   selector: "app-landing",
-  templateUrl: "./landing.view.html",
+  templateUrl: "./landing.view.html"
 })
 export class LandingView implements OnInit {
   constructor(@Inject(DOCUMENT)

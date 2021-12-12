@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
@@ -13,15 +13,15 @@ type TypeTableCode = TypeCode & {
 };
 
 @Component({
-  selector: 'view-code',
-  templateUrl: './code.view.html',
+  selector: "view-code",
+  templateUrl: "./code.view.html",
   styleUrls: []
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  public displayedColumnsMemory: string[] = ['Address', 'Text', 'Binary', 'Hexadecimal', 'Stage', 'Instruction'];
+  public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction"];
   public dataSourceCode = new TableVirtualScrollDataSource<TypeTableCode>();
 
   public listRowActives: { address: string, stage: TypeStage }[] = [];
@@ -110,7 +110,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       code: tableCode.code,
       stage: stage,
       // binary: this.machine.getMemory(index).binary,
-      index: index,
+      index: index
     };
     this.refreshDataSourceCode();
   }

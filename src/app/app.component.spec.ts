@@ -1,10 +1,10 @@
-import { TestBed, waitForAsync } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { AppComponent } from './app.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { ElectronService } from './__core/services';
+import { TestBed, waitForAsync } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { AppComponent } from "./app.component";
+import { TranslateModule } from "@ngx-translate/core";
+import { ElectronService } from "./__core/services";
 
-describe('AppComponent', () => {
+describe("AppComponent", () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -13,7 +13,7 @@ describe('AppComponent', () => {
     }).compileComponents();
   }));
 
-  it('should create the app', waitForAsync(() => {
+  it("should create the app", waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();

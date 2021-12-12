@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { FileSystemStorageService } from './file-system-storage.service';
-import FileSystemItem from 'devextreme/file_management/file_system_item';
-import UploadInfo from 'devextreme/file_management/upload_info';
-import { Utils } from '../../../Utils';
+import { Injectable } from "@angular/core";
+import { FileSystemStorageService } from "./file-system-storage.service";
+import FileSystemItem from "devextreme/file_management/file_system_item";
+import UploadInfo from "devextreme/file_management/upload_info";
+import { Utils } from "../../../Utils";
 import { InterfaceFileItem } from "../../../types";
 import firebase from "firebase/app";
 import Timestamp = firebase.firestore.Timestamp;
@@ -16,7 +16,7 @@ export class FileItem extends FileSystemItem {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class FileSystemService {
 
@@ -27,7 +27,7 @@ export class FileSystemService {
   private updateUI$: Subject<void> = new Subject<void>();
 
   constructor(private fileSystemStorageService: FileSystemStorageService) {
-    const userData = JSON.parse(localStorage.getItem('user'));
+    const userData = JSON.parse(localStorage.getItem("user"));
     this.UID = userData.uid;
   }
 
@@ -48,7 +48,7 @@ export class FileSystemService {
   public async getItems(path: FileSystemItem): Promise<Array<FileItem>> {
     const results = this.ITEMS;
     const fileItems = results.map((value) => {
-      const item: FileItem = new FileItem('', false, []);
+      const item: FileItem = new FileItem("", false, []);
       item.key = value.key;
       item.dataItem = value.dataItem;
       item.pathKeys = value.pathKeys;
@@ -85,7 +85,7 @@ export class FileSystemService {
       const {path, pathKeys} = item;
       const newItem = new FileSystemItem(path, false, pathKeys);
       newItem.key = Utils.uuidv4();
-      newItem.name = 'New file - ' + newItem.key + extension;
+      newItem.name = "New file - " + newItem.key + extension;
       const index = this.items.push(newItem);
       // return true if can insert
       if (index > -1) {
@@ -104,7 +104,7 @@ export class FileSystemService {
           e1_uid: this.UID,
           f_id: "",
           description: "",
-          content: "",
+          content: ""
         };
         await this.fileSystemStorageService.addFileItem(newFileItem);
         // const response = await this.tasksService.createNewFile(path, newItem.name)
@@ -116,9 +116,9 @@ export class FileSystemService {
     }
   }
 
-  public async updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: 'navPane' | 'itemView'): Promise<boolean> {
+  public async updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean> {
     let items;
-    if (viewArea === 'navPane') {
+    if (viewArea === "navPane") {
       items = [directory];
     } else {
       items = selectedItems;
@@ -178,15 +178,15 @@ export class FileSystemService {
   }
 
   public moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): PromiseLike<FileItem> | any {
-    console.log('TODO', item, destinationDirectory);
+    console.log("TODO", item, destinationDirectory);
   }
 
   public uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): PromiseLike<FileItem> | any {
-    console.log('TODO', fileData, uploadInfo, destinationDirectory);
+    console.log("TODO", fileData, uploadInfo, destinationDirectory);
   }
 
   public downloadItem(items: Array<FileSystemItem>): void {
-    console.log('TODO', items);
+    console.log("TODO", items);
   }
 
   public async generateDefaultFiles(): Promise<number> {

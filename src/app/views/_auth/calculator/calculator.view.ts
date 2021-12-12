@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "../../../CONSTAST";
 import { Utils } from "../../../Utils";
 
 @Component({
-  selector: 'view-calculator',
-  templateUrl: './calculator.view.html',
+  selector: "view-calculator",
+  templateUrl: "./calculator.view.html",
   styleUrls: []
 })
 export class CalculatorView implements OnInit {
@@ -24,7 +24,7 @@ export class CalculatorView implements OnInit {
   }
 
   get binary08_Hexadecimal(): string {
-    return parseInt(this._valueByte[0].toString(2), 2).toString(16).padStart(2, '0').toUpperCase();
+    return parseInt(this._valueByte[0].toString(2), 2).toString(16).padStart(2, "0").toUpperCase();
   }
 
   set binary08_Hexadecimal(value: string) {
@@ -32,7 +32,7 @@ export class CalculatorView implements OnInit {
   }
 
   get binary08_Binary(): string {
-    return this._valueByte[0].toString(2).padStart(8, '0');
+    return this._valueByte[0].toString(2).padStart(8, "0");
   }
 
   set binary08_Binary(binary: string) {
@@ -50,7 +50,7 @@ export class CalculatorView implements OnInit {
   }
 
   get binary16_Hexadecimal(): string {
-    return parseInt(this._valueHalfWord[0].toString(2), 2).toString(16).padStart(4, '0').toUpperCase();
+    return parseInt(this._valueHalfWord[0].toString(2), 2).toString(16).padStart(4, "0").toUpperCase();
   }
 
   set binary16_Hexadecimal(value: string) {
@@ -58,7 +58,7 @@ export class CalculatorView implements OnInit {
   }
 
   get binary16_Binary(): string {
-    return this._valueHalfWord[0].toString(2).padStart(16, '0');
+    return this._valueHalfWord[0].toString(2).padStart(16, "0");
   }
 
   set binary16_Binary(binary: string) {
@@ -76,15 +76,15 @@ export class CalculatorView implements OnInit {
   }
 
   get binary32_Hexadecimal(): string {
-    return parseInt(this._valueWord[0].toString(2), 2).toString(16).padStart(8, '0').toUpperCase();
+    return parseInt(this._valueWord[0].toString(2), 2).toString(16).padStart(8, "0").toUpperCase();
   }
 
   set binary32_Hexadecimal(value: string) {
     this._valueWord[0] = parseInt(value, 16);
   }
 
-  get binary32_Binary() : string{
-    return this._valueWord[0].toString(2).padStart(32, '0');
+  get binary32_Binary(): string {
+    return this._valueWord[0].toString(2).padStart(32, "0");
   }
 
   set binary32_Binary(binary: string) {
@@ -92,7 +92,7 @@ export class CalculatorView implements OnInit {
   }
 
   // ==================================================================================================================
-  get binary32_IEEE754_Value() : number{
+  get binary32_IEEE754_Value(): number {
     return Utils.convertIEEE754_Binary32Bits_To_Number(this._value32Float);
   }
 
@@ -100,12 +100,12 @@ export class CalculatorView implements OnInit {
     this._value32Float = Utils.convertIEEE754_Number_To_Binary32Bits(value);
   }
 
-  get binary32_IEEE754_Hexadecimal() : string{
-    return parseInt(this._value32Float, 2).toString(16).padStart(8, '0').toUpperCase();
+  get binary32_IEEE754_Hexadecimal(): string {
+    return parseInt(this._value32Float, 2).toString(16).padStart(8, "0").toUpperCase();
   }
 
   set binary32_IEEE754_Hexadecimal(value: string) {
-    this._value32Float = parseInt(value, 16).toString(2).padStart(32, '0');
+    this._value32Float = parseInt(value, 16).toString(2).padStart(32, "0");
   }
 
   get binary32_IEEE754_Binary(): string {
@@ -113,11 +113,11 @@ export class CalculatorView implements OnInit {
   }
 
   set binary32_IEEE754_Binary(binary: string) {
-    this._value32Float = binary.padStart(32, '0');
+    this._value32Float = binary.padStart(32, "0");
   }
 
   // ==================================================================================================================
-  get binary64_IEEE754_Value() : number{
+  get binary64_IEEE754_Value(): number {
     return Utils.convertIEEE754_Binary64Bits_To_Number(this._value64Double);
   }
 
@@ -126,11 +126,11 @@ export class CalculatorView implements OnInit {
   }
 
   get binary64_IEEE754_Hexadecimal(): string {
-    return parseInt(this._value64Double, 2).toString(16).padStart(16, '0').toUpperCase();
+    return parseInt(this._value64Double, 2).toString(16).padStart(16, "0").toUpperCase();
   }
 
   set binary64_IEEE754_Hexadecimal(value: string) {
-    this._value64Double = parseInt(value, 16).toString(2).padStart(64, '0');
+    this._value64Double = parseInt(value, 16).toString(2).padStart(64, "0");
   }
 
   get binary64_IEEE754_Binary(): string {
@@ -138,7 +138,7 @@ export class CalculatorView implements OnInit {
   }
 
   set binary64_IEEE754_Binary(binary: string) {
-    this._value64Double = binary.padStart(64, '0');
+    this._value64Double = binary.padStart(64, "0");
   }
 
   constructor() {

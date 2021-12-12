@@ -502,5 +502,5 @@ export const DLX_DOCUMENTATION = [
   "xori",
   "Ex: xori r3,r4,#5",
   "R[regb] = R[rega] XOR uimm16",
-  "All are unsigned integers. Logical 'xor' is performed on a bitwise basis.",
-]
+  "All are unsigned integers. Logical 'xor' is performed on a bitwise basis."
+];

@@ -1,5 +1,5 @@
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
-import npm from '../../package.json';
+import npm from "../../package.json";
 import {
   PublicRoutes,
   PublicRoutesList,
@@ -33,13 +33,13 @@ export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
 
 };
 
-export const REGEX_IS_ABSOLUTE_HREF = new RegExp('(?:^[a-z][a-z0-9+.-]*:|\/\/)', 'i');
-export const REGEX_HEXADECIMAL_08 = new RegExp('^(0x|0X|)?([a-fA-F0-9]{08})$', 'i');
-export const REGEX_HEXADECIMAL_16 = new RegExp('^(0x|0X|)?([a-fA-F0-9]{16})$', 'i');
+export const REGEX_IS_ABSOLUTE_HREF = new RegExp("(?:^[a-z][a-z0-9+.-]*:|\/\/)", "i");
+export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{08})$", "i");
+export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
 
 export const DEFAULT_TIME_SIMULATION: number = 250;
 export const DEFAULT_AUTO_SAVE: boolean = true;
-export const DEFAULT_LANG: TypeLang = 'en';
+export const DEFAULT_LANG: TypeLang = "en";
 // 0x8000 --> 32768
 export const DEFAULT_MEMORY_SIZE: number = 32768;
 export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
@@ -64,14 +64,14 @@ export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageC
   division: {
     count: 1,
     delay: 19
-  },
+  }
 };
-export const DEFAULT_HEXADECIMAL_08_DIGITS = "".padStart(8, '0');
-export const DEFAULT_HEXADECIMAL_16_DIGITS = "".padStart(16, '0');
-export const DEFAULT_BINARY_08_BITS = "".padStart(8, '0');
-export const DEFAULT_BINARY_16_BITS = "".padStart(16, '0');
-export const DEFAULT_BINARY_32_BITS = "".padStart(32, '0');
-export const DEFAULT_BINARY_64_BITS = "".padStart(64, '0');
+export const DEFAULT_HEXADECIMAL_08_DIGITS = "".padStart(8, "0");
+export const DEFAULT_HEXADECIMAL_16_DIGITS = "".padStart(16, "0");
+export const DEFAULT_BINARY_08_BITS = "".padStart(8, "0");
+export const DEFAULT_BINARY_16_BITS = "".padStart(16, "0");
+export const DEFAULT_BINARY_32_BITS = "".padStart(32, "0");
+export const DEFAULT_BINARY_64_BITS = "".padStart(64, "0");
 
 export const DEFAULT_PIPELINE: TypePipeline = {
   IF: "",
@@ -81,29 +81,7 @@ export const DEFAULT_PIPELINE: TypePipeline = {
   WB: "",
   faddEX: [],
   fdivEX: [],
-  fmultEX: [],
-};
-
-export const DEFAULT_STEP_SIMULATION: TypeSimulationStep = {
-  IF: 0,
-  IF_stall: 0,
-  ID: 0,
-  ID_stall: 0,
-  intEX: 0,
-  intEX_stall: 0,
-  MEM: 0,
-  MEM_stall: 0,
-  WB: 0,
-  WB_stall: 0,
-
-  line: 0,
-  step: 0,
-  // stage: "other",
-  instruction: "----------",
-  codeInstruction: "0x00000000",
-  pipeline: DEFAULT_PIPELINE,
-  memory: [],
-  registers: []
+  fmultEX: []
 };
 
 export const DEFAULT_DATA_STATISTICS: TypeDataStatistics = {
@@ -151,6 +129,29 @@ export const DEFAULT_DATA_STATISTICS: TypeDataStatistics = {
   }
 } as const;
 
+export const DEFAULT_STEP_SIMULATION: TypeSimulationStep = {
+  IF: 0,
+  IF_stall: 0,
+  ID: 0,
+  ID_stall: 0,
+  intEX: 0,
+  intEX_stall: 0,
+  MEM: 0,
+  MEM_stall: 0,
+  WB: 0,
+  WB_stall: 0,
+
+  line: 0,
+  step: 0,
+  // stage: "other",
+  instruction: "----------",
+  codeInstruction: "0x00000000",
+  pipeline: DEFAULT_PIPELINE,
+  memory: [],
+  registers: [],
+  statistics: DEFAULT_DATA_STATISTICS
+};
+
 export const DEFAULT_CODE: TypeCode = {
   text: "",
   instruction: "",
@@ -163,13 +164,13 @@ export const DEFAULT_TABLE_CODE: TypeTableCode = {
   instruction: "",
   code: "",
   address: "",
-  stage: "",
+  stage: ""
   // binary: "00000000000000000000000000000000"
 };
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   progressBar: true,
-  progressAnimation: 'decreasing',
+  progressAnimation: "decreasing",
   closeButton: true
 };
 
@@ -188,7 +189,7 @@ export const STEP_TYPE_DATA = {
   "Float": 0.1,
   "Double": 0.1
 };
-export const REGISTER_TO_EDIT: TypeRegister = 'Control';
+export const REGISTER_TO_EDIT: TypeRegister = "Control";
 
 export const REGISTERS_DATA: TypeDataRegister = {
   Control: {
@@ -376,12 +377,12 @@ export const ASCII_TABLE = [
 ];
 
 export const CONFIG_WEBSOCKET: SocketIoConfig = {
-  url: 'http://localhost:3000',
+  url: "http://localhost:3000",
   options: {
-    transports: ['websocket'],
+    transports: ["websocket"],
     reconnection: true,
-    reconnectionDelay: 20000,
-    reconnectionDelayMax: 25000,
+    reconnectionDelay: 2000,
+    reconnectionDelayMax: 2500,
     reconnectionAttempts: 5
   }
 };
@@ -390,172 +391,187 @@ export const AUTH_ROUTES: PublicRoutesList = [
   {
     lang: "CALCULATOR",
     path: "calculator",
-    routerLink: '/auth/calculator',
-    displayName: 'Calculator',
-    data: {breadcrumb: 'calculator'}
+    routerLink: "/auth/calculator",
+    displayName: "Calculator",
+    data: {breadcrumb: "calculator"},
+    icon: "fas fa-calculator"
   },
   {
     lang: "CODE",
     path: "code",
-    routerLink: '/auth/code',
-    displayName: 'Code',
-    data: {breadcrumb: 'Code'}
+    routerLink: "/auth/code",
+    displayName: "Code",
+    data: {breadcrumb: "Code"},
+    icon: "fas fa-calculator"
   },
   {
     lang: "CONFIG",
     path: "config",
-    routerLink: '/auth/config',
-    displayName: 'Config',
-    data: {breadcrumb: 'config'}
+    routerLink: "/auth/config",
+    displayName: "Config",
+    data: {breadcrumb: "config"},
+    icon: "fas fa-wrench"
   },
   {
     lang: "DOCUMENTATION",
     path: "documentation",
-    routerLink: '/auth/documentation',
-    displayName: 'Documentation',
-    data: {breadcrumb: 'Documentation'}
+    routerLink: "/auth/documentation",
+    displayName: "Documentation",
+    data: {breadcrumb: "Documentation"},
+    icon: "fas fa-book"
   },
   {
-    lang: 'FILE_MANAGER',
-    path: 'file-manager',
-    routerLink: '/auth/file-manager',
-    displayName: 'File Manager',
-    data: {breadcrumb: 'File Manager'}
+    lang: "FILE_MANAGER",
+    path: "file-manager",
+    routerLink: "/auth/file-manager",
+    displayName: "File Manager",
+    data: {breadcrumb: "File Manager"},
+    icon: "far fa-folder-open"
   },
   {
     lang: "EDITOR",
     path: "editor",
-    routerLink: '/auth/editor',
-    displayName: 'Editor',
-    data: {breadcrumb: 'Editor'}
+    routerLink: "/auth/editor",
+    displayName: "Editor",
+    data: {breadcrumb: "Editor"},
+    icon: "far fa-file"
   },
   {
     lang: "LOGGER",
     path: "logger",
-    routerLink: '/auth/logger',
-    displayName: 'Logger',
-    data: {breadcrumb: 'Logger'}
+    routerLink: "/auth/logger",
+    displayName: "Logger",
+    data: {breadcrumb: "Logger"},
+    icon: "fas fa-file-code"
   },
   {
     lang: "MEMORY",
     path: "memory",
-    routerLink: '/auth/memory',
-    displayName: 'Memory',
-    data: {breadcrumb: 'Memory'}
+    routerLink: "/auth/memory",
+    displayName: "Memory",
+    data: {breadcrumb: "Memory"},
+    icon: "fas fa-memory"
   },
   {
     lang: "CYCLE_CLOCK_DIAGRAM",
     path: "cycle-clock-diagram",
-    routerLink: '/auth/cycle-clock-diagram',
-    displayName: 'Cycle clock diagram',
-    data: {breadcrumb: 'Cycle-clock-diagram'}
+    routerLink: "/auth/cycle-clock-diagram",
+    displayName: "Cycle clock diagram",
+    data: {breadcrumb: "Cycle-clock-diagram"},
+    icon: "fas fa-desktop"
   },
   {
     lang: "PIPELINE",
     path: "pipeline",
-    routerLink: '/auth/pipeline',
-    displayName: 'Pipeline',
-    data: {breadcrumb: 'Pipeline'}
+    routerLink: "/auth/pipeline",
+    displayName: "Pipeline",
+    data: {breadcrumb: "Pipeline"},
+    icon: "fas fa-desktop"
   },
   {
     lang: "PROFILE",
     path: "profile",
-    routerLink: '/auth/profile',
-    displayName: 'Profile',
-    data: {breadcrumb: 'Profile'}
+    routerLink: "/auth/profile",
+    displayName: "Profile",
+    data: {breadcrumb: "Profile"},
+    icon: "fas fa-user"
   },
   {
     lang: "REGISTERS",
     path: "registers",
-    routerLink: '/auth/registers',
-    displayName: 'Registers',
-    data: {breadcrumb: 'Registers'}
+    routerLink: "/auth/registers",
+    displayName: "Registers",
+    data: {breadcrumb: "Registers"},
+    icon: "fas fa-microchip"
   },
   {
     lang: "STATISTICS",
     path: "statistics",
-    routerLink: '/auth/statistics',
-    displayName: 'Statistics',
-    data: {breadcrumb: 'Statistics'}
+    routerLink: "/auth/statistics",
+    displayName: "Statistics",
+    data: {breadcrumb: "Statistics"},
+    icon: "fas fa-chart-bar"
   },
   {
     lang: "MULTIVIEW",
     path: "multiview",
-    routerLink: '/auth/multiview',
-    displayName: 'Multiview',
-    data: {breadcrumb: 'Multiview'}
+    routerLink: "/auth/multiview",
+    displayName: "Multiview",
+    data: {breadcrumb: "Multiview"},
+    icon: "fas fa-table"
   },
   {
     lang: "DEBUG",
     path: "debug",
-    routerLink: '/auth/debug',
-    displayName: 'Debug',
-    data: {breadcrumb: 'Debug'}
-  },
+    routerLink: "/auth/debug",
+    displayName: "Debug",
+    data: {breadcrumb: "Debug"},
+    icon: "fas fa-bug"
+  }
 ];
 
 export const PUBLIC_ROUTES: PublicRoutes = {
-  lang: '/',
-  path: '/',
-  routerLink: '/',
-  displayName: 'Home',
+  lang: "/",
+  path: "/",
+  routerLink: "/",
+  displayName: "Home",
   data: {},
   children: [
     {
       lang: "DEBUG",
       path: "debug",
-      routerLink: '/debug',
-      displayName: 'Debug',
+      routerLink: "/debug",
+      displayName: "Debug"
     },
     {
       lang: "LOGIN",
       path: "login",
-      routerLink: '/login',
-      displayName: 'Login',
+      routerLink: "/login",
+      displayName: "Login"
     },
     {
       lang: "FORGOT-PASSWORD",
       path: "forgot-password",
-      routerLink: '/forgot-password',
-      displayName: 'Forgot password',
+      routerLink: "/forgot-password",
+      displayName: "Forgot password"
     },
     {
       lang: "REGISTER",
       path: "register",
-      routerLink: '/register',
-      displayName: 'Register',
+      routerLink: "/register",
+      displayName: "Register"
     },
     // no layout views
     {
       lang: "LANDING",
       path: "landing",
-      routerLink: '/landing/landing',
-      displayName: 'Landing',
+      routerLink: "/landing/landing",
+      displayName: "Landing"
     },
     {
       lang: "ABOUT",
       path: "about",
-      routerLink: '/landing/about',
-      displayName: 'About',
+      routerLink: "/landing/about",
+      displayName: "About"
     },
     // _admin views
     {
-      lang: 'ADMIN',
-      path: 'admin',
-      routerLink: '/admin',
-      displayName: 'Admin',
+      lang: "ADMIN",
+      path: "admin",
+      routerLink: "/admin",
+      displayName: "Admin",
       data: {},
       children: []
     },
     // _auth views
     {
-      lang: 'AUTH',
-      path: 'auth',
-      routerLink: '/auth',
-      displayName: 'Auth',
-      data: {breadcrumb: 'Auth'},
-      children: AUTH_ROUTES,
-    },
-  ],
+      lang: "AUTH",
+      path: "auth",
+      routerLink: "/auth",
+      displayName: "Auth",
+      data: {breadcrumb: "Auth"},
+      children: AUTH_ROUTES
+    }
+  ]
 
 };

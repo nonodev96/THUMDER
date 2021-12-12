@@ -27,10 +27,10 @@ export namespace Utils {
 
   export function stringFormat(msg: string, ...args: any) {
     return msg.replace(/{([0-9]+)}/g, function (match, index) {
-      if (typeof args[index] == 'object') {
+      if (typeof args[index] == "object") {
         return JSON.stringify(args[index]);
       }
-      return typeof args[index] == 'undefined' ? match : args[index];
+      return typeof args[index] == "undefined" ? match : args[index];
     });
   }
 
@@ -54,7 +54,7 @@ export namespace Utils {
 
   export function initSynchronousFactory() {
     return () => {
-      console.log('initSynchronousFactory');
+      console.log("initSynchronousFactory");
       // run initialization code here
     };
   }
@@ -71,7 +71,7 @@ export namespace Utils {
 
   export function initWithDependencyFactory(service: any) {
     return () => {
-      console.log('initWithDependencyFactory - started');
+      console.log("initWithDependencyFactory - started");
       return service;
     };
   }
@@ -81,7 +81,7 @@ export namespace Utils {
       // console.log('initServicesFactory - started')
       const finish = await service.resetMachineStatus();
       if (finish === false) {
-        console.log('initServicesFactory - completed ', finish);
+        console.log("initServicesFactory - completed ", finish);
       }
     };
   }
@@ -91,11 +91,11 @@ export namespace Utils {
   }
 
   export function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       // tslint:disable-next-line:one-variable-per-declaration no-bitwise
       const r = Math.random() * 16 | 0;
       // tslint:disable-next-line:no-bitwise
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      const v = c === "x" ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
   }
@@ -159,12 +159,12 @@ export namespace Utils {
     return element[0].ascii;
   }
 
-  export function hexadecimalToBinary(hexadecimal: string, args = {maxLength: 32, fillString: '0'}): string {
+  export function hexadecimalToBinary(hexadecimal: string, args = {maxLength: 32, fillString: "0"}): string {
     const decimal = hexadecimalToDecimal(hexadecimal);
     return (decimal).toString(2).padStart(args.maxLength, args.fillString);
   }
 
-  export function binaryToHexadecimal(binary: string, args = {maxLength: 8, fillString: '0'}): string {
+  export function binaryToHexadecimal(binary: string, args = {maxLength: 8, fillString: "0"}): string {
     return parseInt(binary, 2).toString(16).toUpperCase().padStart(args.maxLength, args.fillString);
   }
 
@@ -193,32 +193,32 @@ export namespace Utils {
   }
 
   export function binaryStringSwap_module(oldValueBinaryString: string, newValuePart: string, start: number, end: number, module: number) {
-    const result = oldValueBinaryString.split('');
+    const result = oldValueBinaryString.split("");
     for (let i = 0; i < 32; i++) {
       if (i >= start && i < end) {
         result[i] = newValuePart[i % module];
       }
     }
-    return result.join('');
+    return result.join("");
   }
 
   export function integer8ToBin(integer8: number) {
-    return Math.abs(integer8).toString(2).padStart(8, '0').toString();
+    return Math.abs(integer8).toString(2).padStart(8, "0").toString();
   }
 
   export function integer16ToBin(integer16: number) {
-    return Math.abs(integer16).toString(2).padStart(16, '0').toString();
+    return Math.abs(integer16).toString(2).padStart(16, "0").toString();
   }
 
   export function integer32ToBin(integer32: number) {
-    return Math.abs(integer32).toString(2).padStart(32, '0').toString();
+    return Math.abs(integer32).toString(2).padStart(32, "0").toString();
   }
 
   export function convertIEEE754_Number_To_Binary32Bits(float32: number): string {
     let str = "";
     const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
     for (const element of Array.from(c).reverse()) {
-      str += element.toString(2).padStart(8, '0');
+      str += element.toString(2).padStart(8, "0");
     }
     return str;
   }
@@ -227,7 +227,7 @@ export namespace Utils {
     let str = "";
     const c = new Uint8Array(new Float64Array([double64]).buffer, 0, 8);
     for (const element of Array.from(c).reverse()) {
-      str += element.toString(2).padStart(8, '0');
+      str += element.toString(2).padStart(8, "0");
     }
     return str;
   }
@@ -236,9 +236,9 @@ export namespace Utils {
     const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
     const elements: string[] = [];
     for (const element of Array.from(c).reverse()) {
-      elements.push(element.toString().padStart(3, '0'));
+      elements.push(element.toString().padStart(3, "0"));
     }
-    const list = elements.join('-');
+    const list = elements.join("-");
     return "[" + list + "]";
   }
 
@@ -246,9 +246,9 @@ export namespace Utils {
     const c = new Uint8Array(new Float64Array([float64]).buffer, 0, 8);
     const elements: string[] = [];
     for (const element of Array.from(c).reverse()) {
-      elements.push(element.toString().padStart(3, '0'));
+      elements.push(element.toString().padStart(3, "0"));
     }
-    const list = elements.join('-');
+    const list = elements.join("-");
     return "[" + list + "]";
   }
 
@@ -276,7 +276,7 @@ export namespace Utils {
 
 
   export function formatDecimalString(num: number): number {
-    const numberFormat = new Intl.NumberFormat('en-US', {
+    const numberFormat = new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 10
     });
@@ -284,7 +284,7 @@ export namespace Utils {
   }
 
   export function formatDecimalNumber(num: number) {
-    const numberFormat = new Intl.NumberFormat('en-US', {
+    const numberFormat = new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 10
     });
@@ -298,7 +298,7 @@ export namespace Utils {
 
 
   export function convertHexCodeToTextMachineInstructionDLX(hexCode: string): string {
-    const binary = parseInt(hexCode, 16).toString(2).padStart(32, '0');
+    const binary = parseInt(hexCode, 16).toString(2).padStart(32, "0");
     const opcode = binary.substr(0, 6);
     const func_field = binary.substr(21, 11);
     const func_field_6_last_bits = func_field.substr(-6);
@@ -316,7 +316,7 @@ export namespace Utils {
     const data = parseInt(binary.substr(6 + 5 + 5, 16), 2).toString();
     const data_26 = parseInt(binary.substr(6, 26), 2).toString();
 
-    if (binary === "".padStart(32, '0')) {
+    if (binary === "".padStart(32, "0")) {
       return "NOP";
     }
 
@@ -415,21 +415,21 @@ export namespace Utils {
 
   export function MAP_FileItem_TO_InterfaceFileItem(fileItem: FileItem, UID: string): InterfaceFileItem {
     return {
-      key: fileItem.key ?? '',
+      key: fileItem.key ?? "",
       pathKeys: fileItem.pathKeys ?? [],
-      path: fileItem.path ?? '',
-      name: fileItem.name ?? '',
+      path: fileItem.path ?? "",
+      name: fileItem.name ?? "",
       isDirectory: fileItem.isDirectory ?? false,
       hasSubDirectories: fileItem.hasSubDirectories ?? false,
       dateModified: Timestamp.fromDate(fileItem.dateModified ?? new Date()),
-      thumbnail: fileItem.thumbnail ?? '',
+      thumbnail: fileItem.thumbnail ?? "",
       size: fileItem.size ?? 0,
       dataItem: fileItem.dataItem ?? {},
 
       e1_uid: UID,
-      f_id: '',
-      description: '',
-      content: ''
+      f_id: "",
+      description: "",
+      content: ""
     } as InterfaceFileItem;
   }
 
@@ -441,10 +441,10 @@ export namespace Utils {
 
   export function MAP_InterfaceFileItem_TO_FileItem(interfaceFileItem: InterfaceFileItem): FileItem {
     const item: FileItem = new FileItem(interfaceFileItem.path, interfaceFileItem.isDirectory, interfaceFileItem.pathKeys);
-    item.key = interfaceFileItem.key ?? '';
+    item.key = interfaceFileItem.key ?? "";
     item.pathKeys = interfaceFileItem.pathKeys ?? [];
-    item.path = interfaceFileItem.path ?? '';
-    item.name = interfaceFileItem.name ?? '';
+    item.path = interfaceFileItem.path ?? "";
+    item.name = interfaceFileItem.name ?? "";
     item.isDirectory = interfaceFileItem.isDirectory ?? false;
     item.hasSubDirectories = interfaceFileItem.hasSubDirectories ?? false;
     if (interfaceFileItem.dateModified) {
@@ -452,7 +452,7 @@ export namespace Utils {
     } else {
       item.dateModified = new Date();
     }
-    item.thumbnail = interfaceFileItem.thumbnail ?? '';
+    item.thumbnail = interfaceFileItem.thumbnail ?? "";
     item.size = interfaceFileItem.size ?? 0;
     item.dataItem = interfaceFileItem.dataItem ?? {};
     return item;
@@ -466,15 +466,15 @@ export namespace Utils {
 
 
   export function new_InterfaceFileItem() {
-    const {uid} = JSON.parse(localStorage.getItem('user'));
-    const fileItem = new FileItem('', false, []);
+    const {uid} = JSON.parse(localStorage.getItem("user"));
+    const fileItem = new FileItem("", false, []);
     const interfaceFileItem: InterfaceFileItem = {
       ...fileItem,
       dateModified: Timestamp.fromDate(new Date()),
       content: "",
       description: "",
       e1_uid: uid,
-      f_id: "",
+      f_id: ""
     };
     return interfaceFileItem;
   }

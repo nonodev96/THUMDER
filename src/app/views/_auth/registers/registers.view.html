@@ -2,15 +2,15 @@
   <div class="card-header">
     <h3 class="card-title">{{'MACHINE.REGISTERS_CONTROL' | translate}}</h3>
     <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="ASCII"
+      <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Byte"
               (click)="changeTypeDataInTableRegisters('Byte')">
         <i class="fas fa-table"></i> Bytes
       </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="ASCII"
+      <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="HalfWord"
               (click)="changeTypeDataInTableRegisters('HalfWord')">
         <i class="fas fa-table"></i> HalfWord
       </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="ASCII"
+      <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="Word"
               (click)="changeTypeDataInTableRegisters('Word')">
         <i class="fas fa-table"></i> Word
       </button>
@@ -124,7 +124,7 @@
         <ng-container matColumnDef="Register">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            R-{{ element }}
+            R{{ element }}
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
@@ -155,6 +155,14 @@
   <div class="card-header">
     <h3 class="card-title">{{'MACHINE.REGISTERS_FLOAT' | translate}}</h3>
     <div class="card-tools">
+      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Binary' ? 'btn--active' : '' }}" title="Binary"
+              (click)="changeTypeDataInTableFloatRegisters('Binary')">
+        <i class="fas fa-table"></i> Binary
+      </button>
+      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Uint8Array' ? 'btn--active' : '' }}" title="Uint8Array"
+              (click)="changeTypeDataInTableFloatRegisters('Uint8Array')">
+        <i class="fas fa-table"></i> Uint8Array
+      </button>
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
         <i class="fas fa-edit"></i>
       </button>
@@ -218,6 +226,14 @@
   <div class="card-header">
     <h3 class="card-title">{{'MACHINE.REGISTERS_DOUBLE' | translate}}</h3>
     <div class="card-tools">
+      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Binary' ? 'btn--active' : '' }}" title="Binary"
+              (click)="changeTypeDataInTableDoubleRegisters('Binary')">
+        <i class="fas fa-table"></i> Binary
+      </button>
+      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Uint8Array' ? 'btn--active' : '' }}" title="Uint8Array"
+              (click)="changeTypeDataInTableDoubleRegisters('Uint8Array')">
+        <i class="fas fa-table"></i> Uint8Array
+      </button>
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
         <i class="fas fa-edit"></i>
       </button>

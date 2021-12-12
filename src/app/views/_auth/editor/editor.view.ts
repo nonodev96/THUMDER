@@ -38,11 +38,11 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    window.jQuery('#card-IDE').on('maximized.lte.cardwidget', ($event) => {
+    window.jQuery("#card-IDE").on("maximized.lte.cardwidget", ($event) => {
       this.isMaximize = true;
       this.monacoEditorComponent.height = 88;
     });
-    window.jQuery('#card-IDE').on('minimized.lte.cardwidget', ($event) => {
+    window.jQuery("#card-IDE").on("minimized.lte.cardwidget", ($event) => {
       this.isMaximize = false;
       this.monacoEditorComponent.height = 70;
     });
@@ -52,19 +52,19 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        let content = '';
+        let content = "";
         let interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
         if (this.extrasIDE) {
           interfaceFileItem = this.extrasIDE.interfaceFileItem ?? Utils.new_InterfaceFileItem();
           content = interfaceFileItem.content;
-          localStorage.setItem('interfaceFileItem', JSON.stringify(interfaceFileItem));
+          localStorage.setItem("interfaceFileItem", JSON.stringify(interfaceFileItem));
         } else {
-          interfaceFileItem = JSON.parse(localStorage.getItem('interfaceFileItem')) as InterfaceFileItem;
-          content = interfaceFileItem.content ?? '';
+          interfaceFileItem = JSON.parse(localStorage.getItem("interfaceFileItem")) as InterfaceFileItem;
+          content = interfaceFileItem.content ?? "";
         }
         this.interfaceFileItem = interfaceFileItem;
         await this.monacoEditorComponent.updateContent(content);
-        const breakpoints = JSON.parse(localStorage.getItem('breakpoints'));
+        const breakpoints = JSON.parse(localStorage.getItem("breakpoints"));
         this.monacoEditorComponent.setBreakpoints(breakpoints);
         return Promise.resolve();
       }
@@ -81,12 +81,12 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
-    const auto_save = localStorage.getItem('auto_save');
+    const auto_save = localStorage.getItem("auto_save");
     if (auto_save) {
-      localStorage.setItem('breakpoints', JSON.stringify(this.monacoEditorComponent.breakpoints));
+      localStorage.setItem("breakpoints", JSON.stringify(this.monacoEditorComponent.breakpoints));
       await this.save();
     } else {
-      localStorage.setItem('breakpoints', JSON.stringify({}));
+      localStorage.setItem("breakpoints", JSON.stringify({}));
     }
     this.initializedSubscription.unsubscribe();
     this.breakpointSubscription.unsubscribe();
@@ -113,26 +113,26 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     if (this.extrasIDE) {
       interfaceFileItem = this.extrasIDE.interfaceFileItem;
     } else {
-      interfaceFileItem = JSON.parse(localStorage.getItem('interfaceFileItem'));
+      interfaceFileItem = JSON.parse(localStorage.getItem("interfaceFileItem"));
     }
     interfaceFileItem.content = updateContent;
-    localStorage.setItem('interfaceFileItem', JSON.stringify(interfaceFileItem));
+    localStorage.setItem("interfaceFileItem", JSON.stringify(interfaceFileItem));
     try {
       await this.fileSystem.editFileItem(interfaceFileItem, interfaceFileItem.$key);
 
-      const title = await this.translate.get('TOAST.TITLE_SAVE_FILE').toPromise();
-      const message = await this.translate.get('TOAST.MESSAGE_SAVE_FILE').toPromise();
+      const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
+      const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
       this.toastService.success(message, title, {
         timeOut: 1500,
-        positionClass: 'toast-bottom-left'
+        positionClass: "toast-bottom-left"
       });
     } catch (error) {
       console.error(error);
-      const title = await this.translate.get('TOAST.TITLE_ERROR_SAVE_FILE').toPromise();
-      const message = await this.translate.get('TOAST.MESSAGE_ERROR_SAVE_FILE').toPromise();
+      const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
+      const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
       this.toastService.error(message, title, {
         timeOut: 2500,
-        positionClass: 'toast-bottom-left'
+        positionClass: "toast-bottom-left"
       });
     }
 

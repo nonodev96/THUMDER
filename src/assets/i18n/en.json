@@ -188,6 +188,10 @@
     "SIZE": "Size"
   },
   "PAGES": {
+    "INDEX": {
+      "PAGES": "Pages",
+      "MORE_INFO": "More info"
+    },
     "HOME": {
       "TITLE": "THUMDER",
       "GO_TO_DETAIL": "Go to Detail"

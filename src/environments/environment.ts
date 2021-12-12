@@ -1,7 +1,7 @@
 export const AppConfig = {
   production: false,
   server: false,
-  environment: 'LOCAL',
+  environment: "LOCAL",
   firebase: {
     apiKey: "AIzaSyCJ5qSG6ioLnKShNXiwWaXtLq616yoTMko",
     authDomain: "thumder-ce41d.firebaseapp.com",

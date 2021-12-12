@@ -11,7 +11,7 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
     } else {
       this.breakpoints[lineNumber] = true;
     }
-    console.log('enabled', lineNumber, this.breakpoints[lineNumber]);
+    console.log("enabled", lineNumber, this.breakpoints[lineNumber]);
   }
 
   public getBreakpoint(lineNumber: number): boolean | null {
@@ -24,7 +24,7 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
 
   public updateManager(breakpoints: TypeBreakpoints): void {
     if (breakpoints === null || breakpoints === undefined) {
-      console.warn('Error, breakpoints null');
+      console.warn("Error, breakpoints null");
       return;
     }
     this.breakpoints = {};

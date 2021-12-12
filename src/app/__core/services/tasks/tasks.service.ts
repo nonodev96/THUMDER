@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy } from "@angular/core";
 import {
   ACLMessage,
   AID,
@@ -17,9 +17,10 @@ import {
 } from "../../../_tasks/Tasks";
 import { SocketProviderConnectService } from "../socket-provider-connect.service";
 import { Subscription } from "rxjs";
+import { Socket } from "socket.io";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class TasksService implements OnDestroy {
 
@@ -28,9 +29,10 @@ export class TasksService implements OnDestroy {
   private sender: AID;
 
   constructor(private socketProviderConnectService: SocketProviderConnectService) {
-    this.subscription = this.socketProviderConnectService.connectObservable.subscribe((connect) => {
-      console.log('socketProviderConnectService connect ', connect);
-      this.coreAgentsClient = new CoreAgentsClient(<any>this.socketProviderConnectService.socket.ioSocket);
+    this.subscription = this.socketProviderConnectService.connectObservable.subscribe((statusWebsocket) => {
+      console.log("socketProviderConnectService connect ", statusWebsocket);
+      if (statusWebsocket === "Disconnect") return;
+      this.coreAgentsClient = new CoreAgentsClient(this.socketProviderConnectService.socket.ioSocket as Socket);
       this.sender = new AID({
         name: "Client",
         localName: "Client-" + this.coreAgentsClient.clientID,
@@ -55,7 +57,7 @@ export class TasksService implements OnDestroy {
    * @param key
    * @param newFile
    */
-  async createNewFile(path: string, key: string, newFile: string = 'example_00.s'): Promise<TaskContainer> {
+  async createNewFile(path: string, key: string, newFile: string = "example_00.s"): Promise<TaskContainer> {
     const createFile = new CreateFile(path, key, newFile);
     const createFile_string = JSON.stringify(createFile);
 
@@ -69,7 +71,7 @@ export class TasksService implements OnDestroy {
     const taskContainer = await this.coreAgentsClient.addTask(
       new Task_CreateFile_RequestInitiator("Create-File", message)
     );
-    if (taskContainer.status === 'ok') {
+    if (taskContainer.status === "ok") {
       return Promise.resolve(taskContainer);
     } else {
       return Promise.reject(taskContainer);
@@ -83,7 +85,7 @@ export class TasksService implements OnDestroy {
    * @param key
    * @param newFolder
    */
-  async createNewFolder(path: string, key: string, newFolder: string = 'example_folder'): Promise<TaskContainer> {
+  async createNewFolder(path: string, key: string, newFolder: string = "example_folder"): Promise<TaskContainer> {
     const createFolder = new CreateFolder(path, key, newFolder);
     const createFolder_string = JSON.stringify(createFolder);
 
@@ -97,7 +99,7 @@ export class TasksService implements OnDestroy {
     const taskContainer = await this.coreAgentsClient.addTask(
       new Task_CreateFolder_RequestInitiator("Create-Folder", message)
     );
-    if (taskContainer.status === 'ok') {
+    if (taskContainer.status === "ok") {
       return Promise.resolve(taskContainer);
     } else {
       return Promise.reject(taskContainer);
@@ -125,7 +127,7 @@ export class TasksService implements OnDestroy {
     const taskContainer = await this.coreAgentsClient.addTask(
       new Task_ModifyFile_RequestInitiator("Modify-File", message)
     );
-    if (taskContainer.status === 'ok') {
+    if (taskContainer.status === "ok") {
       return Promise.resolve(taskContainer);
     } else {
       return Promise.reject(taskContainer);
@@ -154,7 +156,7 @@ export class TasksService implements OnDestroy {
     const taskContainer = await this.coreAgentsClient.addTask(
       new Task_ModifyFolder_RequestInitiator("Modify-Folder", message)
     );
-    if (taskContainer.status === 'ok') {
+    if (taskContainer.status === "ok") {
       return Promise.resolve(taskContainer);
     } else {
       return Promise.reject(taskContainer);
@@ -182,7 +184,7 @@ export class TasksService implements OnDestroy {
     const taskContainer = await this.coreAgentsClient.addTask(
       new Task_EditFile_RequestInitiator("Edit-File", message)
     );
-    if (taskContainer.status === 'ok') {
+    if (taskContainer.status === "ok") {
       return Promise.resolve(taskContainer);
     } else {
       return Promise.reject(taskContainer);

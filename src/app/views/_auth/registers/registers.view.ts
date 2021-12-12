@@ -18,6 +18,8 @@ export class RegistersView implements OnInit, AfterViewInit {
   @ViewChild(EditRegisterBinary32Component) editRegisterBinary32Component: EditRegisterBinary32Component;
 
   typeDataSelected: TypeData = 'Byte';
+  typeDataSelectedFloat: "Binary" | "Uint8Array" = 'Binary';
+  typeDataSelectedDouble: "Binary" | "Uint8Array" = 'Binary';
   displayedColumns = ['Register', 'Hexadecimal', 'Binary', 'Byte'];
   dataSource = new TableVirtualScrollDataSource<string>(MACHINE_REGISTERS_C as string[]);
 
@@ -26,8 +28,8 @@ export class RegistersView implements OnInit, AfterViewInit {
   dataSourceD = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_D as number[]);
 
   displayedColumnsR = ['Register', 'Hexadecimal', 'Binary', 'Integer'];
-  displayedColumnsF = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Float'];
-  displayedColumnsD = ['Register', 'Hexadecimal', 'Binary', 'Uint8Array', 'Double'];
+  displayedColumnsF = ['Register', 'Hexadecimal', 'Binary' /*Binary or Uint8Array*/, 'Float'];
+  displayedColumnsD = ['Register', 'Hexadecimal', 'Binary' /*Binary or Uint8Array*/, 'Double'];
 
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
@@ -62,6 +64,16 @@ export class RegistersView implements OnInit, AfterViewInit {
   changeTypeDataInTableRegisters(typeData: TypeData): void {
     this.typeDataSelected = typeData;
     this.displayedColumns[3] = typeData.toString();
+  }
+
+  changeTypeDataInTableFloatRegisters(typeData: "Binary" | "Uint8Array") {
+    this.typeDataSelectedFloat = typeData;
+    this.displayedColumnsF[2] = typeData.toString();
+  }
+
+  changeTypeDataInTableDoubleRegisters(typeData: "Binary" | "Uint8Array") {
+    this.typeDataSelectedDouble = typeData;
+    this.displayedColumnsD[2] = typeData.toString();
   }
 
   refresh(): void {
