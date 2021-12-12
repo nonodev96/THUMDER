@@ -33,23 +33,23 @@ export interface InterfaceUser {
 }
 
 export interface InterfaceFileItem {
-  $key?: string // ---? Firebase
-  f_id: string //-
-  e1_uid: string //-
+  $key?: string; // ---? Firebase
+  f_id: string; //-
+  e1_uid: string; //-
 
-  key: string //-
-  pathKeys: string[] //-
+  key: string; //-
+  pathKeys: string[]; //-
 
-  path: string
-  name: string
-  content: string
-  description: string
-  dateModified: Timestamp
-  size: number
-  isDirectory: boolean
-  hasSubDirectories: boolean
-  thumbnail: string
-  dataItem: any
+  path: string;
+  name: string;
+  content: string;
+  description: string;
+  dateModified: Timestamp;
+  size: number;
+  isDirectory: boolean;
+  hasSubDirectories: boolean;
+  thumbnail: string;
+  dataItem: any;
 }
 
 
@@ -93,6 +93,7 @@ export type PublicRoutes = {
   routerLink: string;
   displayName: string;
   data?: any;
+  icon?: string;
   children?: PublicRoutes[];
 };
 
@@ -515,7 +516,7 @@ export type TypeFloatingPointStageConfiguration = {
   }
 };
 
-export type TypeLang = 'en' | 'sp';
+export type TypeLang = "en" | "sp";
 
 export type TypeStatusPipeline = {
   address: string;
@@ -600,6 +601,7 @@ export type TypeSimulationStep = {
   pipeline: TypePipeline;
   registers: TypeRegisterToUpdate[];
   memory: TypeMemoryToUpdate[];
+  statistics: Partial<TypeDataStatistics>;
 };
 
 export type TypeSimulationInitResponse = {
@@ -622,7 +624,6 @@ export type TypeSimulationInitRequest = {
   registers: TypeRegisterToUpdate[];
   memory: TypeMemoryToUpdate[];
 };
-
 
 export type TypeDataStatistics = {
   TOTAL: {

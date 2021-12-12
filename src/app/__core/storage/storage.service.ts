@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import {
   DEFAULT_AUTO_SAVE,
@@ -8,7 +8,7 @@ import {
 } from "../../CONSTAST";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class StorageService {
 
@@ -36,26 +36,26 @@ export class StorageService {
   }
 
   defaultDataInStorage(): void {
-    if (!this.hasItem('floating_point_stage_configuration')) {
-      this.setItem('floating_point_stage_configuration', DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
+    if (!this.hasItem("floating_point_stage_configuration")) {
+      this.setItem("floating_point_stage_configuration", DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
     }
-    if (!this.hasItem('multiview_configuration')) {
-      this.setItem('multiview_configuration', DEFAULT_MULTIVIEW_CONFIGURATION);
+    if (!this.hasItem("multiview_configuration")) {
+      this.setItem("multiview_configuration", DEFAULT_MULTIVIEW_CONFIGURATION);
     }
-    if (!this.hasItem('memory_size')) {
-      this.setItem('memory_size', DEFAULT_MEMORY_SIZE);
+    if (!this.hasItem("memory_size")) {
+      this.setItem("memory_size", DEFAULT_MEMORY_SIZE);
     }
-    if (!this.hasItem('time_simulation')) {
-      this.setItem('time_simulation', DEFAULT_TIME_SIMULATION);
+    if (!this.hasItem("time_simulation")) {
+      this.setItem("time_simulation", DEFAULT_TIME_SIMULATION);
     }
-    if (!this.hasItem('lang')) {
-      this.setItem('lang', DEFAULT_LANG);
+    if (!this.hasItem("lang")) {
+      this.setItem("lang", DEFAULT_LANG);
     }
-    if (!this.hasItem('auto_save')) {
-      this.setItem('auto_save', DEFAULT_AUTO_SAVE);
+    if (!this.hasItem("auto_save")) {
+      this.setItem("auto_save", DEFAULT_AUTO_SAVE);
     }
-    if (!this.hasItem('interfaceFileItem')) {
-      this.setItem('interfaceFileItem', DEFAULT_INTERFACE_FILE_ITEM);
+    if (!this.hasItem("interfaceFileItem")) {
+      this.setItem("interfaceFileItem", DEFAULT_INTERFACE_FILE_ITEM);
     }
   }
 }

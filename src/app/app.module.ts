@@ -1,25 +1,25 @@
-import 'reflect-metadata';
-import '../polyfills';
+import "reflect-metadata";
+import "../polyfills";
 
-import { NgModule, SecurityContext } from '@angular/core';
+import { NgModule, SecurityContext } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { AngularFireModule } from "@angular/fire";
 import { AngularFireAuthModule } from "@angular/fire/auth";
-import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestoreModule } from "@angular/fire/firestore";
 import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule, HttpClient } from "@angular/common/http";
 
 // devextreme
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
 // Monaco
 // import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
-import { CovalentCodeEditorModule } from '@covalent/code-editor';
+import { CovalentCodeEditorModule } from "@covalent/code-editor";
 
 // TOAST
 import { ToastrModule } from "ngx-toastr";
@@ -32,29 +32,29 @@ import { CookieService } from "ngx-cookie-service";
 // ngx-markdown
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
 // ngx-cookieconsent
-import { NgcCookieConsentModule, NgcCookieConsentConfig } from 'ngx-cookieconsent';
+import { NgcCookieConsentModule, NgcCookieConsentConfig } from "ngx-cookieconsent";
 
 // Services
 import { UtilityService } from "./__core/utility.service";
 
 // NG Translate
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
+import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 
 // MODULES
 import { ComponentsModule } from "./components/components.module";
-import { AppRoutingModule } from './app-routing.module';
-import { CoreModule } from './__core/core.module';
+import { AppRoutingModule } from "./app-routing.module";
+import { CoreModule } from "./__core/core.module";
 
 // APP
-import { AppConfig } from '../environments/environment';
+import { AppConfig } from "../environments/environment";
 import { CONFIG_WEBSOCKET } from "./CONSTAST";
-import { AppComponent } from './app.component';
+import { AppComponent } from "./app.component";
 
 
-import { SharedModule } from './__shared/shared.module';
-import { AuthGuard } from './__shared/guard/auth.guard';
-import { NoAuthGuard } from './__shared/guard/no-auth.guard';
+import { SharedModule } from "./__shared/shared.module";
+import { AuthGuard } from "./__shared/guard/auth.guard";
+import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
 
 
 // _layouts
@@ -64,25 +64,25 @@ import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.compon
 
 // _admin views
 // _auth views
-import { MultiplesViewsComponent } from './views/_auth/_views/multiples-views.component';
-import { CalculatorView } from './views/_auth/calculator/calculator.view';
-import { CodeView } from './views/_auth/code/code.view';
-import { ConfigView } from './views/_auth/config/config.view';
-import { DocsView } from './views/_auth/docs/docs.view';
-import { FileManagerView } from './views/_auth/file-manager/file-manager.view';
+import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
+import { CalculatorView } from "./views/_auth/calculator/calculator.view";
+import { CodeView } from "./views/_auth/code/code.view";
+import { ConfigView } from "./views/_auth/config/config.view";
+import { DocsView } from "./views/_auth/docs/docs.view";
+import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
 import { EditorView } from "./views/_auth/editor/editor.view";
 import { LoggerView } from "./views/_auth/logger/logger.view";
-import { MemoryView } from './views/_auth/memory/memory.view';
+import { MemoryView } from "./views/_auth/memory/memory.view";
 import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
 import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "./views/_auth/profile/profile.view";
-import { RegistersView } from './views/_auth/registers/registers.view';
-import { StatisticsView } from './views/_auth/statistics/statistics.view';
+import { RegistersView } from "./views/_auth/registers/registers.view";
+import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 
 // no _layouts views
-import { AboutView } from './views/_landing/about/about.view';
+import { AboutView } from "./views/_landing/about/about.view";
 import { LandingView } from "./views/_landing/landing/landing.view";
-import { DebugView } from './views/debug/debug-view';
+import { DebugView } from "./views/debug/debug-view";
 import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
 import { LoginView } from "./views/login/login.view";
 import { RegisterView } from "./views/register/register.view";
@@ -95,24 +95,30 @@ import * as PIXI from "pixi.js";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
-import * as environment from './../environments/environment';
+import * as environment from "./../environments/environment";
+import { ElectronService } from "./__core/services";
+
+const isServer = ElectronService.isServer;
+const domain = "localhost";
 
 const cookieConfig: NgcCookieConsentConfig = {
+  enabled: isServer,
+  // autoOpen: isElectronApp,
   cookie: {
-    domain: 'localhost' // it is recommended to set your domain, for cookies to work properly
+    domain: domain
   },
   palette: {
     popup: {
-      background: '#000'
+      background: "#000"
     },
     button: {
-      background: '#f1d600'
+      background: "#f1d600"
     }
   },
-  theme: 'edgeless',
-  type: 'opt-out',
+  theme: "edgeless",
+  type: "opt-out",
   content: {
-    href: "#",
+    href: "#"
   },
   elements: {
     messagelink: `
@@ -125,14 +131,14 @@ const cookieConfig: NgcCookieConsentConfig = {
 
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
 export function markedOptionsFactory(): MarkedOptions {
   const markedRenderer = new MarkedRenderer();
 
   markedRenderer.heading = (text: string, level: number) => {
-    const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+    const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
     return `
 <h${level}>
     <a name="${escapedText}" class="anchor" href="#${escapedText}" id="${escapedText}">
@@ -148,7 +154,7 @@ export function markedOptionsFactory(): MarkedOptions {
     breaks: false,
     pedantic: false,
     smartLists: true,
-    smartypants: false,
+    smartypants: false
   };
 }
 
@@ -182,7 +188,7 @@ export function markedOptionsFactory(): MarkedOptions {
     PipelineView,
     ProfileView,
     RegistersView,
-    StatisticsView,
+    StatisticsView
   ],
   imports: [
 
@@ -204,8 +210,8 @@ export function markedOptionsFactory(): MarkedOptions {
       loader: HttpClient,
       markedOptions: {
         provide: MarkedOptions,
-        useFactory: markedOptionsFactory,
-      },
+        useFactory: markedOptionsFactory
+      }
     }),
     ToastrModule.forRoot(),
     SocketIoModule.forRoot(CONFIG_WEBSOCKET),
@@ -245,7 +251,7 @@ export function markedOptionsFactory(): MarkedOptions {
     AuthGuard,
     NoAuthGuard,
     UtilityService,
-    CookieService,
+    CookieService
     /*
         MachineService,
         {

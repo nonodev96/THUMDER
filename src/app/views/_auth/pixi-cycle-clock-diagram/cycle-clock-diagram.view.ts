@@ -4,7 +4,7 @@ import { PixiCycleClockDiagramComponent } from "../../../components/pixi-cycle-c
 
 @Component({
   selector: "view-cycle-clock-diagram",
-  templateUrl: "./cycle-clock-diagram.view.html",
+  templateUrl: "./cycle-clock-diagram.view.html"
 })
 export class CycleClockDiagramView implements OnInit {
   @ViewChild(PixiCycleClockDiagramComponent) pixi_CycleClockDiagramComponent: PixiCycleClockDiagramComponent;
@@ -17,7 +17,6 @@ export class CycleClockDiagramView implements OnInit {
   }
 
   handleInCanvas($event): void {
-    // console.log($event)
     this.inCanvas = $event as boolean;
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration } from "../../../types";
 import { StorageService } from "../../../__core/storage/storage.service";
 import {
@@ -14,8 +14,8 @@ interface EventTargetInput extends EventTarget {
 }
 
 @Component({
-  selector: 'view-config',
-  templateUrl: './config.view.html',
+  selector: "view-config",
+  templateUrl: "./config.view.html",
   styleUrls: []
 })
 export class ConfigView implements OnInit {
@@ -28,51 +28,51 @@ export class ConfigView implements OnInit {
 
   constructor(private storage: StorageService,
               private machine: MachineService) {
-    this.multiviewConfiguration = this.storage.getItem('multiview_configuration');
-    this.floatingPointStageConfiguration = this.storage.getItem('floating_point_stage_configuration');
-    this.memorySize = this.storage.getItem('memory_size');
-    this.timeSimulation = this.storage.getItem('time_simulation');
-    this.autoSave = this.storage.getItem('auto_save');
+    this.multiviewConfiguration = this.storage.getItem("multiview_configuration");
+    this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration");
+    this.memorySize = this.storage.getItem("memory_size");
+    this.timeSimulation = this.storage.getItem("time_simulation");
+    this.autoSave = this.storage.getItem("auto_save");
   }
 
   ngOnInit(): void {
     this.storage.watchStorage().subscribe((key) => {
       switch (key) {
-        case 'floating_point_stage_configuration':
-          this.floatingPointStageConfiguration = this.storage.getItem('floating_point_stage_configuration');
+        case "floating_point_stage_configuration":
+          this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration");
           break;
-        case 'memory_size':
-          this.memorySize = this.storage.getItem('memory_size');
+        case "memory_size":
+          this.memorySize = this.storage.getItem("memory_size");
           break;
-        case 'time_simulation':
-          this.timeSimulation = this.storage.getItem('time_simulation');
+        case "time_simulation":
+          this.timeSimulation = this.storage.getItem("time_simulation");
           break;
-        case 'auto_save':
-          this.autoSave = this.storage.getItem('auto_save');
+        case "auto_save":
+          this.autoSave = this.storage.getItem("auto_save");
           break;
-        case 'multiview_configuration':
-          this.multiviewConfiguration = this.storage.getItem('multiview_configuration');
+        case "multiview_configuration":
+          this.multiviewConfiguration = this.storage.getItem("multiview_configuration");
           break;
       }
     });
   }
 
   async updateConfiguration(): Promise<void> {
-    this.storage.setItem('multiview_configuration', this.multiviewConfiguration);
-    this.storage.setItem('floating_point_stage_configuration', this.floatingPointStageConfiguration);
-    this.storage.setItem('memory_size', this.memorySize);
-    this.storage.setItem('time_simulation', this.timeSimulation);
-    this.storage.setItem('auto_save', this.autoSave);
+    this.storage.setItem("multiview_configuration", this.multiviewConfiguration);
+    this.storage.setItem("floating_point_stage_configuration", this.floatingPointStageConfiguration);
+    this.storage.setItem("memory_size", this.memorySize);
+    this.storage.setItem("time_simulation", this.timeSimulation);
+    this.storage.setItem("auto_save", this.autoSave);
     await this.machine.resetMachineStatus();
     return Promise.resolve();
   }
 
   async resetConfiguration(): Promise<void> {
-    this.storage.setItem('multiview_configuration', DEFAULT_MULTIVIEW_CONFIGURATION);
-    this.storage.setItem('floating_point_stage_configuration', DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
-    this.storage.setItem('memory_size', DEFAULT_MEMORY_SIZE);
-    this.storage.setItem('time_simulation', DEFAULT_TIME_SIMULATION);
-    this.storage.setItem('auto_save', DEFAULT_AUTO_SAVE);
+    this.storage.setItem("multiview_configuration", DEFAULT_MULTIVIEW_CONFIGURATION);
+    this.storage.setItem("floating_point_stage_configuration", DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
+    this.storage.setItem("memory_size", DEFAULT_MEMORY_SIZE);
+    this.storage.setItem("time_simulation", DEFAULT_TIME_SIMULATION);
+    this.storage.setItem("auto_save", DEFAULT_AUTO_SAVE);
     await this.machine.resetMachineStatus();
     return Promise.resolve();
   }

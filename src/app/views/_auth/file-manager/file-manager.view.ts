@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { NavigationExtras, Router } from "@angular/router";
 import { FileItem, FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
-import { DxFileManagerComponent } from 'devextreme-angular';
+import { DxFileManagerComponent } from "devextreme-angular";
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import FileManager from "devextreme/ui/file_manager";
@@ -35,7 +35,7 @@ export type TypeOnContextMenuItemClick = {
   itemElement: HTMLElement,
   itemIndex: number,
   model: any,
-  viewArea: 'navPane' | 'itemView',
+  viewArea: "navPane" | "itemView",
 };
 
 export type TypeOnContentReady = {
@@ -45,8 +45,8 @@ export type TypeOnContentReady = {
 };
 
 @Component({
-  selector: 'view-file-manager',
-  templateUrl: './file-manager.view.html',
+  selector: "view-file-manager",
+  templateUrl: "./file-manager.view.html",
   styleUrls: []
 })
 export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
@@ -96,13 +96,13 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
     this.newFileMenuOptions = {
       items: [
         {
-          text: 'Create new file',
-          icon: 'plus',
+          text: "Create new file",
+          icon: "plus",
           items: [
             {
-              text: 'WinDLX Document',
+              text: "WinDLX Document",
               options: {
-                extension: '.s',
+                extension: ".s"
               }
             }
           ]
@@ -158,10 +158,10 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
       const interfaceFileItem = this.fileSystemService.ITEMS[index1];
       const extras: NavigationExtras = {
         state: {
-          'interfaceFileItem': interfaceFileItem,
+          "interfaceFileItem": interfaceFileItem
         }
       };
-      this.router.navigateByUrl('/auth/editor', extras).then((r) => {
+      this.router.navigateByUrl("/auth/editor", extras).then((r) => {
         console.log(r);
       });
     }

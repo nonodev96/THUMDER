@@ -1,14 +1,14 @@
-import * as PIXI from 'pixi.js';
-import { LinkedList, Queue } from 'datastructures-js';
-import { PixiJSTable } from './PixiJSTable';
+import * as PIXI from "pixi.js";
+import { LinkedList, Queue } from "datastructures-js";
+import { PixiTHUMDER_Table } from "./PixiTHUMDER_Table";
 import { PixiUtils } from "./PixiUtils";
 
 const styleFontTextInstruction = new PIXI.TextStyle({
-  fontFamily: 'Arial',
+  fontFamily: "Arial",
   fontSize: 15,
-  fill: 'white',
-  stroke: '#000000',
-  align: 'center',
+  fill: "white",
+  stroke: "#000000",
+  align: "center"
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -18,10 +18,10 @@ const styleFontTextInstruction = new PIXI.TextStyle({
 });
 
 const styleFontTextSteps = new PIXI.TextStyle({
-  fontFamily: 'Arial',
+  fontFamily: "Arial",
   fontSize: 15,
-  fill: 'white',
-  stroke: '#000000',
+  fill: "white",
+  stroke: "#000000"
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -40,7 +40,7 @@ export const DEFAULT_CYCLE = {
   MEM: 1,
   MEM_stall: 0,
   WB: 1,
-  WB_stall: 0,
+  WB_stall: 0
 };
 
 export type TypeArrowDirection = {
@@ -80,45 +80,18 @@ export type TypeData_Queue_PIXI_Graphics_ = {
   queue: Queue<PIXI.Graphics>
 };
 
-class MyMap<K, V> {
-  private _map: Map<string, V>;
-
-  constructor() {
-    this._map = new Map();
-  }
-
-  set(key: K, data: V) {
-    const k = JSON.stringify(key);
-    this._map.set(k, data);
-  }
-
-  get(key: K) {
-    const k = JSON.stringify(key);
-    return this._map.get(k);
-  }
-
-  has(key: K): boolean {
-    const k = JSON.stringify(key);
-    return this._map.has(k);
-  }
-
-  delete(key: K): boolean {
-    const k = JSON.stringify(key);
-    return this._map.delete(k);
-  }
-}
 
 export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
-  realStep: number = 0;
+  public realStep: number;
 
-  instructions: number = 0;
+  public instructions: number;
 
-  private table: PixiJSTable;
+  private table: PixiTHUMDER_Table;
 
-  private tableSteps: PixiJSTable;
+  private tableSteps: PixiTHUMDER_Table;
 
-  private tableInstructions: PixiJSTable;
+  private tableInstructions: PixiTHUMDER_Table;
 
   private arrows: PIXI.Graphics;
 
@@ -133,17 +106,17 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   private last: number;
 
   // K => { Row = instruction, Column = step}
-  private timerVoid: MyMap<TypeCellPosition, PIXI.Graphics>;
-  private timer: MyMap<TypeCellPosition, PIXI.Graphics>;
+  private timerVoid: PixiUtils.THUMDER_Map<TypeCellPosition, PIXI.Graphics>;
+  private timer: PixiUtils.THUMDER_Map<TypeCellPosition, PIXI.Graphics>;
   private listArrows: LinkedList<TypeArrowDirection>;
   private readonly preDrawArrow: boolean;
 
   constructor(preDrawArrow = false) {
     super();
     this.preDrawArrow = preDrawArrow;
-    this.table = new PixiJSTable();
-    this.tableSteps = new PixiJSTable();
-    this.tableInstructions = new PixiJSTable();
+    this.table = new PixiTHUMDER_Table();
+    this.tableSteps = new PixiTHUMDER_Table();
+    this.tableInstructions = new PixiTHUMDER_Table();
     this.arrows = new PIXI.Graphics();
 
     this.instructions = 0;
@@ -155,8 +128,8 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.borderLeft = new PIXI.Graphics();
     this.borderTop = new PIXI.Graphics();
 
-    this.timerVoid = new MyMap();
-    this.timer = new MyMap();
+    this.timerVoid = new PixiUtils.THUMDER_Map();
+    this.timer = new PixiUtils.THUMDER_Map();
     this.listArrows = new LinkedList();
 
     this.initTables();
@@ -172,16 +145,16 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   }
 
   public reset() {
-    for (let i = this.table.rowCount - 1; i >= 0; i--) {
-      this.table.deleteRow(i);
+    for (const position of this.table.getAllPositions()) {
+      this.table.deleteCell(position.row, position.col);
     }
 
-    for (let i = this.tableInstructions.rowCount - 1; i >= 0; i--) {
-      this.tableInstructions.deleteRow(i);
+    for (const position of this.tableInstructions.getAllPositions()) {
+      this.tableInstructions.deleteCell(position.row, position.col);
     }
 
-    for (let i = 0; i < this.tableSteps.maxCols; i++) {
-      this.tableSteps.deleteCell(0, 0);
+    for (const position of this.tableSteps.getAllPositions()) {
+      this.tableSteps.deleteCell(position.row, position.col);
     }
 
     this.instructions = 0;
@@ -189,8 +162,8 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.stepToStart = 0;
     this.last = 1;
 
-    this.timerVoid = new MyMap();
-    this.timer = new MyMap();
+    this.timerVoid = new PixiUtils.THUMDER_Map();
+    this.timer = new PixiUtils.THUMDER_Map();
     this.listArrows = new LinkedList();
 
     while (this.arrows.children[0]) {
@@ -202,15 +175,16 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   private initTables() {
     this.table.position.x += 200;
-    this.table.position.y += 50;
+    this.table.position.y += 80;
     this.table.zIndex = 1;
 
     this.arrows.zIndex = 2;
 
     this.tableSteps.position.x += 200;
+    this.tableSteps.position.y += 20;
     this.tableSteps.zIndex = 6;
 
-    this.tableInstructions.position.y += 40;
+    this.tableInstructions.position.y = 80;
     this.tableInstructions.zIndex = 7;
   }
 
@@ -222,11 +196,11 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.borderTitle.endFill();
     this.borderTitle.zIndex = 10;
 
-    const text = new PIXI.Text('Cycle clock', {
-      fontFamily: 'Arial',
+    const text = new PIXI.Text("Cycle clock", {
+      fontFamily: "Arial",
       fontSize: 30,
-      fill: 'white',
-      stroke: '#000000',
+      fill: "white",
+      stroke: "#000000"
     });
     text.position.x = (this.borderTitle.width / 2) - (text.width / 2);
     text.position.y = (this.borderTitle.height / 2) - (text.height / 2);
@@ -251,35 +225,35 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.drawInstruction(text);
 
     for (let i = 0; i < this.stepToStart + stepsToWait; i++) {
-      this.drawCycle('', 0xCCCCCC, 0xBBBBBB, {
+      this.drawCycle("", 0xCCCCCC, 0xBBBBBB, {
         instructionPosition: this.instructions,
-        stepPosition: i,
+        stepPosition: i
       });
     }
 
     this.stepToStart += (pipe.IF ?? DEFAULT_CYCLE.IF);
     this.last = this.stepToStart - 2;
-    for (let i = 0; i < (pipe.IF_stall ?? DEFAULT_CYCLE.IF_stall); i++) this.drawCycle('💣', 0xFFFF00);
-    for (let i = 0; i < (pipe.IF ?? DEFAULT_CYCLE.IF); i++) this.drawCycle('IF', 0xFFFF00);
+    for (let i = 0; i < (pipe.IF_stall ?? DEFAULT_CYCLE.IF_stall); i++) this.drawCycle("💣", 0xFFFF00);
+    for (let i = 0; i < (pipe.IF ?? DEFAULT_CYCLE.IF); i++) this.drawCycle("IF", 0xFFFF00);
     // this.stepToStart += (pipe.IF_stall ?? DEFAULT_CYCLE.IF_stall);
 
-    for (let i = 0; i < (pipe.ID_stall ?? DEFAULT_CYCLE.ID_stall); i++) this.drawCycle('💣', 0xFF9900);
-    for (let i = 0; i < (pipe.ID ?? DEFAULT_CYCLE.ID); i++) this.drawCycle('ID', 0xFF9900);
+    for (let i = 0; i < (pipe.ID_stall ?? DEFAULT_CYCLE.ID_stall); i++) this.drawCycle("💣", 0xFF9900);
+    for (let i = 0; i < (pipe.ID ?? DEFAULT_CYCLE.ID); i++) this.drawCycle("ID", 0xFF9900);
     // this.stepToStart += (pipe.ID_stall ?? DEFAULT_CYCLE.ID_stall);
 
-    for (let i = 0; i < (pipe.intEX_stall ?? DEFAULT_CYCLE.intEX_stall); i++) this.drawCycle('💣', 0xFF0000);
-    for (let i = 0; i < (pipe.intEX ?? DEFAULT_CYCLE.intEX); i++) this.drawCycle('intEX', 0xFF0000);
+    for (let i = 0; i < (pipe.intEX_stall ?? DEFAULT_CYCLE.intEX_stall); i++) this.drawCycle("💣", 0xFF0000);
+    for (let i = 0; i < (pipe.intEX ?? DEFAULT_CYCLE.intEX); i++) this.drawCycle("intEX", 0xFF0000);
     // this.stepToStart += (pipe.intEX_stall ?? DEFAULT_CYCLE.intEX_stall);
 
-    for (let i = 0; i < (pipe.MEM_stall ?? DEFAULT_CYCLE.MEM_stall); i++) this.drawCycle('💣', 0x00FF00);
-    for (let i = 0; i < (pipe.MEM ?? DEFAULT_CYCLE.MEM); i++) this.drawCycle('MEM', 0x00FF00);
+    for (let i = 0; i < (pipe.MEM_stall ?? DEFAULT_CYCLE.MEM_stall); i++) this.drawCycle("💣", 0x00FF00);
+    for (let i = 0; i < (pipe.MEM ?? DEFAULT_CYCLE.MEM); i++) this.drawCycle("MEM", 0x00FF00);
     // this.stepToStart += (pipe.MEM_stall ?? DEFAULT_CYCLE.MEM_stall);
 
-    for (let i = 0; i < (pipe.WB_stall ?? DEFAULT_CYCLE.WB_stall); i++) this.drawCycle('💣', 0xFF00FF);
-    for (let i = 0; i < (pipe.WB ?? DEFAULT_CYCLE.WB); i++) this.drawCycle('WB', 0xFF00FF);
+    for (let i = 0; i < (pipe.WB_stall ?? DEFAULT_CYCLE.WB_stall); i++) this.drawCycle("💣", 0xFF00FF);
+    for (let i = 0; i < (pipe.WB ?? DEFAULT_CYCLE.WB); i++) this.drawCycle("WB", 0xFF00FF);
     // this.stepToStart += (pipe.WB_stall ?? DEFAULT_CYCLE.WB_stall);
 
-    this.table.addRow();
+    // this.table.addRow();
     this.instructions++;
   }
 
@@ -313,8 +287,9 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     text.position.x += (rectangle.width / 2) - (text.width / 2);
     text.position.y += ((rectangle.height - text.height) / 2) - 2.5;
     rectangle.addChild(text);
-    this.tableInstructions.addRow();
-    this.tableInstructions.addCell(rectangle);
+    this.tableInstructions.setCell(this.instructions, 0, rectangle);
+    this.tableInstructions.drawCell(this.instructions, 0);
+
   }
 
   private drawSteps(displayStep: number = this.realStep) {
@@ -327,10 +302,11 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     text.position.x += (rectangle.width - text.width) / 2;
     text.position.y += ((rectangle.height - text.height) / 2) - 2.5;
     rectangle.addChild(text);
-    this.tableSteps.addCell(rectangle);
+    this.tableSteps.setCell(0, displayStep, rectangle);
+    this.tableSteps.drawCell(0, displayStep);
   }
 
-  private drawCycle(code: '' | '💣' | 'ID' | 'IF' | 'intEX' | 'MEM' | 'WB' | 'TEST' | null = null, colorLineStyle = 0xCCCCCC, colorFill = 0xBBBBBB, cellAt: TypeCellPosition | null = null) {
+  private drawCycle(code: "" | "💣" | "ID" | "IF" | "intEX" | "MEM" | "WB" | "TEST" | null = null, colorLineStyle = 0xCCCCCC, colorFill = 0xBBBBBB, cellAt: TypeCellPosition | null = null) {
     const rectangle = new PIXI.Graphics();
     rectangle.lineStyle(2.5, colorLineStyle, 1);
     rectangle.beginFill(colorFill);
@@ -358,7 +334,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
         stepPosition: this.last
       };
     }
-    if (code === '') {
+    if (code === "") {
       if (!this.timerVoid.has(key)) {
         this.timerVoid.set(key, rectangle);
       }
@@ -378,13 +354,15 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
           instructionPosition: instructionPosition,
           stepPosition: stepPosition
         };
-        if (this.timerVoid.has(key) && !this.table.exist(instructionPosition, stepPosition)) {
-          const graphicsVoid = this.timerVoid.get(key);
-          this.table.addCell(graphicsVoid, instructionPosition);
-        }
-        if (this.timer.has(key) && !this.table.exist(instructionPosition, stepPosition)) {
-          const graphics = this.timer.get(key);
-          this.table.addCell(graphics, instructionPosition);
+        //  if (this.timerVoid.has(key) && !this.table.existCell(instructionPosition, stepPosition)) {
+        //    const graphicsVoid = this.timerVoid.get(key) as PIXI.Container;
+        //    this.table.setCell(instructionPosition, stepPosition, graphicsVoid);
+        //    this.table.drawCell(instructionPosition, stepPosition);
+        //  }
+        if (this.timer.has(key) && !this.table.existCell(instructionPosition, stepPosition)) {
+          const graphics = this.timer.get(key) as PIXI.Container;
+          this.table.setCell(instructionPosition, stepPosition, graphics);
+          this.table.drawCell(instructionPosition, stepPosition);
         }
       }
     }
@@ -399,17 +377,6 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     }
     // TODO
     // si esta al final de la caja de visualización desplazar a la derecha
-  }
-
-  public draw(): PIXI.Container {
-    this.addChild(this.table.draw());
-    this.addChild(this.tableSteps.draw());
-    this.addChild(this.tableInstructions.draw());
-    this.addChild(this.borderTop);
-    this.addChild(this.borderLeft);
-    this.addChild(this.borderTitle);
-    this.addChild(this.arrows);
-    return this;
   }
 
   public moveLeft() {
@@ -431,7 +398,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   public moveTop() {
     const max = this.tableInstructions.height + this.tableInstructions.y;
-    if (max > 120) {
+    if (max > 110) {
       this.table.position.y -= 10;
       this.tableInstructions.y -= 10;
       this.arrows.position.y -= 10;
@@ -439,7 +406,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   }
 
   public moveBottom() {
-    if (this.table.position.y < 50) {
+    if (this.table.position.y < 80) {
       this.table.position.y += 10;
       this.tableInstructions.y += 10;
       this.arrows.position.y += 10;
@@ -453,13 +420,24 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     rectangle.drawRect(0, 0, 75, 25);
     rectangle.endFill();
     rectangle.zIndex = 11;
-    const step = new PIXI.Text('text', styleFontTextSteps);
+    const step = new PIXI.Text("text", styleFontTextSteps);
     step.position.x += (rectangle.width - step.width) / 2;
     step.position.y += 5;
     rectangle.addChild(step);
 
     rectangle.position.y += 5;
-    this.table.addCell(rectangle, 0);
+    this.table.setCell(0, 0, rectangle);
+  }
+
+  public draw(): PIXI.Container {
+    this.addChild(this.table.draw());
+    this.addChild(this.tableSteps.draw());
+    this.addChild(this.tableInstructions.draw());
+    this.addChild(this.borderTop);
+    this.addChild(this.borderLeft);
+    this.addChild(this.borderTitle);
+    this.addChild(this.arrows);
+    return this;
   }
 
   toString(): string {

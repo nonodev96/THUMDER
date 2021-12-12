@@ -80,10 +80,10 @@ export class ManagerMemory implements InterfaceMemory {
 
   public getMemoryWordBinaryByIndex(index: number): string {
     return "" +
-      this._memoryInt8Array[index].toString(2).padStart(8, '0') +
-      this._memoryInt8Array[index + 1].toString(2).padStart(8, '0') +
-      this._memoryInt8Array[index + 2].toString(2).padStart(8, '0') +
-      this._memoryInt8Array[index + 3].toString(2).padStart(8, '0');
+      this._memoryInt8Array[index].toString(2).padStart(8, "0") +
+      this._memoryInt8Array[index + 1].toString(2).padStart(8, "0") +
+      this._memoryInt8Array[index + 2].toString(2).padStart(8, "0") +
+      this._memoryInt8Array[index + 3].toString(2).padStart(8, "0");
   }
 
   // WORD - SET
@@ -114,7 +114,7 @@ export class ManagerMemory implements InterfaceMemory {
 
   // BYTE - GET
   public getMemoryByteBinaryByIndex(index: number): string {
-    return this._memoryInt8Array[index].toString(2).padStart(8, '0');
+    return this._memoryInt8Array[index].toString(2).padStart(8, "0");
   }
 
   // BYTE - SET
@@ -132,8 +132,8 @@ export class ManagerMemory implements InterfaceMemory {
   // HALF WORD - GET
   public getMemoryHalfWordBinaryByIndex(index: number): string {
     return "" +
-      this._memoryInt8Array[index].toString(2).padStart(8, '0') +
-      this._memoryInt8Array[index + 1].toString(2).padStart(8, '0');
+      this._memoryInt8Array[index].toString(2).padStart(8, "0") +
+      this._memoryInt8Array[index + 1].toString(2).padStart(8, "0");
   }
 
   // HALF WORD - SET
@@ -195,5 +195,13 @@ export class ManagerMemory implements InterfaceMemory {
       list.push(index);
     }
     return list;
+  }
+
+  public reset(): void {
+    this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
+  }
+
+  public setSize(memorySize: number) {
+    this._memorySizeBytes = memorySize;
   }
 }

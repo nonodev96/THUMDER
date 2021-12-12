@@ -17,6 +17,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
   public isRunning = false;
   public readonly AUTH_ROUTES = AUTH_ROUTES;
   private isRunningSubscription: Subscription = new Subscription();
+  public colorWebsocketStatus: string = "orange";
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -28,6 +29,15 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.isRunningSubscription = this.machine.getIsRunningObservable().subscribe((isRunning) => {
       this.isRunning = isRunning;
+    });
+    this.colorWebsocketStatus = this.machine.getStatusWebsocket() === "Connect" ? "lime" : "orange";
+    this.machine.getStatusWebsocketObservable().subscribe((status) => {
+      if (status === "Connect") {
+        this.colorWebsocketStatus = "lime";
+      }
+      if (status === "Disconnect") {
+        this.colorWebsocketStatus = "orange";
+      }
     });
   }
 

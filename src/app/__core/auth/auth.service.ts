@@ -1,15 +1,15 @@
-import { Injectable, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Injectable, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { InterfaceUser } from "../../types";
 import { AngularFireAuth } from "@angular/fire/auth";
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
 import { ElectronService } from "../services";
 import { Router } from "@angular/router";
 import { Observable, Subject, Subscription } from "rxjs";
-import firebase from 'firebase/app';
+import firebase from "firebase/app";
 import UserCredential = firebase.auth.UserCredential;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 
 export class AuthService implements OnInit, OnDestroy {
@@ -28,12 +28,12 @@ export class AuthService implements OnInit, OnDestroy {
         if (user) {
           window.document.body.className = "";
           this.userData = user;
-          localStorage.setItem('user', JSON.stringify(this.userData));
-          JSON.parse(localStorage.getItem('user'));
+          localStorage.setItem("user", JSON.stringify(this.userData));
+          JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(true);
         } else {
-          localStorage.setItem('user', null);
-          JSON.parse(localStorage.getItem('user'));
+          localStorage.setItem("user", null);
+          JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(false);
         }
       })
@@ -83,7 +83,7 @@ export class AuthService implements OnInit, OnDestroy {
   async SendVerificationMail(userCredential: UserCredential): Promise<void> {
     try {
       await userCredential.user.sendEmailVerification();
-      await this.router.navigate(['/']);
+      await this.router.navigate(["/"]);
     } catch (e) {
       console.error(e);
     }
@@ -94,7 +94,7 @@ export class AuthService implements OnInit, OnDestroy {
   async ForgotPassword(passwordResetEmail): Promise<void> {
     try {
       await this.afAuth.sendPasswordResetEmail(passwordResetEmail);
-      window.alert('Password reset email sent, check your inbox.');
+      window.alert("Password reset email sent, check your inbox.");
     } catch (error) {
       console.error(error);
     }
@@ -103,7 +103,7 @@ export class AuthService implements OnInit, OnDestroy {
 
   // Returns true when user is logged in and email is verified
   get isLoggedIn(): boolean {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(localStorage.getItem("user"));
     return (user !== null /*&& user.emailVerified !== false*/);
   }
 
@@ -123,7 +123,7 @@ export class AuthService implements OnInit, OnDestroy {
       const userCredential = await this.afAuth.signInAnonymously();
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       });
     } catch (error) {
       console.error(error);
@@ -135,10 +135,10 @@ export class AuthService implements OnInit, OnDestroy {
   private async AuthLogin(provider): Promise<void> {
     try {
       const userCredential = await this.afAuth.signInWithPopup(provider);
-      console.log(' AuthLogin');
+      console.log(" AuthLogin");
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(["/"]);
       });
     } catch (error) {
       console.error(error);
@@ -153,10 +153,10 @@ export class AuthService implements OnInit, OnDestroy {
     if (!this.electronService.isElectronApp) {
       const userCredential = await firebase.auth().getRedirectResult();
       if (userCredential.user !== null) {
-        console.log('Entra en getRedirectResult', userCredential);
+        console.log("Entra en getRedirectResult", userCredential);
         await this.SetUserData(userCredential);
         this.ngZone.run(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(["/"]);
         });
       }
       return Promise.resolve(true);
@@ -186,8 +186,8 @@ export class AuthService implements OnInit, OnDestroy {
   async SignOut() {
     try {
       await this.afAuth.signOut();
-      localStorage.removeItem('user');
-      await this.router.navigate(['/login']);
+      localStorage.removeItem("user");
+      await this.router.navigate(["/login"]);
     } catch (error) {
       console.error(error);
     }

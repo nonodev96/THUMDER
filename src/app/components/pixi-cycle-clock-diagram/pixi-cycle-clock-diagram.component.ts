@@ -78,8 +78,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
       fps.position.x = 0 /*this.pApp.view.width - 200*/;
       fps.position.y = 0 /*25*/;
       fps.zIndex = 100;
-      this.pApp.stage.addChild(fps);
-
+      // this.pApp.stage.addChild(fps);
       this.pApp.ticker.add((delta) => {
         fps.text = `FPS: ${this.ticker.FPS.toFixed(2)}`;
       });

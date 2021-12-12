@@ -5,6 +5,7 @@ import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_DATA_STATISTICS } from "../../../CONSTAST";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
+import { SocketProviderConnectService } from "../../../__core/services/socket-provider-connect.service";
 
 @Component({
   selector: 'view-statistics',
@@ -17,6 +18,7 @@ export class StatisticsView implements OnInit, OnDestroy {
   private dataStatisticsSubscription: Subscription = new Subscription();
 
   constructor(private translate: TranslateService,
+              private socketProviderConnectService: SocketProviderConnectService,
               private machine: MachineService) {
 
   }

@@ -1,17 +1,17 @@
-import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, OnInit, Renderer2, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { ViewportScroller } from "@angular/common";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTAST";
 
 @Component({
-  selector: 'view-docs',
-  templateUrl: './docs.view.html',
+  selector: "view-docs",
+  templateUrl: "./docs.view.html",
   styleUrls: []
 })
 export class DocsView implements OnInit {
 
-  @ViewChild('markdownComponentID', {static: false})
+  @ViewChild("markdownComponentID", {static: false})
   private markdownComponentID: MarkdownComponent;
   private listenObj: any;
 
@@ -31,13 +31,13 @@ export class DocsView implements OnInit {
     // because MarkdownComponent isn't 'compiled' the links don't use the angular router,
     // so I'll catch the link click events here and pass them to the router...
     if (this.markdownComponentID) {
-      this.listenObj = this.renderer.listen(this.markdownComponentID.element.nativeElement, 'click', (e: Event) => {
-        if (e.target && (e.target as any).tagName === 'A') {
+      this.listenObj = this.renderer.listen(this.markdownComponentID.element.nativeElement, "click", (e: Event) => {
+        if (e.target && (e.target as any).tagName === "A") {
           const el = (e.target as HTMLElement);
-          const linkURL = el.getAttribute && el.getAttribute('href');
+          const linkURL = el.getAttribute && el.getAttribute("href");
           if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
             e.preventDefault();
-            const id = linkURL.replace('#', '');
+            const id = linkURL.replace("#", "");
             this.scrollToAnchor(id);
           }
         }

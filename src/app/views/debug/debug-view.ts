@@ -1,24 +1,23 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-import { Utils } from "../../Utils";
-import { FileItem } from "../../__core/services/file-system-nonodev96/file-system.service";
-
-import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
+import { FileItem } from "../../__core/services/file-system-nonodev96/file-system.service";
+import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
+import { Utils } from "../../Utils";
 import {
-  TypeSimulationInitResponse,
   TypeCode,
   TypeConfigurationMachine,
   TypeData,
   TypeMemoryToUpdate,
   TypeRegister,
-  TypeRegisterToUpdate, TypeSimulationStep, TypeSimulationInitRequest, TypeAllRegisters, TypeAllMemory
+  TypeRegisterToUpdate,
+  TypeSimulationInitRequest
 } from "../../types";
 
 @Component({
-  selector: 'app-debug',
-  templateUrl: './debug-view.html',
-  styleUrls: ['./debug-view.scss']
+  selector: "app-debug",
+  templateUrl: "./debug-view.html",
+  styleUrls: ["./debug-view.scss"]
 })
 export class DebugView implements OnInit, AfterViewInit {
 
@@ -122,23 +121,23 @@ export class DebugView implements OnInit, AfterViewInit {
   }
 
   showToast() {
-    this.toast.success('Hello world!', 'Toast fun!', DEFAULT_CONFIG_TOAST);
+    this.toast.success("Hello world!", "Toast fun!", DEFAULT_CONFIG_TOAST);
   }
 
   debugLocalStorage() {
-    console.log(localStorage.getItem('FileSystem'));
+    console.log(localStorage.getItem("FileSystem"));
 
-    const documents = new FileItem('', true, []);
-    documents.name = 'Documents';
+    const documents = new FileItem("", true, []);
+    documents.name = "Documents";
     documents.key = Utils.uuidv4();
-    const pepe = new FileItem('', false, []);
-    pepe.name = 'pepe.s';
+    const pepe = new FileItem("", false, []);
+    pepe.name = "pepe.s";
     pepe.key = Utils.uuidv4();
 
     const value = JSON.stringify({
       items: [documents, pepe]
     });
-    localStorage.setItem('FileSystem', value);
+    localStorage.setItem("FileSystem", value);
   }
 
   debugCodeRequestSocket() {
@@ -159,7 +158,7 @@ export class DebugView implements OnInit, AfterViewInit {
         register: register,
         hexadecimalValue: value
       }] as TypeRegisterToUpdate[]);
-      this.socketProviderConnect.emitMessage('UpdateRegisterRequest', payload);
+      this.socketProviderConnect.emitMessage("UpdateRegisterRequest", payload);
     } catch (error) {
       console.error(error);
       return Promise.reject(error.message);
@@ -174,7 +173,7 @@ export class DebugView implements OnInit, AfterViewInit {
         address: memoryAddress,
         value: memoryValue
       }] as TypeMemoryToUpdate[]);
-      this.socketProviderConnect.emitMessage('UpdateMemoryRequest', payload);
+      this.socketProviderConnect.emitMessage("UpdateMemoryRequest", payload);
     } catch (error) {
       console.error(error);
       return Promise.reject(error.message);
@@ -184,7 +183,7 @@ export class DebugView implements OnInit, AfterViewInit {
 
   async simulationInit(): Promise<boolean> {
     try {
-      const data = await fetch('assets/examples-dlx/prim.s');
+      const data = await fetch("assets/examples-dlx/prim.s");
       const content = await data.text();
       const payload = JSON.stringify({
         id: this.socketProviderConnect.socket.ioSocket.id,
@@ -195,7 +194,7 @@ export class DebugView implements OnInit, AfterViewInit {
         memory: []
       } as TypeSimulationInitRequest);
       console.log(payload);
-      this.socketProviderConnect.emitMessage('SimulationInitRequest', payload);
+      this.socketProviderConnect.emitMessage("SimulationInitRequest", payload);
     } catch (error) {
       console.error(error);
       return Promise.reject(error.message);
@@ -208,7 +207,7 @@ export class DebugView implements OnInit, AfterViewInit {
       const payload = JSON.stringify({
         step: this.i++
       });
-      this.socketProviderConnect.emitMessage('SimulationNextStepRequest', payload);
+      this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload);
     } catch (error) {
       console.error(error);
       return Promise.reject(error.message);
@@ -235,7 +234,7 @@ export class DebugView implements OnInit, AfterViewInit {
           memorySize: 32768
         } as TypeConfigurationMachine
       );
-      this.socketProviderConnect.emitMessage('UpdateConfigurationMachineRequest', payload);
+      this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", payload);
     } catch (error) {
       console.error(error);
       return Promise.reject(error.message);
@@ -250,7 +249,7 @@ export class DebugView implements OnInit, AfterViewInit {
           id: this.socketProviderConnect.socket.ioSocket.id
         }
       );
-      this.socketProviderConnect.emitMessage('GetAllRegistersRequest', payload);
+      this.socketProviderConnect.emitMessage("GetAllRegistersRequest", payload);
     } catch (error) {
       console.error(error);
       return Promise.reject(error.message);
@@ -265,8 +264,8 @@ export class DebugView implements OnInit, AfterViewInit {
           id: this.socketProviderConnect.socket.ioSocket.id
         }
       );
-      this.socketProviderConnect.socket.emit('GetAllMemoryRequest', payload, (response) => {
-        console.log('callback memory', response);
+      this.socketProviderConnect.socket.emit("GetAllMemoryRequest", payload, (response) => {
+        console.log("callback memory", response);
       });
     } catch (error) {
       console.error(error);

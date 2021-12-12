@@ -30,6 +30,10 @@ export interface InterfaceMemory {
 
 }
 
+export interface InterfaceDataStatistics {
+
+}
+
 export interface InterfaceInstructionTypeI {
   codeOP: StringOfLength<6, 6>;
   rs1: StringOfLength<5, 5>;

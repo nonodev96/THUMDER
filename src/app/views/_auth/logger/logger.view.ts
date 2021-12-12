@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { XtermComponent } from "../../../components/xterm/xterm.component";
 import { TypeOnKeyEvent } from "../../../types";
 import { MachineService } from "../../../__core/machine/machine.service";
 
 @Component({
-  selector: 'view-logger',
-  templateUrl: './logger.view.html',
+  selector: "view-logger",
+  templateUrl: "./logger.view.html",
   styleUrls: []
 })
 export class LoggerView implements OnInit {
@@ -19,11 +19,11 @@ export class LoggerView implements OnInit {
   ngOnInit(): void {
   }
 
-  onKey($event: TypeOnKeyEvent):void {
+  onKey($event: TypeOnKeyEvent): void {
     console.log($event);
   }
 
-  test():void {
+  test(): void {
     this.text = this.machine.logger;
   }
 }

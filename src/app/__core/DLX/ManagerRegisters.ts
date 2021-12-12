@@ -1,6 +1,6 @@
 import { Float32, Int32 } from "../typesData";
 import { InterfaceRegisters } from "./interfaces";
-import { TypeRegisterToUpdate } from "../../types";
+import { TypeRegisterControl, TypeRegisterToUpdate } from "../../types";
 import { Utils } from "../../Utils";
 
 export class ManagerRegisters implements InterfaceRegisters {
@@ -90,6 +90,19 @@ export class ManagerRegisters implements InterfaceRegisters {
           break;
         }
       }
+    }
+  }
+
+  public reset(): void {
+    const registersControls = ["PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"];
+
+    for (const registerControl of registersControls) {
+      const r = registerControl as TypeRegisterControl;
+      this[r] = new Int32();
+    }
+    for (let i = 0; i < 32; i++) {
+      this.R[i] = new Int32();
+      this.F[i] = new Float32();
     }
   }
 }
