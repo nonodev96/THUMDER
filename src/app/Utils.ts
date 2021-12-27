@@ -4,6 +4,8 @@ import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } fr
 import { InterfaceFileItem } from "./types";
 import { FileItem } from "./__core/services/file-system-nonodev96/file-system.service";
 import firebase from "firebase/app";
+
+
 import Timestamp = firebase.firestore.Timestamp;
 
 
@@ -14,8 +16,9 @@ export namespace Utils {
     return Promise.resolve();
   }
 
-  export function getRegisterNumber(str: string): number {
-    return parseInt(str.replace(/\D/g, ""), 10);
+  export function getRegisterNumber(str: string | number): number {
+    const num = str.toString();
+    return parseInt(num.replace(/\D/g, ""), 10);
   }
 
   export function MapToArray<K, V>(map: Map<K, V>): { key: K; value: V }[] {
@@ -58,6 +61,7 @@ export namespace Utils {
       // run initialization code here
     };
   }
+
 
   export function initLongRunningFactory() {
     return async () => {
@@ -151,6 +155,13 @@ export namespace Utils {
       n = 0xFFFFFFFF + n + 1;
     }
     return "0x" + ("00000000" + n.toString(16).toUpperCase()).substr(-8);
+  }
+
+  export function indexToAddress(number: number, args = {maxLength: 8, fillString: "0"}) {
+    if (number < 0) {
+      number = 0xFFFFFFFF + number + 1;
+    }
+    return "0x" + (number.toString(16).toUpperCase().padStart(args.maxLength, args.fillString));
   }
 
   export function binaryToASCII(binary8: string): string {
@@ -415,21 +426,21 @@ export namespace Utils {
 
   export function MAP_FileItem_TO_InterfaceFileItem(fileItem: FileItem, UID: string): InterfaceFileItem {
     return {
-      key: fileItem.key ?? "",
-      pathKeys: fileItem.pathKeys ?? [],
-      path: fileItem.path ?? "",
-      name: fileItem.name ?? "",
-      isDirectory: fileItem.isDirectory ?? false,
+      key:               fileItem.key ?? "",
+      pathKeys:          fileItem.pathKeys ?? [],
+      path:              fileItem.path ?? "",
+      name:              fileItem.name ?? "",
+      isDirectory:       fileItem.isDirectory ?? false,
       hasSubDirectories: fileItem.hasSubDirectories ?? false,
-      dateModified: Timestamp.fromDate(fileItem.dateModified ?? new Date()),
-      thumbnail: fileItem.thumbnail ?? "",
-      size: fileItem.size ?? 0,
-      dataItem: fileItem.dataItem ?? {},
+      dateModified:      Timestamp.fromDate(fileItem.dateModified ?? new Date()),
+      thumbnail:         fileItem.thumbnail ?? "",
+      size:              fileItem.size ?? 0,
+      dataItem:          fileItem.dataItem ?? {},
 
-      e1_uid: UID,
-      f_id: "",
+      e1_uid:      UID,
+      f_id:        "",
       description: "",
-      content: ""
+      content:     ""
     } as InterfaceFileItem;
   }
 
@@ -471,10 +482,10 @@ export namespace Utils {
     const interfaceFileItem: InterfaceFileItem = {
       ...fileItem,
       dateModified: Timestamp.fromDate(new Date()),
-      content: "",
-      description: "",
-      e1_uid: uid,
-      f_id: ""
+      content:      "",
+      description:  "",
+      e1_uid:       uid,
+      f_id:         ""
     };
     return interfaceFileItem;
   }

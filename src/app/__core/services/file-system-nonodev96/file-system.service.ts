@@ -74,7 +74,6 @@ export class FileSystemService {
     const canCreateFolder = true;
     if (canCreateFolder) {
       this.items.push(newDirectory);
-      //const response = await this.tasksService.createNewFolder(path, newDirectory.name)
     }
     // resolve (canCreateFolder);
     return Promise.resolve(newDirectory);

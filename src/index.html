@@ -1,22 +1,29 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>THUMDER</title>
   <base href="/">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
   <script>
     if (typeof module === 'object') {
       window.module = module;
       module = undefined;
     }
+    if (window.module) {
+      module = window.module;
+    }
+    if (global === undefined) {
+      var global = window;
+    }
   </script>
-
-  <script>if (window.module) module = window.module;</script>
 </head>
+
 <body class="">
   <app-root>Loading...</app-root>
 </body>
+
 </html>

@@ -57,6 +57,7 @@ export namespace PixiUtils {
     const x4 = to_x + (15 / L) * ((start_x - to_x) * Math.abs(Math.cos(angle)) - (start_y - to_y) * Math.abs(Math.sin(angle)));
     const y4 = to_y + (15 / L) * ((start_y - to_y) * Math.abs(Math.cos(angle)) + (start_x - to_x) * Math.abs(Math.sin(angle)));
     const bezierArrow = new PIXI.Graphics();
+    console.log(start_x, start_y, to_x, to_y);
     bezierArrow.lineStyle(3, color);
     bezierArrow.moveTo(start_x, start_y);
     bezierArrow.lineTo(to_x, to_y);
@@ -67,31 +68,4 @@ export namespace PixiUtils {
     return bezierArrow;
   }
 
-  export class THUMDER_Map<K, V> {
-    private _map: Map<string, V>;
-
-    constructor() {
-      this._map = new Map();
-    }
-
-    set(key: K, data: V) {
-      const k = JSON.stringify(key);
-      this._map.set(k, data);
-    }
-
-    get(key: K) {
-      const k = JSON.stringify(key);
-      return this._map.get(k);
-    }
-
-    has(key: K): boolean {
-      const k = JSON.stringify(key);
-      return this._map.has(k);
-    }
-
-    delete(key: K): boolean {
-      const k = JSON.stringify(key);
-      return this._map.delete(k);
-    }
-  }
 }

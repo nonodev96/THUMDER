@@ -1,7 +1,9 @@
 import { Float32, Int32 } from "../typesData";
 import { InterfaceRegisters } from "./interfaces";
-import { TypeRegisterControl, TypeRegisterToUpdate } from "../../types";
+import { TypeRegister, TypeRegisterControl, TypeRegisterToUpdate } from "../../types";
 import { Utils } from "../../Utils";
+import { SocketProviderConnectService } from "../services/socket-provider-connect.service";
+import { MACHINE_ALL_REGISTER_CONTROL } from "../../CONSTAST";
 
 export class ManagerRegisters implements InterfaceRegisters {
   PC: Int32;
@@ -53,14 +55,14 @@ export class ManagerRegisters implements InterfaceRegisters {
     }
   }
 
-  processResponse(response: TypeRegisterToUpdate[]) {
+  public processResponse(response: TypeRegisterToUpdate[]) {
     for (const registerToUpdate of response) {
       const {typeRegister, register, hexadecimalValue} = registerToUpdate;
       switch (typeRegister) {
         case "Control": {
           const binary = Utils.hexadecimalToBinary(hexadecimalValue);
-          this[register] = new Int32();
-          this[register].binary = binary;
+          this[register as TypeRegisterControl] = new Int32();
+          this[register as TypeRegisterControl].binary = binary;
           break;
         }
         case "Integer": {
@@ -81,6 +83,7 @@ export class ManagerRegisters implements InterfaceRegisters {
           const binary = Utils.hexadecimalToBinary(hexadecimalValue);
           const index = Utils.getRegisterNumber(register);
           this.F[index] = new Float32();
+          this.F[index + 1] = new Float32();
           this.F[index].binary = binary.substr(0, 32);
           this.F[index + 1].binary = binary.substr(32, 32);
           break;
@@ -93,10 +96,57 @@ export class ManagerRegisters implements InterfaceRegisters {
     }
   }
 
-  public reset(): void {
-    const registersControls = ["PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"];
+  // Hexadecimal
+  public setRegisterControlWithHexadecimal(registerControl: TypeRegisterControl, hexadecimal: string) {
+    this.setRegisterControlWithBinary(registerControl, parseInt(hexadecimal, 16).toString(2).padStart(32, "0"));
+  }
 
-    for (const registerControl of registersControls) {
+  public setRegisterIntegerWithHexadecimal(index: number, hexadecimal: string) {
+    this.setRegisterIntegerWithBinary(index, parseInt(hexadecimal, 16).toString(2).padStart(32, "0"));
+  }
+
+  public setRegisterFloatWithHexadecimal(index: number, hexadecimal: string) {
+    this.setRegisterFloatWithBinary(index, parseInt(hexadecimal, 16).toString(2).padStart(32, "0"));
+  }
+
+  public setRegisterDoubleWithHexadecimal(index: number, hexadecimal: string) {
+    this.setRegisterDoubleWithBinary(index, parseInt(hexadecimal, 16).toString(2).padStart(64, "0"));
+  }
+
+  // Binary
+  public setRegisterControlWithBinary(registerControl: TypeRegisterControl, binary: string) {
+    this[registerControl] = new Int32();
+    this[registerControl].binary = binary;
+  }
+
+  public setRegisterIntegerWithBinary(index: number, binary: string) {
+    if (index < 0 || index > 31) {
+      throw new Error("Register Integer error in range (index: " + index + ")");
+    }
+    this.R[index] = new Int32();
+    this.R[index].binary = binary;
+  }
+
+  public setRegisterFloatWithBinary(index: number, binary: string) {
+    if (index < 0 || index > 31) {
+      throw new Error("Register Float error in range (index: " + index + ")");
+    }
+    this.F[index] = new Float32();
+    this.F[index].binary = binary;
+  }
+
+  public setRegisterDoubleWithBinary(index: number, binary: string) {
+    if (index < 0 || index > 31) {
+      throw new Error("Register Double error in range (index: " + index + ")");
+    }
+    this.F[index] = new Float32();
+    this.F[index + 1] = new Float32();
+    this.F[index].binary = binary.substr(0, 32);
+    this.F[index + 1].binary = binary.substr(32, 32);
+  }
+
+  public reset(): void {
+    for (const registerControl of MACHINE_ALL_REGISTER_CONTROL) {
       const r = registerControl as TypeRegisterControl;
       this[r] = new Int32();
     }

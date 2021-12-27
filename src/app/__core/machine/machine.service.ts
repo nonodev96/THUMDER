@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Float32, Int32 } from "../typesData";
-import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
-import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import { interval, Observable, PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { ToastrService } from "ngx-toastr";
+import { TranslateService } from "@ngx-translate/core";
+import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
+import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
+import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import {
   InterfaceFileItem,
   TypeAllMemory,
@@ -13,34 +15,31 @@ import {
   TypeDataStatistics,
   TypeFloatingPointStageConfiguration,
   TypeMemoryToUpdate,
-  TypeRegister,
   TypeRegisterToUpdate,
   TypeSimulationInitRequest,
   TypeSimulationInitResponse,
   TypeSimulationStep,
   TypeStage,
-  TypeStatusCycleClockDiagram,
   TypeStatusMachine,
-  TypeStatusPipeline
+  TypePipelineToProcess, TypeData
 } from "../../types";
-import { DEFAULT_PIPELINE, DEFAULT_TABLE_CODE } from "../../CONSTAST";
+import {
+  CONFIG_WEBSOCKET,
+  DEFAULT_CODE,
+  DEFAULT_PIPELINE,
+  DEFAULT_STEP_SIMULATION,
+  DEFAULT_TABLE_CODE
+} from "../../CONSTAST";
 import { Utils } from "../../Utils";
 import { StorageService } from "../storage/storage.service";
 import { ManagerRegisters } from "../DLX/ManagerRegisters";
 import { ManagerMemory } from "../DLX/ManagerMemory";
 import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
-import { ToastrService } from "ngx-toastr";
-import { TranslateService } from "@ngx-translate/core";
-import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
 import { TypeBreakpoints } from "../../components/monaco-editor/monaco-editor.component";
 import { SocketProviderConnectService } from "../services/socket-provider-connect.service";
 import { ManagerStatistics } from "../DLX/ManagerStatistics";
-import { Interface } from "readline";
-
-const RegexRegisterInteger = /\b(R0|R1|R2|R3|R4|R5|R6|R7|R8|R9|R10|R11|R12|R13|R14|R15|R16|R17|R18|R19|R20|R21|R22|R23|R24|R25|R26|R27|R28|R29|R30|R31)\b/i;
-const RegexRegisterFloat = /\b(F0|F1|F2|F3|F4|F5|F6|F7|F8|F9|F10|F11|F12|F13|F14|F15|F16|F17|F18|F19|F20|F21|F22|F23|F24|F25|F26|F27|F28|F29|F30|F31)\b/i;
-const RegexRegisterDouble = /\b(D0|D2|D4|D6|D8|D10|D12|D14|D16|D18|D20|D22|D24|D26|D28|D30)\b/i;
-const RegexRegisterControl = /(pc|imar|ir|a|ahi|b|bhi|bta|alu|aluhi|fpsr|dmar|sdr|sdrhi|ldr|ldrhi|PC|IMAR|IR|A|AHI|B|BHI|BTA|ALU|ALUHI|FPSR|DMAR|SDR|SDRHI|LDR|LDRHI)/;
+import { UtilsDataStructures } from "../../UtilsDataStructures";
+import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
 
 
 @Injectable({
@@ -60,10 +59,10 @@ export class MachineService {
   public breakpointManager: ManagerBreakpoints;
   // address --> TypeCode
 
-  public code: Map<string, TypeCode> = new Map();
+  public code: THUMDER_Map<string, TypeCode> = new THUMDER_Map();
   // Vector con los pasos de la simulación
   private simulation: TypeSimulationInitResponse;
-
+  public canSimulate: boolean;
   private statusMachineInStep: TypeSimulationStep | null;
   // Line
   public isBreakpoint$: Subject<number> = new Subject<number>();
@@ -111,6 +110,7 @@ export class MachineService {
     //   this.floatingPointStageConfiguration.multiplication.count,
     //   this.floatingPointStageConfiguration.division.count
     // );
+    this.canSimulate = false;
 
     this.pipeline = new PixiTHUMDER_Pipeline(
       this.floatingPointStageConfiguration.addition.count,
@@ -205,12 +205,14 @@ export class MachineService {
 
       this.privateStep = 0;
       this.privateLine = 0;
+      this.canSimulate = false;
 
       this.dataStatistics.reset();
       this.dataStatistics$.next(this.dataStatistics.getData());
 
-      this.code = new Map();
+      this.code = new THUMDER_Map();
       this.code.clear();
+      this.code.setDefaultValue(DEFAULT_CODE);
       this.isComplete = false;
       this.isRunning = false;
       this.isBreakpoint = false;
@@ -273,42 +275,23 @@ export class MachineService {
     return this.socketProviderConnect.socket.ioSocket.id === "" ? "Disconnect" : "Connect";
   }
 
-  public getStatusCycleClockDiagram(stepSimulation: TypeSimulationStep): TypeStatusCycleClockDiagram {
-    return {
-      step: stepSimulation.step,
-      instruction: stepSimulation.instruction,
-      cycle: {
-        IF_stall: stepSimulation.IF_stall,
-        IF: stepSimulation.IF,
-        ID_stall: stepSimulation.ID_stall,
-        ID: stepSimulation.ID,
-        intEX_stall: stepSimulation.intEX_stall,
-        intEX: stepSimulation.intEX,
-        MEM_stall: stepSimulation.MEM_stall,
-        MEM: stepSimulation.MEM,
-        WB_stall: stepSimulation.WB_stall,
-        WB: stepSimulation.WB
-      },
-      stepsToWait: 0
-    };
-  }
 
-  public getListStatusPipeline(stepSimulation: TypeSimulationStep): TypeStatusPipeline[] {
-    const {IF, ID, intEX, MEM, WB} = stepSimulation.pipeline;
-    const list_elements: TypeStatusPipeline[] = [];
-    if (IF) list_elements.push({address: IF, stage: "IF"});
-    if (ID) list_elements.push({address: ID, stage: "ID"});
-    if (intEX) list_elements.push({address: intEX, stage: "intEX"});
-    if (MEM) list_elements.push({address: MEM, stage: "MEM"});
-    if (WB) list_elements.push({address: WB, stage: "WB"});
-    for (const f_a of stepSimulation.pipeline.faddEX) {
-      list_elements.push({address: f_a.address, stage: `faddEX_${f_a.unit}` as TypeStage, unit: f_a.unit});
+  public getListStatusPipeline(): TypePipelineToProcess[] {
+    const {IF, ID, intEX, MEM, WB} = this.statusMachineInStep.pipeline;
+    const list_elements: TypePipelineToProcess[] = [];
+    if (IF.draw) list_elements.push({...IF, stage: "IF"});
+    if (ID.draw) list_elements.push({...ID, stage: "ID"});
+    if (intEX.draw) list_elements.push({...intEX, stage: "intEX"});
+    if (MEM.draw) list_elements.push({...MEM, stage: "MEM"});
+    if (WB.draw) list_elements.push({...WB, stage: "WB"});
+    for (const f_a of this.statusMachineInStep.pipeline.faddEX) {
+      if (f_a.draw) list_elements.push({...f_a, stage: "addEX" as TypeStage, unit: f_a.unit});
     }
-    for (const f_m of stepSimulation.pipeline.fmultEX) {
-      list_elements.push({address: f_m.address, stage: `fmultEX_${f_m.unit}` as TypeStage, unit: f_m.unit});
+    for (const f_m of this.statusMachineInStep.pipeline.fmultEX) {
+      if (f_m.draw) list_elements.push({...f_m, stage: "fmultEX" as TypeStage, unit: f_m.unit});
     }
-    for (const f_d of stepSimulation.pipeline.fdivEX) {
-      list_elements.push({address: f_d.address, stage: `fdivEX_${f_d.unit}` as TypeStage, unit: f_d.unit});
+    for (const f_d of this.statusMachineInStep.pipeline.fdivEX) {
+      if (f_d.draw) list_elements.push({...f_d, stage: "fdivEX" as TypeStage, unit: f_d.unit});
     }
     return list_elements;
   }
@@ -321,6 +304,11 @@ export class MachineService {
 
   public async reset(): Promise<void> {
     await this.resetMachineStatus();
+    return Promise.resolve();
+  }
+
+  public async nextStep(): Promise<void> {
+    await this.SimulationNextStep();
     return Promise.resolve();
   }
 
@@ -343,57 +331,6 @@ export class MachineService {
     return Promise.resolve();
   }
 
-  private async SimulationInit(): Promise<boolean> {
-    try {
-      // const data = await fetch("assets/examples-dlx/prim.s");
-      // const content = await data.text();
-      const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
-      const content = file.content;
-      const payload = JSON.stringify({
-        id: this.socketProviderConnect.socket.ioSocket.id,
-        filename: "prim.s",
-        date: new Date().toLocaleDateString(),
-        content: content,
-        registers: [],
-        memory: []
-      } as TypeSimulationInitRequest);
-      this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response) => {
-        const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
-        console.log("Simulation init", simulationInit);
-        const data_code_array: TypeCode[] = [];
-        for (const ins of simulationInit.code) {
-          const address = ins.address;
-          const binary32 = Utils.hexadecimalToBinary(ins.code);
-          this.memory.setMemoryWordBinaryByAddress(address, binary32);
-          this.code.set(ins.address, ins);
-          data_code_array.push(ins);
-        }
-        this.codeSimulation$.next(data_code_array);
-      });
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error.message);
-    }
-    return Promise.resolve(true);
-  }
-
-  public SimulationNextStep(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const payload = JSON.stringify({
-        step: this.privateStep
-      });
-      this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response) => {
-        this.statusMachineInStep = JSON.parse(response) as TypeSimulationStep;
-        const canNextInstruction = await this.checkConditions();
-        if (canNextInstruction) await this.clock();
-        console.log("MachineInStep: ", this.statusMachineInStep);
-        this.privateLine++;
-        this.privateStep++;
-        resolve();
-      });
-    });
-  }
-
   public async end(): Promise<void> {
     this.privateStep = -1;
     this.isRunning = false;
@@ -403,7 +340,68 @@ export class MachineService {
     return Promise.resolve();
   }
 
-  private async checkConditions(): Promise<boolean> {
+  private async SimulationInit(): Promise<boolean> {
+    try {
+      // const data = await fetch("assets/examples-dlx/prim.s");
+      // const content = await data.text();
+      const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
+      const content = file.content;
+      const payload = JSON.stringify({
+        id:        this.socketProviderConnect.socket.ioSocket.id,
+        filename:  "prim.s",
+        date:      new Date().toLocaleDateString(),
+        content:   content,
+        registers: [],
+        memory:    []
+      } as TypeSimulationInitRequest);
+      this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response) => {
+        const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
+        console.log("Simulation init", simulationInit);
+        this.canSimulate = simulationInit.canSimulate;
+        const data_code_array: TypeCode[] = [];
+        for (const instruction of simulationInit.code) {
+          const address = instruction.address;
+          const binary32 = Utils.hexadecimalToBinary(instruction.code);
+          this.memory.setMemoryWordBinaryByAddress(address, binary32);
+          this.code.set(instruction.address, {...instruction});
+          data_code_array.push({...instruction});
+        }
+
+        for (const step of simulationInit.runner) {
+          this.memory.processResponse(step.memory);
+          this.registers.processResponse(step.registers);
+        }
+
+        this.codeSimulation$.next(data_code_array);
+
+        return Promise.resolve(true);
+      });
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+  }
+
+  private async SimulationNextStep(): Promise<void> {
+    try {
+      const payload = JSON.stringify({
+        step: this.privateStep + 1
+      });
+      this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response) => {
+        this.statusMachineInStep = DEFAULT_STEP_SIMULATION;
+        this.statusMachineInStep = JSON.parse(response) as TypeSimulationStep;
+        const canNextInstruction = await this.CheckConditions();
+        if (canNextInstruction) await this.ProcessStep();
+        console.log("MachineInStep: ", this.statusMachineInStep);
+      });
+      return Promise.resolve();
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+  }
+
+  private async CheckConditions(): Promise<boolean> {
     if (this.statusMachineInStep === null) {
       console.warn("End of status of machine");
       return Promise.resolve(false);
@@ -414,6 +412,7 @@ export class MachineService {
     this.isBreakpoint = this.breakpointManager.isBreakpoint(this.privateLine);
     // this.log(this.debug());
     if (this.isComplete) {
+      this.canSimulate = false;
       this.isComplete = true;
       this.isRunning = false;
       this.isRunning$.next(this.isRunning);
@@ -434,10 +433,13 @@ export class MachineService {
     return Promise.resolve(false);
   }
 
-  private async clock(): Promise<void> {
+  private async ProcessStep(): Promise<void> {
     if (this.isComplete === true) {
       console.warn("isComplete", this.isComplete);
       return Promise.resolve();
+    }
+    if (this.statusMachineInStep.pipeline) {
+      this.processResponsePipeline();
     }
     if (this.statusMachineInStep.registers !== []) {
       this.registers.processResponse(this.statusMachineInStep.registers);
@@ -455,8 +457,30 @@ export class MachineService {
     return Promise.resolve();
   }
 
-  private static getRegisterNumber(str): number {
-    return parseInt(str.replace(/\D/g, ""));
+  public async updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean> {
+    try {
+      const payload = JSON.stringify(registersToUpdate);
+      this.socketProviderConnect.emitMessage("UpdateRegisterRequest", payload, (response) => {
+        console.log(response);
+      });
+      return Promise.resolve(true);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
+  }
+
+  public async updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean> {
+    try {
+      const payload = JSON.stringify(memoryToUpdate);
+      this.socketProviderConnect.emitMessage("UpdateMemoryRequest", payload, (response) => {
+        console.log(response);
+      });
+      return Promise.resolve(true);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error.message);
+    }
   }
 
   public log(...msg: any) {
@@ -466,18 +490,33 @@ export class MachineService {
   }
 
   public getCode(address: string): TypeCode {
-    if (this.code.get(address) === undefined) {
-      console.warn("Error, dirección de memoria erronea '%s' | %o", address, this.code.get(address));
-      console.warn("Code: %o", Array.from(this.code));
-      return DEFAULT_TABLE_CODE;
+    const code = this.code.get(address);
+    if (code === undefined) {
+      console.warn("Error, address of memory not valid '%s' | %o", address, this.code.get(address));
+      console.warn("Code: %o", Array.from(this.code.getMap()));
+      return DEFAULT_CODE;
     }
-    return this.code.get(address);
+    return code;
   }
+
+  public getAllStatusMachine(): TypeStatusMachine {
+    return {
+      registers:   this.registers,
+      memory:      this.memory.getAllMemory(),
+      breakpoints: this.breakpointManager.getAllBreakpoints(),
+      statistics:  this.dataStatistics.getData()
+    };
+  }
+
+  public resetConnection() {
+    this.socketProviderConnect.socket.ioSocket.connect(CONFIG_WEBSOCKET.url, {"force new connection": true});
+  }
+
 
   private async toastMessage(key_title: string = "TOAST.LOGIN_FALSE",
                              key_message: string = "TOAST.ACCESS_DENIED"): Promise<void> {
     const config: Partial<IndividualConfig> = {
-      timeOut: 5000,
+      timeOut:       5000,
       positionClass: "toast-bottom-left"
     };
     const message = await this.translate.get(key_message).toPromise();
@@ -486,75 +525,7 @@ export class MachineService {
     return Promise.resolve();
   }
 
-  public getAllStatusMachine(): TypeStatusMachine {
-    return {
-      registers: this.registers,
-      memory: this.memory,
-      breakpoints: this.breakpointManager,
-      hello: ""
-    };
-  }
+  private processResponsePipeline() {
 
-  /**
-   * TODO - DEBUG
-   */
-  private static async getStepInRunner(step: number): Promise<TypeSimulationStep | null> {
-    const response = await fetch("./assets/examples-dlx/prime.s/run_" + step + ".json");
-    const status: TypeSimulationStep = await response.json();
-    //const status = this.simulation.runner.filter((value) => value.step === step)[0];
-    if (status === undefined) {
-      console.error("No hay nada que simular");
-      return Promise.reject("No hay nada que simular");
-    } else {
-      if (status.pipeline === undefined) {
-        status.pipeline = DEFAULT_PIPELINE;
-      }
-      return Promise.resolve(status);
-    }
-  }
-
-  /**
-   * TODO - DEBUG
-   */
-  private async loadExamples(): Promise<void> {
-    const response = await fetch("./assets/examples-dlx/example-runner.json");
-    const simulation: TypeSimulationInitResponse = await response.json();
-    this.log(simulation);
-    this.simulation = simulation;
-    const data_code_array: TypeCode[] = [];
-    for (const ins of this.simulation.code) {
-      const address = ins.address;
-      const binary32 = Utils.hexadecimalToBinary(ins.code);
-      this.memory.setMemoryWordBinaryByAddress(address, binary32);
-      this.code.set(ins.address, ins);
-      data_code_array.push(ins);
-    }
-    this.codeSimulation$.next(data_code_array);
-    return Promise.resolve();
-  }
-
-  private debug() {
-    return {
-      "Line: ": this.privateLine,
-      "Step: ": this.privateStep,
-      "isRunning: ": this.isRunning,
-      "isComplete: ": this.isComplete,
-      "isBreakpoint: ": this.breakpointManager.isBreakpoint(this.privateLine)
-    };
-  }
-
-  private static getTypeRegister(register: string): TypeRegister {
-    if (RegexRegisterInteger.test(register)) {
-      return "Integer";
-    }
-    if (RegexRegisterFloat.test(register)) {
-      return "Float";
-    }
-    if (RegexRegisterDouble.test(register)) {
-      return "Double";
-    }
-    if (RegexRegisterControl.test(register)) {
-      return "Control";
-    }
   }
 }

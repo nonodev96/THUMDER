@@ -1,7 +1,7 @@
 import { InterfaceMemory } from "./interfaces";
 import { Int32 } from "../typesData";
 import { Utils } from "../../Utils";
-import { TypeMemoryToUpdate } from "../../types";
+import { TypeMemory, TypeMemoryToUpdate } from "../../types";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes
@@ -24,7 +24,7 @@ export class ManagerMemory implements InterfaceMemory {
     this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
   }
 
-  processResponse(response: TypeMemoryToUpdate[]) {
+  public processResponse(response: TypeMemoryToUpdate[]) {
     for (const memoryToUpdate of response) {
       const {typeData, address, value} = memoryToUpdate;
       switch (typeData) {
@@ -173,7 +173,6 @@ export class ManagerMemory implements InterfaceMemory {
 
   // 0          1          2          3
   // 00000000 - 00000000 - 00000000 - 00000000
-  // Page code.view
   public getAllMemoryWord(): Int32[] {
     const list = [];
     let data;
@@ -183,12 +182,8 @@ export class ManagerMemory implements InterfaceMemory {
       list.push(data);
     }
     return list;
-    // return this._memory.map((value, index) => {
-    //   return value
-    // })
   }
 
-  // Page memory.view
   public getAllIndexByWord(): number[] {
     const list = [];
     for (let index = 0; index < this._memorySizeBytes; index += 4) {
@@ -203,5 +198,17 @@ export class ManagerMemory implements InterfaceMemory {
 
   public setSize(memorySize: number) {
     this._memorySizeBytes = memorySize;
+  }
+
+  // TODO
+  // group by 4 steps
+  public getAllMemory(): TypeMemory[] {
+    return Array.from(this._memoryInt8Array).map((v, index) => {
+      if (v === 0) return;
+      return {
+        address: index.toString(16).padStart(2, "0"),
+        value: v
+      } as TypeMemory;
+    }).filter((v) => v);
   }
 }

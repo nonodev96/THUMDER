@@ -37,6 +37,7 @@ export class SocketProviderConnectService {
   constructor(public socket: Socket,
               private translate: TranslateService,
               private toast: ToastrService) {
+    console.log("constructor socket");
 
     // When the client successfully connects.
     this.socket.ioSocket.on("connect", () => {

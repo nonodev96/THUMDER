@@ -88,6 +88,8 @@ export class RegistersView implements OnInit, AfterViewInit {
 
     this.dataSourceD.filter = null;
     this.dataSourceD.data = [...this.dataSourceD.data];
+
+    window.dispatchEvent(new Event("resize"));
   }
 
   test(): void {

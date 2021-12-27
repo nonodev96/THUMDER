@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/class-diagram
+left to right direction
+
+class ManagerMemory implements InterfaceMemory {
+    -_memorySizeBytes: number
+    -_memoryInt8Array: Uint8Array
+    +memorySizeBytes: number
+    +memorySizeBytes: number
+    +processResponse(response: TypeMemoryToUpdate[]): void
+    +getMemoryWordByIndex(index: number): Int32
+    +getMemoryWordByAddress(address: string): Int32
+    +getMemoryWordBinaryByIndex(index: number): string
+    +setMemoryWordByIndex(index: number, data: Int32): void
+    +setMemoryWordByAddress(address: string, data: Int32): void
+    +setMemoryWordBinaryByAddress(address: string, binary32: string): void
+    +setMemoryWordBinaryByIndex(index: number, binary32: string): void
+    +getMemoryByteBinaryByIndex(index: number): string
+    +setMemoryByteBinaryByIndex(index: number, binary: string): void
+    +setMemoryByteBinaryByAddress(address: string, binary08: string): void
+    +getMemoryHalfWordBinaryByIndex(index: number): string
+    +setMemoryHalfWordBinaryByIndex(index: number, binary16: string): void
+    +setMemoryHalfWordBinaryByAddress(address: string, binary16: string): void
+    +setMemoryFloatBinaryByAddress(address: string, binary32: string): void
+    +setMemoryDoubleBinaryByAddress(address: string, binary64: string): void
+    -setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void
+    +getAllMemoryWord(): Int32[]
+    +getAllIndexByWord(): number[]
+    +reset(): void
+    +setSize(memorySize: number): void
+    +getAllMemory(): TypeMemory[]
+}
+class ManagerRegisters implements InterfaceRegisters {
+    +PC: Int32
+    +IMAR: Int32
+    +IR: Int32
+    +A: Int32
+    +AHI: Int32
+    +B: Int32
+    +BHI: Int32
+    +BTA: Int32
+    +ALU: Int32
+    +ALUHI: Int32
+    +FPSR: Int32
+    +DMAR: Int32
+    +SDR: Int32
+    +SDRHI: Int32
+    +LDR: Int32
+    +LDRHI: Int32
+    +R: Int32[]
+    +F: Float32[]
+    +processResponse(response: TypeRegisterToUpdate[]): void
+    +reset(): void
+}
+class ManagerBreakpoints implements InterfaceBreakpoints {
+    -breakpoints: TypeBreakpoints
+    +toggleBreakpoint(lineNumber: number): void
+    +getBreakpoint(lineNumber: number): boolean
+    +updateManager(breakpoints: TypeBreakpoints): void
+    +getAllBreakpoints(): TypeBreakpoints
+    +getAllLinesWithBreakpoints(): number[]
+    +isBreakpoint(line: number): boolean
+    +reset(): void
+}
+class ManagerStatistics implements InterfaceDataStatistics {
+    -_data: TypeDataStatistics
+    +processResponse(response: Partial<TypeDataStatistics>): void
+    +getData(): TypeDataStatistics
+    +reset(): void
+}
+
+@enduml

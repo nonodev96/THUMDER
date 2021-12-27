@@ -37,7 +37,7 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
     return this.breakpoints;
   }
 
-  public getAllLinesOfBreakpoints(): number[] {
+  public getAllLinesWithBreakpoints(): number[] {
     return Object.keys(this.breakpoints).map(k => parseInt(k));
   }
 

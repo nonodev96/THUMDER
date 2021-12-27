@@ -106,7 +106,16 @@
           },
           "configurations": {
             "dev": {
-              "optimization": false,
+              "optimization": {
+                "scripts": false,
+                "styles": {
+                  "minify": false,
+                  "inlineCritical": false
+                },
+                "fonts": {
+                  "inline": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
@@ -129,7 +138,16 @@
               ]
             },
             "web": {
-              "optimization": false,
+              "optimization": {
+                "scripts": false,
+                "styles": {
+                  "minify": false,
+                  "inlineCritical": false
+                },
+                "fonts": {
+                  "inline": false
+                }
+              },
               "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
@@ -154,12 +172,12 @@
             "production": {
               "optimization": {
                 "scripts": false,
-                "fonts": {
-                  "inline": true
-                },
                 "styles": {
-                  "minify": true,
+                  "minify": false,
                   "inlineCritical": false
+                },
+                "fonts": {
+                  "inline": false
                 }
               },
               "outputHashing": "all",

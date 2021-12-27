@@ -15,9 +15,9 @@ import {
 } from "../../types";
 
 @Component({
-  selector: "app-debug",
+  selector:    "app-debug",
   templateUrl: "./debug-view.html",
-  styleUrls: ["./debug-view.scss"]
+  styleUrls:   ["./debug-view.scss"]
 })
 export class DebugView implements OnInit, AfterViewInit {
 
@@ -68,10 +68,10 @@ export class DebugView implements OnInit, AfterViewInit {
       const code = JSON.parse(response) as TypeCode[];
       this.testCodeResponse = code.map((v) => {
         return {
-          address: v.address,
-          code: v.code,
-          text: v.text,
-          instruction: v.instruction
+          address:     v.address,
+          code:        v.code,
+          text:        v.text,
+          instruction: v.instruction,
         };
       });
     });
@@ -109,11 +109,6 @@ export class DebugView implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.simulationInit().then((r) => {
-      if (r === false) {
-        console.warn("Can't init simulation machine");
-      }
-    });
   }
 
   socketReconnect() {
@@ -154,8 +149,8 @@ export class DebugView implements OnInit, AfterViewInit {
   async updateRegisterServer(typeRegister: TypeRegister, register: string, value: string): Promise<boolean> {
     try {
       const payload = JSON.stringify([{
-        typeRegister: typeRegister,
-        register: register,
+        typeRegister:     typeRegister,
+        register:         register,
         hexadecimalValue: value
       }] as TypeRegisterToUpdate[]);
       this.socketProviderConnect.emitMessage("UpdateRegisterRequest", payload);
@@ -170,8 +165,8 @@ export class DebugView implements OnInit, AfterViewInit {
     try {
       const payload = JSON.stringify([{
         typeData: memoryTypeData,
-        address: memoryAddress,
-        value: memoryValue
+        address:  memoryAddress,
+        value:    memoryValue
       }] as TypeMemoryToUpdate[]);
       this.socketProviderConnect.emitMessage("UpdateMemoryRequest", payload);
     } catch (error) {
@@ -186,12 +181,12 @@ export class DebugView implements OnInit, AfterViewInit {
       const data = await fetch("assets/examples-dlx/prim.s");
       const content = await data.text();
       const payload = JSON.stringify({
-        id: this.socketProviderConnect.socket.ioSocket.id,
-        filename: "prim.s",
-        date: new Date().toLocaleDateString(),
-        content: content,
+        id:        this.socketProviderConnect.socket.ioSocket.id,
+        filename:  "prim.s",
+        date:      new Date().toLocaleDateString(),
+        content:   content,
         registers: [],
-        memory: []
+        memory:    []
       } as TypeSimulationInitRequest);
       console.log(payload);
       this.socketProviderConnect.emitMessage("SimulationInitRequest", payload);
@@ -219,7 +214,7 @@ export class DebugView implements OnInit, AfterViewInit {
     try {
       const payload = JSON.stringify(
         {
-          addition: {
+          addition:       {
             count: 1,
             delay: 2
           },
@@ -227,11 +222,11 @@ export class DebugView implements OnInit, AfterViewInit {
             count: 1,
             delay: 5
           },
-          division: {
+          division:       {
             count: 1,
             delay: 19
           },
-          memorySize: 32768
+          memorySize:     32768
         } as TypeConfigurationMachine
       );
       this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", payload);
@@ -259,11 +254,9 @@ export class DebugView implements OnInit, AfterViewInit {
 
   async getAllMemory(): Promise<void> {
     try {
-      const payload = JSON.stringify(
-        {
-          id: this.socketProviderConnect.socket.ioSocket.id
-        }
-      );
+      const payload = JSON.stringify({
+        id: this.socketProviderConnect.socket.ioSocket.id
+      });
       this.socketProviderConnect.socket.emit("GetAllMemoryRequest", payload, (response) => {
         console.log("callback memory", response);
       });

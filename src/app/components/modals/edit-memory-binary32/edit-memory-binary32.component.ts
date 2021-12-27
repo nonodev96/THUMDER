@@ -41,7 +41,7 @@ export class EditMemoryBinary32Component implements OnInit {
   // addressMemoryToEdit = addressMemoryDisplay % 4
   addressIsValid = true;
   typeDataSelected: TypeData = "Word";
-  // Binary
+  // Binary 8 16 32 64
   _binaryValue: string = DEFAULT_BINARY_32_BITS;
   // Hexadecimal 8 digits
   _hexadecimalAddressMemory: string = DEFAULT_HEXADECIMAL_08_DIGITS;
@@ -302,6 +302,13 @@ export class EditMemoryBinary32Component implements OnInit {
           break;
         }
       }
+
+      await this.machine.updateMemoryInServer([{
+        typeData: this.typeDataSelected,
+        address: this.addressMemory,
+        value: Utils.binaryToHexadecimal(this._binaryValue)
+      }]);
+
     } catch (e) {
       await this.TOAST_ErrorInValueMemory();
       this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);

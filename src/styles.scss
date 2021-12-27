@@ -48,44 +48,44 @@ html, body {
   color: #495057 !important;
 }
 
-.width-10 {
-  width: 10%;
+.width-05 {
+  width: 5% !important;
 }
 
 .width-20 {
-  width: 20%;
+  width: 20% !important;
 }
 
 .width-30 {
-  width: 30%;
+  width: 30% !important;
 }
 
 .width-40 {
-  width: 40%;
+  width: 40% !important;
 }
 
 .width-50 {
-  width: 50%;
+  width: 50% !important;
 }
 
 .width-60 {
-  width: 60%;
+  width: 60% !important;
 }
 
 .width-70 {
-  width: 70%;
+  width: 70% !important;
 }
 
 .width-80 {
-  width: 80%;
+  width: 80% !important;
 }
 
 .width-90 {
-  width: 90%;
+  width: 90% !important;
 }
 
 .width-100 {
-  width: 100%;
+  width: 100% !important;
 }
 
 .stage-IF {
@@ -133,6 +133,10 @@ html, body {
   white-space: pre;
 }
 
+.font-family-monospace {
+  font-family: monospace;
+}
+
 .full-width-table {
   width: 100%;
 }
@@ -141,26 +145,24 @@ html, body {
   background-color: #ffffff;
 }
 
-.mat-column-ASCII {
-  white-space: pre;
-}
 
 @media(min-width: 576px) {
   .invisible-sm {
     display: none !important;
   }
-  .mat-column-Address {
-    width: 10% !important;
-  }
-  .mat-column-Decimal {
-    width: 10% !important;
-  }
-  .mat-column-Hexadecimal {
-    width: 10% !important;
-  }
-  .mat-column-Binary {
-    width: 70% !important;
-  }
+  // TO DELETE
+  //.mat-column-Address {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Decimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Hexadecimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Binary {
+  //  width: 70% !important;
+  //}
   .visible-lg-xl-table-cell {
     display: none !important;
   }
@@ -170,18 +172,19 @@ html, body {
   .invisible-md {
     display: none !important;
   }
-  .mat-column-Address {
-    width: 10% !important;
-  }
-  .mat-column-Decimal {
-    width: 10% !important;
-  }
-  .mat-column-Hexadecimal {
-    width: 10% !important;
-  }
-  .mat-column-Binary {
-    width: 70% !important;
-  }
+  // TO DELETE
+  //.mat-column-Address {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Decimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Hexadecimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Binary {
+  //  width: 70% !important;
+  //}
 
   .visible-lg-xl-table-cell {
     display: none !important;
@@ -189,66 +192,66 @@ html, body {
 }
 
 
-.mat-column-Byte {
-  width: 10% !important;
-}
-
-.mat-column-HalfWord {
-  width: 10% !important;
-}
-
-.mat-column-Word {
-  width: 10% !important;
-}
-
-.mat-column-Float {
-  width: 10% !important;
-}
-
-.mat-column-Double {
-  width: 10% !important;
-}
+//.mat-column-Byte {
+//  width: 10% !important;
+//}
+//
+//.mat-column-HalfWord {
+//  width: 10% !important;
+//}
+//
+//.mat-column-Word {
+//  width: 10% !important;
+//}
+//
+//.mat-column-Float {
+//  width: 10% !important;
+//}
+//
+//.mat-column-Double {
+//  width: 10% !important;
+//}
 
 @media(min-width: 992px) {
   .invisible-lg {
     display: none !important;
   }
-  .mat-column-Address {
-    width: 10% !important;
-  }
-  .mat-column-Decimal {
-    width: 10% !important;
-  }
-  .mat-column-Hexadecimal {
-    width: 10% !important;
-  }
-  .mat-column-Binary {
-    width: 30% !important;
-  }
-  .mat-column-Address-0 {
-    width: 10% !important;
-  }
-  .mat-column-Address-1 {
-    width: 10% !important;
-  }
-  .mat-column-Address-2 {
-    width: 10% !important;
-  }
-  .mat-column-Address-3 {
-    width: 10% !important;
-  }
-  .mat-column-Byte-0 {
-    width: 2.5% !important;
-  }
-  .mat-column-Byte-1 {
-    width: 2.5% !important;
-  }
-  .mat-column-Byte-2 {
-    width: 2.5% !important;
-  }
-  .mat-column-Byte-3 {
-    width: 2.5% !important;
-  }
+  //.mat-column-Address {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Decimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Hexadecimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Binary {
+  //  width: 30% !important;
+  //}
+  //.mat-column-Address-0 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Address-1 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Address-2 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Address-3 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Byte-0 {
+  //  width: 2.5% !important;
+  //}
+  //.mat-column-Byte-1 {
+  //  width: 2.5% !important;
+  //}
+  //.mat-column-Byte-2 {
+  //  width: 2.5% !important;
+  //}
+  //.mat-column-Byte-3 {
+  //  width: 2.5% !important;
+  //}
 
   .visible-lg-xl-table-cell {
     display: table-cell !important;
@@ -259,30 +262,30 @@ html, body {
   .invisible-xl {
     display: none !important;
   }
-  .mat-column-Address {
-    width: 10% !important;
-  }
-  .mat-column-Decimal {
-    width: 10% !important;
-  }
-  .mat-column-Hexadecimal {
-    width: 10% !important;
-  }
-  .mat-column-Binary {
-    width: 30% !important;
-  }
-  .mat-column-Address-0 {
-    width: 10% !important;
-  }
-  .mat-column-Address-1 {
-    width: 10% !important;
-  }
-  .mat-column-Address-2 {
-    width: 10% !important;
-  }
-  .mat-column-Address-3 {
-    width: 10% !important;
-  }
+  //.mat-column-Address {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Decimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Hexadecimal {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Binary {
+  //  width: 30% !important;
+  //}
+  //.mat-column-Address-0 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Address-1 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Address-2 {
+  //  width: 10% !important;
+  //}
+  //.mat-column-Address-3 {
+  //  width: 10% !important;
+  //}
 
   .visible-lg-xl-table-cell {
     display: table-cell !important;

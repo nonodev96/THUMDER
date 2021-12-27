@@ -1,6 +1,6 @@
-import { app, BrowserWindow, screen } from 'electron';
-import * as path from 'path';
-import * as url from 'url';
+import { app, BrowserWindow, screen } from "electron";
+import * as path from "path";
+import * as url from "url";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1);
@@ -8,8 +8,7 @@ const isServe = args.some(val => val === '--serve');
 
 function createWindow(): BrowserWindow {
 
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
+  const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
   win = new BrowserWindow({

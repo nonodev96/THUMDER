@@ -10,14 +10,14 @@ export class ManagerStatistics implements InterfaceDataStatistics {
     this._data = DEFAULT_DATA_STATISTICS;
   }
 
-  public getData(): TypeDataStatistics {
-    return this._data;
-  }
-
   public processResponse(response: Partial<TypeDataStatistics>) {
     for (const responseElement of Object.keys(response)) {
       this._data[responseElement] = response[responseElement];
     }
+  }
+
+  public getData(): TypeDataStatistics {
+    return this._data;
   }
 
   public reset() {

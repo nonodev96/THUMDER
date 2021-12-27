@@ -72,7 +72,7 @@ export class InstructionTypeI implements InterfaceInstructionTypeI {
   }
 }
 
-export class InstructionTypeR implements InstructionTypeR {
+export class InstructionTypeR implements InterfaceInstructionTypeR {
   codeOP: StringOfLength<6, 6>;
   rs1: StringOfLength<5, 5>;
   rs2: StringOfLength<5, 5>;
