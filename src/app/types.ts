@@ -1,6 +1,4 @@
-import { TypeCycleType } from "./__core/machine/PixiTHUMDER_CycleClockDiagram";
 import { InterfaceMemory, InterfaceRegisters, InterfaceBreakpoints } from "./__core/DLX/interfaces";
-import { ManagerBreakpoints } from "./__core/DLX/ManagerBreakpoints";
 import firebase from "firebase/app";
 import Timestamp = firebase.firestore.Timestamp;
 
@@ -95,6 +93,11 @@ export type PublicRoutes = {
   data?: any;
   icon?: string;
   children?: PublicRoutes[];
+};
+
+export type TypeMemory = {
+  address: string;
+  value: number;
 };
 
 export type PublicRoutesList = PublicRoutes[];
@@ -464,6 +467,7 @@ export type TypeStage =
   | "intEX"
   | "MEM"
   | "WB"
+  | "faddEX" | "fmultEX" | "fdivEX"
   | "trap"
   | "other"
   | "faddEX_0" | "fmultEX_0" | "fdivEX_0"
@@ -480,6 +484,7 @@ export type TypeTableCode = {
   address: string;
   instruction: string;  // 0x00000000
   code: string;         // 0x00000000
+  row: number;
   stage?: TypeStage;
   index?: number;
 };
@@ -518,51 +523,6 @@ export type TypeFloatingPointStageConfiguration = {
 
 export type TypeLang = "en" | "sp";
 
-export type TypeStatusPipeline = {
-  address: string;
-  stage: TypeStage;
-  unit?: number;
-};
-
-export type TypeStatusCycleClockDiagram = {
-  step: number;
-  instruction: string;
-  cycle: TypeCycleType;
-  stepsToWait: number;
-};
-
-// DEBUG
-export type TypeStatusMachine = {
-  registers: InterfaceRegisters;
-  memory: InterfaceMemory;
-  breakpoints: InterfaceBreakpoints;
-  [data: string]: any; // any to any
-};
-
-export type TypePipeline = {
-  // Address
-  IF: string;
-  ID: string;
-  intEX: string;
-  faddEX: { unit: number; address: string }[];
-  fmultEX: { unit: number; address: string }[];
-  fdivEX: { unit: number; address: string }[];
-  MEM: string;
-  WB: string;
-};
-
-export type TypeRegisterToUpdate = {
-  typeRegister: TypeRegister;
-  register: string;
-  hexadecimalValue: string;
-};
-
-export type TypeMemoryToUpdate = {
-  typeData: TypeData;
-  address: string;
-  value: string;
-};
-
 export type TypeConfigurationMachine = {
   addition: {
     count: number;
@@ -579,26 +539,76 @@ export type TypeConfigurationMachine = {
   memorySize: number;
 };
 
+// DEBUG
+
+export type TypeStatusMachine = {
+  registers: InterfaceRegisters;
+  memory: InterfaceMemory;
+  breakpoints: InterfaceBreakpoints;
+  [data: string]: any; // any to any
+};
+
+export type TypeRegisterToUpdate = {
+  typeRegister: TypeRegister;
+  register: string | TypeRegisterControl | TypeRegisterToEdit;
+  hexadecimalValue: string;
+};
+
+
+export type TypeMemoryToUpdate = {
+  typeData: TypeData;
+  address: string;
+  value: string;
+};
+
+export type TypePipelineStage = "IF" | "ID" | "intEX" | "MEM" | "WB" | "faddEX" | "fmultEX" | "fdivEX";
+
+export type TypeStall = "Aborted" | "R-Stall" | "T-Stall" | "W-Stall" | "S-Stall" | "Stall";
+
+export type TypeCycleCell = {
+  address: string;
+  addressRow: number;
+  draw: boolean | TypeStall;
+};
+
+export type TypeCycleCellUnit = TypeCycleCell & {
+  unit?: number
+};
+
+export type TypePipelineToProcess = TypeCycleCellUnit & {
+  stage?: TypeStage;
+};
+
+export type TypeArrowCycle = {
+  fromAddressRow: number;
+  fromStep: number;
+  toAddressRow: number;
+  toStep: number;
+};
+
+export type TypePipeline = {
+  IF: TypeCycleCell;
+  ID: TypeCycleCell;
+  intEX: TypeCycleCell;
+  MEM: TypeCycleCell;
+  WB: TypeCycleCell;
+
+  faddEX: TypeCycleCellUnit[];
+  fmultEX: TypeCycleCellUnit[];
+  fdivEX: TypeCycleCellUnit[];
+  arrows: TypeArrowCycle[];
+};
+
+
 export type TypeSimulationStep = {
-  step: number;
-  instruction: string;
-  codeInstruction: string;
-  line: number;
   isComplete?: boolean;
+  step: number;
+  line: number;
+  isNewInstruction: boolean;
   // stage: TypeStage;
 
-  IF: number;
-  IF_stall: number;
-  ID: number;
-  ID_stall: number;
-  intEX: number;
-  intEX_stall: number;
-  MEM: number;
-  MEM_stall: number;
-  WB: number;
-  WB_stall: number;
-
   pipeline: TypePipeline;
+
   registers: TypeRegisterToUpdate[];
   memory: TypeMemoryToUpdate[];
   statistics: Partial<TypeDataStatistics>;
@@ -608,8 +618,8 @@ export type TypeSimulationInitResponse = {
   filename: string;
   id: string;
   date: string;
-  steps: number;
   lines: number;
+  canSimulate: boolean;
 
   code: TypeCode[];
   runner: TypeSimulationStep[];

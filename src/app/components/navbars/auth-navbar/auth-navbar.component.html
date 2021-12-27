@@ -50,20 +50,54 @@
   </ul>
 
   <!-- SEARCH FORM -->
-<!--
-  <form class="form-inline ml-3">
-    <div class="input-group input-group-sm">
-      <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-      <div class="input-group-append">
-        <button class="btn btn-navbar" type="submit" title="search-button">
-          <i class="fas fa-search"></i>
-        </button>
+  <!--
+    <form class="form-inline ml-3">
+      <div class="input-group input-group-sm">
+        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <div class="input-group-append">
+          <button class="btn btn-navbar" type="submit" title="search-button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
       </div>
-    </div>
-  </form>
--->
+    </form>
+  -->
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
+
+
+    <ng-container *ngIf="authService.isLoggedIn">
+      <div class="input-group input-group-sm">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn" (click)="resetConnection()"
+                  [style.color]="isWebsocketStatusConnect">
+            <i class="fas fa-sync"></i>
+          </button>
+
+          <button type="button" class="btn" (click)="reset()"
+                  [style.color]="isWebsocketStatusConnect ? '#28a745' : '#ffc107'">
+            <i class="fas fa-exchange-alt"></i>
+          </button>
+
+          <button type="button" class="btn" (click)="togglePlayPause()"
+                  [disabled]="!this.machine.canSimulate"
+                  [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+            <ng-container *ngIf="isRunning === true">
+              <i class="fas fa-pause"></i>
+            </ng-container>
+            <ng-container *ngIf="isRunning === false">
+              <i class="fas fa-play"></i>
+            </ng-container>
+          </button>
+
+          <button type="button" class="btn" (click)="nextStep()"
+                  [disabled]="!this.machine.canSimulate"
+                  [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+            <i class="fas fa-angle-right"></i>
+          </button>
+        </div>
+      </div>
+    </ng-container>
 
     <li class="nav-item dropdown">
       <a id="dropdownSubMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -85,20 +119,25 @@
     </li>
 
     <ng-container *ngIf="authService.isLoggedIn">
+    <!--
+     <li class="nav-item d-none d-sm-inline-block">
+       <a class="nav-link" (click)="debug()">
+         <i class="fas fa-bug"></i>
+       </a>
+     </li>
+    -->
 
+    <!--
       <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="debug()">
-          <i class="fas fa-bug"></i>
+        <a class="nav-link" (click)="reset()"
+           [style.color]="colorWebsocketStatus">
+          <i class="fas fa-sync"></i>
         </a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="reset()">
-          <i class="fas fa-sync" [style.color]="colorWebsocketStatus"></i>
-        </a>
-      </li>
 
       <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="togglePlayPause()">
+        <a class="nav-link" (click)="togglePlayPause()"
+           [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
           <ng-container *ngIf="isRunning === true">
             <i class="fas fa-pause"></i>
           </ng-container>
@@ -109,19 +148,19 @@
       </li>
 
       <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="nextStep()">
+        <a class="nav-link" (click)="nextStep()"
+           [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
           <i class="fas fa-angle-right"></i>
         </a>
       </li>
-
+      -->
       <!--
       <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="end()">
           <i class="fas fa-angle-double-right"></i>
         </a>
       </li>
-      -->
-
+    -->
     </ng-container>
 
 

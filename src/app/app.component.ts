@@ -71,38 +71,32 @@ export class AppComponent implements OnInit, OnDestroy {
     this.popupOpenSubscription = this.ccService.popupOpen$.subscribe(
       () => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log("popupOpen");
       });
 
     this.popupCloseSubscription = this.ccService.popupClose$.subscribe(
       () => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log("popupClose");
       });
 
     this.initializeSubscription = this.ccService.initialize$.subscribe(
       (event: NgcInitializeEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log(`initialize: ${JSON.stringify(event)}`);
       });
 
     this.statusChangeSubscription = this.ccService.statusChange$.subscribe(
       (event: NgcStatusChangeEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log(`statusChange: ${JSON.stringify(event)}`);
         localStorage.setItem("cookieconsent", event.status);
       });
 
     this.revokeChoiceSubscription = this.ccService.revokeChoice$.subscribe(
       () => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log(`revokeChoice`);
       });
 
     this.noCookieLawSubscription = this.ccService.noCookieLaw$.subscribe(
       (event: NgcNoCookieLawEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
-        console.log(`noCookieLaw: ${JSON.stringify(event)}`);
       });
     this.updateCookiesConsentLang();
 

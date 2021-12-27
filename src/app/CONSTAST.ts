@@ -9,33 +9,39 @@ import {
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
-  TypeTableCode, TypeDataStatistics, TypePipeline, TypeSimulationStep, InterfaceFileItem, TypeMultiviewConfiguration
+  TypeTableCode,
+  TypeDataStatistics,
+  TypePipeline,
+  TypeSimulationStep,
+  InterfaceFileItem,
+  TypeMultiviewConfiguration,
+  TypeCycleCell, TypeCycleCellUnit
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
 
 export const NPM_VERSION = npm.version.toString();
 export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
-  $key: "",
-  content: "",
-  dataItem: undefined,
-  dateModified: undefined,
-  description: "",
-  e1_uid: "",
-  f_id: "",
+  $key:              "",
+  content:           "",
+  dataItem:          undefined,
+  dateModified:      undefined,
+  description:       "",
+  e1_uid:            "",
+  f_id:              "",
   hasSubDirectories: false,
-  isDirectory: false,
-  key: "",
-  name: "",
-  path: "",
-  pathKeys: [],
-  size: 0,
-  thumbnail: ""
-
+  isDirectory:       false,
+  key:               "",
+  name:              "",
+  path:              "",
+  pathKeys:          [],
+  size:              0,
+  thumbnail:         ""
 };
 
 export const REGEX_IS_ABSOLUTE_HREF = new RegExp("(?:^[a-z][a-z0-9+.-]*:|\/\/)", "i");
 export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{08})$", "i");
 export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
+
 
 export const DEFAULT_TIME_SIMULATION: number = 250;
 export const DEFAULT_AUTO_SAVE: boolean = true;
@@ -43,17 +49,17 @@ export const DEFAULT_LANG: TypeLang = "en";
 // 0x8000 --> 32768
 export const DEFAULT_MEMORY_SIZE: number = 32768;
 export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
-  calculator: false,
-  code: true,
+  calculator:  false,
+  code:        true,
   cycle_clock: true,
-  memory: true,
-  pipeline: true,
-  registers: true,
-  statistics: false
-
+  memory:      true,
+  pipeline:    true,
+  registers:   true,
+  statistics:  false
 };
+
 export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageConfiguration = {
-  addition: {
+  addition:       {
     count: 1,
     delay: 2
   },
@@ -61,7 +67,7 @@ export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageC
     count: 1,
     delay: 5
   },
-  division: {
+  division:       {
     count: 1,
     delay: 19
   }
@@ -73,154 +79,162 @@ export const DEFAULT_BINARY_16_BITS = "".padStart(16, "0");
 export const DEFAULT_BINARY_32_BITS = "".padStart(32, "0");
 export const DEFAULT_BINARY_64_BITS = "".padStart(64, "0");
 
-export const DEFAULT_PIPELINE: TypePipeline = {
-  IF: "",
-  ID: "",
-  intEX: "",
-  MEM: "",
-  WB: "",
-  faddEX: [],
-  fdivEX: [],
-  fmultEX: []
-};
-
 export const DEFAULT_DATA_STATISTICS: TypeDataStatistics = {
-  TOTAL: {
-    CYCLES_EXECUTED: {cycles: 0},
-    ID_EXECUTED: {instructions: 0},
+  TOTAL:       {
+    CYCLES_EXECUTED:          {cycles: 0},
+    ID_EXECUTED:              {instructions: 0},
     INSTRUCTIONS_IN_PIPELINE: {instructions_in_pipeline: 0}
   },
-  HARDWARE: {
-    MEMORY_SIZE: {size: 0},
-    FADD_EX_STAGES: {num: 0, cycles: 0},
+  HARDWARE:    {
+    MEMORY_SIZE:     {size: 0},
+    FADD_EX_STAGES:  {num: 0, cycles: 0},
     FMULT_EX_STAGES: {num: 0, cycles: 0},
-    FDIV_EX_STAGES: {num: 0, cycles: 0},
-    FORWARDING: {enabled: true}
+    FDIV_EX_STAGES:  {num: 0, cycles: 0},
+    FORWARDING:      {enabled: true}
   },
-  STALLS: {
-    RAW_STALLS: {num: 0, per: 0},
-    LD_STALLS: {num: 0, per: 0},
-    BRANCH_STALLS: {num: 0, per: 0},
+  STALLS:      {
+    RAW_STALLS:            {num: 0, per: 0},
+    LD_STALLS:             {num: 0, per: 0},
+    BRANCH_STALLS:         {num: 0, per: 0},
     FLOATING_POINT_STALLS: {num: 0, per: 0},
-    WAW_STALLS: {num: 0, per: 0},
-    STRUCTURAL_STALLS: {num: 0, per: 0},
-    CONTROL_STALLS: {num: 0, per: 0},
-    TRAP_STALLS: {num: 0, per: 0},
-    TOTAL: {num: 0, per: 0}
+    WAW_STALLS:            {num: 0, per: 0},
+    STRUCTURAL_STALLS:     {num: 0, per: 0},
+    CONTROL_STALLS:        {num: 0, per: 0},
+    TRAP_STALLS:           {num: 0, per: 0},
+    TOTAL:                 {num: 0, per: 0}
   },
   CONDITIONAL: {
-    TOTAL: {num: 0, per: 0},
-    TAKEN: {num: 0, per: 0},
+    TOTAL:     {num: 0, per: 0},
+    TAKEN:     {num: 0, per: 0},
     NOT_TAKEN: {num: 0, per: 0}
   },
-  LOAD_STORE: {
-    TOTAL: {num: 0, per: 0},
-    LOADS: {num: 0, per: 0},
+  LOAD_STORE:  {
+    TOTAL:  {num: 0, per: 0},
+    LOADS:  {num: 0, per: 0},
     STORES: {num: 0, per: 0}
   },
-  FLOATING: {
-    TOTAL: {num: 0, per: 0},
-    ADDITIONS: {num: 0, per: 0},
+  FLOATING:    {
+    TOTAL:           {num: 0, per: 0},
+    ADDITIONS:       {num: 0, per: 0},
     MULTIPLICATIONS: {num: 0, per: 0},
-    DIVISIONS: {num: 0, per: 0}
+    DIVISIONS:       {num: 0, per: 0}
   },
-  TRAPS: {
+  TRAPS:       {
     TOTAL: {num: 0, per: 0}
   }
 } as const;
 
-export const DEFAULT_STEP_SIMULATION: TypeSimulationStep = {
-  IF: 0,
-  IF_stall: 0,
-  ID: 0,
-  ID_stall: 0,
-  intEX: 0,
-  intEX_stall: 0,
-  MEM: 0,
-  MEM_stall: 0,
-  WB: 0,
-  WB_stall: 0,
+export const DEFAULT_CYCLE_CELL: TypeCycleCell = {
+  address:    "",
+  addressRow: 0,
+  draw:       false
+};
 
-  line: 0,
-  step: 0,
-  // stage: "other",
-  instruction: "----------",
-  codeInstruction: "0x00000000",
-  pipeline: DEFAULT_PIPELINE,
-  memory: [],
-  registers: [],
+export const DEFAULT_CYCLE_CELL_UNIT: TypeCycleCellUnit = {
+  unit:       0,
+  address:    "",
+  addressRow: 0,
+  draw:       false
+};
+
+export const DEFAULT_PIPELINE: TypePipeline = {
+  IF:      DEFAULT_CYCLE_CELL,
+  ID:      DEFAULT_CYCLE_CELL,
+  intEX:   DEFAULT_CYCLE_CELL,
+  MEM:     DEFAULT_CYCLE_CELL,
+  WB:      DEFAULT_CYCLE_CELL,
+  faddEX:  [DEFAULT_CYCLE_CELL_UNIT],
+  fdivEX:  [DEFAULT_CYCLE_CELL_UNIT],
+  fmultEX: [DEFAULT_CYCLE_CELL_UNIT],
+  arrows:  []
+};
+
+export const DEFAULT_STEP_SIMULATION: TypeSimulationStep = {
+  isComplete:       false,
+  line:             0,
+  step:             0,
+  isNewInstruction: false,
+
+  pipeline:   DEFAULT_PIPELINE,
+  memory:     [],
+  registers:  [],
   statistics: DEFAULT_DATA_STATISTICS
 };
 
 export const DEFAULT_CODE: TypeCode = {
-  text: "",
+  text:        "",
   instruction: "",
-  address: "",
-  code: ""
+  address:     "",
+  code:        ""
 };
 
 export const DEFAULT_TABLE_CODE: TypeTableCode = {
-  text: "",
+  text:        "",
   instruction: "",
-  code: "",
-  address: "",
-  stage: ""
+  address:     "",
+  code:        "",
+  row:         0,
+  stage:       ""
   // binary: "00000000000000000000000000000000"
 };
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
-  progressBar: true,
+  progressBar:       true,
   progressAnimation: "decreasing",
-  closeButton: true
+  closeButton:       true
 };
 
 export const MAX_VALUE_TYPE_DATA = {
-  "Byte": 255,
+  "Byte":     255,
   "HalfWord": 65535,
-  "Word": 4294967295,
-  "Float": 4294967295,
-  "Double": 18446744073709551615
+  "Word":     4294967295,
+  "Float":    4294967295,
+  "Double":   18446744073709551615
 };
 
 export const STEP_TYPE_DATA = {
-  "Byte": 1,
+  "Byte":     1,
   "HalfWord": 1,
-  "Word": 1,
-  "Float": 0.1,
-  "Double": 0.1
+  "Word":     1,
+  "Float":    0.1,
+  "Double":   0.1
 };
 export const REGISTER_TO_EDIT: TypeRegister = "Control";
 
 export const REGISTERS_DATA: TypeDataRegister = {
   Control: {
-    registers: 32,
-    size: 32,
+    registers:            32,
+    size:                 32,
     maxLengthHexadecimal: 8
   },
   Integer: {
-    registers: 32,
-    size: 32,
+    registers:            32,
+    size:                 32,
     maxLengthHexadecimal: 8
   },
-  Float: {
-    registers: 32,
-    size: 32,
+  Float:   {
+    registers:            32,
+    size:                 32,
     maxLengthHexadecimal: 8
   },
-  Double: {
-    registers: 16,
-    size: 64,
+  Double:  {
+    registers:            16,
+    size:                 64,
     maxLengthHexadecimal: 16
   },
   DEFAULT: {
-    registers: 32,
-    size: 32,
+    registers:            32,
+    size:                 32,
     maxLengthHexadecimal: 8
   }
 };
 
 export const MACHINE_TYPE_REGISTERS: TypeRegister[] = [
   "Control", "Integer", "Float", "Double"
+];
+
+export const MACHINE_ALL_REGISTER_CONTROL = [
+  "PC", "IMAR", "IR", "A", "AHI", "B", "BHI", "BTA", "ALU", "ALUHI", "FPSR", "DMAR", "SDR", "SDRHI", "LDR", "LDRHI"
 ];
 
 export const MACHINE_REGISTERS_C: TypeRegisterToEdit[] = [
@@ -377,11 +391,11 @@ export const ASCII_TABLE = [
 ];
 
 export const CONFIG_WEBSOCKET: SocketIoConfig = {
-  url: "http://localhost:3000",
+  url:     "http://localhost:3000",
   options: {
-    transports: ["websocket"],
-    reconnection: true,
-    reconnectionDelay: 2000,
+    transports:           ["websocket"],
+    reconnection:         true,
+    reconnectionDelay:    2000,
     reconnectionDelayMax: 2500,
     reconnectionAttempts: 5
   }
@@ -389,188 +403,188 @@ export const CONFIG_WEBSOCKET: SocketIoConfig = {
 
 export const AUTH_ROUTES: PublicRoutesList = [
   {
-    lang: "CALCULATOR",
-    path: "calculator",
-    routerLink: "/auth/calculator",
+    lang:        "CALCULATOR",
+    path:        "calculator",
+    routerLink:  "/auth/calculator",
     displayName: "Calculator",
-    data: {breadcrumb: "calculator"},
-    icon: "fas fa-calculator"
+    data:        {breadcrumb: "calculator"},
+    icon:        "fas fa-calculator"
   },
   {
-    lang: "CODE",
-    path: "code",
-    routerLink: "/auth/code",
+    lang:        "CODE",
+    path:        "code",
+    routerLink:  "/auth/code",
     displayName: "Code",
-    data: {breadcrumb: "Code"},
-    icon: "fas fa-calculator"
+    data:        {breadcrumb: "Code"},
+    icon:        "fas fa-calculator"
   },
   {
-    lang: "CONFIG",
-    path: "config",
-    routerLink: "/auth/config",
+    lang:        "CONFIG",
+    path:        "config",
+    routerLink:  "/auth/config",
     displayName: "Config",
-    data: {breadcrumb: "config"},
-    icon: "fas fa-wrench"
+    data:        {breadcrumb: "config"},
+    icon:        "fas fa-wrench"
   },
   {
-    lang: "DOCUMENTATION",
-    path: "documentation",
-    routerLink: "/auth/documentation",
+    lang:        "DOCUMENTATION",
+    path:        "documentation",
+    routerLink:  "/auth/documentation",
     displayName: "Documentation",
-    data: {breadcrumb: "Documentation"},
-    icon: "fas fa-book"
+    data:        {breadcrumb: "Documentation"},
+    icon:        "fas fa-book"
   },
   {
-    lang: "FILE_MANAGER",
-    path: "file-manager",
-    routerLink: "/auth/file-manager",
+    lang:        "FILE_MANAGER",
+    path:        "file-manager",
+    routerLink:  "/auth/file-manager",
     displayName: "File Manager",
-    data: {breadcrumb: "File Manager"},
-    icon: "far fa-folder-open"
+    data:        {breadcrumb: "File Manager"},
+    icon:        "far fa-folder-open"
   },
   {
-    lang: "EDITOR",
-    path: "editor",
-    routerLink: "/auth/editor",
+    lang:        "EDITOR",
+    path:        "editor",
+    routerLink:  "/auth/editor",
     displayName: "Editor",
-    data: {breadcrumb: "Editor"},
-    icon: "far fa-file"
+    data:        {breadcrumb: "Editor"},
+    icon:        "far fa-file"
   },
   {
-    lang: "LOGGER",
-    path: "logger",
-    routerLink: "/auth/logger",
+    lang:        "LOGGER",
+    path:        "logger",
+    routerLink:  "/auth/logger",
     displayName: "Logger",
-    data: {breadcrumb: "Logger"},
-    icon: "fas fa-file-code"
+    data:        {breadcrumb: "Logger"},
+    icon:        "fas fa-file-code"
   },
   {
-    lang: "MEMORY",
-    path: "memory",
-    routerLink: "/auth/memory",
+    lang:        "MEMORY",
+    path:        "memory",
+    routerLink:  "/auth/memory",
     displayName: "Memory",
-    data: {breadcrumb: "Memory"},
-    icon: "fas fa-memory"
+    data:        {breadcrumb: "Memory"},
+    icon:        "fas fa-memory"
   },
   {
-    lang: "CYCLE_CLOCK_DIAGRAM",
-    path: "cycle-clock-diagram",
-    routerLink: "/auth/cycle-clock-diagram",
+    lang:        "CYCLE_CLOCK_DIAGRAM",
+    path:        "cycle-clock-diagram",
+    routerLink:  "/auth/cycle-clock-diagram",
     displayName: "Cycle clock diagram",
-    data: {breadcrumb: "Cycle-clock-diagram"},
-    icon: "fas fa-desktop"
+    data:        {breadcrumb: "Cycle-clock-diagram"},
+    icon:        "fas fa-desktop"
   },
   {
-    lang: "PIPELINE",
-    path: "pipeline",
-    routerLink: "/auth/pipeline",
+    lang:        "PIPELINE",
+    path:        "pipeline",
+    routerLink:  "/auth/pipeline",
     displayName: "Pipeline",
-    data: {breadcrumb: "Pipeline"},
-    icon: "fas fa-desktop"
+    data:        {breadcrumb: "Pipeline"},
+    icon:        "fas fa-desktop"
   },
   {
-    lang: "PROFILE",
-    path: "profile",
-    routerLink: "/auth/profile",
+    lang:        "PROFILE",
+    path:        "profile",
+    routerLink:  "/auth/profile",
     displayName: "Profile",
-    data: {breadcrumb: "Profile"},
-    icon: "fas fa-user"
+    data:        {breadcrumb: "Profile"},
+    icon:        "fas fa-user"
   },
   {
-    lang: "REGISTERS",
-    path: "registers",
-    routerLink: "/auth/registers",
+    lang:        "REGISTERS",
+    path:        "registers",
+    routerLink:  "/auth/registers",
     displayName: "Registers",
-    data: {breadcrumb: "Registers"},
-    icon: "fas fa-microchip"
+    data:        {breadcrumb: "Registers"},
+    icon:        "fas fa-microchip"
   },
   {
-    lang: "STATISTICS",
-    path: "statistics",
-    routerLink: "/auth/statistics",
+    lang:        "STATISTICS",
+    path:        "statistics",
+    routerLink:  "/auth/statistics",
     displayName: "Statistics",
-    data: {breadcrumb: "Statistics"},
-    icon: "fas fa-chart-bar"
+    data:        {breadcrumb: "Statistics"},
+    icon:        "fas fa-chart-bar"
   },
   {
-    lang: "MULTIVIEW",
-    path: "multiview",
-    routerLink: "/auth/multiview",
+    lang:        "MULTIVIEW",
+    path:        "multiview",
+    routerLink:  "/auth/multiview",
     displayName: "Multiview",
-    data: {breadcrumb: "Multiview"},
-    icon: "fas fa-table"
+    data:        {breadcrumb: "Multiview"},
+    icon:        "fas fa-table"
   },
   {
-    lang: "DEBUG",
-    path: "debug",
-    routerLink: "/auth/debug",
+    lang:        "DEBUG",
+    path:        "debug",
+    routerLink:  "/auth/debug",
     displayName: "Debug",
-    data: {breadcrumb: "Debug"},
-    icon: "fas fa-bug"
+    data:        {breadcrumb: "Debug"},
+    icon:        "fas fa-bug"
   }
 ];
 
 export const PUBLIC_ROUTES: PublicRoutes = {
-  lang: "/",
-  path: "/",
-  routerLink: "/",
+  lang:        "/",
+  path:        "/",
+  routerLink:  "/",
   displayName: "Home",
-  data: {},
-  children: [
+  data:        {},
+  children:    [
     {
-      lang: "DEBUG",
-      path: "debug",
-      routerLink: "/debug",
+      lang:        "DEBUG",
+      path:        "debug",
+      routerLink:  "/debug",
       displayName: "Debug"
     },
     {
-      lang: "LOGIN",
-      path: "login",
-      routerLink: "/login",
+      lang:        "LOGIN",
+      path:        "login",
+      routerLink:  "/login",
       displayName: "Login"
     },
     {
-      lang: "FORGOT-PASSWORD",
-      path: "forgot-password",
-      routerLink: "/forgot-password",
+      lang:        "FORGOT-PASSWORD",
+      path:        "forgot-password",
+      routerLink:  "/forgot-password",
       displayName: "Forgot password"
     },
     {
-      lang: "REGISTER",
-      path: "register",
-      routerLink: "/register",
+      lang:        "REGISTER",
+      path:        "register",
+      routerLink:  "/register",
       displayName: "Register"
     },
     // no layout views
     {
-      lang: "LANDING",
-      path: "landing",
-      routerLink: "/landing/landing",
+      lang:        "LANDING",
+      path:        "landing",
+      routerLink:  "/landing/landing",
       displayName: "Landing"
     },
     {
-      lang: "ABOUT",
-      path: "about",
-      routerLink: "/landing/about",
+      lang:        "ABOUT",
+      path:        "about",
+      routerLink:  "/landing/about",
       displayName: "About"
     },
     // _admin views
     {
-      lang: "ADMIN",
-      path: "admin",
-      routerLink: "/admin",
+      lang:        "ADMIN",
+      path:        "admin",
+      routerLink:  "/admin",
       displayName: "Admin",
-      data: {},
-      children: []
+      data:        {},
+      children:    []
     },
     // _auth views
     {
-      lang: "AUTH",
-      path: "auth",
-      routerLink: "/auth",
+      lang:        "AUTH",
+      path:        "auth",
+      routerLink:  "/auth",
       displayName: "Auth",
-      data: {breadcrumb: "Auth"},
-      children: AUTH_ROUTES
+      data:        {breadcrumb: "Auth"},
+      children:    AUTH_ROUTES
     }
   ]
 

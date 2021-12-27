@@ -14,7 +14,7 @@
     <button class="btn btn-outline-primary mr-1" (click)="socketReconnect()">Socket reconnect</button>
     <button class="btn btn-outline-primary mr-1" (click)="showToast()">Show Toast</button>
     <button class="btn btn-outline-primary mr-1" (click)="debugLocalStorage()">Debug Localstorage</button>
-    <button class="btn btn-outline-primary mr-1" [asyncClick]="getSomethingFromRemoteP">Promise</button>
+    <button class="btn btn-outline-primary mr-1" (click)="getSomethingFromRemoteP()">Promise</button>
     <button class="btn btn-outline-primary mr-1" (click)="simulationInit()">Promise simulation init</button>
     <button class="btn btn-outline-primary mr-1" (click)="simulationNextStep()">Promise simulation next step</button>
   </div>

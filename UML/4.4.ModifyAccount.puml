@@ -1,6 +1,6 @@
 @startuml
 'https://plantuml.com/sequence-diagram
-
+'TODO
 autonumber
 
 actor User
@@ -14,24 +14,10 @@ group#Gold User login
 
 end
 
-User -> InterfaceUI: Open file manager
+User -> InterfaceUI: Open profile
 activate InterfaceUI
-User <- InterfaceUI: Show file manager
+User <- InterfaceUI: Show profile
 deactivate InterfaceUI
-
-User -> InterfaceUI: Create file
-InterfaceUI -> System: Create file
-System -> Firebase: Create file
-
-alt #LightGreen Ok
-  System <-- Firebase: Create file successful
-  InterfaceUI <- System: Create file successful
-  User <- InterfaceUI: Create file successful
-else #Pink Error
-  System <-- Firebase: Create file error
-  InterfaceUI <- System: Create file error
-  User x<- InterfaceUI: Create file error
-end
 
 deactivate User
 

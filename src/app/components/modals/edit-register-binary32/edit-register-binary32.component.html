@@ -38,7 +38,7 @@
               </div>
             </div>
 
-            <div class="col-sm-{{ registerSelected === 'Double' ? 7 : 6 }}">
+            <div class="col-sm-{{ typeRegisterSelected === 'Double' ? 7 : 6 }}">
               <label for="registerToEditValueHexadecimalId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
@@ -56,7 +56,7 @@
               </div>
             </div>
 
-            <div class="col-sm-6" *ngIf="registerSelected === 'Control' || registerSelected === 'Integer'">
+            <div class="col-sm-6" *ngIf="typeRegisterSelected === 'Control' || typeRegisterSelected === 'Integer'">
               <label for="registerToEditValueDecimalId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueDecimalId"
@@ -71,7 +71,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-6" *ngIf="registerSelected === 'Float'">
+            <div class="col-sm-6" *ngIf="typeRegisterSelected === 'Float'">
               <label for="registerToEditValueFloatId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueFloatId"
@@ -85,7 +85,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-5" *ngIf="registerSelected === 'Double'">
+            <div class="col-sm-5" *ngIf="typeRegisterSelected === 'Double'">
               <label for="registerToEditValueDoubleId">{{ 'FORM.VALUE' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueDoubleId"
@@ -139,9 +139,9 @@
             <div class="col-sm-12">
               <p class="text-monospace"><strong>{{ 'MACHINE.IEEE_754' | translate }}:</strong></p>
               <p class="text-monospace"
-                 *ngIf="registerSelected !== 'Double'">{{ registerToEdit_Binary | binary32_to_decimal_IEEE754 }}</p>
+                 *ngIf="typeRegisterSelected !== 'Double'">{{ registerToEdit_Binary | binary32_to_decimal_IEEE754 }}</p>
               <p class="text-monospace"
-                 *ngIf="registerSelected === 'Double'">{{ registerToEdit_Binary | binary64_to_decimal_IEEE754 }}</p>
+                 *ngIf="typeRegisterSelected === 'Double'">{{ registerToEdit_Binary | binary64_to_decimal_IEEE754 }}</p>
             </div>
 
           </div>

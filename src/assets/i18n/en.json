@@ -121,6 +121,11 @@
     "BYTE": "Byte",
     "HALF_WORD": "Half word",
     "WORD": "Word",
+    "FLOAT": "Float",
+    "ASCII": "ASCII",
+    "DOUBLE": "Double",
+    "BINARY_FLOAT": "Binary float",
+    "BINARY_DOUBLE": "Binary double",
     "SIMPLE_FLOATING_POINT": "Simple floating point",
     "DOUBLE_FLOATING_POINT": "Double floating point"
   },

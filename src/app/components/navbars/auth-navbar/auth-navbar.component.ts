@@ -10,7 +10,7 @@ import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-auth-navbar",
-  templateUrl: "./auth-navbar.component.html",
+  templateUrl: "./auth-navbar.component.html"
 })
 export class AuthNavbarComponent implements OnInit, OnDestroy {
   public navbarOpen = false;
@@ -18,6 +18,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
   public readonly AUTH_ROUTES = AUTH_ROUTES;
   private isRunningSubscription: Subscription = new Subscription();
   public colorWebsocketStatus: string = "orange";
+  public isWebsocketStatusConnect: boolean = false;
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -33,10 +34,10 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
     this.colorWebsocketStatus = this.machine.getStatusWebsocket() === "Connect" ? "lime" : "orange";
     this.machine.getStatusWebsocketObservable().subscribe((status) => {
       if (status === "Connect") {
-        this.colorWebsocketStatus = "lime";
+        this.isWebsocketStatusConnect = true;
       }
       if (status === "Disconnect") {
-        this.colorWebsocketStatus = "orange";
+        this.isWebsocketStatusConnect = false;
       }
     });
   }
@@ -57,6 +58,12 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  async resetConnection(): Promise<void> {
+    window.dispatchEvent(new Event("resize"));
+    this.machine.resetConnection();
+    return Promise.resolve();
+  }
+
   async reset(): Promise<void> {
     await this.machine.reset();
     return Promise.resolve();
@@ -68,7 +75,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
   }
 
   async nextStep(): Promise<void> {
-    await this.machine.SimulationNextStep();
+    await this.machine.nextStep();
     return Promise.resolve();
   }
 

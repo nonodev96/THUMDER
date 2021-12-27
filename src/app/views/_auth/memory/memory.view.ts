@@ -4,14 +4,18 @@ import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
-import { EditMemoryBinary32Component } from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
+import {
+  EditMemoryBinary32Component
+} from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { TypeData } from "../../../types";
 import { StorageService } from "../../../__core/storage/storage.service";
+import { Utils } from "../../../Utils";
+import { Int32 } from "../../../__core/typesData";
 
 @Component({
-  selector: "view-memory",
+  selector:    "view-memory",
   templateUrl: "./memory.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class MemoryView implements OnInit, AfterViewInit {
 
@@ -20,10 +24,10 @@ export class MemoryView implements OnInit, AfterViewInit {
   @ViewChild(EditMemoryBinary32Component) editBinary32Component: EditMemoryBinary32Component;
 
   // Word puede cambiar por --> Word, HalfWord, Float, Double, Bytes
-  displayedColumnsMemory: string[] = ["Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "Word"];
-  dataSourceMemory = new TableVirtualScrollDataSource<number>();
+  public displayedColumnsMemory: string[] = ["Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "Word"];
+  public dataSourceMemory = new TableVirtualScrollDataSource<number>();
 
-  typeDataSelected: TypeData = "Word";
+  public typeDataSelected: TypeData | "InstructionCode" = "Word";
   public maxHeightCard = 75;
 
   constructor(public machine: MachineService,
@@ -58,7 +62,7 @@ export class MemoryView implements OnInit, AfterViewInit {
     });
   }
 
-  changeTypeDataInTable(typeData: TypeData): void {
+  changeTypeDataInTable(typeData: TypeData | "InstructionCode"): void {
     // Word, HalfWord, Float, Double, Bytes
     this.typeDataSelected = typeData;
     switch (typeData) {
@@ -80,15 +84,24 @@ export class MemoryView implements OnInit, AfterViewInit {
       case "Double":
         this.displayedColumnsMemory = ["Address", "Hexadecimal", "BinaryDouble", "Address-0", "Address-1", "Address-2", "Address-3", "Double"];
         break;
+      case "InstructionCode":
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Binary", "InstructionCode"];
+        break;
     }
   }
 
   refresh(): void {
     this.dataSourceMemory.filter = null;
     this.dataSourceMemory.data = [...this.dataSourceMemory.data];
+
+    window.dispatchEvent(new Event("resize"));
   }
 
   private resizeCard(value: number) {
     this.maxHeightCard = value;
+  }
+
+  convertHexCodeToTextMachineInstructionDLX(memoryWordByAddress: Int32) {
+    return Utils.convertHexCodeToTextMachineInstructionDLX(memoryWordByAddress.hexCode);
   }
 }

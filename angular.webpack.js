@@ -16,5 +16,13 @@ module.exports = (config, options) => {
       break;
     }
   }
+  // config.externals = {
+  //   "electron": "require('electron')",
+  //   "child_process": "require('child_process')",
+  //   "fs": "require('fs')",
+  //   "url": "require('url')",
+  //   "pixi.js-keyboard": require('pixi.js-keyboard'),
+  //   "pixi.js-mouse": require('pixi.js-mouse')
+  // }
   return config;
 }

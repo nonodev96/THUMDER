@@ -38,55 +38,55 @@
                                  headerHeight="56"
                                  [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
-      <table mat-table matSort [dataSource]="dataSource" [ngClass]="'table-layout'">
+      <table mat-table matSort [dataSource]="dataSource" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         <ng-container matColumnDef="Register">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ element }}
+            <p>{{ element }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ (machine.registers[element].binary | binary_32_64_to_hexadecimal) }}
+            <p>{{ (machine.registers[element].binary | binary_32_64_to_hexadecimal) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
           <th mat-header-cell class="width-40" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-40" *matCellDef="let register">
-            {{ (machine.registers[register].binary) }}
+            <p>{{ (machine.registers[register].binary) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Uint8Array">
           <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
           <td mat-cell class="width-20" *matCellDef="let element">
-            {{ (machine.registers[element].binary | binary_to_number | uint_IEEE754_32) }}
+            <p>{{ (machine.registers[element].binary | binary_to_number | uint_IEEE754_32) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Byte">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.BYTES' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ machine.registers[element].binary | binary32_to_bytes }}
+            <p>{{ machine.registers[element].binary | binary32_to_bytes }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="HalfWord">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HALF_WORD' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ machine.registers[element].binary | binary32_to_halfword }}
+            <p>{{ machine.registers[element].binary | binary32_to_halfword }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Word">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.WORD' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ machine.registers[element].binary | binary32_to_word }}
+            <p>{{ machine.registers[element].binary | binary32_to_word }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="ASCII">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.ASCII' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            {{ machine.registers[element].binary | binary32_to_ascii }}
+            <p>{{ machine.registers[element].binary | binary32_to_ascii }}</p>
           </td>
         </ng-container>
       </table>
@@ -118,31 +118,31 @@
                                  headerHeight="56"
                                  [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
-      <table mat-table matSort [dataSource]="dataSourceR" [ngClass]="'table-layout'">
+      <table mat-table matSort [dataSource]="dataSourceR" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsR; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsR;"></tr>
         <ng-container matColumnDef="Register">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            R{{ element }}
+            <p>R{{ element }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-20" *matCellDef="let element">
-            {{ (machine.registers.R[element].binary | binary_32_64_to_hexadecimal) }}
+            <p>{{ (machine.registers.R[element].binary | binary_32_64_to_hexadecimal) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
           <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-50" *matCellDef="let element">
-            {{ (machine.registers.R[element].binary) }}
+            <p>{{ (machine.registers.R[element].binary) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Integer">
           <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.INTEGER' | translate}}</th>
           <td mat-cell class="width-20" *matCellDef="let element">
-            {{ machine.registers.R[element].binary | binary_to_number }}
+            <p>{{ machine.registers.R[element].binary | binary_to_number }}</p>
           </td>
         </ng-container>
       </table>
@@ -183,37 +183,41 @@
                                  headerHeight="56"
                                  [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
-      <table mat-table matSort [dataSource]="dataSourceF" [ngClass]="'table-layout'">
+      <table mat-table matSort [dataSource]="dataSourceF" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsF; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsF;"></tr>
         <ng-container matColumnDef="Register">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            F{{ element }}
+            <p>F{{ element }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let address">
-            {{ (machine.registers.F[address].binary | binary_32_64_to_hexadecimal) }}
+            <p>{{ (machine.registers.F[address].binary | binary_32_64_to_hexadecimal) }}</p>
           </td>
         </ng-container>
+        <!-- if (typeDataSelectedFloat === Binary) -->
         <ng-container matColumnDef="Binary">
           <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-50" *matCellDef="let address">
-            {{ (machine.registers.F[address].binary) }}
+            <p>{{ (machine.registers.F[address].binary) }}</p>
           </td>
         </ng-container>
+        <!-- else -->
         <ng-container matColumnDef="Uint8Array">
-          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
-          <td mat-cell class="width-20" *matCellDef="let address">
-            {{ (machine.registers.F[address].binary | binary32_to_decimal_IEEE754 | uint_IEEE754_32) }}
+          <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
+          <td mat-cell class="width-50" *matCellDef="let address">
+            <p>{{ (machine.registers.F[address].binary | binary32_to_decimal_IEEE754 | uint_IEEE754_32) }}</p>
           </td>
         </ng-container>
+        <!-- end if -->
+
         <ng-container matColumnDef="Float">
-          <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.FLOAT' | translate}} IEEE 754 32 bits</th>
-          <td mat-cell class="width-10" *matCellDef="let element">
-            {{ machine.registers.F[element].binary | binary32_to_decimal_IEEE754 }}
+          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.FLOAT' | translate}} IEEE 754 32 bits</th>
+          <td mat-cell class="width-20" *matCellDef="let element">
+            <p>{{ machine.registers.F[element].binary | binary32_to_decimal_IEEE754 }}</p>
           </td>
         </ng-container>
       </table>
@@ -254,37 +258,40 @@
                                  headerHeight="56"
                                  [style.height.vh]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
-      <table mat-table matSort [dataSource]="dataSourceD" [ngClass]="'table-layout'">
+      <table mat-table matSort [dataSource]="dataSourceD" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsD; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsD;"></tr>
         <ng-container matColumnDef="Register">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.REGISTER' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let element">
-            F{{ element }} - F{{ element + 1 }}
+            <p>F{{ element }} - F{{ element + 1 }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-10" *matCellDef="let address">
-            {{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary | binary_32_64_to_hexadecimal) }}
+            <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_32_64_to_hexadecimal }}</p>
           </td>
         </ng-container>
+        <!-- if (typeDataSelectedDouble === Binary) -->
         <ng-container matColumnDef="Binary">
           <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-50" *matCellDef="let address">
-            {{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) }}
+            <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) }}</p>
           </td>
         </ng-container>
+        <!-- else -->
         <ng-container matColumnDef="Uint8Array">
-          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
-          <td mat-cell class="width-20" *matCellDef="let address">
-            {{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary | binary64_to_decimal_IEEE754 | uint_IEEE754_64) }}
+          <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
+          <td mat-cell class="width-50" *matCellDef="let address">
+            <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 | uint_IEEE754_64 }}</p>
           </td>
         </ng-container>
+        <!-- end if -->
         <ng-container matColumnDef="Double">
-          <th mat-header-cell class="width-10" *matHeaderCellDef>{{'MACHINE.DOUBLE' | translate}} IEEE 754 64 bits</th>
-          <td mat-cell class="width-10" *matCellDef="let address">
-            {{ machine.registers.F[address].binary + machine.registers.F[address + 1].binary | binary64_to_decimal_IEEE754 }}
+          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.DOUBLE' | translate}} IEEE 754 64 bits</th>
+          <td mat-cell class="width-20" *matCellDef="let address">
+            <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 }}</p>
           </td>
         </ng-container>
       </table>

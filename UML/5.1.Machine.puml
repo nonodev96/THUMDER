@@ -1,0 +1,65 @@
+@startuml
+'https://plantuml.com/class-diagram
+class MachineService {
+    +floatingPointStageConfiguration: TypeFloatingPointStageConfiguration
+    +pipeline: PixiTHUMDER_Pipeline
+    +cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
+    +dataStatistics: ManagerStatistics
+    +registers: ManagerRegisters
+    +memory: ManagerMemory
+    +memorySize: any
+    +breakpointManager: ManagerBreakpoints
+    +code: Map<string, TypeCode>
+    -simulation: TypeSimulationInitResponse
+    -statusMachineInStep: TypeSimulationStep
+    +isBreakpoint$: Subject<number>
+    +codeSimulation$: Subject<TypeCode[]>
+    +stepSimulation$: Subject<TypeSimulationStep>
+    +dataStatistics$: Subject<TypeDataStatistics>
+    +logger: string
+    -privateStep: number
+    -privateLine: number
+    -timer: Observable<number>
+    -timerObserver: PartialObserver<number>
+    +reset$: Subject<void>
+    +logger$: Subject<string>
+    +step$: Subject<number>
+    +line$: Subject<number>
+    +isRunning$: Subject<boolean>
+    +isComplete$: Subject<boolean>
+    +isRunning: boolean
+    +isComplete: boolean
+    +isBreakpoint: boolean
+    -store: StorageService
+    -socketProviderConnect: SocketProviderConnectService
+    -translate: TranslateService
+    -toast: ToastrService
+    +resetMachineStatus(): Promise<boolean>
+    +getResetObservable(): Observable<void>
+    +getStepObservable(): Observable<number>
+    +getLineObservable(): Observable<number>
+    +getIsRunningObservable(): Observable<boolean>
+    +getStepSimulationObservable(): Observable<TypeSimulationStep>
+    +getCodeSimulationObservable(): Observable<TypeCode[]>
+    +getDebuggerObservable(): Observable<number>
+    +getDataStatisticsObservable(): Observable<TypeDataStatistics>
+    +getLoggerObservable(): Observable<string>
+    +getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect">
+    +getStatusWebsocket(): "Connect" | "Disconnect"
+    +getListStatusPipeline(stepSimulation: TypeSimulationStep): TypeStatusPipeline[]
+    +play(): Promise<void>
+    +reset(): Promise<void>
+    +nextStep(): Promise<void>
+    +pause(): Promise<void>
+    +resume(): Promise<void>
+    +end(): Promise<void>
+    -SimulationInit(): Promise<boolean>
+    -SimulationNextStep(): Promise<void>
+    -CheckConditions(): Promise<boolean>
+    -Clock(): Promise<void>
+    +log(msg: any): void
+    +getCode(address: string): TypeCode
+    +getAllStatusMachine(): TypeStatusMachine
+    -toastMessage(key_title?: string, key_message?: string): Promise<void>
+}
+@enduml
