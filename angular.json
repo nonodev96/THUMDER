@@ -119,13 +119,13 @@
               "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
-              "aot": true,
+              "aot": false,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": false,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
+                  "replace": "src/environments/_environment.ts",
                   "with": "src/environments/environment.dev.ts"
                 }
               ],
@@ -157,7 +157,7 @@
               "buildOptimizer": false,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
+                  "replace": "src/environments/_environment.ts",
                   "with": "src/environments/environment.web.ts"
                 }
               ],
@@ -189,8 +189,197 @@
               "buildOptimizer": false,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "src/environments/_environment.ts",
+                  "with": "src/environments/environment.production.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "80mb",
+                  "maximumError": "100mb"
+                }
+              ]
+            }
+          }
+        },
+        "build-angular": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist-angular",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
+            "allowedCommonJsDependencies": [
+              "admin-lte/plugins/chart.js/Chart.js",
+              "chart.js",
+              "pixi.js-keyboard",
+              "pixi.js-mouse",
+              "mini-signals",
+              "@firebase/app-check",
+              "socket.io-client",
+              "datastructures-js",
+              "thumder-ontology",
+              "debug"
+            ],
+            "assets": [
+              "src/assets",
+              {
+                "glob": "LICENSE.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "COOKIES.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "CHANGELOG.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "README.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "ABOUT.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "Datapath_Schematic.svg",
+                "input": "./assets",
+                "output": "./assets/"
+              },
+              {
+                "glob": "DLX-TABLE-Instructions.md",
+                "input": "./",
+                "output": "./assets/md/"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              "src/monaco-editor.scss",
+              "src/assets/flag-icons-master/css/flag-icon.css",
+              "src/assets/styles/dx.generic.custom-scheme-thumder.css",
+              "node_modules/xterm/css/xterm.css",
+              "node_modules/devextreme/dist/css/dx.light.css",
+              "node_modules/admin-lte/plugins/fontawesome-free/css/all.css",
+              "node_modules/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.css",
+              "node_modules/admin-lte/dist/css/adminlte.css",
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/prismjs/themes/prism-okaidia.css",
+              "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css",
+              "node_modules/cookieconsent/build/cookieconsent.min.css"
+            ],
+            "scripts": [
+              "node_modules/admin-lte/plugins/jquery/jquery.min.js",
+              "node_modules/admin-lte/plugins/bootstrap/js/bootstrap.bundle.js",
+              "node_modules/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.js",
+              "node_modules/admin-lte/dist/js/adminlte.js",
+              "node_modules/admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js",
+              "node_modules/admin-lte/plugins/raphael/raphael.js",
+              "node_modules/admin-lte/plugins/chart.js/Chart.js",
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-typescript.min.js",
+              "node_modules/prismjs/components/prism-javascript.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
+              "node_modules/emoji-toolkit/lib/js/joypixels.min.js",
+              "node_modules/cookieconsent/build/cookieconsent.min.js"
+            ]
+          },
+          "configurations": {
+            "dev": {
+              "optimization": {
+                "scripts": false,
+                "styles": {
+                  "minify": false,
+                  "inlineCritical": false
+                },
+                "fonts": {
+                  "inline": false
+                }
+              },
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/_environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "80mb",
+                  "maximumError": "100mb"
+                }
+              ]
+            },
+            "web": {
+              "optimization": {
+                "scripts": false,
+                "styles": {
+                  "minify": false,
+                  "inlineCritical": false
+                },
+                "fonts": {
+                  "inline": false
+                }
+              },
+              "outputHashing": "all",
+              "sourceMap": true,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/_environment.ts",
+                  "with": "src/environments/environment.web.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "80mb",
+                  "maximumError": "100mb"
+                }
+              ]
+            },
+            "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": false,
+                  "inlineCritical": false
+                },
+                "fonts": {
+                  "inline": true
+                }
+              },
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/_environment.ts",
+                  "with": "src/environments/environment.production.ts"
                 }
               ],
               "budgets": [
@@ -217,6 +406,23 @@
             },
             "production": {
               "browserTarget": "thumder-angular-electron:build:production"
+            }
+          }
+        },
+        "serve-angular": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "thumder-angular-electron:build-angular"
+          },
+          "configurations": {
+            "dev": {
+              "browserTarget": "thumder-angular-electron:build-angular:dev"
+            },
+            "web": {
+              "browserTarget": "thumder-angular-electron:build-angular:web"
+            },
+            "production": {
+              "browserTarget": "thumder-angular-electron:build-angular:production"
             }
           }
         },

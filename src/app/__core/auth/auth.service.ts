@@ -29,11 +29,11 @@ export class AuthService implements OnInit, OnDestroy {
           window.document.body.className = "";
           this.userData = user;
           localStorage.setItem("user", JSON.stringify(this.userData));
-          JSON.parse(localStorage.getItem("user"));
+          // JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(true);
         } else {
           localStorage.setItem("user", null);
-          JSON.parse(localStorage.getItem("user"));
+          // JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(false);
         }
       })
@@ -171,10 +171,10 @@ export class AuthService implements OnInit, OnDestroy {
   SetUserData(userCredential: UserCredential): any {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userCredential.user.uid}`);
     const userData: InterfaceUser = {
-      uid: userCredential.user.uid,
-      email: userCredential.user.email,
-      displayName: userCredential.user.displayName,
-      photoURL: userCredential.user.photoURL,
+      uid:           userCredential.user.uid,
+      email:         userCredential.user.email,
+      displayName:   userCredential.user.displayName,
+      photoURL:      userCredential.user.photoURL,
       emailVerified: userCredential.user.emailVerified
     };
     return userRef.set(userData, {
@@ -187,6 +187,9 @@ export class AuthService implements OnInit, OnDestroy {
     try {
       await this.afAuth.signOut();
       localStorage.removeItem("user");
+      for (const [key, value] of Object.entries(localStorage)) {
+        localStorage.removeItem(key);
+      }
       await this.router.navigate(["/login"]);
     } catch (error) {
       console.error(error);

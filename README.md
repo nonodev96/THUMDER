@@ -7,12 +7,10 @@ THUMDER
 
 [![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 
-
 # Introduction | Angular - Electron
 
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/)
 [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
-
 
 ## Currently, runs with:
 
@@ -20,17 +18,28 @@ THUMDER
 - Electron v8.4.1
 - Electron Builder v22.8.1
 
-
 ## Included Commands
 
-| Command                  | Description                                                                          |
-| ------------------------ | ------------------------------------------------------------------------------------ |
-| `npm run ng:serve`       | Execute the app in the browser                                                       |
-| `npm run build`          | Build the app. Your built files are in the /dist folder.                             |
-| `npm run build:prod`     | Build the app with Angular aot. Your built files are in the /dist folder.            |
-| `npm run electron:local` | Builds your application and start electron                                           |
-| `npm run electron:build` | Builds your application and creates an app consumable based on your operating system |
+| Command                        | Description                                                                          |
+|--------------------------------|--------------------------------------------------------------------------------------|
+| `npm run ng:serve-angular:dev` | Execute the app in the browser                                                       |
+| `npm run electron:local`       | Builds your application and start electron                                           |
+| `npm run electron:build`       | Builds your application and creates an app consumable based on your operating system |
 
+| Command                               | Description |
+|---------------------------------------|-------------|
+| `npm run ng:build:dev`                |             |
+| `npm run ng:build:web`                |             |
+| `npm run ng:build:production`         |             |
+| `npm run ng:build-angular:dev`        |             |
+| `npm run ng:build-angular:web`        |             |
+| `npm run ng:build-angular:production` |             |
+| `npm run ng:serve:dev`                |             |
+| `npm run ng:serve:web`                |             |
+| `npm run ng:serve:production`         |             |
+| `npm run ng:serve-angular:dev`        |             |
+| `npm run ng:serve-angular:web`        |             |
+| `npm run ng:serve-angular:production` |             |
 
 You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<size>`
 
@@ -38,7 +47,9 @@ You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<s
 
 ## You want to use a specific lib (like rxjs) in electron main thread ?
 
-YES! You can do it! Just by importing your library in npm dependencies section (not **devDependencies**) with `npm install --save`. It will be loaded by electron during build phase and added to your final package. Then use your library by importing it in `main.ts` file. Quite simple, isn't it ?
+YES! You can do it! Just by importing your library in npm dependencies section (not **devDependencies**)
+with `npm install --save`. It will be loaded by electron during build phase and added to your final package. Then use
+your library by importing it in `main.ts` file. Quite simple, isn't it ?
 
 ## E2E Testing
 

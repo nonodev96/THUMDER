@@ -15,9 +15,10 @@ import {
   TypeSimulationStep,
   InterfaceFileItem,
   TypeMultiviewConfiguration,
-  TypeCycleCell, TypeCycleCellUnit
+  TypeCycleCell, TypeCycleCellUnit, TypeWebSocketConfiguration
 } from "./types";
 import { SocketIoConfig } from "ngx-socket-io";
+import { AppConfig } from "../environments/_environment";
 
 export const NPM_VERSION = npm.version.toString();
 export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
@@ -43,11 +44,16 @@ export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{08})$", "
 export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
 
 
-export const DEFAULT_TIME_SIMULATION: number = 250;
-export const DEFAULT_AUTO_SAVE: boolean = true;
+export const DEFAULT_TIME_SIMULATION_CONFIGURATION: number = 250;
+export const DEFAULT_AUTO_SAVE_CONFIGURATION: boolean = true;
 export const DEFAULT_LANG: TypeLang = "en";
 // 0x8000 --> 32768
-export const DEFAULT_MEMORY_SIZE: number = 32768;
+export const DEFAULT_MEMORY_SIZE_CONFIGURATION: number = 32768;
+
+export const DEFAULT_WEB_SOCKET_CONFIGURATION: TypeWebSocketConfiguration = {
+  socket_url: AppConfig.socket_url
+};
+
 export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
   calculator:  false,
   code:        true,
@@ -391,7 +397,7 @@ export const ASCII_TABLE = [
 ];
 
 export const CONFIG_WEBSOCKET: SocketIoConfig = {
-  url:     "http://localhost:3000",
+  url:     AppConfig.socket_url,
   options: {
     transports:           ["websocket"],
     reconnection:         true,

@@ -521,6 +521,10 @@ export type TypeFloatingPointStageConfiguration = {
   }
 };
 
+export type TypeWebSocketConfiguration = {
+  socket_url: string;
+};
+
 export type TypeLang = "en" | "sp";
 
 export type TypeConfigurationMachine = {

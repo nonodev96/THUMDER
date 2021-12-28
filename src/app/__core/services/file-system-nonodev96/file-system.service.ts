@@ -3,7 +3,7 @@ import { FileSystemStorageService } from "./file-system-storage.service";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import UploadInfo from "devextreme/file_management/upload_info";
 import { Utils } from "../../../Utils";
-import { InterfaceFileItem } from "../../../types";
+import { InterfaceFileItem, InterfaceUser } from "../../../types";
 import firebase from "firebase/app";
 import Timestamp = firebase.firestore.Timestamp;
 import { Observable, Subject } from "rxjs";
@@ -27,7 +27,7 @@ export class FileSystemService {
   private updateUI$: Subject<void> = new Subject<void>();
 
   constructor(private fileSystemStorageService: FileSystemStorageService) {
-    const userData = JSON.parse(localStorage.getItem("user"));
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     this.UID = userData.uid;
   }
 

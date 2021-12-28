@@ -47,7 +47,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { CoreModule } from "./__core/core.module";
 
 // APP
-import { AppConfig } from "../environments/environment";
+import { AppConfig } from "../environments/_environment";
 import { CONFIG_WEBSOCKET } from "./CONSTAST";
 import { AppComponent } from "./app.component";
 
@@ -95,7 +95,6 @@ import * as PIXI from "pixi.js";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
-import * as environment from "./../environments/environment";
 import { ElectronService } from "./__core/services";
 
 const isServer = ElectronService.isServer;

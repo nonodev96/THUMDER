@@ -1,8 +1,8 @@
 export const AppConfig = {
-  production:  false,
-  server:      true,
-  environment: "WEB",
-  socket_url:  "https://thumder-server-socket-web.com",
+  production:  true,
+  server:      false,
+  environment: "PROD",
+  socket_url:  "https://thumder-server-socket-production.com",
   firebase:    {
     apiKey:            "AIzaSyCJ5qSG6ioLnKShNXiwWaXtLq616yoTMko",
     authDomain:        "thumder-ce41d.firebaseapp.com",
