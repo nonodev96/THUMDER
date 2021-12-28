@@ -82,7 +82,7 @@
           <td colspan="2">
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="memorySize"
+                   [(ngModel)]="memorySizeConfiguration"
                    (change)="checkMemorySize($event.target)"
                    class="form-control" min="512" max="1048576" step="8">
           </td>
@@ -98,7 +98,7 @@
             <div class="form-check">
               <input type="checkbox"
                      [ngModelOptions]="{standalone: true}"
-                     [(ngModel)]="autoSave"
+                     [(ngModel)]="autoSaveConfiguration"
                      (change)="updateAutoSave($event.target)"
                      class="form-check-input"
                      id="autoSaveCheck_ID">
@@ -116,7 +116,7 @@
           <td colspan="2">
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="timeSimulation"
+                   [(ngModel)]="timeSimulationConfiguration"
                    (change)="updateTimeSimulation($event.target)"
                    class="form-control" min="100" max="10000" step="50">
           </td>
@@ -128,18 +128,15 @@
         </tr>
         <tr>
           <th>{{ 'CONFIG.MULTIVIEW' | translate }}</th>
-
           <td colspan="2">
             <div class="form-group">
-
               <div class="form-check">
                 <input class="form-check-input" type="checkbox"
                        [ngModelOptions]="{standalone: true}"
                        [(ngModel)]="multiviewConfiguration.calculator">
                 <label class="form-check-label">{{ 'NAVIGATION.CALCULATOR' | translate }}</label>
               </div>
-
-               <div class="form-check">
+              <div class="form-check">
                 <input class="form-check-input" type="checkbox"
                        [ngModelOptions]="{standalone: true}"
                        [(ngModel)]="multiviewConfiguration.pipeline">
@@ -176,9 +173,28 @@
                 <label class="form-check-label">{{ 'NAVIGATION.STATISTICS' | translate }}</label>
               </div>
             </div>
-
           </td>
         </tr>
+
+        <tr>
+          <th></th>
+          <th colspan="2">{{ 'CONFIG.WEBSOCKET' | translate }}</th>
+        </tr>
+        <tr>
+          <th><label for="webSocketConfigurationID">{{ 'CONFIG.WEBSOCKET' | translate }}</label></th>
+          <td>
+            <div class="form-group">
+                <input type="text"
+                       class="form-control"
+                       id="webSocketConfigurationID"
+                       [readonly]="this.webSocketUrlIsEditable"
+                       [ngModelOptions]="{standalone: true}"
+                       (change)="checkIfHttpUrlIsValid($event.target)"
+                       [(ngModel)]="webSocketConfiguration.socket_url">
+            </div>
+          </td>
+        </tr>
+
       </table>
 
     </form>

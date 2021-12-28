@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
 import { Subscription } from "rxjs";
-import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
+import { MonacoEditorComponent, TypeBreakpoints } from "../../../components/monaco-editor/monaco-editor.component";
 import { InterfaceFileItem, TypeExtrasIDE } from "../../../types";
 import { FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
 import { Utils } from "../../../Utils";
@@ -64,7 +64,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
         }
         this.interfaceFileItem = interfaceFileItem;
         await this.monacoEditorComponent.updateContent(content);
-        const breakpoints = JSON.parse(localStorage.getItem("breakpoints"));
+        const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints;
         this.monacoEditorComponent.setBreakpoints(breakpoints);
         return Promise.resolve();
       }
@@ -81,7 +81,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
-    const auto_save = localStorage.getItem("auto_save");
+    const auto_save = localStorage.getItem("auto_save_configuration") ?? false;
     if (auto_save) {
       localStorage.setItem("breakpoints", JSON.stringify(this.monacoEditorComponent.breakpoints));
       await this.save();

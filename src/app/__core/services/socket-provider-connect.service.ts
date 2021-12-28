@@ -1,12 +1,13 @@
 import { Injectable, EventEmitter, Output } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Socket } from "ngx-socket-io";
+import { Socket, SocketIoConfig } from "ngx-socket-io";
 import { ToastrService } from "ngx-toastr";
 
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
-import { Observable, Subject } from "rxjs";
-import firebase from "firebase";
-import functions = firebase.functions;
+import { Subject } from "rxjs";
+// import { WrappedSocket } from "ngx-socket-io/src/socket-io.service";
+// import { SocketIoConfig } from "ngx-socket-io/src/config/socket-io.config";
+import { AppConfig } from "../../../environments/_environment";
 
 @Injectable({
   providedIn: "root"
@@ -34,66 +35,66 @@ export class SocketProviderConnectService {
    * https://www.tutorialspoint.com/socket.io/socket.io_error_handling.htm
    */
 
-  constructor(public socket: Socket,
+  constructor(public socketIO: Socket,
               private translate: TranslateService,
               private toast: ToastrService) {
     console.log("constructor socket");
 
     // When the client successfully connects.
-    this.socket.ioSocket.on("connect", () => {
+    this.socketIO.ioSocket.on("connect", () => {
       this.connect$.next("Connect");
-      const connect = this.socket.connect();
-      this.socketID = this.socket.ioSocket.id;
+      const connect = this.socketIO.connect();
+      this.socketID = this.socketIO.ioSocket.id;
       if (connect.connected) {
-        this.socket.ioSocket.on(this.socket.ioSocket.id, (res) => {
+        this.socketIO.ioSocket.on(this.socketIO.ioSocket.id, (res) => {
           this.privateMessage$.next(res);
         });
       }
     });
     // When the client is in the process of connecting.
-    this.socket.ioSocket.on("connecting", () => {
+    this.socketIO.ioSocket.on("connecting", () => {
       console.debug("WebSocket-connecting");
 
     });
     // When the client is disconnected.
-    this.socket.ioSocket.on("disconnect", () => {
+    this.socketIO.ioSocket.on("disconnect", () => {
       this.connect$.next("Disconnect");
       console.debug("WebSocket-disconnect");
     });
     // When the connection to the server fails.
-    this.socket.ioSocket.on("connect_failed", (err) => {
+    this.socketIO.ioSocket.on("connect_failed", (err) => {
       console.debug("WebSocket-connect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
     // An error event is sent from the server.
-    this.socket.ioSocket.on("error", (err) => {
+    this.socketIO.ioSocket.on("error", (err) => {
       console.debug("WebSocket-error");
       SocketProviderConnectService.handleErrors(err);
     });
     // When the server sends a message using the send function.
     // When reconnection to the server is successful.
-    this.socket.ioSocket.on("reconnect", () => {
+    this.socketIO.ioSocket.on("reconnect", () => {
       this.connect$.next("Connect");
       console.debug("WebSocket-reconnect");
     });
     // When the client is in the process of connecting.
-    this.socket.ioSocket.on("reconnecting", () => {
+    this.socketIO.ioSocket.on("reconnecting", () => {
       console.debug("WebSocket-reconnecting");
 
     });
     // When the reconnection attempt fails.
-    this.socket.ioSocket.on("reconnect_failed", (err) => {
+    this.socketIO.ioSocket.on("reconnect_failed", (err) => {
       console.debug("WebSocket-reconnect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
-    this.socket.ioSocket.on("connect_error", async (err) => {
+    this.socketIO.ioSocket.on("connect_error", async (err) => {
       console.debug("WebSocket-connect_error");
       SocketProviderConnectService.handleErrors(err);
       const title = await this.translate.get("TOAST.TITLE_SERVER_DOWN").toPromise();
       const message = await this.translate.get("TOAST.MESSAGE_SERVER_DOWN").toPromise();
       this.toast.warning(message, title, DEFAULT_CONFIG_TOAST);
     });
-    this.socket.ioSocket.on("message", (data) => {
+    this.socketIO.ioSocket.on("message", (data) => {
       console.debug("WebSocket-message");
       const title = this.translate.instant("WEBSOCKET.TITLE_NEW_MESSAGE");
       const message = this.translate.instant("WEBSOCKET.MESSAGE_NEW_MESSAGE", {type: "message"});
@@ -102,8 +103,23 @@ export class SocketProviderConnectService {
     });
   }
 
+  public updateSocketURl(newUrl: string) {
+    this.socketIO.disconnect();
+    const config: SocketIoConfig = {
+      url:     newUrl,
+      options: {
+        transports:           ["websocket"],
+        reconnection:         true,
+        reconnectionDelay:    2000,
+        reconnectionDelayMax: 2500,
+        reconnectionAttempts: 5
+      }
+    };
+    this.socketIO = new Socket(config);
+  }
+
   public emitMessage(event = "default", payload = {}, callback?: (...response) => void) {
-    this.socket.ioSocket.emit(event, payload, callback);
+    this.socketIO.ioSocket.emit(event, payload, callback);
   }
 
   private static handleErrors(err) {

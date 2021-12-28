@@ -1,4 +1,4 @@
-import { AppConfig } from "./environments/environment";
+import { AppConfig } from "./environments/_environment";
 import { DLX_DOCUMENTATION } from "./app/__core/DLX/Documentation";
 import { OPCODES } from "./app/__core/DLX/__OPCODES";
 import { Operation } from "./app/__core/DLX/interfaces";

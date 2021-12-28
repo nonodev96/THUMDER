@@ -60,11 +60,11 @@ export class DebugView implements OnInit, AfterViewInit {
 
   constructor(private toast: ToastrService,
               public socketProviderConnect: SocketProviderConnectService) {
-    console.log("ioSocket: ", this.socketProviderConnect.socket.ioSocket);
+    console.log("ioSocket: ", this.socketProviderConnect.socketIO.ioSocket);
   }
 
   ngOnInit(): void {
-    this.socketProviderConnect.socket.on("CodeResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("CodeResponse", (response) => {
       const code = JSON.parse(response) as TypeCode[];
       this.testCodeResponse = code.map((v) => {
         return {
@@ -112,7 +112,7 @@ export class DebugView implements OnInit, AfterViewInit {
   }
 
   socketReconnect() {
-    this.socketProviderConnect.socket.connect();
+    this.socketProviderConnect.socketIO.connect();
   }
 
   showToast() {
@@ -181,7 +181,7 @@ export class DebugView implements OnInit, AfterViewInit {
       const data = await fetch("assets/examples-dlx/prim.s");
       const content = await data.text();
       const payload = JSON.stringify({
-        id:        this.socketProviderConnect.socket.ioSocket.id,
+        id:        this.socketProviderConnect.socketIO.ioSocket.id,
         filename:  "prim.s",
         date:      new Date().toLocaleDateString(),
         content:   content,
@@ -241,7 +241,7 @@ export class DebugView implements OnInit, AfterViewInit {
     try {
       const payload = JSON.stringify(
         {
-          id: this.socketProviderConnect.socket.ioSocket.id
+          id: this.socketProviderConnect.socketIO.ioSocket.id
         }
       );
       this.socketProviderConnect.emitMessage("GetAllRegistersRequest", payload);
@@ -255,9 +255,9 @@ export class DebugView implements OnInit, AfterViewInit {
   async getAllMemory(): Promise<void> {
     try {
       const payload = JSON.stringify({
-        id: this.socketProviderConnect.socket.ioSocket.id
+        id: this.socketProviderConnect.socketIO.ioSocket.id
       });
-      this.socketProviderConnect.socket.emit("GetAllMemoryRequest", payload, (response) => {
+      this.socketProviderConnect.socketIO.emit("GetAllMemoryRequest", payload, (response) => {
         console.log("callback memory", response);
       });
     } catch (error) {

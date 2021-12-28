@@ -104,7 +104,6 @@ export class MachineService {
               private socketProviderConnect: SocketProviderConnectService,
               private translate: TranslateService,
               private toast: ToastrService) {
-    this.floatingPointStageConfiguration = this.store.getItem("floating_point_stage_configuration");
     // this.pipeline = new PixiTHUDER_Pipeline(
     //   this.floatingPointStageConfiguration.addition.count,
     //   this.floatingPointStageConfiguration.multiplication.count,
@@ -112,6 +111,7 @@ export class MachineService {
     // );
     this.canSimulate = false;
 
+    this.floatingPointStageConfiguration = this.store.getItem("floating_point_stage_configuration");
     this.pipeline = new PixiTHUMDER_Pipeline(
       this.floatingPointStageConfiguration.addition.count,
       this.floatingPointStageConfiguration.multiplication.count,
@@ -119,7 +119,7 @@ export class MachineService {
     );
     this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
 
-    this.memorySize = this.store.getItem("memory_size");
+    this.memorySize = this.store.getItem("memory_size_configuration");
     this.memory = new ManagerMemory(this.memorySize);
     this.registers = new ManagerRegisters();
     this.breakpointManager = new ManagerBreakpoints();
@@ -137,31 +137,31 @@ export class MachineService {
     //    console.log("Simulation Step", simulationStep);
     //  });
     // TODO CHECK
-    this.socketProviderConnect.socket.on("UpdateRegisterResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("UpdateRegisterResponse", (response) => {
       const registers = JSON.parse(response) as TypeRegisterToUpdate[];
       this.registers.processResponse(registers);
       console.log("Registers update", registers);
     });
     // TODO CHECK
-    this.socketProviderConnect.socket.on("UpdateMemoryResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("UpdateMemoryResponse", (response) => {
       const memory = JSON.parse(response) as TypeMemoryToUpdate[];
       this.memory.processResponse(memory);
       console.log("Memory update", memory);
     });
-    this.socketProviderConnect.socket.on("GetAllRegistersResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("GetAllRegistersResponse", (response) => {
       const allRegisters = JSON.parse(response) as TypeAllRegisters;
       console.log("GetAllRegisters", allRegisters);
     });
-    this.socketProviderConnect.socket.on("GetAllMemoryResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("GetAllMemoryResponse", (response) => {
       const allMemory = JSON.parse(response) as TypeAllMemory;
       console.log("GetAllMemory", allMemory);
     });
-    this.socketProviderConnect.socket.on("UpdateConfigurationMachineResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("UpdateConfigurationMachineResponse", (response) => {
       const configurationMachine = JSON.parse(response) as TypeConfigurationMachine[];
       console.log("Configuration machine", configurationMachine);
     });
 
-    const timeSimulation = this.store.getItem("time_simulation");
+    const timeSimulation = this.store.getItem("time_simulation_configuration");
     this.timer = interval(timeSimulation).pipe(
       takeUntil(this.isRunning$),
       takeUntil(this.isComplete$)
@@ -191,7 +191,7 @@ export class MachineService {
 
       this.registers.reset();
 
-      this.memorySize = this.store.getItem("memory_size");
+      this.memorySize = this.store.getItem("memory_size_configuration");
       this.memory.setSize(this.memorySize);
       this.memory.reset();
 
@@ -217,7 +217,7 @@ export class MachineService {
       this.isRunning = false;
       this.isBreakpoint = false;
 
-      const timeSimulation = this.store.getItem("time_simulation") as number;
+      const timeSimulation = this.store.getItem("time_simulation_configuration") as number;
       this.timer = null;
       this.timer = interval(timeSimulation).pipe(
         takeUntil(this.isRunning$),
@@ -272,7 +272,7 @@ export class MachineService {
   }
 
   public getStatusWebsocket(): "Connect" | "Disconnect" {
-    return this.socketProviderConnect.socket.ioSocket.id === "" ? "Disconnect" : "Connect";
+    return this.socketProviderConnect.socketIO.ioSocket.id === "" ? "Disconnect" : "Connect";
   }
 
 
@@ -347,7 +347,7 @@ export class MachineService {
       const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
       const content = file.content;
       const payload = JSON.stringify({
-        id:        this.socketProviderConnect.socket.ioSocket.id,
+        id:        this.socketProviderConnect.socketIO.ioSocket.id,
         filename:  "prim.s",
         date:      new Date().toLocaleDateString(),
         content:   content,
@@ -509,7 +509,7 @@ export class MachineService {
   }
 
   public resetConnection() {
-    this.socketProviderConnect.socket.ioSocket.connect(CONFIG_WEBSOCKET.url, {"force new connection": true});
+    this.socketProviderConnect.socketIO.ioSocket.connect(CONFIG_WEBSOCKET.url, {"force new connection": true});
   }
 
 

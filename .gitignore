@@ -3,6 +3,8 @@ tsconfig.serve.tsbuildinfo
 
 # compiled output
 /dist
+/dist-angular
+/dist-electron
 /tmp
 /out-tsc
 /app-builds
@@ -55,3 +57,6 @@ cypress.env.json
 
 cypress/screenshots/*
 cypress/videos/*
+src/environments/environment.dev.ts
+src/environments/environment.production.ts
+src/environments/environment.web.ts

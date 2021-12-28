@@ -14,7 +14,7 @@ import { PixiTHUMDER_CycleClockDiagram, TypeArrowDirection } from "../../__core/
 import { Subscription } from "rxjs";
 import { PixiUtils } from "../../__core/machine/PixiUtils";
 import * as Keyboard from "pixi.js-keyboard";
-import * as Mouse from "pixi.js-mouse";
+// import * as Mouse from "pixi.js-mouse";
 
 @Component({
   selector:    "thumder-pixi-cycle-clock-diagram",
@@ -31,8 +31,8 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   private cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
   private loader: PIXI.Loader;
   private ticker: PIXI.Ticker;
-  private Keyboard;
-  private Mouse;
+  private keyboard;
+  // private Mouse;
   private stepSimulationSubscription: Subscription = new Subscription();
 
   private readonly idCanvas = "pixi-cycle-clock-diagram-id";
@@ -41,8 +41,8 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   public inCanvasEventEmitter = new EventEmitter<boolean>();
 
   constructor(public machine: MachineService) {
-    this.Keyboard = Keyboard;
-    this.Mouse = Mouse;
+    this.keyboard = Keyboard;
+    // this.Mouse = Mouse;
     // this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
     this.cycleClockDiagram = this.machine.cycleClockDiagram;
   }
@@ -116,24 +116,24 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   private gameLoop(delta: number): void {
     // Update the current game state:
     this.play(delta);
-    this.Keyboard.update();
-    this.Mouse.update();
+    this.keyboard.update();
+    // this.Mouse.update();
   }
 
   private play(delta: number): void {
-    if (this.Keyboard.isKeyDown("ArrowLeft", "KeyA", "KeyJ")) {
+    if (this.keyboard.isKeyDown("ArrowLeft", "KeyA", "KeyJ")) {
       this.cycleClockDiagram.moveRight();
     }
-    if (this.Keyboard.isKeyDown("ArrowRight", "KeyD", "KeyL")) {
+    if (this.keyboard.isKeyDown("ArrowRight", "KeyD", "KeyL")) {
       this.cycleClockDiagram.moveLeft();
     }
-    if (this.Keyboard.isKeyDown("ArrowUp", "KeyW", "KeyI")) {
+    if (this.keyboard.isKeyDown("ArrowUp", "KeyW", "KeyI")) {
       this.cycleClockDiagram.moveBottom();
     }
-    if (this.Keyboard.isKeyDown("ArrowDown", "KeyS", "KeyK")) {
+    if (this.keyboard.isKeyDown("ArrowDown", "KeyS", "KeyK")) {
       this.cycleClockDiagram.moveTop();
     }
-    if (this.Keyboard.isKeyDown("KeyR")) {
+    if (this.keyboard.isKeyDown("KeyR")) {
       this.cycleClockDiagram.reset();
     }
   }
