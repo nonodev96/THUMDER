@@ -134,8 +134,8 @@
           </li>
 
           <!-- DEBUG -->
-          <li role="menuitem" class="nav-header">DEBUG</li>
           <ng-container *ngIf="isProduction">
+            <li role="menuitem" class="nav-header">DEBUG</li>
             <li class="nav-item">
               <a class="nav-link" [routerLink]="'/auth/debug'">
                 <i class="nav-icon fas fa-bug"></i>

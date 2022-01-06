@@ -73,10 +73,13 @@ jobs:
       - name: Context
         env:
           RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
-        run: |
+          ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
+      run: |
           echo "$RUNNER_CONTEXT"
           echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
 
+      # Write secrets
+      - run: echo $ANGULAR_ENVIROTMENT_PRODUCTION > ./src/environments/environment.production.ts
       - run: npm install
       - run: npm run postinstall
       - run: npm run electron:build
