@@ -213,7 +213,7 @@ export function markedOptionsFactory(): MarkedOptions {
       }
     }),
     ToastrModule.forRoot(),
-    SocketIoModule.forRoot(CONFIG_WEBSOCKET),
+    // SocketIoModule.forRoot(CONFIG_WEBSOCKET),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

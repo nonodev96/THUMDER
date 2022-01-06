@@ -43,7 +43,7 @@ export const REGEX_IS_ABSOLUTE_HREF = new RegExp("(?:^[a-z][a-z0-9+.-]*:|\/\/)",
 export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{08})$", "i");
 export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
 
-
+export const DEFAULT_BREAKPOINTS: [] = [];
 export const DEFAULT_TIME_SIMULATION_CONFIGURATION: number = 250;
 export const DEFAULT_AUTO_SAVE_CONFIGURATION: boolean = true;
 export const DEFAULT_LANG: TypeLang = "en";
@@ -186,6 +186,7 @@ export const DEFAULT_TABLE_CODE: TypeTableCode = {
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   progressBar:       true,
+  positionClass:     "toast-bottom-left",
   progressAnimation: "decreasing",
   closeButton:       true
 };
@@ -397,7 +398,8 @@ export const ASCII_TABLE = [
 ];
 
 export const CONFIG_WEBSOCKET: SocketIoConfig = {
-  url:     AppConfig.socket_url,
+  url: AppConfig.socket_url,
+
   options: {
     transports:           ["websocket"],
     reconnection:         true,
@@ -409,12 +411,36 @@ export const CONFIG_WEBSOCKET: SocketIoConfig = {
 
 export const AUTH_ROUTES: PublicRoutesList = [
   {
-    lang:        "CALCULATOR",
-    path:        "calculator",
-    routerLink:  "/auth/calculator",
-    displayName: "Calculator",
-    data:        {breadcrumb: "calculator"},
-    icon:        "fas fa-calculator"
+    lang:        "PIPELINE",
+    path:        "pipeline",
+    routerLink:  "/auth/pipeline",
+    displayName: "Pipeline",
+    data:        {breadcrumb: "Pipeline"},
+    icon:        "fas fa-desktop"
+  },
+  {
+    lang:        "CYCLE_CLOCK_DIAGRAM",
+    path:        "cycle-clock-diagram",
+    routerLink:  "/auth/cycle-clock-diagram",
+    displayName: "Cycle clock diagram",
+    data:        {breadcrumb: "Cycle-clock-diagram"},
+    icon:        "fas fa-desktop"
+  },
+  {
+    lang:        "REGISTERS",
+    path:        "registers",
+    routerLink:  "/auth/registers",
+    displayName: "Registers",
+    data:        {breadcrumb: "Registers"},
+    icon:        "fas fa-microchip"
+  },
+  {
+    lang:        "MEMORY",
+    path:        "memory",
+    routerLink:  "/auth/memory",
+    displayName: "Memory",
+    data:        {breadcrumb: "Memory"},
+    icon:        "fas fa-memory"
   },
   {
     lang:        "CODE",
@@ -425,20 +451,12 @@ export const AUTH_ROUTES: PublicRoutesList = [
     icon:        "fas fa-calculator"
   },
   {
-    lang:        "CONFIG",
-    path:        "config",
-    routerLink:  "/auth/config",
-    displayName: "Config",
-    data:        {breadcrumb: "config"},
-    icon:        "fas fa-wrench"
-  },
-  {
-    lang:        "DOCUMENTATION",
-    path:        "documentation",
-    routerLink:  "/auth/documentation",
-    displayName: "Documentation",
-    data:        {breadcrumb: "Documentation"},
-    icon:        "fas fa-book"
+    lang:        "STATISTICS",
+    path:        "statistics",
+    routerLink:  "/auth/statistics",
+    displayName: "Statistics",
+    data:        {breadcrumb: "Statistics"},
+    icon:        "fas fa-chart-bar"
   },
   {
     lang:        "FILE_MANAGER",
@@ -457,62 +475,6 @@ export const AUTH_ROUTES: PublicRoutesList = [
     icon:        "far fa-file"
   },
   {
-    lang:        "LOGGER",
-    path:        "logger",
-    routerLink:  "/auth/logger",
-    displayName: "Logger",
-    data:        {breadcrumb: "Logger"},
-    icon:        "fas fa-file-code"
-  },
-  {
-    lang:        "MEMORY",
-    path:        "memory",
-    routerLink:  "/auth/memory",
-    displayName: "Memory",
-    data:        {breadcrumb: "Memory"},
-    icon:        "fas fa-memory"
-  },
-  {
-    lang:        "CYCLE_CLOCK_DIAGRAM",
-    path:        "cycle-clock-diagram",
-    routerLink:  "/auth/cycle-clock-diagram",
-    displayName: "Cycle clock diagram",
-    data:        {breadcrumb: "Cycle-clock-diagram"},
-    icon:        "fas fa-desktop"
-  },
-  {
-    lang:        "PIPELINE",
-    path:        "pipeline",
-    routerLink:  "/auth/pipeline",
-    displayName: "Pipeline",
-    data:        {breadcrumb: "Pipeline"},
-    icon:        "fas fa-desktop"
-  },
-  {
-    lang:        "PROFILE",
-    path:        "profile",
-    routerLink:  "/auth/profile",
-    displayName: "Profile",
-    data:        {breadcrumb: "Profile"},
-    icon:        "fas fa-user"
-  },
-  {
-    lang:        "REGISTERS",
-    path:        "registers",
-    routerLink:  "/auth/registers",
-    displayName: "Registers",
-    data:        {breadcrumb: "Registers"},
-    icon:        "fas fa-microchip"
-  },
-  {
-    lang:        "STATISTICS",
-    path:        "statistics",
-    routerLink:  "/auth/statistics",
-    displayName: "Statistics",
-    data:        {breadcrumb: "Statistics"},
-    icon:        "fas fa-chart-bar"
-  },
-  {
     lang:        "MULTIVIEW",
     path:        "multiview",
     routerLink:  "/auth/multiview",
@@ -521,12 +483,52 @@ export const AUTH_ROUTES: PublicRoutesList = [
     icon:        "fas fa-table"
   },
   {
+    lang:        "CALCULATOR",
+    path:        "calculator",
+    routerLink:  "/auth/calculator",
+    displayName: "Calculator",
+    data:        {breadcrumb: "calculator"},
+    icon:        "fas fa-calculator"
+  },
+  {
+    lang:        "DOCUMENTATION",
+    path:        "documentation",
+    routerLink:  "/auth/documentation",
+    displayName: "Documentation",
+    data:        {breadcrumb: "Documentation"},
+    icon:        "fas fa-book"
+  },
+  {
+    lang:        "CONFIG",
+    path:        "config",
+    routerLink:  "/auth/config",
+    displayName: "Config",
+    data:        {breadcrumb: "config"},
+    icon:        "fas fa-wrench"
+  },
+  {
     lang:        "DEBUG",
     path:        "debug",
     routerLink:  "/auth/debug",
     displayName: "Debug",
     data:        {breadcrumb: "Debug"},
     icon:        "fas fa-bug"
+  },
+  {
+    lang:        "LOGGER",
+    path:        "logger",
+    routerLink:  "/auth/logger",
+    displayName: "Logger",
+    data:        {breadcrumb: "Logger"},
+    icon:        "fas fa-file-code"
+  },
+  {
+    lang:        "PROFILE",
+    path:        "profile",
+    routerLink:  "/auth/profile",
+    displayName: "Profile",
+    data:        {breadcrumb: "Profile"},
+    icon:        "fas fa-user"
   }
 ];
 

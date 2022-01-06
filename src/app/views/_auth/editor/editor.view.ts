@@ -12,9 +12,9 @@ import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTAST";
 
 @Component({
-  selector: "view-editor",
+  selector:    "view-editor",
   templateUrl: "./editor.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
@@ -115,6 +115,11 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     } else {
       interfaceFileItem = JSON.parse(localStorage.getItem("interfaceFileItem"));
     }
+    if (interfaceFileItem.$key === "") {
+      console.warn("Debes crear un fichero antes de guardarlo");
+      return Promise.resolve();
+    }
+
     interfaceFileItem.content = updateContent;
     localStorage.setItem("interfaceFileItem", JSON.stringify(interfaceFileItem));
     try {
@@ -123,7 +128,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
       const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
       this.toastService.success(message, title, {
-        timeOut: 1500,
+        timeOut:       1500,
         positionClass: "toast-bottom-left"
       });
     } catch (error) {
@@ -131,7 +136,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
       const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
       this.toastService.error(message, title, {
-        timeOut: 2500,
+        timeOut:       2500,
         positionClass: "toast-bottom-left"
       });
     }

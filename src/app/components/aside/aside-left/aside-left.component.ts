@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { AUTH_ROUTES } from "../../../CONSTAST";
 import { PublicRoutes } from "../../../types";
 import { AuthService } from "../../../__core/auth/auth.service";
+import { AppConfig } from "../../../../environments/_environment";
 
 @Component({
   selector: 'app-aside-left',
@@ -11,6 +12,7 @@ import { AuthService } from "../../../__core/auth/auth.service";
 })
 export class AsideLeftComponent implements OnInit {
 
+  public readonly isProduction = !AppConfig.production;
   public readonly AUTH_ROUTES_ASIDE = AUTH_ROUTES;
 
   constructor(public authService: AuthService,

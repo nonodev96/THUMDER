@@ -3,6 +3,7 @@ import { NPM_VERSION } from "../../../CONSTAST";
 import { StorageService } from "../../../__core/storage/storage.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { Subscription } from "rxjs";
+import { AppConfig } from "../../../../environments/_environment";
 
 @Component({
   selector: "app-footer",
@@ -11,6 +12,7 @@ import { Subscription } from "rxjs";
 export class FooterComponent implements OnInit, OnDestroy {
   date: number = new Date().getFullYear();
   version: string = NPM_VERSION;
+  environment: string = AppConfig.environment;
   lang: string = "";
   logger: string[] = [];
   private loggerSubscription: Subscription = new Subscription();

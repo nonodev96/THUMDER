@@ -8,12 +8,21 @@
     "link": "Mas información",
     "policy": "Política de cookies"
   },
+  "WEBSOCKET": {
+    "TITLE_NEW_MESSAGE": "Nuevo mensaje",
+    "MESSAGE_NEW_MESSAGE": "Nuevo mensaje {{type}}"
+  },
+  "ACCOUNT": {
+    "ACCOUNT": "Cuenta",
+    "PROFILE": "Perfil",
+    "SIGN_OUT": "Cerrar sesión"
+  },
   "NAVIGATION": {
     "PAGES": "Páginas",
-    "FILE-MANAGER": "Gestor de ficheros",
+    "FILE_MANAGER": "Gestor de ficheros",
     "EDITOR": "Editor",
     "PIPELINE": "Pipeline",
-    "CYCLE-CLOCK-DIAGRAM": "Ciclos de reloj",
+    "CYCLE_CLOCK_DIAGRAM": "Ciclos de reloj",
     "MEMORY": "Memoria",
     "CODE": "Código",
     "REGISTERS": "Registros",
@@ -22,24 +31,174 @@
     "CONFIG": "Configuración",
     "CALCULATOR": "Calculadora",
     "STATISTICS": "Estadisticas",
-    "ABOUT": "Sobre nosotros"
+    "ABOUT": "Sobre nosotros",
+    "MULTIVIEW": "Multiples vistas",
+    "LOGGER": "Historial de logs",
+    "DEBUG": "Pruebas"
+  },
+  "ST": {
+    "TOTAL": {
+      "TITLE": "Total",
+      "CYCLES_EXECUTED": "{{ cycles }} Cycle(s) Ejecutados",
+      "ID_EXECUTED": "ID Ejecutados  {{ instructions }} por instruction(es)",
+      "INSTRUCTIONS_IN_PIPELINE": "{{ instructions_in_pipeline }} Instruction(es) actualmente en el Pipeline"
+    },
+    "HARDWARE": {
+      "TITLE": "Configuración del hardware",
+      "MEMORY_SIZE": "Tamaño de la memoria: {{ size }} Bytes",
+      "FADD_EX_STAGES": "faddEx-Stages: {{ num }}, ciclos requeridos: {{ cycles }}",
+      "FMULT_EX_STAGES": "fmultEx-Stages: {{ num }}, ciclos requeridos: {{ cycles }}",
+      "FDIV_EX_STAGES": "fdivEx-Stages: {{ num }}, ciclos requeridos: {{ cycles }}",
+      "FORWARDING": "Reenvío"
+    },
+    "STALLS": {
+      "TITLE": "Riesgos",
+      "RAW_STALLS": "Riesgos RAW: {{ num }} ({{ per }}% de todos los ciclos)",
+      "LD_STALLS": "Riesgos LD: {{ num }} ({{ per }}% of RAW riesgos)",
+      "BRANCH_STALLS": "Riesgos Branch/Jump: {{ num }} ({{ per }}% of RAW riesgos)",
+      "FLOATING_POINT_STALLS": "Riesgos de operaciones de punto flotante: {{ num }} ({{ per }}% of RAW riesgos)",
+      "WAW_STALLS": "Riesgos LD: {{ num }} ({{ per }}% de todos los ciclos)",
+      "STRUCTURAL_STALLS": "Riesgos Structural: {{ num }} ({{ per }}% de todos los ciclos)",
+      "CONTROL_STALLS": "Riesgos Control: {{ num }} ({{ per }}% de todos los ciclos)",
+      "TRAP_STALLS": "Riesgos Trap: {{ num }} ({{ per }}% de todos los ciclos)",
+      "TOTAL": "TOTAL: {{ num }} Riesgo(s) ({{ per }}% de todos los ciclos)"
+    },
+    "CONDITIONAL": {
+      "TITLE": "Ramas condicionales",
+      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)",
+      "TAKEN": "Tomadas: {{ num }} ({{ per }}% de todas las ramas condicionales)",
+      "NOT_TAKEN": "No tomadas: {{ num }} ({{ per }}% de todas las ramas condicionales)"
+    },
+    "LOAD_STORE": {
+      "TITLE": "Instrucciones de carga y guardado",
+      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)",
+      "LOADS": "Cargas: {{ num }} ({{ per }}% de Instrucciones de carga y guardado)",
+      "STORES": "Guardado: {{ num }} ({{ per }}% de Instrucciones de carga y guardado)"
+    },
+    "FLOATING": {
+      "TITLE": "Instrucciones de punto flotante",
+      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)",
+      "ADDITIONS": "Sumas: {{ num }} ({{ per }}% de instruciones de punto flotante.)",
+      "MULTIPLICATIONS": "Multiplicaciones: {{ num }} ({{ per }}% instrucciones de punto flotante.)",
+      "DIVISIONS": "Divisiones: {{ num }} ({{ per }}% instrucciones de punto flotante.)"
+    },
+    "TRAPS": {
+      "TITLE": "Traps",
+      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)"
+    },
+    "KEY": "VALUE"
+  },
+  "MACHINE": {
+    "INDEX": "Indice",
+    "EDIT_REGISTER": "Editar registro",
+    "EDIT_REGISTER_CONTROL": "Editar registro Control",
+    "SELECT_REGISTER_R": "Selecciona registro entero",
+    "SELECT_REGISTER_F": "Selecciona registro flotante de simple precisión",
+    "SELECT_REGISTER_D": "Selecciona registro flotante de doble precisión",
+    "SELECT_ADDRESS": "Selecciona dirección de memoria",
+    "REGISTERS_CONTROL": "Registros Control",
+    "REGISTERS_INTEGER": "Registros Enteros",
+    "REGISTERS_FLOAT": "Registros Float | flotante de simple precisión",
+    "REGISTERS_DOUBLE": "Registros Double | flotante de doble precisión",
+    "CYCLE_CLOCK_DIAGRAM": "Diagrama de ciclos del reloj",
+    "PIPELINE": "Pipeline",
+    "LINE": "Linea",
+    "TEXT": "Texto",
+    "ADDRESS": "Dirección",
+    "CODE": "Código",
+    "STAGE": "Stage",
+    "INSTRUCTION": "Instrucción",
+    "SET_MEMORY_VALUE": "Dar valor a la memoria",
+    "INTEGER": "Entero",
+    "REGISTER": "Registro",
+    "MEMORY": "Memoria",
+    "DECIMAL": "Decimal",
+    "HEXADECIMAL": "Hexadecimal",
+    "OCTAL": "Octal",
+    "BINARY": "Binario",
+    "EDIT_MEMORY": "Editar memoria",
+    "TYPE_DATA": "Tipo de dato",
+    "BYTE": "Byte",
+    "BYTES": "Bytes",
+    "HALF_WORD": "Half word",
+    "WORD": "Word",
+    "FLOAT": "Float",
+    "ASCII": "ASCII",
+    "DOUBLE": "Double",
+    "BINARY_FLOAT": "Binario float",
+    "BINARY_DOUBLE": "Binario double",
+    "SIMPLE_FLOATING_POINT": "Flotante de simple precisión",
+    "DOUBLE_FLOATING_POINT": "Flotante de doble precisión"
+  },
+  "TYPE_DATA": {
+    "BYTE": "Byte",
+    "HALF_WORD": "Half word",
+    "WORD": "Word | Palabra",
+    "IEEE754": "IEEE 754 32 bits",
+    "IEEE754_64": "IEEE 754 64 bits"
+  },
+  "FORMS": {
+    "ENTER_VALUE": "Instroducir valor",
+    "RESET": "Reiniciar",
+    "CLOSE": "Cerrar",
+    "SAVE": "Guardar"
   },
   "CONFIG": {
     "LANG": "Idioma",
-    "VERSION": "Versión"
-  },
-  "ST": {
-  },
-  "FORMS": {
-    "SAVE": "Guardar"
+    "VERSION": "Versión",
+    "MULTIVIEW": "Multiples vistas",
+    "WEBSOCKET": "Web Socket",
+    "ENVIRONMENT": "Variables de entorno",
+    "AUTO_SAVE": "Auto guardado",
+    "COUNT": "Cantidad",
+    "DELAY": "Tiempo de espera",
+    "MEMORY_SIZE": "Tamaño de la memoria",
+    "TIME_SIMULATION": "Tiempo por ciclo de simulación",
+    "FLOATING_POINT_STAGE_CONFIGURATION": "Configuración de las operaciones de punto flotante",
+    "ADDITION": "Sumas",
+    "MULTIPLICATION": "Multiplicaciones",
+    "DIVISION": "Divisiones",
+    "MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION": "Number of units in each class: 1 <= M <= 8 -- Delay",
+    "MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION": "(Clock cycles): 1 <= N <= 50",
+    "MESSAGE_3_FLOATING_POINT_STAGE_CONFIGURATION": "WARNING: if you change the values, the processor wil be reset automatically!",
+    "SIZE": "Tamaño"
   },
   "TOAST": {
     "ACCESS_DENIED": "Acceso denegado",
     "LOGIN_FALSE": "Necesitas iniciar sesión",
     "TITLE_SERVER_DOWN": "Error en el socket",
-    "MESSAGE_SERVER_DOWN": "El servidor está desconectado"
+    "MESSAGE_SERVER_DOWN": "El servidor está desconectado",
+    "TITLE_ERROR_REGEX": "Error en la expresión regex",
+    "MESSAGE_ERROR_REGEX_MEMORY": "Error en el valor de la memoria, el valor es invalido",
+    "TITLE_ERROR_IN_ADDRESS": "Error en la dirección",
+    "MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE": "La dirección debe ser un multiplo del tamaño del dato ({{text}})",
+    "TITLE_ERROR_IN_VALUE_MEMORY": "Error en el valor de la memoria",
+    "MESSAGE_ERROR_IN_VALUE_MEMORY": "Valor en la sección no válido",
+    "TITLE_ERROR_IN_ADDRESS_MEMORY": "Error en la memoria",
+    "MESSAGE_ERROR_IN_ADDRESS_MEMORY": "Dirección no valida, fuera del rango",
+    "TITLE_SAVE_FILE": "Fichero guardado",
+    "MESSAGE_SAVE_FILE": "Exitosamente",
+    "TITLE_ERROR_SAVE_FILE": "Fichero no guardado",
+    "MESSAGE_ERROR_SAVE_FILE": "Error",
+    "TITLE_RESET_MACHINE": "Reinicio de la máquina",
+    "MESSAGE_RESET_MACHINE": "Reinicio de la máquina correctamente",
+    "TITLE_END_SIMULATION": "Fin de la simulación",
+    "MESSAGE_END_SIMULATION": "Fin de la simulación correctamente",
+    "TITLE_BREAKPOINT_SIMULATION": "Breakpoint",
+    "MESSAGE_BREAKPOINT_SIMULATION": "Pausa la simulación"
+  },
+  "MODAL": {
+    "TEXT": "Texto",
+    "INFO": "Información",
+    "TITLE": "Titulo",
+    "CLOSE": "Cerrar",
+    "OK": "Ok"
   },
   "PAGES": {
+    "INDEX": {
+      "PAGES": "Páginas",
+      "MORE_INFO": "Más información"
+    },
     "HOME": {
       "TITLE": "App funciona!",
       "GO_TO_DETAIL": "Ir al detalle"
