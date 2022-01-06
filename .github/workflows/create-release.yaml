@@ -73,7 +73,7 @@ jobs:
       - name: Secrets And Envirotment
         env:
           ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
-        run: echo "$ANGULAR_ENVIROTMENT_PRODUCTION" > ./src/environments/environment.production.ts
+        run: echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
 
       - name: Context
         env:
