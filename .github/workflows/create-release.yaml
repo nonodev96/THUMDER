@@ -3,7 +3,7 @@ name: Build/release
 on:
   push:
     tags:
-    - 'v*'
+      - 'v*'
 
 jobs:
   Make_GitHub_Release:
@@ -70,17 +70,17 @@ jobs:
         uses: tyankatsu0105/read-package-version-actions@v1
         id: package_version
 
+      - name: Secrets And Envirotment
+        env:
+          ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
+        run: echo "$ANGULAR_ENVIROTMENT_PRODUCTION" > ./src/environments/environment.production.ts
+
       - name: Context
         env:
           RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
-      - run: |
+        run: |
           echo "$RUNNER_CONTEXT"
           echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
-
-      - name: Secrets And Envirotment
-      - run: echo "$ANGULAR_ENVIROTMENT_PRODUCTION" > ./src/environments/environment.production.ts
-        env:
-          ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
 
       - run: npm install
       - run: npm run postinstall
