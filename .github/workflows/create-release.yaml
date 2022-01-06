@@ -58,8 +58,7 @@ jobs:
             asset_content_type: application/x-apple-diskimage
 
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
@@ -71,7 +70,6 @@ jobs:
         id: package_version
 
       - name: Secrets And Envirotment
-        uses: actions/checkout@v2
         run: |
           echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
           echo "::set-output Size ${#ANGULAR_ENVIROTMENT_PRODUCTION}"
