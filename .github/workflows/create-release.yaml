@@ -64,7 +64,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Read package.json
         uses: tyankatsu0105/read-package-version-actions@v1
@@ -73,7 +73,9 @@ jobs:
       - name: Secrets And Envirotment
         env:
           ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
-        run: echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
+        run: |
+          echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
+          cat ./src/environments/environment.production.ts
 
       - name: Context
         env:
