@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import {
-  DEFAULT_AUTO_SAVE_CONFIGURATION,
+  DEFAULT_AUTO_SAVE_CONFIGURATION, DEFAULT_BREAKPOINTS,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
   DEFAULT_INTERFACE_FILE_ITEM,
   DEFAULT_LANG,
@@ -45,6 +45,9 @@ export class StorageService {
     }
     if (!this.hasItem("interfaceFileItem")) {
       this.setItem("interfaceFileItem", DEFAULT_INTERFACE_FILE_ITEM);
+    }
+    if (!this.hasItem("breakpoints")) {
+      this.setItem("breakpoints", DEFAULT_BREAKPOINTS);
     }
     if (!this.hasItem("floating_point_stage_configuration")) {
       this.setItem("floating_point_stage_configuration", DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);

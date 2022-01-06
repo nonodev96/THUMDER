@@ -26,87 +26,192 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" data-accordion="false" role="menu">
 
+        <!--
+                <ng-container *ngIf="authService.isLoggedIn">
+                  <li role="menuitem" class="nav-header">Auth</li>
+                  <li role="menuitem" class="nav-item has-treeview">
+                    <a class="nav-link">
+                      <i class="nav-icon fas fa-book"></i>
+                      <p id="ComponentsID">
+                        Components
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview" role="menu">
+                      <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
+                        <a class="nav-link" (click)="goToPage($event, menu)">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>{{ 'NAVIGATION.' + menu.lang | translate }}</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ng-container>
+        -->
+
         <ng-container *ngIf="authService.isLoggedIn">
-          <li role="menuitem" class="nav-header">Auth</li>
-          <li role="menuitem" class="nav-item has-treeview">
-            <a class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p id="ComponentsID">
-                Components
-                <i class="fas fa-angle-left right"></i>
-              </p>
+          <li role="menuitem" class="nav-header">Machine</li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/pipeline'">
+              <i class="nav-icon fas fa-desktop"></i>
+              <p>{{ 'NAVIGATION.PIPELINE' | translate }}</p>
             </a>
-            <ul class="nav nav-treeview" role="menu">
-              <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
-                <a class="nav-link" (click)="goToPage($event, menu)">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>{{ 'NAVIGATION.' + menu.lang | translate }}</p>
-                </a>
-              </li>
-            </ul>
           </li>
-        </ng-container>
-
-        <ng-container *ngIf="!authService.isLoggedIn">
-          <li role="menuitem" class="nav-header">Externs</li>
-          <li role="menuitem" class="nav-item has-treeview">
-            <a class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>Pages
-                <i class="fas fa-angle-left right"></i>
-              </p>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/cycle-clock-diagram'">
+              <i class="nav-icon fas fa-desktop"></i>
+              <p>{{ 'NAVIGATION.CYCLE_CLOCK_DIAGRAM' | translate }}</p>
             </a>
-            <ul class="nav nav-treeview" role="menu">
-              <li role="menuitem" class="nav-item">
-                <a class="nav-link" [routerLink]="['/login']">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Login</p>
-                </a>
-              </li>
-              <li role="menuitem" class="nav-item">
-                <a class="nav-link" [routerLink]="['/register']">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Register</p>
-                </a>
-              </li>
-              <li role="menuitem" class="nav-item">
-                <a class="nav-link" [routerLink]="['/forgot-password']">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Forgot password</p>
-                </a>
-              </li>
-            </ul>
           </li>
-        </ng-container>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/registers'">
+              <i class="nav-icon fas fa-microchip"></i>
+              <p>{{ 'NAVIGATION.REGISTERS' | translate }}</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/memory'">
+              <i class="nav-icon fas fa-memory"></i>
+              <p>{{ 'NAVIGATION.MEMORY' | translate }}</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/code'">
+              <i class="nav-icon fas fa-calculator"></i>
+              <p>{{ 'NAVIGATION.CODE' | translate }}</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/statistics'">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>{{ 'NAVIGATION.STATISTICS' | translate }}</p>
+            </a>
+          </li>
 
-        <li role="menuitem" class="nav-header">{{ 'NAVIGATION.ABOUT'| translate }}</li>
-        <li role="menuitem" class="nav-item has-treeview">
-          <a class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
-            <p>
-              {{ 'NAVIGATION.ABOUT'| translate }}
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview" role="menu">
-            <li role="menuitem" class="nav-item">
-              <a class="nav-link" [routerLink]="['/landing/about']">
-                <i class="far fa-circle nav-icon"></i>
-                <p>{{ 'NAVIGATION.ABOUT' | translate }}</p>
+          <!-- IDE -->
+          <li role="menuitem" class="nav-header">IDE</li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/file-manager'">
+              <i class="nav-icon fas fa-folder-open"></i>
+              <p>{{ 'NAVIGATION.FILE_MANAGER' | translate }}</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/editor'">
+              <i class="nav-icon fas fa-file"></i>
+              <p>{{ 'NAVIGATION.EDITOR' | translate }}</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/multiview'">
+              <i class="nav-icon fas fa-table"></i>
+              <p>{{ 'NAVIGATION.MULTIVIEW' | translate }}</p>
+            </a>
+          </li>
+
+          <!-- Utils -->
+          <li role="menuitem" class="nav-header">Utils</li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/calculator'">
+              <i class="nav-icon fas fa-calculator"></i>
+              <p>{{ 'NAVIGATION.CALCULATOR' | translate }}</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/documentation'">
+              <i class="nav-icon fas fa-book"></i>
+              <p>{{ 'NAVIGATION.DOCUMENTATION' | translate }}</p>
+            </a>
+          </li>
+
+          <!-- Config -->
+          <li role="menuitem" class="nav-header">Config</li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/auth/config'">
+              <i class="nav-icon fas fa-wrench"></i>
+              <p>{{ 'NAVIGATION.CONFIG' | translate }}</p>
+            </a>
+          </li>
+
+          <!-- DEBUG -->
+          <li role="menuitem" class="nav-header">DEBUG</li>
+          <ng-container *ngIf="isProduction">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'/auth/debug'">
+                <i class="nav-icon fas fa-bug"></i>
+                <p>{{ 'NAVIGATION.DEBUG' | translate }}</p>
               </a>
             </li>
-          </ul>
-        </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'/auth/logger'">
+                <i class="nav-icon fas fa-file-code"></i>
+                <p>{{ 'NAVIGATION.LOGGER' | translate }}</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="'/auth/profile'">
+                <i class="nav-icon fas fa-user"></i>
+                <p>{{ 'ACCOUNT.PROFILE' | translate }}</p>
+              </a>
+            </li>
+          </ng-container>
+
+          <li role="menuitem" class="nav-header">{{ 'NAVIGATION.ABOUT'| translate }}</li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="'/landing/about'">
+              <i class="nav-icon fas fa-book"></i>
+              <p>{{ 'NAVIGATION.ABOUT'| translate }}</p>
+            </a>
+          </li>
+
+        </ng-container>
+
+
+        <!--
+                <ng-container *ngIf="!authService.isLoggedIn">
+                  <li role="menuitem" class="nav-header">Externs</li>
+                  <li role="menuitem" class="nav-item has-treeview">
+                    <a class="nav-link">
+                      <i class="nav-icon fas fa-book"></i>
+                      <p>Pages
+                        <i class="fas fa-angle-left right"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview" role="menu">
+                      <li role="menuitem" class="nav-item">
+                        <a class="nav-link" [routerLink]="['/login']">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Login</p>
+                        </a>
+                      </li>
+                      <li role="menuitem" class="nav-item">
+                        <a class="nav-link" [routerLink]="['/register']">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Register</p>
+                        </a>
+                      </li>
+                      <li role="menuitem" class="nav-item">
+                        <a class="nav-link" [routerLink]="['/forgot-password']">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Forgot password</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ng-container>
+        -->
 
         <ng-container *ngIf="authService.isLoggedIn">
           <li class="nav-header">{{ 'ACCOUNT.ACCOUNT' | translate }}</li>
 
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="'/auth/profile'">
-              <i class="nav-icon fas fa-user"></i>
-              <p>{{ 'ACCOUNT.PROFILE' | translate }}</p>
-            </a>
-          </li>
+          <!--
+                    <li class="nav-item">
+                      <a class="nav-link" [routerLink]="'/auth/profile'">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>{{ 'ACCOUNT.PROFILE' | translate }}</p>
+                      </a>
+                    </li>
+          -->
 
           <li class="nav-item">
             <a class="nav-link" (click)="authService.SignOut()">

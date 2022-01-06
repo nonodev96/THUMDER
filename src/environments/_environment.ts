@@ -1,15 +1,16 @@
 export const AppConfig = {
-  production:  false,
-  server:      false,
-  environment: "",
-  socket_url:  "",
-  firebase:    {
+  environment:             "",
+  production:              false,
+  server:                  false,
+  readonly_web_socket_url: false,
+  socket_url:              "",
+  firebase:                {
     apiKey:            "",
     authDomain:        "",
     projectId:         "",
     storageBucket:     "",
     messagingSenderId: "",
     appId:             "",
-    measurementId:     "",
+    measurementId:     ""
   }
 };

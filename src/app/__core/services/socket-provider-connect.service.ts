@@ -8,6 +8,8 @@ import { Subject } from "rxjs";
 // import { WrappedSocket } from "ngx-socket-io/src/socket-io.service";
 // import { SocketIoConfig } from "ngx-socket-io/src/config/socket-io.config";
 import { AppConfig } from "../../../environments/_environment";
+import { StorageService } from "../storage/storage.service";
+import { TypeWebSocketConfiguration } from "../../types";
 
 @Injectable({
   providedIn: "root"
@@ -30,15 +32,23 @@ export class SocketProviderConnectService {
     return this.privateMessage$.asObservable();
   }
 
-  /**
-   * TODO
-   * https://www.tutorialspoint.com/socket.io/socket.io_error_handling.htm
-   */
-
-  constructor(public socketIO: Socket,
+  public socketIO: Socket;
+  constructor(
               private translate: TranslateService,
               private toast: ToastrService) {
     console.log("constructor socket");
+    const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
+    const config: SocketIoConfig = {
+      url:     configWebSocket.socket_url,
+      options: {
+        transports:           ["websocket"],
+        reconnection:         true,
+        reconnectionDelay:    2000,
+        reconnectionDelayMax: 2500,
+        reconnectionAttempts: 5
+      }
+    };
+    this.socketIO = new Socket(config);
 
     // When the client successfully connects.
     this.socketIO.ioSocket.on("connect", () => {
@@ -80,7 +90,6 @@ export class SocketProviderConnectService {
     // When the client is in the process of connecting.
     this.socketIO.ioSocket.on("reconnecting", () => {
       console.debug("WebSocket-reconnecting");
-
     });
     // When the reconnection attempt fails.
     this.socketIO.ioSocket.on("reconnect_failed", (err) => {
@@ -103,10 +112,11 @@ export class SocketProviderConnectService {
     });
   }
 
-  public updateSocketURl(newUrl: string) {
+  public updateSocketURl() {
     this.socketIO.disconnect();
+    const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
     const config: SocketIoConfig = {
-      url:     newUrl,
+      url:     configWebSocket.socket_url,
       options: {
         transports:           ["websocket"],
         reconnection:         true,

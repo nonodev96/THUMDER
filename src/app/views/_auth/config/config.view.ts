@@ -34,7 +34,7 @@ export class ConfigView implements OnInit {
   memorySizeConfiguration: number;
   timeSimulationConfiguration: number;
   autoSaveConfiguration: boolean;
-  webSocketUrlIsEditable: boolean = AppConfig.server;
+  webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
 
   constructor(private storage: StorageService,
               private socket: SocketProviderConnectService,
@@ -79,7 +79,7 @@ export class ConfigView implements OnInit {
     this.storage.setItem("time_simulation_configuration", this.timeSimulationConfiguration);
     this.storage.setItem("auto_save_configuration", this.autoSaveConfiguration);
     this.storage.setItem("web_socket_configuration", this.webSocketConfiguration);
-    this.socket.updateSocketURl(this.webSocketConfiguration.socket_url);
+    this.socket.updateSocketURl();
     await this.machine.resetMachineStatus();
     return Promise.resolve();
   }
@@ -99,7 +99,7 @@ export class ConfigView implements OnInit {
     this.storage.setItem("time_simulation_configuration", DEFAULT_TIME_SIMULATION_CONFIGURATION);
     this.storage.setItem("auto_save_configuration", DEFAULT_AUTO_SAVE_CONFIGURATION);
     this.storage.setItem("web_socket_configuration", DEFAULT_WEB_SOCKET_CONFIGURATION);
-    this.socket.updateSocketURl(this.webSocketConfiguration.socket_url);
+    this.socket.updateSocketURl();
     await this.machine.resetMachineStatus();
     return Promise.resolve();
   }

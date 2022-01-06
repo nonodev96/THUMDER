@@ -1,5 +1,6 @@
 THUMDER
 =======
+[![Netlify Status](https://api.netlify.com/api/v1/badges/491cdbc6-34ea-4ef0-92c0-be4f2a2ec3cb/deploy-status)](https://app.netlify.com/sites/thumder/deploys)
 
 # Introduction | THUMDER
 
@@ -11,7 +12,6 @@ THUMDER
 
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/)
 [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
-
 ## Currently, runs with:
 
 - Angular v10.2.5
