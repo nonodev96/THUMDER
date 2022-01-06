@@ -73,7 +73,7 @@ jobs:
       - name: Secrets And Envirotment
         run: |
           echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
-          cat ./src/environments/environment.production.ts
+          echo "::set-output Size ${#ANGULAR_ENVIROTMENT_PRODUCTION}"
         env:
           ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
 
