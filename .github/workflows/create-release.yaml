@@ -71,6 +71,7 @@ jobs:
         id: package_version
 
       - name: Secrets And Envirotment
+        uses: actions/checkout@v2
         run: |
           echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
           echo "::set-output Size ${#ANGULAR_ENVIROTMENT_PRODUCTION}"
