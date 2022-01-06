@@ -2,8 +2,9 @@ name: Build/release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ dev ]
+#    tags:
+#      - 'v*'
 
 jobs:
   Make_GitHub_Release:
@@ -70,12 +71,11 @@ jobs:
         id: package_version
 
       - name: Secrets And Envirotment
-        run: |
-          echo $ANGULAR_ENVIROTMENT_PRODUCTION | base64 -d > ./src/environments/environment.production.ts
-          echo "::set-output Size ${#ANGULAR_ENVIROTMENT_PRODUCTION}"
-        env:
-          ANGULAR_ENVIROTMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
-
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: './src/environments/environment.production.ts'
+          encodedString: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
+        
       - name: Context
         env:
           RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
