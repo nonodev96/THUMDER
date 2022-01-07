@@ -2,9 +2,9 @@ name: Build/release
 
 on:
   push:
-    branches: [ dev ]
-#    tags:
-#      - 'v*'
+    tags:
+      - 'v*'
+#    branches: [ dev ]
 
 jobs:
   Make_GitHub_Release:
@@ -87,14 +87,12 @@ jobs:
       - run: npm install
       - run: npm run postinstall
       - run: npm run electron:build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         id: upload_release_asset
-        run: |
-          gh release upload "v${{ steps.package_version.outputs.version }}" "${{ env.FILES }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.asset_name }}"
           NODE_OPTIONS: "--max-old-space-size=4096"
+        run: |
+          gh release upload "v${{ steps.package_version.outputs.version }}" "${{ env.FILES }}"
