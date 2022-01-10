@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { TypeCode, TypeStage, TypeTableCode } from "../../../types";
+import { TypeInstructionsData, TypeStage, TypeInstructionsData_Table } from "../../../types";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
 
@@ -17,7 +17,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction"];
-  public dataSourceCode = new TableVirtualScrollDataSource<TypeTableCode>();
+  public dataSourceCode = new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
 
   public listRowActives: { address: string, stage: TypeStage }[] = [];
   private privateStep = 0;
@@ -25,6 +25,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   private stepSimulationSubscription: Subscription = new Subscription();
   private codeSimulationSubscription: Subscription = new Subscription();
   private resetSimulationSubscription: Subscription = new Subscription();
+  public maxHeightCard = "75vh";
 
   constructor(public machine: MachineService) {
     this.dataSourceCode.filter = null;
@@ -43,7 +44,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
         code:        `0x${hexCode}`,
         text:        "",
         stage:       ""
-      } as TypeTableCode;
+      } as TypeInstructionsData_Table;
     });
     this.codeSimulationSubscription = this.machine.getCodeSimulationObservable().subscribe((typeTableCode) => {
       for (const data_code of typeTableCode) {
@@ -70,7 +71,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     const array = Utils.MapToArray(this.machine.code.getMap());
     for (const code_memory of array) {
       const index = Utils.addressToIndex(code_memory.value.address);
-      const code: TypeCode = {
+      const code: TypeInstructionsData = {
         address:     code_memory.value.address,
         instruction: code_memory.value.instruction,
         code:        code_memory.value.code,
@@ -79,6 +80,16 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
       this.setRow(index, code);
     }
+
+    window.jQuery("#Code-card").on("expanded.lte.cardwidget", (/*$event*/) => {
+      this.resizeCard("75vh");
+    });
+    window.jQuery("#Code-card").on("minimized.lte.cardwidget", () => {
+      this.resizeCard("75vh");
+    });
+    window.jQuery("#Code-card").on("maximized.lte.cardwidget", () => {
+      this.resizeCard("100%");
+    });
   }
 
   ngOnDestroy(): void {
@@ -88,13 +99,13 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.resetSimulationSubscription.unsubscribe();
   }
 
+
   refresh(): void {
     this.dataSourceCode.filter = null;
     this.dataSourceCode.data = [...this.dataSourceCode.data];
 
     window.dispatchEvent(new Event("resize"));
   }
-
 
   /**
    * 'IF' 'ID' 'intEX' 'MEM' 'WB'
@@ -104,7 +115,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
    * max size array ==> 8 + 8 + 8 + 5 = 29
    *
    */
-  setRow(index: number, tableCode: TypeCode, stage: TypeStage = ""): void {
+  setRow(index: number, tableCode: TypeInstructionsData, stage: TypeStage = ""): void {
     this.dataSourceCode.data[index] = {
       text:        tableCode.text,
       address:     tableCode.address,
@@ -128,5 +139,12 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     const elements = this.listRowActives.filter(v => v.address === address);
     if (elements.length > 0) return elements[0].stage;
     return "";
+  }
+
+  private resizeCard(height: string) {
+    this.maxHeightCard = height;
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 500);
   }
 }

@@ -1,7 +1,7 @@
 import { InterfaceMemory } from "./interfaces";
 import { Int32 } from "../typesData";
 import { Utils } from "../../Utils";
-import { TypeMemory, TypeMemoryToUpdate } from "../../types";
+import { TypeInstructionsData, TypeDirective, TypeMemory, TypeMemoryToUpdate, TypeDirectiveData } from "../../types";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes
@@ -24,7 +24,58 @@ export class ManagerMemory implements InterfaceMemory {
     this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
   }
 
-  public processResponse(response: TypeMemoryToUpdate[]) {
+  public processResponseMachineDirectives(directives: TypeDirectiveData[]) {
+    for (const directive of directives) {
+      switch (directive.directive) {
+        case "DATA": {
+          break;
+        }
+        case "GLOBAL": {
+          break;
+        }
+        case "SPACE": {
+          break;
+        }
+        case "ALIGN": {
+          break;
+        }
+        case "ASCII": {
+          break;
+        }
+        case "ASCIIZ": {
+          break;
+        }
+        case "BYTE": {
+          break;
+        }
+        case "FLOAT": {
+          break;
+        }
+        case "DOUBLE": {
+          break;
+        }
+        case "WORD": {
+          break;
+        }
+        case "TEXT": {
+          break;
+        }
+        default: {
+          console.warn("Error, type of directive not valid", directive);
+          break;
+        }
+      }
+    }
+  }
+
+  public processResponseMachineInstructions(instructions: TypeInstructionsData[]) {
+    for (const instruction of instructions) {
+      const binary32 = Utils.hexadecimalToBinary(instruction.code);
+      this.setMemoryWordBinaryByAddress(instruction.address, binary32);
+    }
+  }
+
+  public processMemoryToUpdateArray(response: TypeMemoryToUpdate[]) {
     for (const memoryToUpdate of response) {
       const {typeData, address, value} = memoryToUpdate;
       switch (typeData) {
@@ -207,7 +258,7 @@ export class ManagerMemory implements InterfaceMemory {
       if (v === 0) return;
       return {
         address: index.toString(16).padStart(2, "0"),
-        value: v
+        value:   v
       } as TypeMemory;
     }).filter((v) => v);
   }

@@ -92,6 +92,8 @@
     "INDEX": "Indice",
     "EDIT_REGISTER": "Editar registro",
     "EDIT_REGISTER_CONTROL": "Editar registro Control",
+    "SELECT_TYPE_REGISTER": "Selecciona el tipo de registro",
+    "SELECT_REGISTER": "Selecciona el registro",
     "SELECT_REGISTER_R": "Selecciona registro entero",
     "SELECT_REGISTER_F": "Selecciona registro flotante de simple precisión",
     "SELECT_REGISTER_D": "Selecciona registro flotante de doble precisión",

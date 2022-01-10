@@ -3,13 +3,13 @@ import npm from "../../package.json";
 import {
   PublicRoutes,
   PublicRoutesList,
-  TypeCode,
+  TypeInstructionsData,
   TypeDataRegister,
   TypeLang,
   TypeFloatingPointStageConfiguration,
   TypeRegister,
   TypeRegisterToEdit,
-  TypeTableCode,
+  TypeInstructionsData_Table,
   TypeDataStatistics,
   TypePipeline,
   TypeSimulationStep,
@@ -55,13 +55,14 @@ export const DEFAULT_WEB_SOCKET_CONFIGURATION: TypeWebSocketConfiguration = {
 };
 
 export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
-  calculator:  false,
-  code:        true,
-  cycle_clock: true,
-  memory:      true,
-  pipeline:    true,
-  registers:   true,
-  statistics:  false
+  calculator:          false,
+  code:                true,
+  cycle_clock_diagram: true,
+  memory:              true,
+  pipeline:            true,
+  registers:           true,
+  statistics:          false,
+  list:                ["calculator", "code", "cycle_clock_diagram", "memory", "pipeline", "registers", "statistics"]
 };
 
 export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageConfiguration = {
@@ -167,14 +168,14 @@ export const DEFAULT_STEP_SIMULATION: TypeSimulationStep = {
   statistics: DEFAULT_DATA_STATISTICS
 };
 
-export const DEFAULT_CODE: TypeCode = {
+export const DEFAULT_CODE: TypeInstructionsData = {
   text:        "",
   instruction: "",
   address:     "",
   code:        ""
 };
 
-export const DEFAULT_TABLE_CODE: TypeTableCode = {
+export const DEFAULT_TABLE_CODE: TypeInstructionsData_Table = {
   text:        "",
   instruction: "",
   address:     "",
@@ -186,7 +187,7 @@ export const DEFAULT_TABLE_CODE: TypeTableCode = {
 
 export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   progressBar:       true,
-  positionClass:     "toast-bottom-left",
+  positionClass:     "toast-bottom-right",
   progressAnimation: "decreasing",
   closeButton:       true
 };
@@ -402,10 +403,10 @@ export const CONFIG_WEBSOCKET: SocketIoConfig = {
 
   options: {
     transports:           ["websocket"],
-    reconnection:         true,
+    reconnection:         false,
     reconnectionDelay:    2000,
     reconnectionDelayMax: 2500,
-    reconnectionAttempts: 5
+    reconnectionAttempts: 1
   }
 };
 

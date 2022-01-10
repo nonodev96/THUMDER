@@ -1,10 +1,11 @@
-<!-- Default box -->
 <div class="card">
-
-  <div class="card-header">
+  <div class="card-header" >
     <h3 class="card-title">{{'MACHINE.PIPELINE' | translate}}</h3>
-
     <div class="card-tools">
+
+      <!-- Drag button -->
+      <ng-content></ng-content>
+
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
       </button>
@@ -13,28 +14,10 @@
       </button>
     </div>
   </div>
-
   <div class="card-body">
     <thumder-pixi-pipeline></thumder-pixi-pipeline>
   </div>
-
-  <div class="card-footer">
+  <!--<div class="card-footer">
     <h2>Short cuts</h2>
-    <ol>
-      <!--
-      <li><strong>r</strong>: Reset</li>
-      <li><strong>n</strong>: Next step</li>
-      <li><strong>m</strong>: Next step x10</li>
-      <li>Move
-        <ol>
-          <li><strong>i</strong>: Move top</li>
-          <li><strong>k</strong>: Move down</li>
-          <li><strong>j</strong>: Move left</li>
-          <li><strong>l</strong>: Move right</li>
-        </ol>
-      </li>
-      -->
-    </ol>
-  </div>
-
+  </div>-->
 </div>

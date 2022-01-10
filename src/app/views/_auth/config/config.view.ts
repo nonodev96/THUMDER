@@ -1,10 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import {
-  TypeFloatingPointStageConfiguration,
-  TypeMultiviewConfiguration,
-  TypeWebSocketConfiguration
-} from "../../../types";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { SocketProviderConnectService } from "../../../__core/services/socket-provider-connect.service";
 import { StorageService } from "../../../__core/storage/storage.service";
+import { MachineService } from "../../../__core/machine/machine.service";
+import { AppConfig } from "../../../../environments/_environment";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
@@ -13,9 +11,12 @@ import {
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
   DEFAULT_WEB_SOCKET_CONFIGURATION
 } from "../../../CONSTAST";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { AppConfig } from "../../../../environments/_environment";
-import { SocketProviderConnectService } from "../../../__core/services/socket-provider-connect.service";
+import {
+  TypeFloatingPointStageConfiguration,
+  TypeMultiviewConfiguration,
+  TypeWebSocketConfiguration
+} from "../../../types";
+import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 
 interface EventTargetInput extends EventTarget {
   value: string | number | boolean;
@@ -26,28 +27,30 @@ interface EventTargetInput extends EventTarget {
   templateUrl: "./config.view.html",
   styleUrls:   []
 })
-export class ConfigView implements OnInit {
+export class ConfigView implements OnInit, AfterViewInit {
 
-  multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
-  floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
-  webSocketConfiguration: TypeWebSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
-  memorySizeConfiguration: number;
-  timeSimulationConfiguration: number;
-  autoSaveConfiguration: boolean;
-  webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
+  public readonly webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
+
+  public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration = DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
+  public memorySizeConfiguration: number = DEFAULT_MEMORY_SIZE_CONFIGURATION;
+  public timeSimulationConfiguration: number = DEFAULT_TIME_SIMULATION_CONFIGURATION;
+  public autoSaveConfiguration: boolean = DEFAULT_AUTO_SAVE_CONFIGURATION;
+  public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
+  public webSocketConfiguration: TypeWebSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
 
   constructor(private storage: StorageService,
               private socket: SocketProviderConnectService,
               private machine: MachineService) {
+  }
+
+  ngOnInit(): void {
     this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration");
     this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration");
     this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration");
     this.autoSaveConfiguration = this.storage.getItem("auto_save_configuration");
     this.multiviewConfiguration = this.storage.getItem("multiview_configuration");
     this.webSocketConfiguration = this.storage.getItem("web_socket_configuration");
-  }
 
-  ngOnInit(): void {
     this.storage.watchStorage().subscribe((key) => {
       switch (key) {
         case "floating_point_stage_configuration":
@@ -70,6 +73,9 @@ export class ConfigView implements OnInit {
           break;
       }
     });
+  }
+
+  ngAfterViewInit(): void {
   }
 
   async updateConfiguration(): Promise<void> {
@@ -146,5 +152,9 @@ export class ConfigView implements OnInit {
 
   updateMultiviewConfig(target: EventTarget | any) {
 
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.multiviewConfiguration.list, event.previousIndex, event.currentIndex);
   }
 }

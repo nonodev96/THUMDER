@@ -96,6 +96,7 @@ import * as PIXI from "pixi.js";
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
 import { ElectronService } from "./__core/services";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 const isServer = ElectronService.isServer;
 const domain = "localhost";
@@ -205,10 +206,10 @@ export function markedOptionsFactory(): MarkedOptions {
     NgcCookieConsentModule.forRoot(cookieConfig),
 
     MarkdownModule.forRoot({
-      sanitize: SecurityContext.NONE,
-      loader: HttpClient,
+      sanitize:      SecurityContext.NONE,
+      loader:        HttpClient,
       markedOptions: {
-        provide: MarkedOptions,
+        provide:    MarkedOptions,
         useFactory: markedOptionsFactory
       }
     }),
@@ -216,9 +217,9 @@ export function markedOptionsFactory(): MarkedOptions {
     // SocketIoModule.forRoot(CONFIG_WEBSOCKET),
     TranslateModule.forRoot({
       loader: {
-        provide: TranslateLoader,
+        provide:    TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
+        deps:       [HttpClient]
       }
     }),
     // MonacoEditorModule,
@@ -239,7 +240,8 @@ export function markedOptionsFactory(): MarkedOptions {
     MatSortModule,
     MatTableModule,
     ScrollingModule,
-    TableVirtualScrollModule
+    TableVirtualScrollModule,
+    DragDropModule
   ],
   providers: [
     // {

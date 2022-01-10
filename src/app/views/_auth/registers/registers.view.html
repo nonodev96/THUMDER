@@ -25,6 +25,10 @@
       <button type="button" class="btn btn-tool" (click)="refresh()">
         <i class="fas fa-sync-alt"></i>
       </button>
+
+      <!-- Drag button -->
+      <ng-content></ng-content>
+
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
       </button>
@@ -36,7 +40,7 @@
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 [style.height.vh]="maxHeightCard"
+                                 [style.height]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSource" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -112,11 +116,10 @@
       </button>
     </div>
   </div>
-
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 [style.height.vh]="maxHeightCard"
+                                 [style.height]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceR" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsR; sticky: true"></tr>
@@ -177,11 +180,10 @@
       </button>
     </div>
   </div>
-
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 [style.height.vh]="maxHeightCard"
+                                 [style.height]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceF" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsF; sticky: true"></tr>
@@ -252,11 +254,10 @@
       </button>
     </div>
   </div>
-
   <div class="card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 [style.height.vh]="maxHeightCard"
+                                 [style.height]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceD" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsD; sticky: true"></tr>
@@ -300,5 +301,3 @@
   </div>
 </div>
 
-
-<THUMDER-edit-register-binary32></THUMDER-edit-register-binary32>

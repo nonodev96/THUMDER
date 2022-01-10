@@ -43,24 +43,26 @@ export class FileSystemStorageService {
     if (await this.isInitialize()) {
       return Promise.resolve(1);
     }
-    const filename = "prim.s";
-    const defaultFileItem = new FileItem("", false, []);
-    defaultFileItem.name = filename;
-    defaultFileItem.key = Utils.uuidv4();
+    const files = ["prim.s", "win-dlx.s"];
+    for (const filename of files) {
+      const defaultFileItem = new FileItem("", false, []);
+      defaultFileItem.name = filename;
+      defaultFileItem.key = Utils.uuidv4();
 
-    const content = await this.httpClient.get("assets/examples-dlx/" + filename, {responseType: "text"}).toPromise();
-    const defaultInterfaceFileItem: InterfaceFileItem = {
-      ...defaultFileItem,
-      dateModified: Timestamp.fromDate(new Date()),
-      e1_uid: this.UID,
-      content: content,
-      f_id: "",
-      path: "",
-      pathKeys: [],
-      description: ""
-    };
-    console.debug("Se quiere crear un fichero con los siguientes datos %o", defaultInterfaceFileItem);
-    await this.addFileItem(defaultInterfaceFileItem);
+      const content = await this.httpClient.get("assets/examples-dlx/" + filename, {responseType: "text"}).toPromise();
+      const defaultInterfaceFileItem: InterfaceFileItem = {
+        ...defaultFileItem,
+        dateModified: Timestamp.fromDate(new Date()),
+        e1_uid:       this.UID,
+        content:      content,
+        f_id:         "",
+        path:         "",
+        pathKeys:     [],
+        description:  ""
+      };
+      console.debug("Se quiere crear un fichero con los siguientes datos %o", defaultInterfaceFileItem);
+      await this.addFileItem(defaultInterfaceFileItem);
+    }
     return Promise.resolve(0);
   }
 
@@ -83,21 +85,21 @@ export class FileSystemStorageService {
   public async addFileItem(interfaceFileItem: InterfaceFileItem): Promise<void> {
     try {
       const clearItem: InterfaceFileItem = {
-        key: interfaceFileItem.key ?? "",
-        pathKeys: interfaceFileItem.pathKeys ?? [],
-        path: interfaceFileItem.path ?? "",
-        name: interfaceFileItem.name ?? "",
-        isDirectory: interfaceFileItem.isDirectory ?? false,
+        key:               interfaceFileItem.key ?? "",
+        pathKeys:          interfaceFileItem.pathKeys ?? [],
+        path:              interfaceFileItem.path ?? "",
+        name:              interfaceFileItem.name ?? "",
+        isDirectory:       interfaceFileItem.isDirectory ?? false,
         hasSubDirectories: interfaceFileItem.hasSubDirectories ?? false,
-        dateModified: interfaceFileItem.dateModified ?? Timestamp.fromDate(new Date()),
-        thumbnail: interfaceFileItem.thumbnail ?? "",
-        size: interfaceFileItem.size ?? 0,
-        dataItem: interfaceFileItem.dataItem ?? {},
+        dateModified:      interfaceFileItem.dateModified ?? Timestamp.fromDate(new Date()),
+        thumbnail:         interfaceFileItem.thumbnail ?? "",
+        size:              interfaceFileItem.size ?? 0,
+        dataItem:          interfaceFileItem.dataItem ?? {},
 
-        e1_uid: this.UID,
-        f_id: interfaceFileItem.f_id ?? "",
+        e1_uid:      this.UID,
+        f_id:        interfaceFileItem.f_id ?? "",
         description: interfaceFileItem.description ?? "",
-        content: interfaceFileItem.content ?? ""
+        content:     interfaceFileItem.content ?? ""
       };
       const id = this.afs.createId();
       console.log("El nuevo fichero con ID", id, clearItem);

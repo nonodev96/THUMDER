@@ -1,4 +1,4 @@
-LHI# The DLX Instruction Set, BYU Edition
+# The DLX Instruction Set, BYU Edition
 
 Note that 8 instructions have been added to this version of the instruction set that do not appear in Hennessy and Patterson's text; nor are they listed in "The DLX Instruction Set Architecture Handbook" by Sailer and Kaeli, which otherwise was used as a guideline to the instruction set specification. The new instructions are sgeu, sgtu, sleu, sltu -- all compares using unsigned values -- along with an immediate form of each. The new instructions were added to simplify the DLX backend for lcc.
 

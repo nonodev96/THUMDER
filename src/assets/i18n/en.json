@@ -93,6 +93,8 @@
     "EDIT_REGISTER": "Edit Register",
     "EDIT_REGISTER_CONTROL": "Edit Register Control",
     "REGISTERS_CONTROL": "Registers Control",
+    "SELECT_TYPE_REGISTER": "Select type register",
+    "SELECT_REGISTER": "Select register",
     "SELECT_REGISTER_R": "Select register Integer",
     "SELECT_REGISTER_F": "Select register Float",
     "SELECT_REGISTER_D": "Select register Double",

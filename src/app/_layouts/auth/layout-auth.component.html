@@ -32,6 +32,10 @@
       <!-- THIS IS THE IMPORTANT -->
       <router-outlet></router-outlet>
 
+      <THUMDER-edit-memory-binary32></THUMDER-edit-memory-binary32>
+
+      <THUMDER-edit-register-binary32></THUMDER-edit-register-binary32>
+
     </section>
     <!-- /.content -->
   </div>
@@ -44,3 +48,5 @@
   <!-- Main Footer -->
   <app-footer></app-footer>
 </div>
+
+<thumder-windows-debug *ngIf="globals.showDebug"></thumder-windows-debug>

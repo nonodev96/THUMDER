@@ -102,9 +102,17 @@ export type TypeMemory = {
 
 export type PublicRoutesList = PublicRoutes[];
 
+export type TypeLine = number;
+
 export type TypeData = "Byte" | "HalfWord" | "Word" | "Float" | "Double" | "ASCII";
 
 export type TypeRegister = "Control" | "Integer" | "Float" | "Double";
+
+export type TypePipelineStage = "IF" | "ID" | "intEX" | "MEM" | "WB" | "faddEX" | "fmultEX" | "fdivEX";
+
+export type TypeStall = "Aborted" | "R-Stall" | "T-Stall" | "W-Stall" | "S-Stall" | "Stall";
+
+export type TypeDirective = "GLOBAL" | "TEXT" | "SPACE" | "DATA" | "ALIGN" | "ASCII" | "ASCIIZ" | "BYTE" | "FLOAT" | "DOUBLE" | "WORD";
 
 export type TypeDataRegister = {
   Control: {
@@ -479,31 +487,35 @@ export type TypeStage =
   | "faddEX_6" | "fmultEX_6" | "fdivEX_6"
   | "faddEX_7" | "fmultEX_7" | "fdivEX_7";
 
-export type TypeTableCode = {
+export type TypeDirectiveData = {
+  directive: TypeDirective;
+  address: string;      // 0x00000000
   text: string;
-  address: string;
-  instruction: string;  // 0x00000000
-  code: string;         // 0x00000000
-  row: number;
-  stage?: TypeStage;
-  index?: number;
+  hexValue: string;     // 0x00000000
 };
 
-export type TypeCode = {
+export type TypeInstructionsData = {
   text: string;
   address: string;      // 0x00000000
   instruction: string;
   code: string;         // 0x00000000
 };
 
+export type TypeInstructionsData_Table = TypeInstructionsData & {
+  row: number;
+  stage?: TypeStage;
+  index?: number;
+};
+
 export type TypeMultiviewConfiguration = {
   calculator: boolean;
   pipeline: boolean;
-  cycle_clock: boolean;
+  cycle_clock_diagram: boolean;
   memory: boolean;
   registers: boolean;
   code: boolean;
   statistics: boolean;
+  list: string[];
 };
 
 export type TypeFloatingPointStageConfiguration = {
@@ -558,16 +570,11 @@ export type TypeRegisterToUpdate = {
   hexadecimalValue: string;
 };
 
-
 export type TypeMemoryToUpdate = {
   typeData: TypeData;
   address: string;
   value: string;
 };
-
-export type TypePipelineStage = "IF" | "ID" | "intEX" | "MEM" | "WB" | "faddEX" | "fmultEX" | "fdivEX";
-
-export type TypeStall = "Aborted" | "R-Stall" | "T-Stall" | "W-Stall" | "S-Stall" | "Stall";
 
 export type TypeCycleCell = {
   address: string;
@@ -606,6 +613,7 @@ export type TypePipeline = {
 
 export type TypeSimulationStep = {
   isComplete?: boolean;
+  isBreakpoint?: boolean;
   step: number;
   line: number;
   isNewInstruction: boolean;
@@ -625,7 +633,8 @@ export type TypeSimulationInitResponse = {
   lines: number;
   canSimulate: boolean;
 
-  code: TypeCode[];
+  machineDirectives: TypeDirectiveData[];
+  machineInstructions: TypeInstructionsData[];
   runner: TypeSimulationStep[];
 };
 
@@ -635,6 +644,7 @@ export type TypeSimulationInitRequest = {
   date: string;
   content: string;
 
+  breakpoints: TypeLine[];
   registers: TypeRegisterToUpdate[];
   memory: TypeMemoryToUpdate[];
 };

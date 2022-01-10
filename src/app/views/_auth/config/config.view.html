@@ -130,48 +130,63 @@
           <th>{{ 'CONFIG.MULTIVIEW' | translate }}</th>
           <td colspan="2">
             <div class="form-group">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.calculator">
-                <label class="form-check-label">{{ 'NAVIGATION.CALCULATOR' | translate }}</label>
+              <div cdkDropList class="form-group-list-drag" (cdkDropListDropped)="drop($event)">
+                <ng-container *ngFor="let component of this.multiviewConfiguration.list">
+                  <div class="form-check" cdkDrag>
+                    <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
+                    <input class="form-check-input" type="checkbox"
+                           [ngModelOptions]="{standalone: true}"
+                           [(ngModel)]="multiviewConfiguration[component]">
+                    <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
+                    <i class="fas fa-arrows-alt float-right" cdkDragHandle></i>
+                  </div>
+                </ng-container>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.pipeline">
-                <label class="form-check-label">{{ 'NAVIGATION.PIPELINE' | translate }}</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.cycle_clock">
-                <label class="form-check-label">{{ 'NAVIGATION.CYCLE_CLOCK_DIAGRAM' | translate }}</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.memory">
-                <label class="form-check-label">{{ 'NAVIGATION.MEMORY' | translate }}</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.registers">
-                <label class="form-check-label">{{ 'NAVIGATION.REGISTERS' | translate }}</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.code">
-                <label class="form-check-label">{{ 'NAVIGATION.CODE' | translate }}</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                       [ngModelOptions]="{standalone: true}"
-                       [(ngModel)]="multiviewConfiguration.statistics">
-                <label class="form-check-label">{{ 'NAVIGATION.STATISTICS' | translate }}</label>
-              </div>
+              <!--
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.calculator">
+                              <label class="form-check-label">{{ 'NAVIGATION.CALCULATOR' | translate }}</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.pipeline">
+                              <label class="form-check-label">{{ 'NAVIGATION.PIPELINE' | translate }}</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.cycle_clock_diagram">
+                              <label class="form-check-label">{{ 'NAVIGATION.CYCLE_CLOCK_DIAGRAM' | translate }}</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.memory">
+                              <label class="form-check-label">{{ 'NAVIGATION.MEMORY' | translate }}</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.registers">
+                              <label class="form-check-label">{{ 'NAVIGATION.REGISTERS' | translate }}</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.code">
+                              <label class="form-check-label">{{ 'NAVIGATION.CODE' | translate }}</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox"
+                                     [ngModelOptions]="{standalone: true}"
+                                     [(ngModel)]="multiviewConfiguration.statistics">
+                              <label class="form-check-label">{{ 'NAVIGATION.STATISTICS' | translate }}</label>
+                              <i class="fas fa-arrows-alt"></i>
+                            </div>
+                -->
             </div>
           </td>
         </tr>
@@ -184,13 +199,13 @@
           <th><label for="webSocketConfigurationID">{{ 'CONFIG.WEBSOCKET' | translate }}</label></th>
           <td>
             <div class="form-group">
-                <input type="text"
-                       class="form-control"
-                       id="webSocketConfigurationID"
-                       [readonly]="this.webSocketUrlIsEditable"
-                       [ngModelOptions]="{standalone: true}"
-                       (change)="checkIfHttpUrlIsValid($event.target)"
-                       [(ngModel)]="webSocketConfiguration.socket_url">
+              <input type="text"
+                     class="form-control"
+                     id="webSocketConfigurationID"
+                     [readonly]="this.webSocketUrlIsEditable"
+                     [ngModelOptions]="{standalone: true}"
+                     (change)="checkIfHttpUrlIsValid($event.target)"
+                     [(ngModel)]="webSocketConfiguration.socket_url">
             </div>
           </td>
         </tr>

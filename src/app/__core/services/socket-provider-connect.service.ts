@@ -1,14 +1,12 @@
-import { Injectable, EventEmitter, Output } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Socket, SocketIoConfig } from "ngx-socket-io";
 import { ToastrService } from "ngx-toastr";
 
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
+import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
 import { Subject } from "rxjs";
 // import { WrappedSocket } from "ngx-socket-io/src/socket-io.service";
 // import { SocketIoConfig } from "ngx-socket-io/src/config/socket-io.config";
-import { AppConfig } from "../../../environments/_environment";
-import { StorageService } from "../storage/storage.service";
 import { TypeWebSocketConfiguration } from "../../types";
 
 @Injectable({
@@ -33,21 +31,14 @@ export class SocketProviderConnectService {
   }
 
   public socketIO: Socket;
+
   constructor(
-              private translate: TranslateService,
-              private toast: ToastrService) {
+    private translate: TranslateService,
+    private toast: ToastrService) {
     console.log("constructor socket");
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
-    const config: SocketIoConfig = {
-      url:     configWebSocket.socket_url,
-      options: {
-        transports:           ["websocket"],
-        reconnection:         true,
-        reconnectionDelay:    2000,
-        reconnectionDelayMax: 2500,
-        reconnectionAttempts: 5
-      }
-    };
+    const config: SocketIoConfig = CONFIG_WEBSOCKET;
+    config.url = configWebSocket.socket_url;
     this.socketIO = new Socket(config);
 
     // When the client successfully connects.
@@ -115,16 +106,8 @@ export class SocketProviderConnectService {
   public updateSocketURl() {
     this.socketIO.disconnect();
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
-    const config: SocketIoConfig = {
-      url:     configWebSocket.socket_url,
-      options: {
-        transports:           ["websocket"],
-        reconnection:         true,
-        reconnectionDelay:    2000,
-        reconnectionDelayMax: 2500,
-        reconnectionAttempts: 5
-      }
-    };
+    const config: SocketIoConfig = CONFIG_WEBSOCKET;
+    config.url = configWebSocket.socket_url;
     this.socketIO = new Socket(config);
   }
 
