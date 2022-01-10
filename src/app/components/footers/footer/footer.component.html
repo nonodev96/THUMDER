@@ -1,8 +1,9 @@
 <footer class="main-footer">
   <strong>Copyright &copy; 2020-2021 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong>
   All rights reserved. |
-  <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" data-target="#modal-p-bottom">
+  <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" (click)="globals.showDebug=!globals.showDebug">
     Debug
+    <!--    data-target="#modal-p-bottom" -->
   </button>
   <div class="float-right d-none d-sm-block">
     <b>{{ 'CONFIG.ENVIRONMENT' | translate }}</b> {{environment}} |
@@ -11,7 +12,7 @@
   </div>
 </footer>
 
-<!-- Modal -->
+<!--
 <div class="modal fade modal-p-bottom" id="modal-p-bottom">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -26,3 +27,4 @@
     </div>
   </div>
 </div>
+-->

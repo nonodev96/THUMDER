@@ -55,7 +55,7 @@ export class ManagerRegisters implements InterfaceRegisters {
     }
   }
 
-  public processResponse(response: TypeRegisterToUpdate[]) {
+  public processRegisterToUpdateArray(response: TypeRegisterToUpdate[]) {
     for (const registerToUpdate of response) {
       const {typeRegister, register, hexadecimalValue} = registerToUpdate;
       switch (typeRegister) {

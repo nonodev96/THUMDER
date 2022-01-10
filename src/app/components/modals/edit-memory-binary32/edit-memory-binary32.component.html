@@ -220,7 +220,7 @@
             </div>
 
             <div class="col-sm-12" *ngIf="typeDataSelected === 'Float' || typeDataSelected === 'Double'">
-              <p class="text-monospace"><strong>{{ 'MACHINE.IEEE_754' | translate }}:</strong></p>
+              <p class="text-monospace"><strong>{{ (typeDataSelected === 'Double' ? 'TYPE_DATA.IEEE754_64' : 'TYPE_DATA.IEEE754') | translate }}:</strong></p>
               <p class="text-monospace"
                  *ngIf="typeDataSelected === 'Float'">{{ (memoryValueBinary32Display | binary32_to_decimal_IEEE754) }}</p>
               <p class="text-monospace"
@@ -241,10 +241,12 @@
           </div>
         </form>
       </div>
+      <!--
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
         <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
       </div>
+      -->
     </div>
   </div>
 </div>

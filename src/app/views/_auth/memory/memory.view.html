@@ -1,5 +1,5 @@
-<div class="card" id="card-Memory">
-  <div class="card-header">
+<div class="card" id="Memory-card">
+  <div class="card-header" >
     <h3 class="card-title">{{'MACHINE.MEMORY' | translate}}</h3>
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Bytes"
@@ -38,6 +38,10 @@
       <button type="button" class="btn btn-tool" (click)="refresh()">
         <i class="fas fa-sync-alt"></i>
       </button>
+
+      <!-- Drag button -->
+      <ng-content></ng-content>
+
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
       </button>
@@ -46,10 +50,10 @@
       </button>
     </div>
   </div>
-  <div class="card-body">
+  <div class="card-body" id="Memory-card-body">
     <cdk-virtual-scroll-viewport tvsItemSize="48"
                                  headerHeight="56"
-                                 [style.height.vh]="maxHeightCard"
+                                 [style.height]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
       <table mat-table matSort [dataSource]="dataSourceMemory" [ngClass]="'table-layout font-family-monospace'">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory; sticky: true"></tr>
@@ -57,7 +61,7 @@
         <ng-container matColumnDef="Address">
           <th mat-header-cell *matHeaderCellDef class="width-10">{{'MACHINE.ADDRESS' | translate}}</th>
           <td mat-cell *matCellDef="let index" class="width-10">
-            <p>0x{{ index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 0, fillString: "0"} }}</p>
+            <p>0x{{ index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"} }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Hexadecimal">
@@ -191,6 +195,3 @@
   </div>
 </div>
 
-<!-- Modal -->
-
-<THUMDER-edit-memory-binary32></THUMDER-edit-memory-binary32>

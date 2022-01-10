@@ -28,7 +28,7 @@ export class MemoryView implements OnInit, AfterViewInit {
   public dataSourceMemory = new TableVirtualScrollDataSource<number>();
 
   public typeDataSelected: TypeData | "InstructionCode" = "Word";
-  public maxHeightCard = 75;
+  public maxHeightCard = "75vh";
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
@@ -51,14 +51,14 @@ export class MemoryView implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
 
-    window.jQuery("#card-Memory").on("expanded.lte.cardwidget", (/*$event*/) => {
-      this.resizeCard(75);
+    window.jQuery("#Memory-card").on("expanded.lte.cardwidget", (/*$event*/) => {
+      this.resizeCard("75vh");
     });
-    window.jQuery("#card-Memory").on("minimized.lte.cardwidget", () => {
-      this.resizeCard(75);
+    window.jQuery("#Memory-card").on("minimized.lte.cardwidget", () => {
+      this.resizeCard("75vh");
     });
-    window.jQuery("#card-Memory").on("maximized.lte.cardwidget", () => {
-      this.resizeCard(85);
+    window.jQuery("#Memory-card").on("maximized.lte.cardwidget", () => {
+      this.resizeCard("100%");
     });
   }
 
@@ -97,8 +97,11 @@ export class MemoryView implements OnInit, AfterViewInit {
     window.dispatchEvent(new Event("resize"));
   }
 
-  private resizeCard(value: number) {
-    this.maxHeightCard = value;
+  private resizeCard(height: string) {
+    this.maxHeightCard = height;
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 500);
   }
 
   convertHexCodeToTextMachineInstructionDLX(memoryWordByAddress: Int32) {

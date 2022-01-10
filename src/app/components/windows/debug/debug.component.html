@@ -1,0 +1,23 @@
+<div class="card" id="card-debug" cdkDrag>
+  <div class="card-header">
+    <h3 class="card-title">{{ "DEBUG" | translate }}</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="globals.showDebug=!globals.showDebug">
+        Close
+      </button>
+      <button type="button" class="btn btn-tool" cdkDragHandle>
+        <i class="fas fa-arrows-alt"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body card-font-console"><ng-container *ngFor="let line of private_logger">{{line}}<br></ng-container></div>
+  <div class="card-footer">
+    {{"URL: " + router.url}}
+  </div>
+</div>

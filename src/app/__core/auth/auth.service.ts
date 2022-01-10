@@ -27,6 +27,8 @@ export class AuthService implements OnInit, OnDestroy {
       this.afAuth.authState.subscribe(user => {
         if (user) {
           window.document.body.className = "";
+          window.document.body.classList.add("layout-fixed")
+          window.document.body.classList.add("layout-footer-fixed")
           this.userData = user;
           localStorage.setItem("user", JSON.stringify(this.userData));
           // JSON.parse(localStorage.getItem("user"));

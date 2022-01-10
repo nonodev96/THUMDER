@@ -30,6 +30,8 @@ import { EditRegisterBinary32Component } from "./modals/edit-register-binary32/e
 import { ModalBottomComponent } from './modals/modal-bottom/modal-bottom.component';
 import { CovalentCodeEditorModule } from "@covalent/code-editor";
 import { ModalComponent } from './modals/modal/modal.component';
+import { DebugComponent } from './windows/debug/debug.component';
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 
 @NgModule({
@@ -48,7 +50,8 @@ import { ModalComponent } from './modals/modal/modal.component';
     MatTableModule,
 
     SharedModule,
-    CovalentCodeEditorModule
+    CovalentCodeEditorModule,
+    DragDropModule
   ],
   declarations: [
     // Aside
@@ -77,6 +80,7 @@ import { ModalComponent } from './modals/modal/modal.component';
     EditRegisterBinary32Component,
     ModalBottomComponent,
     ModalComponent,
+    DebugComponent,
   ],
   exports: [
     // Aside
@@ -103,6 +107,7 @@ import { ModalComponent } from './modals/modal/modal.component';
     EditRegisterBinary32Component,
     ModalComponent,
     ModalBottomComponent,
+    DebugComponent
   ]
 })
 export class ComponentsModule {

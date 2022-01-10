@@ -15,7 +15,7 @@
             <div class="col-sm-12">
               <!-- select -->
               <div class="form-group">
-                <label for="selectTypeRegisterId">{{ 'FORM.SELECT_TYPE_REGISTER' | translate }}</label>
+                <label for="selectTypeRegisterId">{{ 'MACHINE.SELECT_TYPE_REGISTER' | translate }}</label>
                 <select class="form-control" (change)="changeTypeRegister($any($event.target).value)"
                         id="selectTypeRegisterId">
                   <ng-template ngFor let-item [ngForOf]="MACHINE_TYPE_REGISTERS" let-currentElementIndex="index">
@@ -28,7 +28,7 @@
             <div class="col-sm-12">
               <!-- select -->
               <div class="form-group">
-                <label for="selectRegisterId">{{ 'FORM.SELECT_REGISTER' | translate }}</label>
+                <label for="selectRegisterId">{{ lang_SELECT_REGISTER | translate }}</label>
                 <select class="form-control" (change)="changeRegisterToEdit($any($event.target).value)"
                         id="selectRegisterId">
                   <ng-template ngFor let-item [ngForOf]="listRegisters" let-currentElementIndex="index">
@@ -39,7 +39,7 @@
             </div>
 
             <div class="col-sm-{{ typeRegisterSelected === 'Double' ? 7 : 6 }}">
-              <label for="registerToEditValueHexadecimalId">{{ 'FORM.VALUE' | translate }}</label>
+              <label for="registerToEditValueHexadecimalId">{{ 'MACHINE.HEXADECIMAL' | translate }}</label>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
                   <span class="input-group-text">0x</span>
@@ -57,7 +57,7 @@
             </div>
 
             <div class="col-sm-6" *ngIf="typeRegisterSelected === 'Control' || typeRegisterSelected === 'Integer'">
-              <label for="registerToEditValueDecimalId">{{ 'FORM.VALUE' | translate }}</label>
+              <label for="registerToEditValueDecimalId">{{ 'MACHINE.DECIMAL' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueDecimalId"
                        class="form-control"
@@ -72,7 +72,7 @@
               </div>
             </div>
             <div class="col-sm-6" *ngIf="typeRegisterSelected === 'Float'">
-              <label for="registerToEditValueFloatId">{{ 'FORM.VALUE' | translate }}</label>
+              <label for="registerToEditValueFloatId">{{ 'MACHINE.DECIMAL' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueFloatId"
                        class="form-control"
@@ -86,7 +86,7 @@
               </div>
             </div>
             <div class="col-sm-5" *ngIf="typeRegisterSelected === 'Double'">
-              <label for="registerToEditValueDoubleId">{{ 'FORM.VALUE' | translate }}</label>
+              <label for="registerToEditValueDoubleId">{{ 'MACHINE.DECIMAL' | translate }}</label>
               <div class="input-group mb-3">
                 <input type="number" id="registerToEditValueDoubleId"
                        class="form-control"
@@ -137,7 +137,7 @@
             </div>
 
             <div class="col-sm-12">
-              <p class="text-monospace"><strong>{{ 'MACHINE.IEEE_754' | translate }}:</strong></p>
+              <p class="text-monospace"><strong>{{ (typeRegisterSelected === 'Double' ? 'TYPE_DATA.IEEE754_64' : 'TYPE_DATA.IEEE754') | translate }}:</strong></p>
               <p class="text-monospace"
                  *ngIf="typeRegisterSelected !== 'Double'">{{ registerToEdit_Binary | binary32_to_decimal_IEEE754 }}</p>
               <p class="text-monospace"
@@ -147,10 +147,12 @@
           </div>
         </form>
       </div>
+      <!--
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
-        <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
-      </div>
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
+         <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
+       </div>
+       -->
     </div>
   </div>
 </div>

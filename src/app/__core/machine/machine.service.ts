@@ -10,7 +10,7 @@ import {
   InterfaceFileItem,
   TypeAllMemory,
   TypeAllRegisters,
-  TypeCode,
+  TypeInstructionsData,
   TypeConfigurationMachine,
   TypeDataStatistics,
   TypeFloatingPointStageConfiguration,
@@ -59,14 +59,14 @@ export class MachineService {
   public breakpointManager: ManagerBreakpoints;
   // address --> TypeCode
 
-  public code: THUMDER_Map<string, TypeCode> = new THUMDER_Map();
+  public code: THUMDER_Map<string, TypeInstructionsData> = new THUMDER_Map();
   // Vector con los pasos de la simulación
   private simulation: TypeSimulationInitResponse;
   public canSimulate: boolean;
   private statusMachineInStep: TypeSimulationStep | null;
   // Line
   public isBreakpoint$: Subject<number> = new Subject<number>();
-  public codeSimulation$: Subject<TypeCode[]> = new Subject<TypeCode[]>();
+  public codeSimulation$: Subject<TypeInstructionsData[]> = new Subject<TypeInstructionsData[]>();
   public stepSimulation$: Subject<TypeSimulationStep> = new Subject<TypeSimulationStep>();
   public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
 
@@ -139,13 +139,13 @@ export class MachineService {
     // TODO CHECK
     this.socketProviderConnect.socketIO.on("UpdateRegisterResponse", (response) => {
       const registers = JSON.parse(response) as TypeRegisterToUpdate[];
-      this.registers.processResponse(registers);
+      this.registers.processRegisterToUpdateArray(registers);
       console.log("Registers update", registers);
     });
     // TODO CHECK
     this.socketProviderConnect.socketIO.on("UpdateMemoryResponse", (response) => {
       const memory = JSON.parse(response) as TypeMemoryToUpdate[];
-      this.memory.processResponse(memory);
+      this.memory.processMemoryToUpdateArray(memory);
       console.log("Memory update", memory);
     });
     this.socketProviderConnect.socketIO.on("GetAllRegistersResponse", (response) => {
@@ -251,7 +251,7 @@ export class MachineService {
     return this.stepSimulation$.asObservable();
   }
 
-  public getCodeSimulationObservable(): Observable<TypeCode[]> {
+  public getCodeSimulationObservable(): Observable<TypeInstructionsData[]> {
     return this.codeSimulation$.asObservable();
   }
 
@@ -342,6 +342,7 @@ export class MachineService {
 
   private async SimulationInit(): Promise<boolean> {
     try {
+      this.log("SimulationInit");
       // const data = await fetch("assets/examples-dlx/prim.s");
       // const content = await data.text();
       const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
@@ -358,21 +359,22 @@ export class MachineService {
         const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
         console.log("Simulation init", simulationInit);
         this.canSimulate = simulationInit.canSimulate;
-        const data_code_array: TypeCode[] = [];
-        for (const instruction of simulationInit.code) {
-          const address = instruction.address;
-          const binary32 = Utils.hexadecimalToBinary(instruction.code);
-          this.memory.setMemoryWordBinaryByAddress(address, binary32);
+
+        this.memory.processResponseMachineDirectives(simulationInit.machineDirectives);
+        this.memory.processResponseMachineInstructions(simulationInit.machineInstructions);
+
+        const code_data_array: TypeInstructionsData[] = [];
+        for (const instruction of simulationInit.machineInstructions) {
           this.code.set(instruction.address, {...instruction});
-          data_code_array.push({...instruction});
+          code_data_array.push({...instruction});
         }
 
         for (const step of simulationInit.runner) {
-          this.memory.processResponse(step.memory);
-          this.registers.processResponse(step.registers);
+          this.memory.processMemoryToUpdateArray(step.memory);
+          this.registers.processRegisterToUpdateArray(step.registers);
         }
 
-        this.codeSimulation$.next(data_code_array);
+        this.codeSimulation$.next(code_data_array);
 
         return Promise.resolve(true);
       });
@@ -384,6 +386,7 @@ export class MachineService {
 
   private async SimulationNextStep(): Promise<void> {
     try {
+      this.log("SimulationNextStep");
       const payload = JSON.stringify({
         step: this.privateStep + 1
       });
@@ -442,10 +445,10 @@ export class MachineService {
       this.processResponsePipeline();
     }
     if (this.statusMachineInStep.registers !== []) {
-      this.registers.processResponse(this.statusMachineInStep.registers);
+      this.registers.processRegisterToUpdateArray(this.statusMachineInStep.registers);
     }
     if (this.statusMachineInStep.memory !== []) {
-      this.memory.processResponse(this.statusMachineInStep.memory);
+      this.memory.processMemoryToUpdateArray(this.statusMachineInStep.memory);
     }
     if (this.statusMachineInStep.statistics !== {}) {
       this.dataStatistics.processResponse(this.statusMachineInStep.statistics);
@@ -489,7 +492,7 @@ export class MachineService {
     this.logger$.next(this.logger);
   }
 
-  public getCode(address: string): TypeCode {
+  public getCode(address: string): TypeInstructionsData {
     const code = this.code.get(address);
     if (code === undefined) {
       console.warn("Error, address of memory not valid '%s' | %o", address, this.code.get(address));

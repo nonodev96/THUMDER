@@ -13,7 +13,7 @@ import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R, MACHINE_
 })
 export class RegistersView implements OnInit, AfterViewInit {
 
-  public maxHeightCard: number = 60;
+  public maxHeightCard: string = "60vh";
 
   @ViewChild(EditRegisterBinary32Component) editRegisterBinary32Component: EditRegisterBinary32Component;
 
@@ -49,15 +49,15 @@ export class RegistersView implements OnInit, AfterViewInit {
 
     window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
       .on('expanded.lte.cardwidget', (/*$event*/) => {
-        this.resizeCards(60);
+        this.resizeCards("60vh");
       });
     window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
       .on('minimized.lte.cardwidget', (/*$event*/) => {
-        this.resizeCards(60);
+        this.resizeCards("60vh");
       });
     window.jQuery('#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id')
       .on('maximized.lte.cardwidget', (/*$event*/) => {
-        this.resizeCards(80);
+        this.resizeCards("100%");
       });
   }
 
@@ -101,7 +101,10 @@ export class RegistersView implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  private resizeCards(newHeightCard): void {
-    this.maxHeightCard = newHeightCard;
+  private resizeCards(height: string) {
+    this.maxHeightCard = height;
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+    }, 500);
   }
 }

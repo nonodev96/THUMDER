@@ -5,7 +5,7 @@ import { FileItem } from "../../__core/services/file-system-nonodev96/file-syste
 import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
 import { Utils } from "../../Utils";
 import {
-  TypeCode,
+  TypeInstructionsData,
   TypeConfigurationMachine,
   TypeData,
   TypeMemoryToUpdate,
@@ -55,7 +55,7 @@ export class DebugView implements OnInit, AfterViewInit {
     "TRAP   #0"
   ].join("\n");
 
-  public testCodeResponse: TypeCode[] = [];
+  public testCodeResponse: TypeInstructionsData[] = [];
   i = 0;
 
   constructor(private toast: ToastrService,
@@ -65,7 +65,7 @@ export class DebugView implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.socketProviderConnect.socketIO.on("CodeResponse", (response) => {
-      const code = JSON.parse(response) as TypeCode[];
+      const code = JSON.parse(response) as TypeInstructionsData[];
       this.testCodeResponse = code.map((v) => {
         return {
           address:     v.address,

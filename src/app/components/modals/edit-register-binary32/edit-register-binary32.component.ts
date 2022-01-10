@@ -33,6 +33,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
   regExp_32bits_hex = new RegExp("\\b[0-9A-F]{8}\\b");
   regExp_64bits_hex = new RegExp("\\b[0-9A-F]{16}\\b");
   _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
+  lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
 
   get registerToEdit_Binary() {
     return this._registerToEdit_binary;
@@ -97,6 +98,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     this.typeRegisterSelected = typeRegister;
     switch (this.typeRegisterSelected) {
       case "Control":
+        this.lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
         this.registerToEdit = "PC";
         this.listRegisters = MACHINE_REGISTERS_C;
         this.aliasTypeRegister = "";
@@ -104,6 +106,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
         this.registerToEdit_Binary = DEFAULT_BINARY_32_BITS;
         break;
       case "Integer":
+        this.lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER_R";
         this.registerToEdit = 0;
         this.listRegisters = MACHINE_REGISTERS_R;
         this.aliasTypeRegister = "R";
@@ -111,6 +114,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
         this.registerToEdit_Binary = DEFAULT_BINARY_32_BITS;
         break;
       case "Float":
+        this.lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER_F";
         this.registerToEdit = 0;
         this.listRegisters = MACHINE_REGISTERS_F;
         this.aliasTypeRegister = "F";
@@ -118,6 +122,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
         this.registerToEdit_Binary = DEFAULT_BINARY_32_BITS;
         break;
       case "Double":
+        this.lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER_D";
         this.registerToEdit = 0;
         this.listRegisters = MACHINE_REGISTERS_D;
         this.aliasTypeRegister = "F";
