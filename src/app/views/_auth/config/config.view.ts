@@ -44,12 +44,12 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration");
-    this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration");
-    this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration");
-    this.autoSaveConfiguration = this.storage.getItem("auto_save_configuration");
-    this.multiviewConfiguration = this.storage.getItem("multiview_configuration");
-    this.webSocketConfiguration = this.storage.getItem("web_socket_configuration");
+    this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration") ?? DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
+    this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration") ?? DEFAULT_MEMORY_SIZE_CONFIGURATION;
+    this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration") ?? DEFAULT_TIME_SIMULATION_CONFIGURATION;
+    this.autoSaveConfiguration = this.storage.getItem("auto_save_configuration") ?? DEFAULT_AUTO_SAVE_CONFIGURATION;
+    this.multiviewConfiguration = this.storage.getItem("multiview_configuration") ?? DEFAULT_MULTIVIEW_CONFIGURATION;
+    this.webSocketConfiguration = this.storage.getItem("web_socket_configuration") ?? DEFAULT_WEB_SOCKET_CONFIGURATION;
 
     this.storage.watchStorage().subscribe((key) => {
       switch (key) {
