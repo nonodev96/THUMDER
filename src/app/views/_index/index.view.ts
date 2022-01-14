@@ -1,15 +1,17 @@
 import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { Router } from "@angular/router";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "../../CONSTAST";
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "../../CONSTANTS";
+import { AppConfig } from "../../../environments/_environment";
 
 @Component({
-  selector: "app-index",
+  selector:    "app-index",
   templateUrl: "./index.view.html"
 })
 export class IndexView implements OnInit, AfterViewInit {
   public readonly PRIVATE_ROUTES = PUBLIC_ROUTES;
   public readonly PRIVATE_AUTH_ROUTES = AUTH_ROUTES;
+  public readonly AppConfig = AppConfig;
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router) {

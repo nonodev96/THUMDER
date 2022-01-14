@@ -47,8 +47,8 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
-          <td mat-cell class="width-20" *matCellDef="let element">
+          <th mat-header-cell class="width-30" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
+          <td mat-cell class="width-30" *matCellDef="let element">
             <p>{{ element.code | from_base_to_base: {fillString: "0", maxLength: 32, from_base: 16, to_base: 2} }}</p>
           </td>
         </ng-container>
@@ -65,8 +65,8 @@
           </td>
         </ng-container>
         <ng-container matColumnDef="Instruction">
-          <th mat-header-cell class="width-40" *matHeaderCellDef>{{'MACHINE.INSTRUCTION' | translate}}</th>
-          <td mat-cell class="width-40" *matCellDef="let element">
+          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.INSTRUCTION' | translate}}</th>
+          <td mat-cell class="width-20" *matCellDef="let element">
             <p>{{ element.instruction }}</p>
           </td>
         </ng-container>

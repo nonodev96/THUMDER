@@ -48,89 +48,87 @@ import { LoggerView } from "./views/_auth/logger/logger.view";
 
 const routes: Routes = [
   {
-    path: "",
-    component: LayoutAuthComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {path: "", component: IndexView, pathMatch: "full"}
+    path:        "",
+    component:   LayoutAuthComponent,
+    canActivate: [ AuthGuard ],
+    children:    [
+      { path: "", component: IndexView, pathMatch: "full" }
     ]
   },
   // _admin views
   {
-    path: "admin",
+    path:      "admin",
     component: LayoutAdminComponent,
-    children: [
-      {path: "", redirectTo: "dashboard", pathMatch: "full"}
+    children:  [
+      { path: "", redirectTo: "dashboard", pathMatch: "full" }
     ]
   },
   // _auth views
   {
-    path: "auth",
-    component: LayoutAuthComponent,
-    canActivate: [AuthGuard],
-    data: {breadcrumb: "Home"},
-    children: [
-      {path: "", redirectTo: "login", pathMatch: "full"},
-      {path: "calculator", component: CalculatorView, data: {breadcrumb: "Calculator"}},
-      {path: "code", component: CodeView, data: {breadcrumb: "Code"}},
-      {path: "config", component: ConfigView, data: {breadcrumb: "Config"}},
-      {path: "documentation", component: DocsView, data: {breadcrumb: "Documentation"}},
-      {path: "file-manager", component: FileManagerView, data: {breadcrumb: "File Manager"}},
-      {path: "editor", component: EditorView, data: {breadcrumb: "Editor"}},
-      {path: "logger", component: LoggerView, data: {breadcrumb: "Logger"}},
-      {path: "memory", component: MemoryView, data: {breadcrumb: "Memory"}},
-      {path: "cycle-clock-diagram", component: CycleClockDiagramView, data: {breadcrumb: "Cycle Clock Diagram"}},
-      {path: "pipeline", component: PipelineView, data: {breadcrumb: "Pipeline"}},
-      {path: "profile", component: ProfileView, data: {breadcrumb: "Profile"}},
-      {path: "registers", component: RegistersView, data: {breadcrumb: "Registers"}},
-      {path: "statistics", component: StatisticsView, data: {breadcrumb: "Statistics"}},
-      {path: "multiview", component: MultiplesViewsComponent, data: {breadcrumb: "Multiview"}},
+    path:        "auth",
+    component:   LayoutAuthComponent,
+    canActivate: [ AuthGuard ],
+    data:        { breadcrumb: "Home" },
+    children:    [
+      { path: "", redirectTo: "login", pathMatch: "full" },
+      { path: "calculator", component: CalculatorView, data: { breadcrumb: "Calculator" } },
+      { path: "code", component: CodeView, data: { breadcrumb: "Code" } },
+      { path: "config", component: ConfigView, data: { breadcrumb: "Config" } },
+      { path: "documentation", component: DocsView, data: { breadcrumb: "Documentation" } },
+      { path: "file-manager", component: FileManagerView, data: { breadcrumb: "File Manager" } },
+      { path: "editor", component: EditorView, data: { breadcrumb: "Editor" } },
+      { path: "logger", component: LoggerView, data: { breadcrumb: "Logger" } },
+      { path: "memory", component: MemoryView, data: { breadcrumb: "Memory" } },
+      { path: "cycle-clock-diagram", component: CycleClockDiagramView, data: { breadcrumb: "Cycle Clock Diagram" } },
+      { path: "pipeline", component: PipelineView, data: { breadcrumb: "Pipeline" } },
+      { path: "profile", component: ProfileView, data: { breadcrumb: "Profile" } },
+      { path: "registers", component: RegistersView, data: { breadcrumb: "Registers" } },
+      { path: "statistics", component: StatisticsView, data: { breadcrumb: "Statistics" } },
+      { path: "multiview", component: MultiplesViewsComponent, data: { breadcrumb: "Multiview" } },
 
-      {path: "debug", component: DebugView, data: {breadcrumb: "Debug"}}
+      { path: "debug", component: DebugView, data: { breadcrumb: "Debug" } }
     ]
   },
   // _landing views
   {
-    path: "landing",
+    path:      "landing",
     component: LayoutLandingComponent,
-    children: [
-      {path: "", redirectTo: "dashboard", pathMatch: "full"},
-      {path: "landing", component: LandingView, data: {breadcrumb: "Landing"}},
-      {path: "about", component: AboutView, data: {breadcrumb: "About"}}
+    children:  [
+      { path: "", redirectTo: "dashboard", pathMatch: "full" },
+      { path: "landing", component: LandingView, data: { breadcrumb: "Landing" } },
+      { path: "about", component: AboutView, data: { breadcrumb: "About" } }
     ]
   },
   {
-    path: "login",
-    component: LoginView,
-    canActivate: [NoAuthGuard]
+    path:        "login",
+    component:   LoginView,
+    canActivate: [ NoAuthGuard ]
   },
   {
-    path: "register",
-    component: RegisterView,
-    canActivate: [NoAuthGuard]
+    path:        "register",
+    component:   RegisterView,
+    canActivate: [ NoAuthGuard ]
   },
   {
-    path: "forgot-password",
-    component: ForgotPasswordView,
-    canActivate: [NoAuthGuard]
+    path:        "forgot-password",
+    component:   ForgotPasswordView,
+    canActivate: [ NoAuthGuard ]
   },
   {
-    path: "monaco",
+    path:      "monaco",
     component: MonacoEditorComponent
-  }
-
-  // {
-  //   path: '**',
-  //   component: PageNotFoundComponent
-  // },
-
+  },
+  {
+    path:      "**",
+    component: PageNotFoundComponent
+  },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes)
   ],
-  exports: [RouterModule]
+  exports: [ RouterModule ]
 })
 export class AppRoutingModule {
 }

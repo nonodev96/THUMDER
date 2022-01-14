@@ -24,7 +24,7 @@ import { CovalentCodeEditorModule } from "@covalent/code-editor";
 // TOAST
 import { ToastrModule } from "ngx-toastr";
 // SOCKET
-import { SocketIoModule } from "ngx-socket-io";
+// import { SocketIoModule } from "ngx-socket-io";
 // NG-TABLE
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 // Cookies
@@ -48,7 +48,7 @@ import { CoreModule } from "./__core/core.module";
 
 // APP
 import { AppConfig } from "../environments/_environment";
-import { CONFIG_WEBSOCKET } from "./CONSTAST";
+// import { CONFIG_WEBSOCKET } from "./CONSTANTS";
 import { AppComponent } from "./app.component";
 
 
@@ -141,7 +141,7 @@ export function markedOptionsFactory(): MarkedOptions {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
     return `
 <h${level}>
-    <a name="${escapedText}" class="anchor" href="#${escapedText}" id="${escapedText}">
+    <a class="anchor" href="#${escapedText}" id="${escapedText}">
         <span class="header-link"></span>
     </a> ${text}
 </h${level}>`;

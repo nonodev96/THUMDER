@@ -52,26 +52,26 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
   constructor(faddEX_count = 1, fmultEX_count = 8, fdivEX_count = 8) {
     super();
     this.InstStages_text = new PIXI.Text("Inst-Stages");
-    this.IF_text = new PIXI.Text("test", styleFontTextBox);
-    this.ID_text = new PIXI.Text("test", styleFontTextBox);
-    this.intEX_text = new PIXI.Text("test", styleFontTextBox);
-    this.MEM_text = new PIXI.Text("test", styleFontTextBox);
-    this.WB_text = new PIXI.Text("test", styleFontTextBox);
+    this.IF_text = new PIXI.Text("null", styleFontTextBox);
+    this.ID_text = new PIXI.Text("null", styleFontTextBox);
+    this.intEX_text = new PIXI.Text("null", styleFontTextBox);
+    this.MEM_text = new PIXI.Text("null", styleFontTextBox);
+    this.WB_text = new PIXI.Text("null", styleFontTextBox);
 
     this.faddEX_count = faddEX_count;
     this.fmultEX_count = fmultEX_count;
     this.fdivEX_count = fdivEX_count;
     this.faddEX_array = new Array<PIXI.Text>(this.faddEX_count);
     for (let i = 0; i < this.faddEX_count; i++) {
-      this.faddEX_array[i] = new PIXI.Text("test", styleFontTextBox);
+      this.faddEX_array[i] = new PIXI.Text("null", styleFontTextBox);
     }
     this.fmultEX_array = new Array<PIXI.Text>(this.fmultEX_count);
     for (let i = 0; i < this.fmultEX_count; i++) {
-      this.fmultEX_array[i] = new PIXI.Text("test", styleFontTextBox);
+      this.fmultEX_array[i] = new PIXI.Text("null", styleFontTextBox);
     }
     this.fdivEX_array = new Array<PIXI.Text>(this.fdivEX_count);
     for (let i = 0; i < this.fdivEX_count; i++) {
-      this.fdivEX_array[i] = new PIXI.Text("test", styleFontTextBox);
+      this.fdivEX_array[i] = new PIXI.Text("null", styleFontTextBox);
     }
     this.initBoxes();
     this.initArrows();

@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
-import { TypeDataStatistics } from "../../../types";
+import { TypeDataStatistics } from "../../../Types";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { DEFAULT_DATA_STATISTICS } from "../../../CONSTAST";
+import { DEFAULT_DATA_STATISTICS } from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
 import { SocketProviderConnectService } from "../../../__core/services/socket-provider-connect.service";

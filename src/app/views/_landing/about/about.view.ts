@@ -1,5 +1,5 @@
 import { Component, OnInit, Renderer2, ViewChild } from "@angular/core";
-import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTAST";
+import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
 import { MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { ViewportScroller } from "@angular/common";
 import { Router } from "@angular/router";

@@ -3,7 +3,7 @@ import { FileSystemStorageService } from "./file-system-storage.service";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import UploadInfo from "devextreme/file_management/upload_info";
 import { Utils } from "../../../Utils";
-import { InterfaceFileItem, InterfaceUser } from "../../../types";
+import { InterfaceFileItem, InterfaceUser } from "../../../Types";
 import firebase from "firebase/app";
 import Timestamp = firebase.firestore.Timestamp;
 import { Observable, Subject } from "rxjs";
@@ -45,7 +45,7 @@ export class FileSystemService {
     return this.updateUI$.asObservable();
   }
 
-  public async getItems(path: FileSystemItem): Promise<Array<FileItem>> {
+  public async getItems(_path: FileSystemItem): Promise<Array<FileItem>> {
     const results = this.ITEMS;
     const fileItems = results.map((value) => {
       const item: FileItem = new FileItem("", false, []);

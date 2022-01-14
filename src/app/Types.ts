@@ -11,6 +11,21 @@ declare global {
   }
 }
 
+export enum EnumLogLevel {
+  All = 0,
+  Debug = 1,
+  Info = 2,
+  Warn = 3,
+  Error = 4,
+  Fatal = 5,
+  Off = 6
+}
+
+export type TypeLogger = {
+  index: number;
+  value: any;
+};
+
 export type TypeComponentStatus = "OnInit" | "AfterViewInit" | "OnDestroy";
 
 export type TypeOnKeyEvent = {
@@ -85,14 +100,30 @@ export type TypeTags = {
   content: string
 }[];
 
+export type TypeBreakpoints = {
+  [line: number]: boolean
+};
+
+export type PublicRoutes_SET = {
+  [name: string]: {
+    lang: string;
+    path: string;
+    routerLink: string;
+    displayName: string;
+    data?: any;
+    icon?: string;
+    children?: PublicRoutes[];
+  }
+};
+
 export type PublicRoutes = {
-  lang: string;
-  path: string;
-  routerLink: string;
-  displayName: string;
-  data?: any;
-  icon?: string;
-  children?: PublicRoutes[];
+    lang: string;
+    path: string;
+    routerLink: string;
+    displayName: string;
+    data?: any;
+    icon?: string;
+    children?: PublicRoutes[];
 };
 
 export type TypeMemory = {
@@ -100,9 +131,11 @@ export type TypeMemory = {
   value: number;
 };
 
-export type PublicRoutesList = PublicRoutes[];
+export type PublicRoutesList = PublicRoutes_SET;
 
 export type TypeLine = number;
+
+export type TypeAddress = `0x${ string }`;
 
 export type TypeData = "Byte" | "HalfWord" | "Word" | "Float" | "Double" | "ASCII";
 
@@ -488,15 +521,15 @@ export type TypeStage =
   | "faddEX_7" | "fmultEX_7" | "fdivEX_7";
 
 export type TypeDirectiveData = {
+  address: TypeAddress;      // 0x00000000
   directive: TypeDirective;
-  address: string;      // 0x00000000
   text: string;
   hexValue: string;     // 0x00000000
 };
 
 export type TypeInstructionsData = {
+  address: TypeAddress;      // 0x00000000
   text: string;
-  address: string;      // 0x00000000
   instruction: string;
   code: string;         // 0x00000000
 };
@@ -571,13 +604,13 @@ export type TypeRegisterToUpdate = {
 };
 
 export type TypeMemoryToUpdate = {
+  address: TypeAddress;
   typeData: TypeData;
-  address: string;
   value: string;
 };
 
 export type TypeCycleCell = {
-  address: string;
+  address: TypeAddress;
   addressRow: number;
   draw: boolean | TypeStall;
 };

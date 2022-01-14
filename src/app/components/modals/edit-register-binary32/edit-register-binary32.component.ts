@@ -1,6 +1,6 @@
 import { AfterViewInit, OnInit, Component, ChangeDetectorRef } from "@angular/core";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { TypeRegister, TypeRegisterToEdit } from "../../../types";
+import { TypeRegister, TypeRegisterToEdit } from "../../../Types";
 import {
   MACHINE_REGISTERS_C,
   MACHINE_REGISTERS_D,
@@ -8,7 +8,7 @@ import {
   MACHINE_REGISTERS_R,
   REGISTERS_DATA,
   MACHINE_TYPE_REGISTERS, DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS
-} from "../../../CONSTAST";
+} from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";

@@ -1,24 +1,24 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
+import { Subscription } from "rxjs";
 import { AppComponent } from "../../../app.component";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { PublicRoutes } from "../../../types";
-import { AUTH_ROUTES } from "../../../CONSTAST";
-import { Subscription } from "rxjs";
+import { PublicRoutes } from "../../../Types";
+import { AUTH_ROUTES } from "../../../CONSTANTS";
 
 @Component({
-  selector: "app-auth-navbar",
+  selector:    "app-auth-navbar",
   templateUrl: "./auth-navbar.component.html"
 })
-export class AuthNavbarComponent implements OnInit, OnDestroy {
+export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
+  public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);
   public navbarOpen = false;
   public isRunning = false;
-  public readonly AUTH_ROUTES = AUTH_ROUTES;
-  private isRunningSubscription: Subscription = new Subscription();
   public colorWebsocketStatus: string = "orange";
   public isWebsocketStatusConnect: boolean = false;
+  private isRunningSubscription: Subscription = new Subscription();
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -40,6 +40,10 @@ export class AuthNavbarComponent implements OnInit, OnDestroy {
         this.isWebsocketStatusConnect = false;
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    window.jQuery("[data-toggle=\"tooltip\"]").tooltip({ trigger: "hover" });
   }
 
   ngOnDestroy(): void {

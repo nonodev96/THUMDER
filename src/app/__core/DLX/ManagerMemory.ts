@@ -1,7 +1,7 @@
 import { InterfaceMemory } from "./interfaces";
 import { Int32 } from "../typesData";
 import { Utils } from "../../Utils";
-import { TypeInstructionsData, TypeDirective, TypeMemory, TypeMemoryToUpdate, TypeDirectiveData } from "../../types";
+import { TypeInstructionsData, TypeMemory, TypeMemoryToUpdate, TypeDirectiveData } from "../../Types";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes

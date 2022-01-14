@@ -1,9 +1,8 @@
 import { Float32, Int32 } from "../typesData";
 import { InterfaceRegisters } from "./interfaces";
-import { TypeRegister, TypeRegisterControl, TypeRegisterToUpdate } from "../../types";
+import { TypeRegisterControl, TypeRegisterToUpdate } from "../../Types";
 import { Utils } from "../../Utils";
-import { SocketProviderConnectService } from "../services/socket-provider-connect.service";
-import { MACHINE_ALL_REGISTER_CONTROL } from "../../CONSTAST";
+import { MACHINE_ALL_REGISTER_CONTROL } from "../../CONSTANTS";
 
 export class ManagerRegisters implements InterfaceRegisters {
   PC: Int32;

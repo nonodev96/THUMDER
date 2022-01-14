@@ -9,7 +9,7 @@ import {
   DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
   DEFAULT_WEB_SOCKET_CONFIGURATION
-} from "../../CONSTAST";
+} from "../../CONSTANTS";
 
 @Injectable({
   providedIn: "root"

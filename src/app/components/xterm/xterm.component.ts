@@ -12,7 +12,7 @@ import {
 import { Terminal } from 'xterm';
 import { SearchAddon } from 'xterm-addon-search';
 import { WebglAddon } from 'xterm-addon-webgl';
-import { TypeOnKeyEvent } from "../../types";
+import { TypeOnKeyEvent } from "../../Types";
 
 
 @Component({

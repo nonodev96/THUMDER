@@ -1,20 +1,20 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import {
   DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS,
   MAX_VALUE_TYPE_DATA,
   REGEX_HEXADECIMAL_08,
-} from '../../../CONSTAST';
+} from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
-import { TypeData } from "../../../types";
+import { TypeData } from "../../../Types";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
-  selector: 'THUMDER-edit-memory-binary32',
-  templateUrl: './edit-memory-binary32.component.html',
-  styleUrls: ['./edit-memory-binary32.component.scss']
+  selector:    "THUMDER-edit-memory-binary32",
+  templateUrl: "./edit-memory-binary32.component.html",
+  styleUrls:   [ "./edit-memory-binary32.component.scss" ]
 })
 export class EditMemoryBinary32Component implements OnInit {
 
@@ -67,26 +67,26 @@ export class EditMemoryBinary32Component implements OnInit {
   }
 
   get addressMemory() {
-    return this._hexadecimalAddressMemory.toUpperCase().padStart(8, '0');
+    return this._hexadecimalAddressMemory.toUpperCase().padStart(8, "0");
   }
 
   set addressMemory(hexadecimalAddress: string) {
     if (REGEX_HEXADECIMAL_08.test(hexadecimalAddress)) {
       this._hexadecimalAddressMemory = hexadecimalAddress;
     } else {
-      throw new Error('Error in address: ' + hexadecimalAddress.toString());
+      throw new Error("Error in address: " + hexadecimalAddress.toString());
     }
   }
 
   get valueInSection_Hexadecimal() {
-    const maxLength = this.typeDataSelected === 'Double' ? 16 : 8;
-    const binary_32_64 = this.typeDataSelected === 'Double' ? this.memoryValueBinary64Display : this.memoryValueBinary32Display;
-    return Utils.binaryToHexadecimal(binary_32_64, {maxLength: maxLength, fillString: '0'});
+    const maxLength = this.typeDataSelected === "Double" ? 16 : 8;
+    const binary_32_64 = this.typeDataSelected === "Double" ? this.memoryValueBinary64Display : this.memoryValueBinary32Display;
+    return Utils.binaryToHexadecimal(binary_32_64, { maxLength: maxLength, fillString: "0" });
   }
 
   set valueInSection_Hexadecimal(hexadecimal: string) {
-    const maxLength = this.typeDataSelected === 'Double' ? 64 : 32;
-    this.binaryValue = Utils.hexadecimalToBinary(hexadecimal, {maxLength: maxLength, fillString: '0'});
+    const maxLength = this.typeDataSelected === "Double" ? 64 : 32;
+    this.binaryValue = Utils.hexadecimalToBinary(hexadecimal, { maxLength: maxLength, fillString: "0" });
   }
 
   // Address: 0x00000001
@@ -99,7 +99,7 @@ export class EditMemoryBinary32Component implements OnInit {
 
   set valueInSection_Byte(byte: number) {
     const binary32 = this.memoryValueBinary32Display;
-    const binary8_byte = byte.toString(2).padStart(8, '0');
+    const binary8_byte = byte.toString(2).padStart(8, "0");
     this.binaryValue = Utils.binaryStringSwap(binary32, binary8_byte, 8 * this.addressMemoryModule);
   }
 
@@ -111,7 +111,7 @@ export class EditMemoryBinary32Component implements OnInit {
 
   set valueInSection_HalfWord(halfword_number: number) {
     const binary32 = this.memoryValueBinary32Display;
-    const binary16_halfword = halfword_number.toString(2).padStart(16, '0');
+    const binary16_halfword = halfword_number.toString(2).padStart(16, "0");
     this.binaryValue = Utils.binaryStringSwap(binary32, binary16_halfword, 8 * this.addressMemoryModule);
   }
 
@@ -121,7 +121,7 @@ export class EditMemoryBinary32Component implements OnInit {
   }
 
   set valueInSection_Word(word: number) {
-    this.binaryValue = word.toString(2).padStart(32, '0');
+    this.binaryValue = word.toString(2).padStart(32, "0");
   }
 
   get valueInSection_Float_Binary32_IEEE754(): number {
@@ -155,11 +155,11 @@ export class EditMemoryBinary32Component implements OnInit {
   }
 
   get memoryValueBinary32Display() {
-    return this._binaryValue.padStart(32, '0');
+    return this._binaryValue.padStart(32, "0");
   }
 
   get memoryValueBinary64Display() {
-    return this._binaryValue.padStart(64, '0');
+    return this._binaryValue.padStart(64, "0");
   }
 
 
@@ -303,11 +303,11 @@ export class EditMemoryBinary32Component implements OnInit {
         }
       }
 
-      await this.machine.updateMemoryInServer([{
+      await this.machine.updateMemoryInServer([ {
         typeData: this.typeDataSelected,
-        address: this.addressMemory,
-        value: Utils.binaryToHexadecimal(this._binaryValue)
-      }]);
+        address:  `0x${ this.addressMemory }`,
+        value:    Utils.binaryToHexadecimal(this._binaryValue)
+      } ]);
 
     } catch (e) {
       await this.TOAST_ErrorInValueMemory();
@@ -440,34 +440,34 @@ export class EditMemoryBinary32Component implements OnInit {
     const text_mid_next_address = string32bits_next_address.slice(partToChange_next_address_init, partToChange_next_address_end);
     const text_end_next_address = string32bits_next_address.slice(partToChange_next_address_end, 32);
     let html = "";
-    html += '<p class="binValue" data-id="binary-address+0">' + text_init + '<span class="underline-text" data-subscript-line="address">' + text_mid + "</span>" + text_end + "</p>";
-    html += '<p class="binValue" data-id="binary-address+4">' + text_init_next_address + '<span class="underline-text" data-subscript-line="address">' + text_mid_next_address + "</span>" + text_end_next_address + "</p>";
+    html += "<p class=\"binValue\" data-id=\"binary-address+0\">" + text_init + "<span class=\"underline-text\" data-subscript-line=\"address\">" + text_mid + "</span>" + text_end + "</p>";
+    html += "<p class=\"binValue\" data-id=\"binary-address+4\">" + text_init_next_address + "<span class=\"underline-text\" data-subscript-line=\"address\">" + text_mid_next_address + "</span>" + text_end_next_address + "</p>";
     return this.sanitized.bypassSecurityTrustHtml(html);
   }
 
   // =================================================================================================================
 
   private async TOAST_ErrorAddress(args: string) {
-    const title_error_address = await this.translate.get('TOAST.TITLE_ERROR_IN_ADDRESS').toPromise();
-    const message_error_address = await this.translate.get('TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE', {text: args}).toPromise();
+    const title_error_address = await this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS").toPromise();
+    const message_error_address = await this.translate.get("TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE", { text: args }).toPromise();
     this.toastService.info(message_error_address, title_error_address);
   }
 
   private async TOAST_ErrorRegex() {
-    const title_error_regex = await this.translate.get('TOAST.TITLE_ERROR_REGEX').toPromise();
-    const message_error_regex_memory = await this.translate.get('TOAST.MESSAGE_ERROR_REGEX_MEMORY').toPromise();
+    const title_error_regex = await this.translate.get("TOAST.TITLE_ERROR_REGEX").toPromise();
+    const message_error_regex_memory = await this.translate.get("TOAST.MESSAGE_ERROR_REGEX_MEMORY").toPromise();
     this.toastService.info(message_error_regex_memory, title_error_regex);
   }
 
   private async TOAST_ErrorInValueMemory() {
-    const title = await this.translate.get('TOAST.TITLE_ERROR_IN_VALUE_MEMORY').toPromise();
-    const message = await this.translate.get('TOAST.MESSAGE_ERROR_IN_VALUE_MEMORY').toPromise();
+    const title = await this.translate.get("TOAST.TITLE_ERROR_IN_VALUE_MEMORY").toPromise();
+    const message = await this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_MEMORY").toPromise();
     this.toastService.info(message, title);
   }
 
   private async TOAST_ErrorInAddressMemory() {
-    const title = await this.translate.get('TOAST.TITLE_ERROR_IN_ADDRESS_MEMORY').toPromise();
-    const message = await this.translate.get('TOAST.MESSAGE_ERROR_IN_ADDRESS_MEMORY').toPromise();
+    const title = await this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS_MEMORY").toPromise();
+    const message = await this.translate.get("TOAST.MESSAGE_ERROR_IN_ADDRESS_MEMORY").toPromise();
     this.toastService.info(message, title);
   }
 
@@ -482,7 +482,7 @@ export class EditMemoryBinary32Component implements OnInit {
   async ngModelChange_ValueInSection_Decimal(value: number): Promise<void> {
     if (typeof value === "string") {
       value = 0;
-      console.error('Should be a number', value);
+      console.error("Should be a number", value);
     }
     if (value === undefined || value === null) {
       value = 0;

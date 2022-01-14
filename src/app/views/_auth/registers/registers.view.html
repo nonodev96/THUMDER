@@ -276,22 +276,22 @@
         </ng-container>
         <!-- if (typeDataSelectedDouble === Binary) -->
         <ng-container matColumnDef="Binary">
-          <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
-          <td mat-cell class="width-50" *matCellDef="let address">
+          <th mat-header-cell class="width-60" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
+          <td mat-cell class="width-60" *matCellDef="let address">
             <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) }}</p>
           </td>
         </ng-container>
         <!-- else -->
         <ng-container matColumnDef="Uint8Array">
-          <th mat-header-cell class="width-50" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
-          <td mat-cell class="width-50" *matCellDef="let address">
+          <th mat-header-cell class="width-60" *matHeaderCellDef>{{'MACHINE.Uint8Array' | translate}}</th>
+          <td mat-cell class="width-60" *matCellDef="let address">
             <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 | uint_IEEE754_64 }}</p>
           </td>
         </ng-container>
         <!-- end if -->
         <ng-container matColumnDef="Double">
-          <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.DOUBLE' | translate}} IEEE 754 64 bits</th>
-          <td mat-cell class="width-20" *matCellDef="let address">
+          <th mat-header-cell class="width-5" *matHeaderCellDef>{{'MACHINE.DOUBLE' | translate}} IEEE 754 64 bits</th>
+          <td mat-cell class="width-5" *matCellDef="let address">
             <p>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 }}</p>
           </td>
         </ng-container>

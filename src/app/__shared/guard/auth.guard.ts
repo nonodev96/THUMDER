@@ -4,7 +4,7 @@ import { AuthService } from "../../__core/auth/auth.service";
 import { ToastrService } from "ngx-toastr";
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
 import { TranslateService } from "@ngx-translate/core";
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
+import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
 
 @Injectable({
   providedIn: "root"
