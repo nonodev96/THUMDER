@@ -4,12 +4,12 @@ import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
 import { Subscription } from "rxjs";
-import { MonacoEditorComponent, TypeBreakpoints } from "../../../components/monaco-editor/monaco-editor.component";
-import { InterfaceFileItem, TypeExtrasIDE } from "../../../types";
+import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
+import { EnumLogLevel, InterfaceFileItem, TypeBreakpoints, TypeExtrasIDE } from "../../../Types";
 import { FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
 import { Utils } from "../../../Utils";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTAST";
+import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
 
 @Component({
   selector:    "view-editor",
@@ -38,11 +38,11 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    window.jQuery("#card-IDE").on("maximized.lte.cardwidget", ($event) => {
+    window.jQuery("#card-IDE").on("maximized.lte.cardwidget", (_$event) => {
       this.isMaximize = true;
       this.monacoEditorComponent.height = 88;
     });
-    window.jQuery("#card-IDE").on("minimized.lte.cardwidget", ($event) => {
+    window.jQuery("#card-IDE").on("minimized.lte.cardwidget", (_$event) => {
       this.isMaximize = false;
       this.monacoEditorComponent.height = 70;
     });
@@ -52,8 +52,8 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        let content = "";
-        let interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
+        let content: string;
+        let interfaceFileItem: InterfaceFileItem;
         if (this.extrasIDE) {
           interfaceFileItem = this.extrasIDE.interfaceFileItem ?? Utils.new_InterfaceFileItem();
           content = interfaceFileItem.content;
@@ -76,7 +76,11 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       this.monacoEditorComponent.printLine(line);
     });
     this.lineSubscription = this.machine.getLineObservable().subscribe((line) => {
-      this.monacoEditorComponent.printLine(line);
+      if (line === -1) {
+        this.monacoEditorComponent.clearLines();
+      } else {
+        this.monacoEditorComponent.printLine(line);
+      }
     });
   }
 
@@ -100,7 +104,9 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getListOfTags(): void {
-    this.machine.log(this.monacoEditorComponent.getListOfTags());
+    this.machine.writeToLog("ListOfTags: {0}", EnumLogLevel.Debug, [
+      { index: 0, value: this.monacoEditorComponent.getListOfTags() }
+    ]);
   }
 
   changeHeight(): void {

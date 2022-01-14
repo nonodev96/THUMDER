@@ -95,7 +95,8 @@
               "node_modules/prismjs/components/prism-css.min.js",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
               "node_modules/emoji-toolkit/lib/js/joypixels.min.js",
-              "node_modules/cookieconsent/build/cookieconsent.min.js"
+              "node_modules/cookieconsent/build/cookieconsent.min.js",
+              "src/assets/initMainPage.js"
             ],
             "customWebpackConfig": {
               "path": "./angular.webpack.js",
@@ -290,7 +291,8 @@
               "node_modules/prismjs/components/prism-css.min.js",
               "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
               "node_modules/emoji-toolkit/lib/js/joypixels.min.js",
-              "node_modules/cookieconsent/build/cookieconsent.min.js"
+              "node_modules/cookieconsent/build/cookieconsent.min.js",
+              "src/assets/initMainPage.js"
             ]
           },
           "configurations": {

@@ -1,5 +1,5 @@
 import { Float32, Int32 } from "../typesData";
-import { stringOfLength, StringOfLength } from "../../types";
+import { stringOfLength, StringOfLength } from "../../Types";
 
 export interface InterfaceRegisters {
   PC: Int32;

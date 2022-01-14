@@ -1,5 +1,5 @@
-import { TypeBreakpoints } from "../../components/monaco-editor/monaco-editor.component";
 import { InterfaceBreakpoints } from "./interfaces";
+import { TypeBreakpoints } from "../../Types";
 
 export class ManagerBreakpoints implements InterfaceBreakpoints {
   // Line numbers are 1-indexed

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { TypeInstructionsData, TypeStage, TypeInstructionsData_Table } from "../../../types";
+import { TypeInstructionsData, TypeStage, TypeInstructionsData_Table, TypeAddress } from "../../../Types";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
 
@@ -14,12 +14,12 @@ import { Subscription } from "rxjs";
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
 
-  public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction"];
+  public displayedColumnsMemory: string[] = [ "Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction" ];
   public dataSourceCode = new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
 
-  public listRowActives: { address: string, stage: TypeStage }[] = [];
+  public listRowActives: { address: TypeAddress, stage: TypeStage }[] = [];
   private privateStep = 0;
   private stepSubscription: Subscription = new Subscription();
   private stepSimulationSubscription: Subscription = new Subscription();
@@ -36,12 +36,13 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.dataSourceCode.data = this.machine.memory.getAllMemoryWord().map((value, index) => {
       const hexCode = Utils.binaryToHexadecimal(value.binary);
       const address = Utils.indexToAddress(index * 4);
-      const instructionGeneratedByHexCode = Utils.convertHexCodeToTextMachineInstructionDLX(hexCode);
+      // FIX
+      // const instructionGeneratedByHexCode = Utils.convertHexCodeToTextMachineInstructionDLX(hexCode);
       return {
         index:       index,
-        instruction: instructionGeneratedByHexCode,
+        instruction: "",//instructionGeneratedByHexCode,
         address:     address,
-        code:        `0x${hexCode}`,
+        code:        `0x${ hexCode }`,
         text:        "",
         stage:       ""
       } as TypeInstructionsData_Table;
@@ -52,11 +53,11 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
         this.setRow(index, data_code);
       }
     });
-    this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
+    this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((_stepSimulation) => {
       this.listRowActives = [];
       const stepSimulationPipeline = this.machine.getListStatusPipeline();
       for (const step of stepSimulationPipeline) {
-        this.listRowActives.push({address: step.address, stage: step.stage});
+        this.listRowActives.push({ address: step.address, stage: step.stage });
       }
     });
     this.resetSimulationSubscription = this.machine.getResetObservable().subscribe(() => {
@@ -102,7 +103,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
   refresh(): void {
     this.dataSourceCode.filter = null;
-    this.dataSourceCode.data = [...this.dataSourceCode.data];
+    this.dataSourceCode.data = [ ...this.dataSourceCode.data ];
 
     window.dispatchEvent(new Event("resize"));
   }
@@ -129,13 +130,13 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.refresh();
   }
 
-  checkIfContains(address: string, stages: TypeStage[]): boolean {
+  checkIfContains(address: TypeAddress, stages: TypeStage[]): boolean {
     return this.listRowActives.some((v) => {
       return v.address === address && stages.includes(v.stage);
     });
   }
 
-  checkElementStage(address: string): TypeStage {
+  checkElementStage(address: TypeAddress): TypeStage {
     const elements = this.listRowActives.filter(v => v.address === address);
     if (elements.length > 0) return elements[0].stage;
     return "";

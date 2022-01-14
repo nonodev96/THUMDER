@@ -12,11 +12,11 @@ export class Int32 {
     this._value = parseInt(newBinary, 2);
   }
 
-  get hexCode(): string {
+  get hexValue(): string {
     return this._value.toString(16).padStart(8, "0");
   }
 
-  set hexCode(newHexCode) {
+  set hexValue(newHexCode) {
     this._value = parseInt(newHexCode, 16);
   }
 }

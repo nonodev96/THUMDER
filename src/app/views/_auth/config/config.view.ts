@@ -10,12 +10,12 @@ import {
   DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
   DEFAULT_WEB_SOCKET_CONFIGURATION
-} from "../../../CONSTAST";
+} from "../../../CONSTANTS";
 import {
   TypeFloatingPointStageConfiguration,
   TypeMultiviewConfiguration,
   TypeWebSocketConfiguration
-} from "../../../types";
+} from "../../../Types";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 
 interface EventTargetInput extends EventTarget {
@@ -150,7 +150,7 @@ export class ConfigView implements OnInit, AfterViewInit {
     this.timeSimulationConfiguration = parseInt(target.value.toString());
   }
 
-  updateMultiviewConfig(target: EventTarget | any) {
+  updateMultiviewConfig(_target: EventTarget | any) {
 
   }
 

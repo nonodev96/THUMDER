@@ -1,19 +1,15 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import * as monaco from "monaco-editor";
-import { TypeComponentStatus, TypeTags } from "../../types";
+import { TypeBreakpoints, TypeComponentStatus, TypeTags } from "../../Types";
 import MonacoConfig from "../../../monaco-config";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
-export type TypeBreakpoints = {
-  [line: number]: boolean
-};
-
 @Component({
-  selector: 'thumder-monaco-editor',
-  templateUrl: './monaco-editor.component.html',
-  styleUrls: ['./monaco-editor.component.scss']
+  selector:    "thumder-monaco-editor",
+  templateUrl: "./monaco-editor.component.html",
+  styleUrls:   [ "./monaco-editor.component.scss" ]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   // export function create(domElement: HTMLElement, options?: IStandaloneEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneCodeEditor;
@@ -21,7 +17,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public _height = 70;
 
-  public content: string = '';
+  public content: string = "";
   public initialized$: Subject<boolean> = new Subject<boolean>();
 
   private editor: IStandaloneCodeEditor;
@@ -47,15 +43,15 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.componentStatus$.next('OnInit');
+    this.componentStatus$.next("OnInit");
   }
 
   ngAfterViewInit(): void {
-    this.componentStatus$.next('AfterViewInit');
+    this.componentStatus$.next("AfterViewInit");
   }
 
   ngOnDestroy(): void {
-    this.componentStatus$.next('OnDestroy');
+    this.componentStatus$.next("OnDestroy");
   }
 
   editorInitialized($event: IStandaloneCodeEditor): void {
@@ -67,10 +63,10 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D, () => {
       this.toggleDebuggerTag();
     });
-    this.editor.onDidChangeCursorSelection((e) => {
+    this.editor.onDidChangeCursorSelection((_$event) => {
 
     });
-    this.editor.onDidChangeModelDecorations((e) => {
+    this.editor.onDidChangeModelDecorations((_$event) => {
       this.breakpoints = this.getAllBreakpoints();
       this.breakpoints$.next(this.breakpoints);
     });
@@ -107,7 +103,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     // console.log('editorValueChange');
   }
 
-  callBackFunc($event_text: any): void {
+  callBackFunc(_$event_text: any): void {
     // console.log('callBackFunc', $event_text)
   }
 
@@ -135,21 +131,21 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
       // remove the tag
       this.breakpoints[line] = false;
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([ ...decorations_target_id ], []);
     } else {
       // add the tag
       this.breakpoints[line] = true;
       const newDecoration = {
-        range: new monaco.Range(line, 0, line, 0),
+        range:   new monaco.Range(line, 0, line, 0),
         options: {
           isWholeLine: true,
           // inlineClassName: 'fas fa-circle color-red',
-          glyphMarginClassName: 'fas fa-circle color-red',
+          glyphMarginClassName: "fas fa-circle color-red",
         }
       };
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [newDecoration]);
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [ newDecoration ]);
     }
-    localStorage.setItem('breakpoints', JSON.stringify(this.breakpoints));
+    localStorage.setItem("breakpoints", JSON.stringify(this.breakpoints));
   }
 
   public getListOfTags(): TypeTags {
@@ -159,7 +155,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       const decorations = this.editor.getModel().getLineDecorations(line);
       if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
         vectorOfInstructions.push({
-          line: line,
+          line:    line,
           content: this.editor.getModel().getLineContent(line),
         });
       }
@@ -173,12 +169,12 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.printLine(this.iteratorLine);
   }
 
-  public debugToLine(iteratorLine: number): void {
-    console.log('debugToLine');
-    const lineCount = this.editor.getModel().getLineCount();
-    this.iteratorLine = iteratorLine % lineCount;
-    this.printLine(this.iteratorLine);
-  }
+  // public debugToLine(iteratorLine: number): void {
+  //   console.log("debugToLine");
+  //   const lineCount = this.editor.getModel().getLineCount();
+  //   this.iteratorLine = iteratorLine % lineCount;
+  //   this.printLine(this.iteratorLine);
+  // }
 
   /**
    * Este método busca las lineas marcadas como debug y va iterando en ellas
@@ -205,26 +201,24 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.breakpoints = {};
   }
 
-  /**
-   * Este método pinta una linea en concreto con un fondo azul
-   *
-   * @param line
-   * @private
-   */
+  clearLines(): void {
+    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, []);
+  }
+
   printLine(line: number): void {
     const newDecoration = {
-      range: new monaco.Range(line, 1, line, 1),
+      range:   new monaco.Range(line, 1, line, 1),
       options: {
         isWholeLine: true,
-        className: 'debug-line'
+        className:   "debug-line"
       }
     };
-    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
+    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [ newDecoration ]);
   }
 
   setBreakpoints(breakpoints: TypeBreakpoints) {
     this.breakpoints = breakpoints;
-    for (const [line, enabled] of Object.entries(this.breakpoints)) {
+    for (const line of Object.keys(this.breakpoints)) {
       this.toggleDebuggerTag(parseInt(line));
     }
   }

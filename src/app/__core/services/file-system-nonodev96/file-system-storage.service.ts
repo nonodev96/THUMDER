@@ -3,11 +3,10 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-import { AngularFireDatabase, AngularFireList } from "@angular/fire/database";
 import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/firestore";
 import { Utils } from "../../../Utils";
 import { FileItem } from "./file-system.service";
-import { InterfaceFileItem, InterfaceUser } from "../../../types";
+import { InterfaceFileItem, InterfaceUser } from "../../../Types";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import Timestamp = firebase.firestore.Timestamp;
@@ -21,8 +20,8 @@ export class FileSystemStorageService {
   private readonly UID: string;
 
   constructor(private httpClient: HttpClient,
-              private afs: AngularFirestore,
-              private db: AngularFireDatabase) {
+              private afs: AngularFirestore
+              /*private db: AngularFireDatabase*/) {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     this.UID = userData.uid;
     this.fileItems_Collections = this.afs.collection<InterfaceFileItem>("/fileitems", (ref) => {
@@ -43,13 +42,13 @@ export class FileSystemStorageService {
     if (await this.isInitialize()) {
       return Promise.resolve(1);
     }
-    const files = ["prim.s", "win-dlx.s"];
+    const files = [ "prim.s", "win-dlx.s" ];
     for (const filename of files) {
       const defaultFileItem = new FileItem("", false, []);
       defaultFileItem.name = filename;
       defaultFileItem.key = Utils.uuidv4();
 
-      const content = await this.httpClient.get("assets/examples-dlx/" + filename, {responseType: "text"}).toPromise();
+      const content = await this.httpClient.get("assets/examples-dlx/" + filename, { responseType: "text" }).toPromise();
       const defaultInterfaceFileItem: InterfaceFileItem = {
         ...defaultFileItem,
         dateModified: Timestamp.fromDate(new Date()),
@@ -103,7 +102,7 @@ export class FileSystemStorageService {
       };
       const id = this.afs.createId();
       console.log("El nuevo fichero con ID", id, clearItem);
-      await this.fileItems_Collections.doc(id).set(clearItem, {merge: true});
+      await this.fileItems_Collections.doc(id).set(clearItem, { merge: true });
     } catch (error) {
       console.error(error);
     }
@@ -124,7 +123,7 @@ export class FileSystemStorageService {
   public async editFileItem(fileItem: InterfaceFileItem, $key: string): Promise<void> {
     try {
       const id = $key ?? this.afs.createId();
-      const data = {$key: id, ...fileItem};
+      const data = { $key: id, ...fileItem };
       const result_void = await this.fileItems_Collections.doc(id).set(data);
       return Promise.resolve(result_void);
     } catch (error) {

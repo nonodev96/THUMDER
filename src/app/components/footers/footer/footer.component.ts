@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NPM_VERSION } from "../../../CONSTAST";
+import { Component, OnInit } from "@angular/core";
+import { NPM_VERSION } from "../../../CONSTANTS";
 import { StorageService } from "../../../__core/storage/storage.service";
 import { AppConfig } from "../../../../environments/_environment";
 import { Globals } from "../../../__core/globals.service";
@@ -21,7 +21,9 @@ export class FooterComponent implements OnInit {
   ngOnInit(): void {
     this.lang = this.storageService.getItem("lang");
     this.storageService.watchStorage().subscribe((update_key) => {
-      this.lang = this.storageService.getItem("lang");
+      if (update_key === "lang") {
+        this.lang = this.storageService.getItem("lang");
+      }
     });
   }
 }

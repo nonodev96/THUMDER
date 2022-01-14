@@ -1,3 +1,46 @@
+## <small>1.3.2 (2022-01-14)</small>
+
+* Multiview performance, Drag & Drop, card resize, items default in project, fix guard in path /, tran ([62e3ef2](https://github.com/nonodev96/THUMDER/commit/62e3ef2))
+
+
+
+## <small>1.3.1 (2022-01-07)</small>
+
+* Add Netlify Status and Translations, add breakpoints default value. ([f2442a7](https://github.com/nonodev96/THUMDER/commit/f2442a7))
+* Update create-release.yaml ([d16f460](https://github.com/nonodev96/THUMDER/commit/d16f460))
+* Update create-release.yaml ([f088500](https://github.com/nonodev96/THUMDER/commit/f088500))
+* Update GitHub Action create release ([e86d5f9](https://github.com/nonodev96/THUMDER/commit/e86d5f9))
+* Update GitHub Action create release v10 | node 14.18.2 | npm 6.14.15 | I hate .yaml in GitHub action ([36adc89](https://github.com/nonodev96/THUMDER/commit/36adc89))
+* Update GitHub Action create release v11 | node 14.18.2 | npm 6.14.15 | I hate .yaml in GitHub action ([b2b60c1](https://github.com/nonodev96/THUMDER/commit/b2b60c1))
+* Update GitHub Action create release v2 ([462500b](https://github.com/nonodev96/THUMDER/commit/462500b))
+* Update GitHub Action create release v3 ([0ee6fed](https://github.com/nonodev96/THUMDER/commit/0ee6fed))
+* Update GitHub Action create release v4 ([86ff143](https://github.com/nonodev96/THUMDER/commit/86ff143))
+* Update GitHub Action create release v5 ([eeda95e](https://github.com/nonodev96/THUMDER/commit/eeda95e))
+* Update GitHub Action create release v6 | node 14.18.2 | npm 6.14.15 ([8331ada](https://github.com/nonodev96/THUMDER/commit/8331ada))
+* Update GitHub Action create release v7 | node 14.18.2 | npm 6.14.15 | I hate .yaml in GitHub actions ([1744fe0](https://github.com/nonodev96/THUMDER/commit/1744fe0))
+* Update GitHub Action create release v8 | node 14.18.2 | npm 6.14.15 | I hate .yaml in GitHub actions ([ae18bee](https://github.com/nonodev96/THUMDER/commit/ae18bee))
+* Update GitHub Action create release v9 | node 14.18.2 | npm 6.14.15 | I hate .yaml in GitHub actions ([2f4a827](https://github.com/nonodev96/THUMDER/commit/2f4a827))
+* Versión 1.3.1 Release? ([de08177](https://github.com/nonodev96/THUMDER/commit/de08177))
+* Version 1.3.1 With new GitHub Action ([9bf496b](https://github.com/nonodev96/THUMDER/commit/9bf496b))
+
+
+
+## 1.3.0 (2021-12-28)
+
+* fix and ng run with different builders and environments ([c728d9a](https://github.com/nonodev96/THUMDER/commit/c728d9a))
+* fix interfaces, add process response from server in manager breakpoints, memory, registers and stati ([93f374c](https://github.com/nonodev96/THUMDER/commit/93f374c))
+
+
+
+## <small>1.2.8 (2021-12-12)</small>
+
+* connect with socket | server machine ([e274306](https://github.com/nonodev96/THUMDER/commit/e274306))
+* refactor in machine simulator, fix pixi pipeline reset, add new documents in about view, add plantum ([edf3b30](https://github.com/nonodev96/THUMDER/commit/edf3b30))
+* Refactor manager registers and memory, new manager statistics, new linter and prettier, fix translat ([06b99d4](https://github.com/nonodev96/THUMDER/commit/06b99d4))
+* rename IDE to editor ([bdd6c64](https://github.com/nonodev96/THUMDER/commit/bdd6c64))
+
+
+
 ## <small>1.2.7 (2021-12-03)</small>
 
 * add modal component ([5c00e91](https://github.com/nonodev96/THUMDER/commit/5c00e91))
@@ -32,10 +75,15 @@
 
 ## <small>1.2.1 (2021-10-22)</small>
 
-* add ngx-markdown, scroll and monaco editor tag ([01f7536](https://github.com/nonodev96/THUMDER/commit/01f7536))
-* migration @angular @angular/core @angular-builders/custom-webpack ([30068b3](https://github.com/nonodev96/THUMDER/commit/30068b3))
 * monaco code editor ([4e210d1](https://github.com/nonodev96/THUMDER/commit/4e210d1))
 * version 1.2.1 ([36917ac](https://github.com/nonodev96/THUMDER/commit/36917ac))
+
+
+
+## 1.2.0 (2021-10-21)
+
+* add ngx-markdown, scroll and monaco editor tag ([01f7536](https://github.com/nonodev96/THUMDER/commit/01f7536))
+* migration @angular @angular/core @angular-builders/custom-webpack ([30068b3](https://github.com/nonodev96/THUMDER/commit/30068b3))
 
 
 

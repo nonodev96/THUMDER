@@ -7,9 +7,9 @@ import { ElectronService } from "./__core/services";
 import { StorageService } from "./__core/storage/storage.service";
 
 import MonacoConfig from "../monaco-config";
-import { DEFAULT_LANG } from "./CONSTAST";
+import { DEFAULT_LANG } from "./CONSTANTS";
 import { MachineService } from "./__core/machine/machine.service";
-import { TypeLang } from "./types";
+import { TypeLang } from "./Types";
 import { AuthService } from "./__core/auth/auth.service";
 import { Subscription } from "rxjs";
 import {
@@ -18,14 +18,17 @@ import {
   NgcStatusChangeEvent,
   NgcNoCookieLawEvent
 } from "ngx-cookieconsent";
-import { NgcCookieConsentConfig } from "ngx-cookieconsent/service/cookieconsent-config";
+
+declare const AppAdminLTE: {
+  initMainPage();
+};
 
 @Component({
-  selector: "app-root",
+  selector:    "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.scss"]
+  styleUrls:   [ "./app.component.scss" ]
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   lang: string = DEFAULT_LANG;
   private popupOpenSubscription: Subscription;
@@ -50,10 +53,11 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
         this.document.body.className = "";
-        this.document.body.classList.add("layout-fixed")
-        this.document.body.classList.add("layout-footer-fixed")
+        this.document.body.classList.add("layout-fixed");
+        this.document.body.classList.add("layout-footer-fixed");
       }
       if (route instanceof NavigationEnd) {
+        window.jQuery("body").Layout();
         const cards: any = window.jQuery(".card");
         cards.on("expanded.lte.cardwidget", () => {
           const resize = window.dispatchEvent(new Event("resize"));
@@ -65,9 +69,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    AppAdminLTE.initMainPage();
+
     this.lang = this.storageService.getItem("lang");
     this.document.documentElement.lang = this.lang;
-    this.translate.addLangs(["en", "sp"]);
+    this.translate.addLangs([ "en", "sp" ]);
     this.translate.setDefaultLang(this.lang);
     // ngx-cookieconsent
     this.popupOpenSubscription = this.ccService.popupOpen$.subscribe(
@@ -81,14 +87,14 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
     this.initializeSubscription = this.ccService.initialize$.subscribe(
-      (event: NgcInitializeEvent) => {
+      (_$event: NgcInitializeEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
       });
 
     this.statusChangeSubscription = this.ccService.statusChange$.subscribe(
-      (event: NgcStatusChangeEvent) => {
+      ($event: NgcStatusChangeEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
-        localStorage.setItem("cookieconsent", event.status);
+        localStorage.setItem("cookieconsent", $event.status);
       });
 
     this.revokeChoiceSubscription = this.ccService.revokeChoice$.subscribe(
@@ -97,15 +103,18 @@ export class AppComponent implements OnInit, OnDestroy {
       });
 
     this.noCookieLawSubscription = this.ccService.noCookieLaw$.subscribe(
-      (event: NgcNoCookieLawEvent) => {
+      (_$event: NgcNoCookieLawEvent) => {
         // you can use this.ccService.getConfig() to do stuff...
       });
     this.updateCookiesConsentLang();
 
-    document.getElementById("cookieconsent:link").addEventListener("click", async (e) => {
+    document.getElementById("cookieconsent:link").addEventListener("click", async (_$event) => {
       console.log("Go to cookies");
       await this.router.navigateByUrl("/cookies");
     });
+  }
+
+  ngAfterViewInit(): void {
   }
 
   ngOnDestroy(): void {
@@ -131,7 +140,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private updateCookiesConsentLang() {
     this.translate
-      .get(["cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy"])
+      .get([ "cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy" ])
       .subscribe((data) => {
         this.ccService.getConfig().content = this.ccService.getConfig().content || {};
         // Override default messages with the translated ones

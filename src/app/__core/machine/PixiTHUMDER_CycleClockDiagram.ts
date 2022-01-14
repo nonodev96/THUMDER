@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { PixiTHUMDER_Table } from "./PixiTHUMDER_Table";
 import { PixiUtils } from "./PixiUtils";
-import { TypePipelineStage, TypePipeline, TypeStall, TypeStage } from "../../types";
+import { TypePipelineStage, TypePipeline, TypeStall, TypeStage } from "../../Types";
 
 const styleFontTextInstruction = new PIXI.TextStyle({
   fontFamily: "Arial",
@@ -285,7 +285,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   private static drawCycle(code: TypePipelineStage | TypeStall | null = null): PIXI.Graphics {
     const rectangle = new PIXI.Graphics();
-    let colorLineStyle = 0xCCCCCC;
+    let colorLineStyle: number; // 0xCCCCCC;
     switch (code) {
       case "Aborted": {
         colorLineStyle = 0xCCCCCC;

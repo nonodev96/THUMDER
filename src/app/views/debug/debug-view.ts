@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTAST";
+import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
 import { FileItem } from "../../__core/services/file-system-nonodev96/file-system.service";
 import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
 import { Utils } from "../../Utils";
@@ -11,8 +11,8 @@ import {
   TypeMemoryToUpdate,
   TypeRegister,
   TypeRegisterToUpdate,
-  TypeSimulationInitRequest
-} from "../../types";
+  TypeSimulationInitRequest, TypeAddress
+} from "../../Types";
 
 @Component({
   selector:    "app-debug",
@@ -161,7 +161,7 @@ export class DebugView implements OnInit, AfterViewInit {
     return Promise.resolve(true);
   }
 
-  async updateMemoryServer(memoryTypeData: TypeData, memoryAddress: string, memoryValue: string): Promise<boolean> {
+  async updateMemoryServer(memoryTypeData: TypeData, memoryAddress: TypeAddress, memoryValue: string): Promise<boolean> {
     try {
       const payload = JSON.stringify([{
         typeData: memoryTypeData,

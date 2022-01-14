@@ -86,7 +86,6 @@ export function THUMDER_goConfig() {
   cy.location('pathname').should('eq', '/auth/config');
 }
 
-
 export function THUMDER_goMultiview() {
   THUMDER_openNavigation();
   cy.get('a[title="multiview"]').click();

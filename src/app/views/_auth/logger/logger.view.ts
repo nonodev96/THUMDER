@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { XtermComponent } from "../../../components/xterm/xterm.component";
-import { TypeOnKeyEvent } from "../../../types";
+import { TypeOnKeyEvent } from "../../../Types";
 import { MachineService } from "../../../__core/machine/machine.service";
 
 @Component({

@@ -1,7 +1,7 @@
 import { MachineService } from "./__core/machine/machine.service";
-import { ASCII_TABLE } from "./CONSTAST";
+import { ASCII_TABLE } from "./CONSTANTS";
 import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } from "./__core/DLX/__OPCODES";
-import { InterfaceFileItem } from "./types";
+import { InterfaceFileItem, TypeAddress } from "./Types";
 import { FileItem } from "./__core/services/file-system-nonodev96/file-system.service";
 import firebase from "firebase/app";
 
@@ -10,6 +10,22 @@ import Timestamp = firebase.firestore.Timestamp;
 
 
 export namespace Utils {
+
+  //YYYY-mm-dd HH:MM:SS
+  export function dateToStringFormat(dt: Date): string {
+    return "" +
+      dt.getFullYear().toString().padStart(4, "0") + "/" +
+      (dt.getMonth() + 1).toString().padStart(2, "0") + "/" +
+      dt.getDate().toString().padStart(2, "0") + " " +
+      dt.getHours().toString().padStart(2, "0") + ":" +
+      dt.getMinutes().toString().padStart(2, "0") + ":" +
+      dt.getSeconds().toString().padStart(2, "0");
+  }
+
+  export function stringToAddress(str: string): TypeAddress {
+    const value = parseInt(str, 16);
+    return `0x${ value.toString(16).padStart(8, "0").toUpperCase() }`;
+  }
 
   export async function wait(timeMs: number = 1000): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, timeMs));
@@ -22,7 +38,7 @@ export namespace Utils {
   }
 
   export function MapToArray<K, V>(map: Map<K, V>): { key: K; value: V }[] {
-    return Array.from(map, ([key, value]) => ({
+    return Array.from(map, ([ key, value ]) => ({
       key,
       value
     }));
@@ -42,12 +58,12 @@ export namespace Utils {
   }
 
 
-  export function addressToIndex(address: string): number {
+  export function addressToIndex(address: TypeAddress): number {
     return Math.trunc(this.hexadecimalToDecimal(address) / 4);
   }
 
   export function orderJSONBy(array, selector, desc = false) {
-    return [...array].sort((a, b) => {
+    return [ ...array ].sort((a, b) => {
       if (desc) {
         return parseFloat(a.selector) - parseFloat(b.selector);
       } else
@@ -157,7 +173,7 @@ export namespace Utils {
     return "0x" + ("00000000" + n.toString(16).toUpperCase()).substr(-8);
   }
 
-  export function indexToAddress(number: number, args = {maxLength: 8, fillString: "0"}) {
+  export function indexToAddress(number: number, args = { maxLength: 8, fillString: "0" }) {
     if (number < 0) {
       number = 0xFFFFFFFF + number + 1;
     }
@@ -170,12 +186,12 @@ export namespace Utils {
     return element[0].ascii;
   }
 
-  export function hexadecimalToBinary(hexadecimal: string, args = {maxLength: 32, fillString: "0"}): string {
+  export function hexadecimalToBinary(hexadecimal: string, args = { maxLength: 32, fillString: "0" }): string {
     const decimal = hexadecimalToDecimal(hexadecimal);
     return (decimal).toString(2).padStart(args.maxLength, args.fillString);
   }
 
-  export function binaryToHexadecimal(binary: string, args = {maxLength: 8, fillString: "0"}): string {
+  export function binaryToHexadecimal(binary: string, args = { maxLength: 8, fillString: "0" }): string {
     return parseInt(binary, 2).toString(16).toUpperCase().padStart(args.maxLength, args.fillString);
   }
 
@@ -227,7 +243,7 @@ export namespace Utils {
 
   export function convertIEEE754_Number_To_Binary32Bits(float32: number): string {
     let str = "";
-    const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
+    const c = new Uint8Array(new Float32Array([ float32 ]).buffer, 0, 4);
     for (const element of Array.from(c).reverse()) {
       str += element.toString(2).padStart(8, "0");
     }
@@ -236,7 +252,7 @@ export namespace Utils {
 
   export function convertIEEE754_Number_To_Binary64Bits(double64: number): string {
     let str = "";
-    const c = new Uint8Array(new Float64Array([double64]).buffer, 0, 8);
+    const c = new Uint8Array(new Float64Array([ double64 ]).buffer, 0, 8);
     for (const element of Array.from(c).reverse()) {
       str += element.toString(2).padStart(8, "0");
     }
@@ -244,7 +260,7 @@ export namespace Utils {
   }
 
   export function convertBinaryIEEE754_32bits_ToUintArray(float32: number): string {
-    const c = new Uint8Array(new Float32Array([float32]).buffer, 0, 4);
+    const c = new Uint8Array(new Float32Array([ float32 ]).buffer, 0, 4);
     const elements: string[] = [];
     for (const element of Array.from(c).reverse()) {
       elements.push(element.toString().padStart(3, "0"));
@@ -254,7 +270,7 @@ export namespace Utils {
   }
 
   export function convertBinaryIEEE754_64bits_ToUintArray(float64: number): string {
-    const c = new Uint8Array(new Float64Array([float64]).buffer, 0, 8);
+    const c = new Uint8Array(new Float64Array([ float64 ]).buffer, 0, 8);
     const elements: string[] = [];
     for (const element of Array.from(c).reverse()) {
       elements.push(element.toString().padStart(3, "0"));
@@ -370,7 +386,7 @@ export namespace Utils {
         const instruction_name = obj_instruction_type_i_or_j.name;
 
         // Type I or type J
-        if (["ADDI", "ADDUI", "SUBI", "SUBUI", "ANDI", "ORI", "XORI"].includes(instruction_name)) {
+        if ([ "ADDI", "ADDUI", "SUBI", "SUBUI", "ANDI", "ORI", "XORI" ].includes(instruction_name)) {
           return instruction_name + " R" + rd0I + ", R" + rs1I + ", #" + data;
         }
         if ("LHI" === instruction_name) {
@@ -378,13 +394,13 @@ export namespace Utils {
         }
 
         // Type J ?
-        if (["J", "JAL"].includes(instruction_name)) {
+        if ([ "J", "JAL" ].includes(instruction_name)) {
           return instruction_name + " #" + data;
         }
-        if (["BEQZ", "BNEZ"].includes(instruction_name)) {
+        if ([ "BEQZ", "BNEZ" ].includes(instruction_name)) {
           return instruction_name + " R" + rs1I + ", #" + data;
         }
-        if (["BFPT", "BFPF"].includes(instruction_name)) {
+        if ([ "BFPT", "BFPF" ].includes(instruction_name)) {
           return instruction_name + " #" + data;
         }
         if ("RFE" === instruction_name) {
@@ -395,25 +411,25 @@ export namespace Utils {
         }
 
         // No se de que tipo son :3 supongamos que de tipo I
-        if (["JR", "JALR"].includes(instruction_name)) {
+        if ([ "JR", "JALR" ].includes(instruction_name)) {
           return instruction_name + " R" + rs1I;
         }
 
-        if (["SLLI", "SRLI", "SRAI", "SEQI", "SNEI", "SLTI", "SGTI", "SLEI", "SGEI"].includes(instruction_name)) {
+        if ([ "SLLI", "SRLI", "SRAI", "SEQI", "SNEI", "SLTI", "SGTI", "SLEI", "SGEI" ].includes(instruction_name)) {
           return instruction_name + " R" + rd0I + ", R" + rs1I + ", #" + data;
         }
 
-        if (["LB", "LH", "LW", "LBU", "LHU"].includes(instruction_name)) {
+        if ([ "LB", "LH", "LW", "LBU", "LHU" ].includes(instruction_name)) {
           return instruction_name + " R" + rd0I + ", ##" + data + "(R" + rs1I + ")";
         }
-        if (["LF", "LD"].includes(instruction_name)) {
+        if ([ "LF", "LD" ].includes(instruction_name)) {
           return instruction_name + " F" + rd0I + ", ##" + data + "(R" + rs1I + ")";
         }
 
-        if (["SB", "SH", "SW"].includes(instruction_name)) {
+        if ([ "SB", "SH", "SW" ].includes(instruction_name)) {
           return instruction_name + " ##" + data + "(R" + rs1I + "), R" + rd0I;
         }
-        if (["SF", "SD"].includes(instruction_name)) {
+        if ([ "SF", "SD" ].includes(instruction_name)) {
           return instruction_name + " ##" + data + "(R" + rs1I + "), F" + rd0I;
         }
 
@@ -477,7 +493,7 @@ export namespace Utils {
 
 
   export function new_InterfaceFileItem() {
-    const {uid} = JSON.parse(localStorage.getItem("user"));
+    const { uid } = JSON.parse(localStorage.getItem("user"));
     const fileItem = new FileItem("", false, []);
     const interfaceFileItem: InterfaceFileItem = {
       ...fileItem,

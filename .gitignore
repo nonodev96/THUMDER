@@ -11,6 +11,7 @@ tsconfig.serve.tsbuildinfo
 /release
 main.js
 src/**/*.js
+!src/assets/initMainPage.js
 !src/karma.conf.js
 *.js.map
 

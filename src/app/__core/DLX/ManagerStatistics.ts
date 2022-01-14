@@ -1,6 +1,6 @@
-import { DEFAULT_DATA_STATISTICS } from "../../CONSTAST";
+import { DEFAULT_DATA_STATISTICS } from "../../CONSTANTS";
 import { InterfaceDataStatistics } from "./interfaces";
-import { TypeDataStatistics } from "../../types";
+import { TypeDataStatistics } from "../../Types";
 import { Utils } from "../../Utils";
 
 export class ManagerStatistics implements InterfaceDataStatistics {

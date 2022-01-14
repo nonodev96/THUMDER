@@ -1,5 +1,5 @@
 import { Injectable, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { InterfaceUser } from "../../types";
+import { InterfaceUser } from "../../Types";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
 import { ElectronService } from "../services";
@@ -189,7 +189,7 @@ export class AuthService implements OnInit, OnDestroy {
     try {
       await this.afAuth.signOut();
       localStorage.removeItem("user");
-      for (const [key, value] of Object.entries(localStorage)) {
+      for (const key of Object.keys(localStorage)) {
         localStorage.removeItem(key);
       }
       await this.router.navigate(["/login"]);
