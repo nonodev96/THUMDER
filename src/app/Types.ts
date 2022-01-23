@@ -1,6 +1,4 @@
-import { InterfaceMemory, InterfaceRegisters, InterfaceBreakpoints } from "./__core/DLX/interfaces";
-import firebase from "firebase/app";
-import Timestamp = firebase.firestore.Timestamp;
+import { InterfaceRegisters } from "./__core/DLX/interfaces";
 
 declare global {
   interface Window {
@@ -57,7 +55,7 @@ export interface InterfaceFileItem {
   name: string;
   content: string;
   description: string;
-  dateModified: Timestamp;
+  dateModified: Date;
   size: number;
   isDirectory: boolean;
   hasSubDirectories: boolean;
@@ -117,13 +115,13 @@ export type PublicRoutes_SET = {
 };
 
 export type PublicRoutes = {
-    lang: string;
-    path: string;
-    routerLink: string;
-    displayName: string;
-    data?: any;
-    icon?: string;
-    children?: PublicRoutes[];
+  lang: string;
+  path: string;
+  routerLink: string;
+  displayName: string;
+  data?: any;
+  icon?: string;
+  children?: PublicRoutes[];
 };
 
 export type TypeMemory = {
@@ -591,9 +589,9 @@ export type TypeConfigurationMachine = {
 // DEBUG
 
 export type TypeStatusMachine = {
-  registers: InterfaceRegisters;
-  memory: InterfaceMemory;
-  breakpoints: InterfaceBreakpoints;
+  registers: InterfaceRegisters; // TODO Debug
+  memory: TypeMemory[];
+  breakpoints: TypeBreakpoints;
   [data: string]: any; // any to any
 };
 

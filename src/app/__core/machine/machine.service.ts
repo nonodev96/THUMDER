@@ -32,7 +32,7 @@ import { StorageService } from "../storage/storage.service";
 import { ManagerRegisters } from "../DLX/ManagerRegisters";
 import { ManagerMemory } from "../DLX/ManagerMemory";
 import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
-import { SocketProviderConnectService } from "../services/socket-provider-connect.service";
+import { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
 import { ManagerStatistics } from "../DLX/ManagerStatistics";
 import { UtilsDataStructures } from "../../UtilsDataStructures";
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;

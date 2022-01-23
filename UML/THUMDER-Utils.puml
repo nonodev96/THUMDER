@@ -1,0 +1,71 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+namespace UtilsDataStructures {
+    class THUMDER_Map<K, V> {
+        -_defaultValue: V
+        -_map: Map<string, V>
+        +set(key: K, data: V): void
+        +setDefaultValue(defaultValue: V): void
+        +get(key: K): V
+        +getOrDefaultValue(key: K): V
+        +has(key: K): boolean
+        +delete(key: K): boolean
+        +clear(): void
+        +getMap(): Map<string, V>
+    }
+}
+
+namespace Utils {
+  class Utils {
+    + {static} dateToStringFormat()
+    + {static} stringToAddress()
+    + {static} wait()
+    + {static} getRegisterNumber()
+    + {static} MapToArray()
+    + {static} stringFormat()
+    + {static} clone()
+    + {static} addressToIndex()
+    + {static} orderJSONBy()
+    + {static} initSynchronousFactory()
+    + {static} initLongRunningFactory()
+    + {static} initWithDependencyFactory()
+    + {static} initServicesFactory()
+    + {static} isNullOrUndefined()
+    + {static} uuidv4()
+    + {static} arrayIsEqual()
+    + {static} isSubsetV2()
+    + {static} modNotNegative()
+    + {static} isSubset()
+    + {static} toBase()
+    + {static} numberToHexadecimalString()
+    + {static} indexToAddress()
+    + {static} binaryToASCII()
+    + {static} hexadecimalToBinary()
+    + {static} binaryToHexadecimal()
+    + {static} hexadecimalToDecimal()
+    + {static} replaceAt()
+    + {static} binaryStringSwap()
+    + {static} binaryStringSwap_module()
+    + {static} integer8ToBin()
+    + {static} integer16ToBin()
+    + {static} integer32ToBin()
+    + {static} convertIEEE754_Number_To_Binary32Bits()
+    + {static} convertIEEE754_Number_To_Binary64Bits()
+    + {static} convertBinaryIEEE754_32bits_ToUintArray()
+    + {static} convertBinaryIEEE754_64bits_ToUintArray()
+    + {static} convertIEEE754_Binary32Bits_To_Number()
+    + {static} convertIEEE754_Binary64Bits_To_Number()
+    + {static} formatDecimalString()
+    + {static} formatDecimalNumber()
+    + {static} replaceAll()
+    + {static} convertHexCodeToTextMachineInstructionDLX()
+    + {static} MAP_FileItem_TO_InterfaceFileItem()
+    + {static} MAP_FileItemArray_TO_InterfaceFileItemArray()
+    + {static} MAP_InterfaceFileItem_TO_FileItem()
+    + {static} MAP_InterfaceFileItemArray_TO_FileItemArray()
+    + {static} new_InterfaceFileItem()
+  }
+}
+@enduml

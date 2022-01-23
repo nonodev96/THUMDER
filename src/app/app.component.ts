@@ -53,8 +53,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
         this.document.body.className = "";
-        this.document.body.classList.add("layout-fixed");
-        this.document.body.classList.add("layout-footer-fixed");
+        this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
       }
       if (route instanceof NavigationEnd) {
         window.jQuery("body").Layout();

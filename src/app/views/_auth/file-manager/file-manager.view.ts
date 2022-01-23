@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { NavigationExtras, Router } from "@angular/router";
-import { FileItem, FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
+import { THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
 import { DxFileManagerComponent } from "devextreme-angular";
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
 import FileSystemItem from "devextreme/file_management/file_system_item";
@@ -23,7 +23,7 @@ export type FileMenuOptions = {
 };
 
 export type TypeEventSelectedFileOpened = {
-  file?: FileItem
+  file?: THUMDER_FileItem
 };
 
 export type TypeOnContextMenuItemClick = {
@@ -45,90 +45,68 @@ export type TypeOnContentReady = {
 };
 
 @Component({
-  selector: "view-file-manager",
+  selector:    "view-file-manager",
   templateUrl: "./file-manager.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(DxFileManagerComponent, {static: false}) fileManager: DxFileManagerComponent;
+  @ViewChild(DxFileManagerComponent, { static: false }) fileManager: DxFileManagerComponent;
 
   newFileMenuOptions: FileMenuOptions;
   changeCategoryMenuOptions: FileMenuOptions;
   customFileProvider: CustomFileSystemProvider;
   show: boolean;
   updateUISubscription: Subscription = new Subscription();
-
   private _filesSelected: any[] = [];
+
+  get filesSelected() {
+    return this._filesSelected.map(v => v.name);
+  }
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public fileSystemService: FileSystemService,
               private router: Router) {
-  }
-
-  ngOnInit(): void {
-    this.fileSystemService.initialize().then((canInit) => {
-      if (canInit) {
-        this.customFileProvider = new CustomFileSystemProvider({
-          getItems: (parentDirectory) => {
-            return this.fileSystemService.getItems(parentDirectory);
-          },
-          createDirectory: (parentDirectory, name) => {
-            return this.fileSystemService.createDirectory(parentDirectory, name);
-          },
-          renameItem: (item: FileSystemItem, name: string) => {
-            return this.fileSystemService.renameItem(item, name);
-          },
-          deleteItem: (item: FileSystemItem) => {
-            return this.fileSystemService.deleteItem(item);
-          },
-          moveItem: (item, destinationDirectory) => {
-            return this.fileSystemService.moveItem(item, destinationDirectory);
-          },
-          uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
-            return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
-          },
-          downloadItems: (items) => {
-            return this.fileSystemService.downloadItem(items);
-          }
-        });
+    this.customFileProvider = new CustomFileSystemProvider({
+      getItems:        (parentDirectory) => {
+        return this.fileSystemService.getItems(parentDirectory);
+      },
+      createDirectory: (parentDirectory, name) => {
+        return this.fileSystemService.createDirectory(parentDirectory, name);
+      },
+      renameItem:      (item: FileSystemItem, name: string) => {
+        return this.fileSystemService.renameItem(item, name);
+      },
+      deleteItem:      (item: FileSystemItem) => {
+        return this.fileSystemService.deleteItem(item);
+      },
+      moveItem:        (item, destinationDirectory) => {
+        return this.fileSystemService.moveItem(item, destinationDirectory);
+      },
+      uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
+        return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
+      },
+      downloadItems:   (items) => {
+        return this.fileSystemService.downloadItem(items);
       }
     });
+    this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(async () => {
+      await this.updateUI();
+    });
     this.newFileMenuOptions = {
-      items: [
-        {
-          text: "Create new file",
-          icon: "plus",
-          items: [
-            {
-              text: "WinDLX Document",
-              options: {
-                extension: ".s"
-              }
-            }
-          ]
-        }
-      ],
+      items:       [ { text: "Create new file", icon: "plus", items: [ { text: "WinDLX Document", options: { extension: ".s" } } ] } ],
       onItemClick: this.onContextMenuItemClick.bind(this)
     };
     this.changeCategoryMenuOptions = {
-      items: [
-        //  {
-        //    text: 'Category',
-        //    icon: 'tags',
-        //    items: []
-        //  }
-      ],
+      items:       [ /*{ text: 'Category', icon: 'tags', items: [] }*/ ],
       onItemClick: this.onContextMenuItemClick.bind(this)
     };
-    this.show = true;
+  }
 
+  ngOnInit(): void {
+    this.show = true;
   }
 
   ngAfterViewInit(): void {
-    this.generateDefaultFiles();
-    this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(() => {
-      this.fileManager?.instance?.refresh();
-    });
   }
 
   ngOnDestroy(): void {
@@ -141,21 +119,27 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
     this.updateUISubscription.unsubscribe();
   }
 
-  generateDefaultFiles() {
-    this.fileSystemService.generateDefaultFiles().then((code) => {
-      if (code === 0) {
-        console.debug("Se han generado los ficheros por defecto");
-      }
-      if (code === 1) {
-        console.debug("No se han generado los ficheros por defecto");
-      }
-    });
+  public async updateUI(): Promise<void> {
+    await this.fileManager.instance.refresh();
+    return Promise.resolve();
   }
 
-  onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
-    const index1 = this.fileSystemService.ITEMS.findIndex(value => $event.file.key === value.key);
-    if (index1 > -1) {
-      const interfaceFileItem = this.fileSystemService.ITEMS[index1];
+  public async generateDefaultFiles(): Promise<void> {
+    const code = await this.fileSystemService.fileSystemStorageService.generateDefaultFiles();
+    await this.updateUI();
+    if (code === 0) {
+      console.debug("Se han generado los ficheros por defecto");
+    }
+    if (code === 1) {
+      console.debug("No se han generado los ficheros por defecto");
+    }
+    return Promise.resolve();
+  }
+
+  public onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
+    const index = this.fileSystemService.items.findIndex(value => $event.file.key === value.key);
+    if (index > -1) {
+      const interfaceFileItem = this.fileSystemService.items[index];
       const extras: NavigationExtras = {
         state: {
           "interfaceFileItem": interfaceFileItem
@@ -167,12 +151,12 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onContentReady($event: TypeOnContentReady): void {
+  public onContentReady($event: TypeOnContentReady): void {
     console.log($event);
   }
 
-  async onContextMenuItemClick($event: TypeOnContextMenuItemClick): Promise<void> {
-    const {itemData, viewArea, fileSystemItem} = $event;
+  public async onContextMenuItemClick($event: TypeOnContextMenuItemClick): Promise<void> {
+    const { itemData, viewArea, fileSystemItem } = $event;
     let updated = false;
     const extension = itemData.options ? itemData.options.extension : undefined;
     const category = itemData.options ? itemData.options.category : undefined;
@@ -185,26 +169,25 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
       updated = await this.fileSystemService.updateCategory(directory, selectedItems, category, viewArea);
     }
     if (updated) {
-      this.fileManager.instance.refresh();
+      await this.fileManager.instance.refresh();
     }
 
     return Promise.resolve();
   }
 
-  height(): number | string {
+  public onSelectionChanged(_$event: any) {
+    this._filesSelected = this.fileManager.instance.getSelectedItems();
+  }
+
+  public height(): number | string {
     return window.innerHeight / 1.25;
   }
 
-  log(): void {
+  public log(): void {
     console.log(this.fileSystemService.items);
-    console.log(this.fileSystemService.ITEMS);
   }
 
-  get filesSelected() {
-    return this._filesSelected.map(v => v.name);
-  }
-
-  onSelectionChanged($event: any) {
-    this._filesSelected = this.fileManager.instance.getSelectedItems();
+  public async tests() {
+    await this.fileSystemService.fileSystemStorageService.getAllFilesFromFirestore();
   }
 }

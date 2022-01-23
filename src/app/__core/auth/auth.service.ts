@@ -1,34 +1,39 @@
-import { Injectable, NgZone, OnDestroy, OnInit } from "@angular/core";
-import { InterfaceUser } from "../../Types";
-import { AngularFireAuth } from "@angular/fire/auth";
+import { Injectable, NgZone } from "@angular/core";
 import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/firestore";
-import { ElectronService } from "../services";
 import { Router } from "@angular/router";
+import { AngularFireAuth } from "@angular/fire/auth";
 import { Observable, Subject, Subscription } from "rxjs";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
 import firebase from "firebase/app";
 import UserCredential = firebase.auth.UserCredential;
+import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
+import { InterfaceUser } from "../../Types";
+import { ElectronService } from "../services";
 
 @Injectable({
   providedIn: "root"
 })
 
-export class AuthService implements OnInit, OnDestroy {
+export class AuthService {
   public isLogging$: Subject<boolean> = new Subject<boolean>();
 
   public userData: InterfaceUser; // Save logged in user data
   private subscriptions$ = new Subscription();
 
-  constructor(public afs: AngularFirestore,   // Inject Firestore service
-              public afAuth: AngularFireAuth, // Inject Firebase auth service
-              public ngZone: NgZone,          // NgZone service to remove outside scope warning
-              public router: Router,
-              public electronService: ElectronService) {
+  constructor(private afs: AngularFirestore,   // Inject Firestore service
+              private afAuth: AngularFireAuth, // Inject Firebase auth service
+              private ngZone: NgZone,          // NgZone service to remove outside scope warning
+              private router: Router,
+              private toast: ToastrService,
+              private translate: TranslateService,
+              private electronService: ElectronService) {
     this.subscriptions$.add(
       this.afAuth.authState.subscribe(user => {
         if (user) {
           window.document.body.className = "";
-          window.document.body.classList.add("layout-fixed")
-          window.document.body.classList.add("layout-footer-fixed")
+          window.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
+
           this.userData = user;
           localStorage.setItem("user", JSON.stringify(this.userData));
           // JSON.parse(localStorage.getItem("user"));
@@ -55,19 +60,20 @@ export class AuthService implements OnInit, OnDestroy {
   }
 
   // Sign in with email/password
-  async SignIn(email, password): Promise<boolean> {
+  public async SignIn(email, password): Promise<boolean> {
     try {
       const userCredential = await this.afAuth.signInWithEmailAndPassword(email, password);
       await this.SetUserData(userCredential);
       return Promise.resolve(true);
     } catch (error) {
       console.error(error);
+      this.displayError(error as firebase.FirebaseError);
     }
     return Promise.resolve(false);
   }
 
   // Sign up with email/password
-  async SignUp(email, password): Promise<UserCredential | void> {
+  public async SignUp(email, password): Promise<UserCredential | void> {
     try {
       const userCredential = await this.afAuth.createUserWithEmailAndPassword(email, password);
       /* Call the SendVerificationMail(userCredential) function when new user sign
@@ -77,28 +83,31 @@ export class AuthService implements OnInit, OnDestroy {
       return Promise.resolve(userCredential);
     } catch (error) {
       console.error(error);
+      this.displayError(error as firebase.FirebaseError);
     }
     return Promise.resolve();
   }
 
   // Send email verification when new user sign up
-  async SendVerificationMail(userCredential: UserCredential): Promise<void> {
+  public async SendVerificationMail(userCredential: UserCredential): Promise<void> {
     try {
       await userCredential.user.sendEmailVerification();
-      await this.router.navigate(["/"]);
-    } catch (e) {
-      console.error(e);
+      await this.router.navigate([ "/" ]);
+    } catch (error) {
+      console.error(error);
+      this.displayError(error as firebase.FirebaseError);
     }
     return Promise.resolve();
   }
 
   // Reset Forgot password
-  async ForgotPassword(passwordResetEmail): Promise<void> {
+  public async ForgotPassword(passwordResetEmail): Promise<void> {
     try {
       await this.afAuth.sendPasswordResetEmail(passwordResetEmail);
-      window.alert("Password reset email sent, check your inbox.");
+      this.displayMessage("Email send, heck your inbox.");
     } catch (error) {
       console.error(error);
+      this.displayError(error as firebase.FirebaseError);
     }
     return Promise.resolve();
   }
@@ -125,10 +134,11 @@ export class AuthService implements OnInit, OnDestroy {
       const userCredential = await this.afAuth.signInAnonymously();
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate(["/"]);
+        this.router.navigate([ "/" ]);
       });
     } catch (error) {
       console.error(error);
+      this.displayError(error as firebase.FirebaseError);
     }
     return Promise.resolve();
   }
@@ -140,12 +150,27 @@ export class AuthService implements OnInit, OnDestroy {
       console.log(" AuthLogin");
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate(["/"]);
+        this.router.navigate([ "/" ]);
       });
     } catch (error) {
       console.error(error);
+      this.displayError(error as firebase.FirebaseError);
     }
     return Promise.resolve();
+  }
+
+  public async SignOut() {
+    try {
+      await this.afAuth.signOut();
+      localStorage.removeItem("user");
+      for (const key of Object.keys(localStorage)) {
+        localStorage.removeItem(key);
+      }
+      await this.router.navigate([ "/login" ]);
+    } catch (error) {
+      console.error(error);
+      this.displayError(error as firebase.FirebaseError);
+    }
   }
 
   /**
@@ -155,10 +180,10 @@ export class AuthService implements OnInit, OnDestroy {
     if (!this.electronService.isElectronApp) {
       const userCredential = await firebase.auth().getRedirectResult();
       if (userCredential.user !== null) {
-        console.log("Entra en getRedirectResult", userCredential);
+        console.log("getRedirectResult", userCredential);
         await this.SetUserData(userCredential);
         this.ngZone.run(() => {
-          this.router.navigate(["/"]);
+          this.router.navigate([ "/" ]);
         });
       }
       return Promise.resolve(true);
@@ -170,8 +195,9 @@ export class AuthService implements OnInit, OnDestroy {
   /* Setting up user data when sign in with username/password,
   sign up with username/password and sign in with social auth
   provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
+
   SetUserData(userCredential: UserCredential): any {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${userCredential.user.uid}`);
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${ userCredential.user.uid }`);
     const userData: InterfaceUser = {
       uid:           userCredential.user.uid,
       email:         userCredential.user.email,
@@ -184,18 +210,13 @@ export class AuthService implements OnInit, OnDestroy {
     });
   }
 
-  // Sign out
-  async SignOut() {
-    try {
-      await this.afAuth.signOut();
-      localStorage.removeItem("user");
-      for (const key of Object.keys(localStorage)) {
-        localStorage.removeItem(key);
-      }
-      await this.router.navigate(["/login"]);
-    } catch (error) {
-      console.error(error);
-    }
+  private displayMessage(message: string) {
+    this.toast.info(message, "", DEFAULT_CONFIG_TOAST);
   }
 
+  private displayError(error: firebase.FirebaseError) {
+    const error_title = this.translate.instant("ERROR.TITLE", { title: error?.code ?? "" });
+    const error_message = this.translate.instant("ERROR.MESSAGE", { message: error?.message ?? "" });
+    this.toast.error(error_message, error_title, DEFAULT_CONFIG_TOAST);
+  }
 }

@@ -31,9 +31,9 @@ import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 import { DebugView } from "./views/debug/debug-view";
 
 import { IndexView } from "./views/_index/index.view";
-import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
-import { LoginView } from "./views/login/login.view";
-import { RegisterView } from "./views/register/register.view";
+import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
+import { LoginView } from "./views/_account/login/login.view";
+import { RegisterView } from "./views/_account/register/register.view";
 
 // _landing views
 import { LandingView } from "./views/_landing/landing/landing.view";

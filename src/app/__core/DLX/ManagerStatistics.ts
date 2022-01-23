@@ -4,13 +4,13 @@ import { TypeDataStatistics } from "../../Types";
 import { Utils } from "../../Utils";
 
 export class ManagerStatistics implements InterfaceDataStatistics {
-  private _data: TypeDataStatistics;
+  public _data: TypeDataStatistics;
 
   constructor() {
     this._data = DEFAULT_DATA_STATISTICS;
   }
 
-  public processResponse(response: Partial<TypeDataStatistics>) {
+  public processResponse(response: Partial<TypeDataStatistics>): void {
     for (const responseElement of Object.keys(response)) {
       this._data[responseElement] = response[responseElement];
     }

@@ -1,5 +1,20 @@
-import { Float32, Int32 } from "../typesData";
-import { stringOfLength, StringOfLength } from "../../Types";
+import { Float32, Int32 } from "../TypesData";
+import { stringOfLength, StringOfLength, TypeDataStatistics, TypeDirectiveData, TypeInstructionsData, TypeMemoryToUpdate, TypeRegisterToUpdate } from "../../Types";
+
+export interface InterfaceBreakpoints {
+
+}
+
+export interface InterfaceMemory {
+  _memorySizeBytes: number;
+  _memoryInt8Array: Uint8Array;
+
+  processResponseMachineDirectives(directives: TypeDirectiveData[]): void;
+
+  processResponseMachineInstructions(instructions: TypeInstructionsData[]): void;
+
+  processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void;
+}
 
 export interface InterfaceRegisters {
   PC: Int32;
@@ -20,18 +35,14 @@ export interface InterfaceRegisters {
   LDRHI: Int32;
   R: Int32[];
   F: Float32[];
-}
 
-export interface InterfaceBreakpoints {
-
-}
-
-export interface InterfaceMemory {
-
+  processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void;
 }
 
 export interface InterfaceDataStatistics {
+  _data: TypeDataStatistics;
 
+  processResponse(response: Partial<TypeDataStatistics>): void;
 }
 
 export interface InterfaceInstructionTypeI {

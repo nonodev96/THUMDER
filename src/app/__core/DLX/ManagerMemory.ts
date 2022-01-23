@@ -1,13 +1,13 @@
-import { InterfaceMemory } from "./interfaces";
-import { Int32 } from "../typesData";
-import { Utils } from "../../Utils";
 import { TypeInstructionsData, TypeMemory, TypeMemoryToUpdate, TypeDirectiveData } from "../../Types";
+import { Utils } from "../../Utils";
+import { Int32 } from "../TypesData";
+import { InterfaceMemory } from "./interfaces";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes
-  private _memorySizeBytes: number;
+  public _memorySizeBytes: number;
   // private _memory: Array<Int32>;
-  private _memoryInt8Array: Uint8Array;
+  public _memoryInt8Array: Uint8Array;
 
   constructor(memorySizeBytes: number) {
     this._memorySizeBytes = memorySizeBytes;
@@ -24,7 +24,7 @@ export class ManagerMemory implements InterfaceMemory {
     this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
   }
 
-  public processResponseMachineDirectives(directives: TypeDirectiveData[]) {
+  public processResponseMachineDirectives(directives: TypeDirectiveData[]): void {
     for (const directive of directives) {
       switch (directive.directive) {
         case "DATA": {
@@ -68,16 +68,16 @@ export class ManagerMemory implements InterfaceMemory {
     }
   }
 
-  public processResponseMachineInstructions(instructions: TypeInstructionsData[]) {
+  public processResponseMachineInstructions(instructions: TypeInstructionsData[]): void {
     for (const instruction of instructions) {
       const binary32 = Utils.hexadecimalToBinary(instruction.code);
       this.setMemoryWordBinaryByAddress(instruction.address, binary32);
     }
   }
 
-  public processMemoryToUpdateArray(response: TypeMemoryToUpdate[]) {
+  public processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void {
     for (const memoryToUpdate of response) {
-      const {typeData, address, value} = memoryToUpdate;
+      const { typeData, address, value } = memoryToUpdate;
       switch (typeData) {
         case "Byte": {
           const binary = Utils.hexadecimalToBinary(value);
