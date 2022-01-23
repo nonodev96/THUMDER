@@ -38,17 +38,24 @@ InterfaceUI <- System: Transform number to input word
 deactivate System
 
 
-User -> InterfaceUI: Write number in input float
-InterfaceUI -> System: Write number in input float
+User -> InterfaceUI: Write number in input word Unsigned Integer
+InterfaceUI -> System: Write number in input word Unsigned Integer
 activate System
-InterfaceUI <- System: Transform number to input float
+InterfaceUI <- System: Transform number to input word Unsigned Integer
 deactivate System
 
 
-User -> InterfaceUI: Write number in input double
-InterfaceUI -> System: Write number in input double
+User -> InterfaceUI: Write number in input float - IEEE 754 32 bits
+InterfaceUI -> System: Write number in input float - IEEE 754 32 bits
 activate System
-InterfaceUI <- System: Transform number to input double
+InterfaceUI <- System: Transform number to input float - IEEE 754 32 bits
+deactivate System
+
+
+User -> InterfaceUI: Write number in input double - IEEE 754 64 bits
+InterfaceUI -> System: Write number in input double - IEEE 754 64 bits
+activate System
+InterfaceUI <- System: Transform number to input double - IEEE 754 64 bits
 deactivate System
 
 

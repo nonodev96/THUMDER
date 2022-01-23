@@ -1,0 +1,127 @@
+@startuml
+
+skinparam linetype ortho
+
+
+package Services #DDDDDD {
+  class ElectronService {
+    +ipcRenderer: Electron.IpcRenderer
+    +webFrame: Electron.WebFrame
+    +remote: Electron.Remote
+    +childProcess: typeof childProcess
+    +fs: typeof fs
+    -_electron: any
+    -electron: any
+    +isElectronApp: boolean
+    +nativeImage: Electron.NativeImage
+    +screen: Electron.Screen
+    +shell: Electron.Shell
+    +{static} isElectron(): "" | "browser" | "renderer" | "worker"
+    +{static} isServer: boolean
+    +{static} isElectronApp: boolean
+    +{static} isMacOS: boolean
+    +{static} isWindows: boolean
+    +{static} isLinux: boolean
+    +{static} isX86: boolean
+    +{static} isX64: boolean
+    +{static} debug: any
+  }
+  interface FileSystemItem {
+  }
+  interface InterfaceFileItem {
+    +$key?: string
+    +f_id: string
+    +e1_uid: string
+    +key: string
+    +pathKeys: string[]
+    +path: string
+    +name: string
+    +content: string
+    +description: string
+    +dateModified: Date
+    +size: number
+    +isDirectory: boolean
+    +hasSubDirectories: boolean
+    +thumbnail: string
+    +dataItem: any
+  }
+  class FileItem extends FileSystemItem implements InterfaceFileItem {
+  }
+  class FileSystemService {
+    +items: FileItem[]
+    +ITEMS: InterfaceFileItem[]
+    -UID: string
+    -updateUI$: Subject<void>
+    -fileSystemStorageService: FileSystemStorageService
+    +initialize(): Promise<boolean>
+    +getUpdateUIObservable(): Observable<void>
+    +getItems(_path: FileSystemItem): Promise<FileItem[]>
+    +createDirectory(parentDirectory: FileSystemItem, name: string): Promise<FileItem>
+    +createFile(item: FileSystemItem, extension: string): Promise<boolean>
+    +updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean>
+    +editFileItem(updateFileItem: InterfaceFileItem, $key: string): Promise<void>
+    +renameItem(item: FileSystemItem, newName: string): Promise<FileItem>
+    +deleteItem(item: FileSystemItem): Promise<FileItem>
+    +moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): any
+    +uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): any
+    +downloadItem(items: FileSystemItem[]): void
+    +generateDefaultFiles(): Promise<number>
+  }
+  class FileSystemStorageService {
+    -fileItems_Collections: AngularFirestoreCollection<InterfaceFileItem>
+    -UID: string
+    -httpClient: HttpClient
+    -afs: AngularFirestore
+    +initialize(): Promise<number>
+    +generateDefaultFiles(): Promise<number>
+    +getInterfaceFileItems(): Observable<InterfaceFileItem[]>
+    +addFileItem(interfaceFileItem: InterfaceFileItem): Promise<void>
+    +deleteFileItem(id: string): Promise<void>
+    +editFileItem(fileItem: InterfaceFileItem, $key: string): Promise<void>
+    -isInitialize(): Promise<boolean>
+  }
+
+  class Globals {
+    +showDebug: boolean;
+  }
+
+  class SocketProviderConnectService {
+    +socketID: string
+    -connect$: Subject<"Connect" | "Disconnect">
+    -publicMessage$: Subject<unknown>
+    -privateMessage$: Subject<unknown>
+    +connectObservable: Observable<"Connect" | "Disconnect">
+    +publicMessageObservable: Observable<unknown>
+    +privateMessageObservable: Observable<unknown>
+    +socketIO: Socket
+    -translate: TranslateService
+    -toast: ToastrService
+    +updateSocketURl(): void
+    +emitMessage(event?: string, payload?: {}, callback?: (...response: any[]) => void): void
+    -{static} handleErrors(err: any): void
+  }
+
+  class UtilityService {
+  }
+
+  FileSystemService --> FileSystemStorageService
+  ElectronService -[hidden]- FileSystemService
+  FileSystemStorageService -[hidden]- Globals
+  Globals -[hidden]- SocketProviderConnectService
+  SocketProviderConnectService -[hidden]- UtilityService
+}
+
+package Storage #DDDDDD {
+  class StorageService {
+    -storageSub: Subject<string>
+    +watchStorage(): Observable<string>
+    +getItem(key: string): any
+    +setItem(key: string, data: any): void
+    +hasItem(key: string): boolean
+    +defaultDataInStorage(): void
+  }
+}
+
+Services -[hidden]down- Storage
+
+@enduml

@@ -1,4 +1,4 @@
-import { Float32, Int32 } from "../typesData";
+import { Float32, Int32 } from "../TypesData";
 import { InterfaceRegisters } from "./interfaces";
 import { TypeRegisterControl, TypeRegisterToUpdate } from "../../Types";
 import { Utils } from "../../Utils";
@@ -54,9 +54,9 @@ export class ManagerRegisters implements InterfaceRegisters {
     }
   }
 
-  public processRegisterToUpdateArray(response: TypeRegisterToUpdate[]) {
+  public processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void {
     for (const registerToUpdate of response) {
-      const {typeRegister, register, hexadecimalValue} = registerToUpdate;
+      const { typeRegister, register, hexadecimalValue } = registerToUpdate;
       switch (typeRegister) {
         case "Control": {
           const binary = Utils.hexadecimalToBinary(hexadecimalValue);

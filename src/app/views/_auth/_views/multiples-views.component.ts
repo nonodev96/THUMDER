@@ -7,7 +7,7 @@ import {
   CdkDrag
 } from "@angular/cdk/drag-drop";
 import { Utils } from "../../../Utils";
-import { Globals } from "../../../__core/globals.service";
+import { Globals } from "../../../__core/services/globals/globals.service";
 import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";
 
 @Component({

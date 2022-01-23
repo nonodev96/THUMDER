@@ -99,7 +99,7 @@
     <div class="row">
       <div class="col-3">
         <div class="form-group">
-          <label for="word_value">{{ 'TYPE_DATA.WORD' | translate }}</label>
+          <label for="word_value">{{ 'TYPE_DATA.WORD' | translate }} Uint</label>
           <input type="number" class="form-control" id="word_value"
                  step="1"
                  [ngModelOptions]="{standalone: true}"
@@ -133,6 +133,46 @@
                  [ngModelOptions]="{standalone: true}"
                  [(ngModel)]="binary32_Binary"
                  (ngModelChange)="binary32_Binary=$event">
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-3">
+        <div class="form-group">
+          <label for="word_value_int">{{ 'TYPE_DATA.WORD' | translate }} Int</label>
+          <input type="number" class="form-control" id="word_value_int"
+                 step="1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary32Int_Value">
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group">
+          <label for="word_hex_int">{{ 'TYPE_DATA.WORD' | translate }}</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0x</span>
+            </div>
+            <input type="text" id="word_hex_int"
+                   class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [ngModel]="binary32Int_Hexadecimal"
+                   (ngModelChange)="binary32Int_Hexadecimal=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in hexadecimal</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-5">
+        <div class="form-group">
+          <label for="word_binary_int">{{ 'TYPE_DATA.WORD' | translate }}</label>
+          <input type="text" class="form-control" id="word_binary_int"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="binary32Int_Binary"
+                 (ngModelChange)="binary32Int_Binary=$event">
         </div>
       </div>
     </div>

@@ -35,7 +35,7 @@ import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from "ngx-cookieconsent";
 
 // Services
-import { UtilityService } from "./__core/utility.service";
+import { UtilityService } from "./__core/services/utility/utility.service";
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
@@ -63,6 +63,7 @@ import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
 
 // _admin views
+
 // _auth views
 import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
 import { CalculatorView } from "./views/_auth/calculator/calculator.view";
@@ -83,9 +84,11 @@ import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 import { AboutView } from "./views/_landing/about/about.view";
 import { LandingView } from "./views/_landing/landing/landing.view";
 import { DebugView } from "./views/debug/debug-view";
-import { ForgotPasswordView } from "./views/forgot-password/forgot-password.view";
-import { LoginView } from "./views/login/login.view";
-import { RegisterView } from "./views/register/register.view";
+
+// account views
+import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
+import { LoginView } from "./views/_account/login/login.view";
+import { RegisterView } from "./views/_account/register/register.view";
 
 // Index
 import { IndexView } from "./views/_index/index.view";

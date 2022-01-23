@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
-import { FileItem } from "../../__core/services/file-system-nonodev96/file-system.service";
-import { SocketProviderConnectService } from "../../__core/services/socket-provider-connect.service";
+import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
+import { SocketProviderConnectService } from "../../__core/services/socket/socket-provider-connect.service";
 import { Utils } from "../../Utils";
 import {
   TypeInstructionsData,
@@ -122,10 +122,10 @@ export class DebugView implements OnInit, AfterViewInit {
   debugLocalStorage() {
     console.log(localStorage.getItem("FileSystem"));
 
-    const documents = new FileItem("", true, []);
+    const documents = new THUMDER_FileItem("", true, []);
     documents.name = "Documents";
     documents.key = Utils.uuidv4();
-    const pepe = new FileItem("", false, []);
+    const pepe = new THUMDER_FileItem("", false, []);
     pepe.name = "pepe.s";
     pepe.key = Utils.uuidv4();
 

@@ -1,12 +1,7 @@
 import { MachineService } from "./__core/machine/machine.service";
 import { ASCII_TABLE } from "./CONSTANTS";
 import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } from "./__core/DLX/__OPCODES";
-import { InterfaceFileItem, TypeAddress } from "./Types";
-import { FileItem } from "./__core/services/file-system-nonodev96/file-system.service";
-import firebase from "firebase/app";
-
-
-import Timestamp = firebase.firestore.Timestamp;
+import { TypeAddress } from "./Types";
 
 
 export namespace Utils {
@@ -438,71 +433,5 @@ export namespace Utils {
     }
 
     return "Instruction error #-1";
-  }
-
-  export function MAP_FileItem_TO_InterfaceFileItem(fileItem: FileItem, UID: string): InterfaceFileItem {
-    return {
-      key:               fileItem.key ?? "",
-      pathKeys:          fileItem.pathKeys ?? [],
-      path:              fileItem.path ?? "",
-      name:              fileItem.name ?? "",
-      isDirectory:       fileItem.isDirectory ?? false,
-      hasSubDirectories: fileItem.hasSubDirectories ?? false,
-      dateModified:      Timestamp.fromDate(fileItem.dateModified ?? new Date()),
-      thumbnail:         fileItem.thumbnail ?? "",
-      size:              fileItem.size ?? 0,
-      dataItem:          fileItem.dataItem ?? {},
-
-      e1_uid:      UID,
-      f_id:        "",
-      description: "",
-      content:     ""
-    } as InterfaceFileItem;
-  }
-
-  export function MAP_FileItemArray_TO_InterfaceFileItemArray(fileItemArray: FileItem[], UID: string): InterfaceFileItem[] {
-    return fileItemArray.map((value) => {
-      return this.MAP_FileItem_TO_InterfaceFileItem(value, UID);
-    });
-  }
-
-  export function MAP_InterfaceFileItem_TO_FileItem(interfaceFileItem: InterfaceFileItem): FileItem {
-    const item: FileItem = new FileItem(interfaceFileItem.path, interfaceFileItem.isDirectory, interfaceFileItem.pathKeys);
-    item.key = interfaceFileItem.key ?? "";
-    item.pathKeys = interfaceFileItem.pathKeys ?? [];
-    item.path = interfaceFileItem.path ?? "";
-    item.name = interfaceFileItem.name ?? "";
-    item.isDirectory = interfaceFileItem.isDirectory ?? false;
-    item.hasSubDirectories = interfaceFileItem.hasSubDirectories ?? false;
-    if (interfaceFileItem.dateModified) {
-      item.dateModified = Timestamp.fromMillis(interfaceFileItem.dateModified.seconds * 1000).toDate();
-    } else {
-      item.dateModified = new Date();
-    }
-    item.thumbnail = interfaceFileItem.thumbnail ?? "";
-    item.size = interfaceFileItem.size ?? 0;
-    item.dataItem = interfaceFileItem.dataItem ?? {};
-    return item;
-  }
-
-  export function MAP_InterfaceFileItemArray_TO_FileItemArray(interfaceFileItemArray: InterfaceFileItem[]): FileItem[] {
-    return interfaceFileItemArray.map((value) => {
-      return this.MAP_InterfaceFileItem_TO_FileItem(value);
-    });
-  }
-
-
-  export function new_InterfaceFileItem() {
-    const { uid } = JSON.parse(localStorage.getItem("user"));
-    const fileItem = new FileItem("", false, []);
-    const interfaceFileItem: InterfaceFileItem = {
-      ...fileItem,
-      dateModified: Timestamp.fromDate(new Date()),
-      content:      "",
-      description:  "",
-      e1_uid:       uid,
-      f_id:         ""
-    };
-    return interfaceFileItem;
   }
 }

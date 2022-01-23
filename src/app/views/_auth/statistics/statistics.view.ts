@@ -5,7 +5,7 @@ import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_DATA_STATISTICS } from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
-import { SocketProviderConnectService } from "../../../__core/services/socket-provider-connect.service";
+import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
 
 @Component({
   selector: 'view-statistics',

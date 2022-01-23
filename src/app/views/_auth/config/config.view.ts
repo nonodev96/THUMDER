@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
-import { SocketProviderConnectService } from "../../../__core/services/socket-provider-connect.service";
+import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
 import { StorageService } from "../../../__core/storage/storage.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { AppConfig } from "../../../../environments/_environment";

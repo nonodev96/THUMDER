@@ -11,6 +11,7 @@ skinparam linetype ortho
 left to right direction
 'https://www.freeprojectz.com/uml-diagram/chat-application-system-sequence-diagram
 actor "Usuario" as user
+actor "Servidor" as server
 
 rectangle THUMDER-Client {
   usecase "<<Story Case>>\nCrear una cuenta" as S_CU1
@@ -73,7 +74,7 @@ rectangle THUMDER-Server {
   usecase "Responder" as S_UC03
 }
 '/
-
+'server left THUMDER-Client
 'admin --> UC01
 'admin --> UC02
 user --> S_CU1

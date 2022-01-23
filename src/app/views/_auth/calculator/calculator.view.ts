@@ -3,18 +3,20 @@ import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "../../../CONSTAN
 import { Utils } from "../../../Utils";
 
 @Component({
-  selector: "view-calculator",
+  selector:    "view-calculator",
   templateUrl: "./calculator.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class CalculatorView implements OnInit {
 
-  private _valueByte: Uint8Array = new Uint8Array([0]);
-  private _valueHalfWord: Uint16Array = new Uint16Array([0]);
-  private _valueWord: Uint32Array = new Uint32Array([0]);
+  private _valueByte: Uint8Array = new Uint8Array([ 0 ]);
+  private _valueHalfWord: Uint16Array = new Uint16Array([ 0 ]);
+  private _valueWord: Uint32Array = new Uint32Array([ 0 ]);
+  private _valueIntWord: Int32Array = new Int32Array([ 0 ]);
   private _value32Float: string = DEFAULT_BINARY_32_BITS;
   private _value64Double: string = DEFAULT_BINARY_64_BITS;
 
+  // region Byte
   get binary08_Value(): number {
     return parseInt(this._valueByte[0].toString(2), 2);
   }
@@ -39,8 +41,11 @@ export class CalculatorView implements OnInit {
     this._valueByte[0] = parseInt(binary, 2);
   }
 
+  // endregion
+
   // ==================================================================================================================
 
+  // region HalfWord
   get binary16_Value(): number {
     return parseInt(this._valueHalfWord[0].toString(2), 2);
   }
@@ -65,8 +70,11 @@ export class CalculatorView implements OnInit {
     this._valueHalfWord[0] = parseInt(binary, 2);
   }
 
+  // endregion
+
   // ==================================================================================================================
 
+  // region Word Uint
   get binary32_Value(): number {
     return parseInt(this._valueWord[0].toString(2), 2);
   }
@@ -91,7 +99,40 @@ export class CalculatorView implements OnInit {
     this._valueWord[0] = parseInt(binary, 2);
   }
 
+  // endregion
+
   // ==================================================================================================================
+
+  // region Word Int
+  get binary32Int_Value(): number {
+    return parseInt(this._valueIntWord[0].toString(2), 2);
+  }
+
+  set binary32Int_Value(value: number) {
+    this._valueIntWord[0] = value;
+  }
+
+  get binary32Int_Hexadecimal(): string {
+    return parseInt((this._valueIntWord[0] >>> 0).toString(2), 2).toString(16).padStart(8, "0").toUpperCase();
+  }
+
+  set binary32Int_Hexadecimal(value: string) {
+    this._valueIntWord[0] = parseInt(value, 16) >> 0;
+  }
+
+  get binary32Int_Binary(): string {
+    return (this._valueIntWord[0] >>> 0).toString(2).padStart(32, "0");
+  }
+
+  set binary32Int_Binary(binary: string) {
+    this._valueIntWord[0] = parseInt(binary, 2) >> 0;
+  }
+
+  // endregion
+
+  // ==================================================================================================================
+
+  // region IEEE754 32 bits
   get binary32_IEEE754_Value(): number {
     return Utils.convertIEEE754_Binary32Bits_To_Number(this._value32Float);
   }
@@ -116,7 +157,11 @@ export class CalculatorView implements OnInit {
     this._value32Float = binary.padStart(32, "0");
   }
 
+  // endregion
+
   // ==================================================================================================================
+
+  // region IEEE754 32 bits
   get binary64_IEEE754_Value(): number {
     return Utils.convertIEEE754_Binary64Bits_To_Number(this._value64Double);
   }
@@ -140,6 +185,8 @@ export class CalculatorView implements OnInit {
   set binary64_IEEE754_Binary(binary: string) {
     this._value64Double = binary.padStart(64, "0");
   }
+
+  // endregion
 
   constructor() {
   }

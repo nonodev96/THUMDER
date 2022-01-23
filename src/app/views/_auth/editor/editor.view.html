@@ -4,9 +4,11 @@
     <h3 class="card-title">{{ 'NAVIGATION.EDITOR' | translate }}</h3>
     <div class="card-tools">
 
-      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="changeHeight()">
-        Change Height
-      </button>
+      <!--
+            <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="changeHeight()">
+              Change Height
+            </button>
+      -->
       <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="getListOfTags()">
         Get List Of Tags
       </button>
@@ -49,9 +51,11 @@
   </div>
 
   <div class="card-footer">
+    <p>$Key: {{interfaceFileItem.$key ?? ''}} </p>
+    <p> Key: {{interfaceFileItem.key ?? ''}} </p>
     <p> Name: {{interfaceFileItem.name ?? ''}} </p>
     <p> Path: {{interfaceFileItem.path ?? ''}} </p>
-    <p> Key: {{interfaceFileItem.key ?? ''}} </p>
+    <p> Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}} </p>
   </div>
 </div>
 <!-- /.card -->

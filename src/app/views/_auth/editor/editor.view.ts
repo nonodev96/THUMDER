@@ -6,8 +6,7 @@ import { ToastrService } from "ngx-toastr";
 import { Subscription } from "rxjs";
 import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
 import { EnumLogLevel, InterfaceFileItem, TypeBreakpoints, TypeExtrasIDE } from "../../../Types";
-import { FileSystemService } from "../../../__core/services/file-system-nonodev96/file-system.service";
-import { Utils } from "../../../Utils";
+import { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
 
@@ -27,6 +26,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   private debuggerSubscription: Subscription = new Subscription();
   private lineSubscription: Subscription = new Subscription();
   private readonly extrasIDE: TypeExtrasIDE;
+  public date: Date = new Date();
 
   constructor(@Inject(DOCUMENT) private document: Document,
               private router: Router,
@@ -35,6 +35,9 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
               private translate: TranslateService,
               private toastService: ToastrService) {
     this.extrasIDE = this.router.getCurrentNavigation().extras.state as TypeExtrasIDE;
+    setInterval(() => {
+      this.date = new Date();
+    }, 1000);
   }
 
   ngOnInit(): void {
@@ -53,18 +56,17 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
         let content: string;
-        let interfaceFileItem: InterfaceFileItem;
+        let dataFileItem: InterfaceFileItem;
         if (this.extrasIDE) {
-          interfaceFileItem = this.extrasIDE.interfaceFileItem ?? Utils.new_InterfaceFileItem();
-          content = interfaceFileItem.content;
-          localStorage.setItem("interfaceFileItem", JSON.stringify(interfaceFileItem));
-        } else {
-          interfaceFileItem = JSON.parse(localStorage.getItem("interfaceFileItem")) as InterfaceFileItem;
-          content = interfaceFileItem.content ?? "";
+          dataFileItem = this.extrasIDE?.interfaceFileItem ?? new THUMDER_FileItem("", false, []);
+          localStorage.setItem("interfaceFileItem", JSON.stringify(dataFileItem));
         }
-        this.interfaceFileItem = interfaceFileItem;
+        dataFileItem = JSON.parse(localStorage.getItem("interfaceFileItem")) as InterfaceFileItem;
+        content = dataFileItem.content ?? "";
+        const item = new THUMDER_FileItem(dataFileItem.path, dataFileItem.isDirectory, dataFileItem.pathKeys);
+        this.interfaceFileItem = Object.assign({}, item, dataFileItem);
         await this.monacoEditorComponent.updateContent(content);
-        const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints;
+        const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints ?? {};
         this.monacoEditorComponent.setBreakpoints(breakpoints);
         return Promise.resolve();
       }

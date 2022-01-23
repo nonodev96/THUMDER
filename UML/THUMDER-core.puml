@@ -1,0 +1,629 @@
+@startuml
+
+skinparam linetype ortho
+
+
+'MachineService-->SocketProviderConnectService
+
+'FileItem..>InterfaceFileItem
+'FileSystemService-->FileItem
+'FileSystemService-->FileSystemStorageService
+
+'namespace PixiUtils {
+'}
+'namespace Utils {
+'}
+'interface InterfaceUser {
+'    +uid: string
+'    +email: string
+'    +displayName: string
+'    +photoURL: string
+'    +emailVerified: boolean
+'}
+namespace Machine #DDDDDD {
+  class PixiTHUMDER_Pipeline {
+    -InstStages_text: PIXI.Text
+    -IF_text: PIXI.Text
+    -ID_text: PIXI.Text
+    -intEX_text: PIXI.Text
+    -MEM_text: PIXI.Text
+    -WB_text: PIXI.Text
+    -faddEX_array: PIXI.Text[]
+    -fmultEX_array: PIXI.Text[]
+    -fdivEX_array: PIXI.Text[]
+    -faddEX_count: any
+    -fmultEX_count: any
+    -fdivEX_count: any
+    -initTexts(): void
+    -drawText(object: PIXI.Text, coords: CoordsType): void
+    -initArrows(): void
+    -initBoxes(): void
+    -drawBox(color: number, positionStart: CoordsType, text: string): void
+    -drawLine(from: CoordsType, to: CoordsType): void
+    -drawArrow(from: CoordsType, to: CoordsType): void
+    +update_IF_text(value: string): void
+    +update_ID_text(value: string): void
+    +update_intEX_text(value: string): void
+    +update_faddEX_text(count: number, value: string): void
+    +update_fmultEX_text(count: number, value: string): void
+    +update_fdivEX_text(count: number, value: string): void
+    +update_MEM_text(value: string): void
+    +update_WB_text(value: string): void
+    +draw(): PIXI.Container
+    +reset(faddEX_count: number, fmultEX_count: number, fdivEX_count: number): void
+    +toString(): string
+  }
+  class Position {
+    +row: any
+    +col: any
+    +toString(): string
+  }
+  class PixiTHUMDER_Table {
+    +table: Map<string, PIXI.Container>
+    -cellMaxWidth: any
+    -cellMaxHeight: any
+    -rowSeparation: any
+    -columnSeparation: any
+    -isDebug: false
+    +getAllPositions(): Position[]
+    +getAllRows(): number[]
+    +getAllColumns(): number[]
+    +deleteRow(row: number): void
+    +deleteCol(col: number): void
+    +deleteCell(row: number, col: number): boolean
+    +clearCell(row: number, col: number): void
+    +setCell(row: number, col: number, content: PIXI.Container): void
+    +drawCell(row: number, col: number): void
+    +draw(): PIXI.Container
+    +existCell(row: number, col: number): boolean
+    -getCell(row: number, col: number): PIXI.Container
+    +debug(): { table: Map<string, PIXI.Container>; }
+  }
+  class PixiTHUMDER_CycleClockDiagram {
+    +realStep: number
+    +instructions: number
+    -table: PixiTHUMDER_Table
+    -tableSteps: PixiTHUMDER_Table
+    -tableInstructions: PixiTHUMDER_Table
+    -arrows: PIXI.Graphics[]
+    -arrowsContainer: PIXI.Container
+    -borderTitle: PIXI.Graphics
+    -borderLeft: PIXI.Graphics
+    -borderTop: PIXI.Graphics
+    -stepToStart: number
+    -last: number
+    +borderTopWidth: number
+    +borderLeftHeight: number
+    +reset(): void
+    -initTables(): void
+    -drawBorders(): void
+    +nextStep(pipeline: TypePipeline, step?: number): void
+    +addInstruction(text: string): void
+    +addArrow(instructionArrow: TypeArrowDirection): void
+    -drawArrow(arrowDirection: TypeArrowDirection, color?: number): void
+    -drawInstruction(textValue: string): void
+    -drawSteps(displayStep?: number): void
+    +moveLeft(): void
+    +moveRight(): void
+    +moveTop(): void
+    +moveBottom(): void
+    +debug(): void
+    +draw(): PIXI.Container
+    +toString(): string
+    -{static} drawCycle(code?: TypePipelineStage | TypeStall): PIXI.Graphics
+  }
+  class ManagerRegisters implements InterfaceRegisters {
+    +PC: Int32
+    +IMAR: Int32
+    +IR: Int32
+    +A: Int32
+    +AHI: Int32
+    +B: Int32
+    +BHI: Int32
+    +BTA: Int32
+    +ALU: Int32
+    +ALUHI: Int32
+    +FPSR: Int32
+    +DMAR: Int32
+    +SDR: Int32
+    +SDRHI: Int32
+    +LDR: Int32
+    +LDRHI: Int32
+    +R: Int32[]
+    +F: Float32[]
+    +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
+    +setRegisterControlWithHexadecimal(registerControl: TypeRegisterControl, hexadecimal: string): void
+    +setRegisterIntegerWithHexadecimal(index: number, hexadecimal: string): void
+    +setRegisterFloatWithHexadecimal(index: number, hexadecimal: string): void
+    +setRegisterDoubleWithHexadecimal(index: number, hexadecimal: string): void
+    +setRegisterControlWithBinary(registerControl: TypeRegisterControl, binary: string): void
+    +setRegisterIntegerWithBinary(index: number, binary: string): void
+    +setRegisterFloatWithBinary(index: number, binary: string): void
+    +setRegisterDoubleWithBinary(index: number, binary: string): void
+    +reset(): void
+  }
+  class ManagerMemory implements InterfaceMemory {
+    -_memorySizeBytes: number
+    -_memoryInt8Array: Uint8Array
+    +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
+    +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
+    +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
+    +getMemoryWordByIndex(index: number): Int32
+    +getMemoryWordByAddress(address: string): Int32
+    +getMemoryWordBinaryByIndex(index: number): string
+    +setMemoryWordByIndex(index: number, data: Int32): void
+    +setMemoryWordByAddress(address: string, data: Int32): void
+    +setMemoryWordBinaryByAddress(address: string, binary32: string): void
+    +setMemoryWordBinaryByIndex(index: number, binary32: string): void
+    +getMemoryByteBinaryByIndex(index: number): string
+    +setMemoryByteBinaryByIndex(index: number, binary: string): void
+    +setMemoryByteBinaryByAddress(address: string, binary08: string): void
+    +getMemoryHalfWordBinaryByIndex(index: number): string
+    +setMemoryHalfWordBinaryByIndex(index: number, binary16: string): void
+    +setMemoryHalfWordBinaryByAddress(address: string, binary16: string): void
+    +setMemoryFloatBinaryByAddress(address: string, binary32: string): void
+    +setMemoryDoubleBinaryByAddress(address: string, binary64: string): void
+    -setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void
+    +getAllMemoryWord(): Int32[]
+    +getAllIndexByWord(): number[]
+    +reset(): void
+    +setSize(memorySize: number): void
+    +getAllMemory(): TypeMemory[]
+  }
+  class ManagerBreakpoints implements InterfaceBreakpoints {
+    -breakpoints: TypeBreakpoints
+    +toggleBreakpoint(lineNumber: number): void
+    +getBreakpoint(lineNumber: number): boolean
+    +updateManager(breakpoints: TypeBreakpoints): void
+    +getAllBreakpoints(): TypeBreakpoints
+    +getAllLinesWithBreakpoints(): number[]
+    +isBreakpoint(line: number): boolean
+    +reset(): void
+  }
+  class ManagerStatistics implements InterfaceDataStatistics {
+    -_data: TypeDataStatistics
+    +processResponse(response: Partial<TypeDataStatistics>): void
+    +getData(): TypeDataStatistics
+    +reset(): void
+  }
+  class MachineService {
+    +floatingPointStageConfiguration: TypeFloatingPointStageConfiguration
+    +pipeline: PixiTHUMDER_Pipeline
+    +cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
+    +dataStatistics: ManagerStatistics
+    +registers: ManagerRegisters
+    +memory: ManagerMemory
+    +memorySize: any
+    +breakpointManager: ManagerBreakpoints
+    +code: UtilsDataStructures.THUMDER_Map<`0x${string}`, TypeInstructionsData>
+    +canSimulate: boolean
+    -statusMachineInStep: TypeSimulationStep
+    +isBreakpoint$: Subject<number>
+    +codeSimulation$: Subject<TypeInstructionsData[]>
+    +stepSimulation$: Subject<TypeSimulationStep>
+    +dataStatistics$: Subject<TypeDataStatistics>
+    +logger: string
+    -level: EnumLogLevel
+    -privateStep: number
+    -privateLine: number
+    -timer: Observable<number>
+    -timerObserver: PartialObserver<number>
+    +reset$: Subject<void>
+    +logger$: Subject<string>
+    +step$: Subject<number>
+    +line$: Subject<number>
+    +isRunning$: Subject<boolean>
+    +isComplete$: Subject<boolean>
+    +isRunning: boolean
+    +isComplete: boolean
+    +isBreakpoint: boolean
+    -store: StorageService
+    -socketProviderConnect: SocketProviderConnectService
+    -translate: TranslateService
+    -toast: ToastrService
+    +resetMachineStatus(): Promise<boolean>
+    +getResetObservable(): Observable<void>
+    +getStepObservable(): Observable<number>
+    +getLineObservable(): Observable<number>
+    +getIsRunningObservable(): Observable<boolean>
+    +getIsCompleteObservable(): Observable<boolean>
+    +getStepSimulationObservable(): Observable<TypeSimulationStep>
+    +getCodeSimulationObservable(): Observable<TypeInstructionsData[]>
+    +getDebuggerObservable(): Observable<number>
+    +getDataStatisticsObservable(): Observable<TypeDataStatistics>
+    +getLoggerObservable(): Observable<string>
+    +getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect">
+    +getStatusWebsocket(): "Connect" | "Disconnect"
+    +getListStatusPipeline(): TypePipelineToProcess[]
+    +play(): Promise<void>
+    +reset(): Promise<void>
+    +nextStep(): Promise<void>
+    +pause(): Promise<void>
+    +resume(): Promise<void>
+    +end(): Promise<void>
+    -SimulationInit(): Promise<boolean>
+    -SimulationNextStep(): Promise<void>
+    -CheckConditions(): Promise<boolean>
+    -ProcessStep(): Promise<void>
+    +updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean>
+    +updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean>
+    +writeToLog(msg: string, level?: EnumLogLevel, params?: TypeLogger[]): void
+    -stringFormat(msg: string, params: TypeLogger[]): string
+    -shouldLog(level: EnumLogLevel): boolean
+    +getCode(address: `0x${string}`): TypeInstructionsData
+    +getAllStatusMachine(): TypeStatusMachine
+    +resetConnection(): void
+    -toastMessage(key_title?: string, key_message?: string): Promise<void>
+    -processResponsePipeline(): void
+  }
+
+  interface InterfaceRegisters {
+    +PC: Int32
+    +IMAR: Int32
+    +IR: Int32
+    +A: Int32
+    +AHI: Int32
+    +B: Int32
+    +BHI: Int32
+    +BTA: Int32
+    +ALU: Int32
+    +ALUHI: Int32
+    +FPSR: Int32
+    +DMAR: Int32
+    +SDR: Int32
+    +SDRHI: Int32
+    +LDR: Int32
+    +LDRHI: Int32
+    +R: Int32[]
+    +F: Float32[]
+    +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
+  }
+  interface InterfaceBreakpoints {
+    +breakpoints: TypeBreakpoints
+  }
+  interface InterfaceMemory {
+    +memorySizeBytes: number
+    +memoryInt8Array: Uint8Array
+    +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
+    +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
+    +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
+    +reset()
+  }
+  interface InterfaceDataStatistics {
+    +data: TypeDataStatistics
+    +processResponse(response: Partial<TypeDataStatistics>): void
+    +reset()
+  }
+  PixiTHUMDER_Table--*Position
+  PixiTHUMDER_Pipeline-->PixiTHUMDER_Table
+  MachineService-->PixiTHUMDER_Pipeline
+  MachineService-->PixiTHUMDER_CycleClockDiagram
+'  MachineService-->StorageService
+  MachineService-->ManagerRegisters
+  MachineService-->ManagerMemory
+  MachineService-->ManagerBreakpoints
+  MachineService-->ManagerStatistics
+}
+
+class Int32 {
+    -_value: number
+    +binary: string
+    +binary: string
+    +hexValue: string
+    +hexValue: string
+}
+class Float32 {
+    -_value: number
+    +binary: string
+    +binary: string
+}
+class Double64 {
+    -_value: number
+    +binary: string
+    +binary: string
+}
+enum EnumLogLevel {
+    All
+    Debug
+    Info
+    Warn
+    Error
+    Fatal
+    Off
+}
+Int32 -[hidden] Float32
+Float32 -[hidden] Double64
+Double64 -[hidden] EnumLogLevel
+EnumLogLevel -[hidden] Services
+
+namespace Storage #DDDDDD {
+  class StorageService {
+    -storageSub: Subject<string>
+    +watchStorage(): Observable<string>
+    +getItem(key: string): any
+    +setItem(key: string, data: any): void
+    +hasItem(key: string): boolean
+    +defaultDataInStorage(): void
+  }
+}
+namespace Auth #DDDDDD {
+  class AuthService {
+    +isLogging$: Subject<boolean>
+    +userData: InterfaceUser
+    -subscriptions$: Subscription
+    -afs: AngularFirestore
+    -afAuth: AngularFireAuth
+    -ngZone: NgZone
+    -router: Router
+    -toast: ToastrService
+    -translate: TranslateService
+    -electronService: ElectronService
+    +ngOnInit(): void
+    +ngOnDestroy(): void
+    +getIsLoggingObservable(): Observable<boolean>
+    +SignIn(email: any, password: any): Promise<boolean>
+    +SignUp(email: any, password: any): Promise<void | UserCredential>
+    +SendVerificationMail(userCredential: UserCredential): Promise<void>
+    +ForgotPassword(passwordResetEmail: any): Promise<void>
+    +isLoggedIn: boolean
+    +GoogleAuth(): Promise<void>
+    +GithubAuth(): Promise<void>
+    +AuthLoginAnonymously(): Promise<void>
+    -AuthLogin(provider: any): Promise<void>
+    +SignOut(): Promise<void>
+    +AuthCheckLoginRedirect(): Promise<boolean>
+    +SetUserData(userCredential: UserCredential): any
+    -displayMessage(message: string): void
+    -displayError(error: firebase.FirebaseError): void
+  }
+}
+
+namespace Services #DDDDDD {
+
+  class ElectronService {
+    +ipcRenderer: Electron.IpcRenderer
+    +webFrame: Electron.WebFrame
+    +remote: Electron.Remote
+    +childProcess: typeof childProcess
+    +fs: typeof fs
+    -_electron: any
+    -electron: any
+    +isElectronApp: boolean
+    +nativeImage: Electron.NativeImage
+    +screen: Electron.Screen
+    +shell: Electron.Shell
+    +{static} isElectron(): "" | "browser" | "renderer" | "worker"
+    +{static} isServer: boolean
+    +{static} isElectronApp: boolean
+    +{static} isMacOS: boolean
+    +{static} isWindows: boolean
+    +{static} isLinux: boolean
+    +{static} isX86: boolean
+    +{static} isX64: boolean
+    +{static} debug: any
+  }
+  interface FileSystemItem {
+  }
+  interface InterfaceFileItem {
+    +$key?: string
+    +f_id: string
+    +e1_uid: string
+    +key: string
+    +pathKeys: string[]
+    +path: string
+    +name: string
+    +content: string
+    +description: string
+    +dateModified: Date
+    +size: number
+    +isDirectory: boolean
+    +hasSubDirectories: boolean
+    +thumbnail: string
+    +dataItem: any
+  }
+  class FileItem extends FileSystemItem {
+  }
+  class FileSystemService {
+    +items: FileItem[]
+    +ITEMS: InterfaceFileItem[]
+    -UID: string
+    -updateUI$: Subject<void>
+    -fileSystemStorageService: FileSystemStorageService
+    +initialize(): Promise<boolean>
+    +getUpdateUIObservable(): Observable<void>
+    +getItems(_path: FileSystemItem): Promise<FileItem[]>
+    +createDirectory(parentDirectory: FileSystemItem, name: string): Promise<FileItem>
+    +createFile(item: FileSystemItem, extension: string): Promise<boolean>
+    +updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean>
+    +editFileItem(updateFileItem: InterfaceFileItem, $key: string): Promise<void>
+    +renameItem(item: FileSystemItem, newName: string): Promise<FileItem>
+    +deleteItem(item: FileSystemItem): Promise<FileItem>
+    +moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): any
+    +uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): any
+    +downloadItem(items: FileSystemItem[]): void
+    +generateDefaultFiles(): Promise<number>
+  }
+  class FileSystemStorageService {
+    -fileItems_Collections: AngularFirestoreCollection<InterfaceFileItem>
+    -UID: string
+    -httpClient: HttpClient
+    -afs: AngularFirestore
+    +initialize(): Promise<number>
+    +generateDefaultFiles(): Promise<number>
+    +getInterfaceFileItems(): Observable<InterfaceFileItem[]>
+    +addFileItem(interfaceFileItem: InterfaceFileItem): Promise<void>
+    +deleteFileItem(id: string): Promise<void>
+    +editFileItem(fileItem: InterfaceFileItem, $key: string): Promise<void>
+    -isInitialize(): Promise<boolean>
+  }
+
+  class Globals {
+    +showDebug: boolean;
+  }
+
+  class SocketProviderConnectService {
+    +socketID: string
+    -connect$: Subject<"Connect" | "Disconnect">
+    -publicMessage$: Subject<unknown>
+    -privateMessage$: Subject<unknown>
+    +connectObservable: Observable<"Connect" | "Disconnect">
+    +publicMessageObservable: Observable<unknown>
+    +privateMessageObservable: Observable<unknown>
+    +socketIO: Socket
+    -translate: TranslateService
+    -toast: ToastrService
+    +updateSocketURl(): void
+    +emitMessage(event?: string, payload?: {}, callback?: (...response: any[]) => void): void
+    -{static} handleErrors(err: any): void
+  }
+
+  class UtilityService {
+  }
+  ElectronService -[hidden]left FileSystemService
+  FileSystemService -[hidden]left FileSystemStorageService
+  FileSystemStorageService -[hidden]left Globals
+  Globals -[hidden]left SocketProviderConnectService
+  SocketProviderConnectService -[hidden]left UtilityService
+}
+
+Storage -[hidden]up- Auth
+Auth -[hidden]up- Services
+
+'class HaltOperation extends Operation
+'class Operation_Register extends Operation {
+'    -argumentSyntax: RegExp
+'    -operation: (a: number, b: number) => number
+'    +getArgumentSyntax(): RegExp
+'    +getExpectedArgCount(): number
+'}
+'interface InterfaceInstructionTypeI {
+'    +codeOP: StringOfLength<6, 6>
+'    +rs1: StringOfLength<5, 5>
+'    +rd: StringOfLength<5, 5>
+'    +inmediato: StringOfLength<16, 16>
+'}
+'interface InterfaceInstructionTypeR {
+'    +codeOP: StringOfLength<6, 6>
+'    +rs1: StringOfLength<5, 5>
+'    +rs2: StringOfLength<5, 5>
+'    +rd: StringOfLength<5, 5>
+'    +func: StringOfLength<11, 11>
+'}
+'interface InterfaceInstructionTypeJ {
+'    +codeOP: StringOfLength<6, 6>
+'    +des: StringOfLength<26, 26>
+'}
+'class InstructionTypeI implements InterfaceInstructionTypeI {
+'    +codeOP: StringOfLength<6, 6>
+'    +rs1: StringOfLength<5, 5>
+'    +rd: StringOfLength<5, 5>
+'    +inmediato: StringOfLength<16, 16>
+'    +toString(): string
+'}
+'class InstructionTypeR implements InterfaceInstructionTypeR {
+'    +codeOP: StringOfLength<6, 6>
+'    +rs1: StringOfLength<5, 5>
+'    +rs2: StringOfLength<5, 5>
+'    +rd: StringOfLength<5, 5>
+'    +func: StringOfLength<11, 11>
+'    +toString(): string
+'}
+'class InstructionTypeJ implements InterfaceInstructionTypeJ {
+'    +codeOP: StringOfLength<6, 6>
+'    +des: StringOfLength<26, 26>
+'    +toString(): string
+'}
+'interface InterfaceOperation {
+'    +name: string
+'}
+'abstract class Operation implements InterfaceOperation {
+'    -_name: string
+'    +name: string
+'}
+'namespace __global {
+'    interface Window {
+'        +clientInformation: Navigator
+'        +closed: boolean
+'        +customElements: CustomElementRegistry
+'        +devicePixelRatio: number
+'        +document: Document
+'        +event: Event
+'        +external: External
+'        +frameElement: Element
+'        +frames: Window
+'        +history: History
+'        +innerHeight: number
+'        +innerWidth: number
+'        +length: number
+'        +location: Location
+'        +location: Location
+'        +locationbar: BarProp
+'        +menubar: BarProp
+'        +name: string
+'        +navigator: Navigator
+'        +ondevicemotion: (this: Window, ev: DeviceMotionEvent) => any
+'        +ondeviceorientation: (this: Window, ev: DeviceOrientationEvent) => any
+'        +onorientationchange: (this: Window, ev: Event) => any
+'        +opener: any
+'        +orientation: number
+'        +outerHeight: number
+'        +outerWidth: number
+'        +pageXOffset: number
+'        +pageYOffset: number
+'        +parent: Window
+'        +personalbar: BarProp
+'        +screen: Screen
+'        +screenLeft: number
+'        +screenTop: number
+'        +screenX: number
+'        +screenY: number
+'        +scrollX: number
+'        +scrollY: number
+'        +scrollbars: BarProp
+'        +self: Window & typeof globalThis
+'        +speechSynthesis: SpeechSynthesis
+'        +status: string
+'        +statusbar: BarProp
+'        +toolbar: BarProp
+'        +top: Window
+'        +visualViewport: VisualViewport
+'        +window: Window & typeof globalThis
+'        +alert(message?: any): void
+'        +blur(): void
+'        +cancelIdleCallback(handle: number): void
+'        +captureEvents(): void
+'        +close(): void
+'        +confirm(message?: string): boolean
+'        +focus(): void
+'        +getComputedStyle(elt: Element, pseudoElt?: string): CSSStyleDeclaration
+'        +getSelection(): Selection
+'        +matchMedia(query: string): MediaQueryList
+'        +moveBy(x: number, y: number): void
+'        +moveTo(x: number, y: number): void
+'        +open(url?: string | URL, target?: string, features?: string): Window
+'        +postMessage(message: any, targetOrigin: string, transfer?: Transferable[]): void
+'        +postMessage(message: any, options?: WindowPostMessageOptions): void
+'        +print(): void
+'        +prompt(message?: string, _default?: string): string
+'        +releaseEvents(): void
+'        +requestIdleCallback(callback: IdleRequestCallback, options?: IdleRequestOptions): number
+'        +resizeBy(x: number, y: number): void
+'        +resizeTo(width: number, height: number): void
+'        +scroll(options?: ScrollToOptions): void
+'        +scroll(x: number, y: number): void
+'        +scrollBy(options?: ScrollToOptions): void
+'        +scrollBy(x: number, y: number): void
+'        +scrollTo(options?: ScrollToOptions): void
+'        +scrollTo(x: number, y: number): void
+'        +stop(): void
+'        +addEventListener(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void
+'        +addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void
+'        +removeEventListener(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | EventListenerOptions): void
+'        +removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void
+'        +process: any
+'        +require: any
+'        +jQuery: any
+'        +$: any
+'    }
+'}
+@enduml

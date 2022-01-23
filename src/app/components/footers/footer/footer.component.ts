@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NPM_VERSION } from "../../../CONSTANTS";
 import { StorageService } from "../../../__core/storage/storage.service";
 import { AppConfig } from "../../../../environments/_environment";
-import { Globals } from "../../../__core/globals.service";
+import { Globals } from "../../../__core/services/globals/globals.service";
 
 @Component({
   selector:    "app-footer",

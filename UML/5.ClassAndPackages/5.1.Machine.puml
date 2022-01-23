@@ -1,0 +1,161 @@
+@startuml
+'https://plantuml.com/class-diagram
+class MachineService {
+    +floatingPointStageConfiguration: TypeFloatingPointStageConfiguration
+        +pipeline: PixiTHUMDER_Pipeline
+        +cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
+        +dataStatistics: ManagerStatistics
+        +registers: ManagerRegisters
+        +memory: ManagerMemory
+        +memorySize: any
+        +breakpointManager: ManagerBreakpoints
+        +code: UtilsDataStructures.THUMDER_Map<`0x${string}`, TypeInstructionsData>
+        +canSimulate: boolean
+        -statusMachineInStep: TypeSimulationStep
+        +isBreakpoint$: Subject<number>
+        +codeSimulation$: Subject<TypeInstructionsData[]>
+        +stepSimulation$: Subject<TypeSimulationStep>
+        +dataStatistics$: Subject<TypeDataStatistics>
+        +logger: string
+        -level: EnumLogLevel
+        -privateStep: number
+        -privateLine: number
+        -timer: Observable<number>
+        -timerObserver: PartialObserver<number>
+        +reset$: Subject<void>
+        +logger$: Subject<string>
+        +step$: Subject<number>
+        +line$: Subject<number>
+        +isRunning$: Subject<boolean>
+        +isComplete$: Subject<boolean>
+        +isRunning: boolean
+        +isComplete: boolean
+        +isBreakpoint: boolean
+        -store: StorageService
+        -socketProviderConnect: SocketProviderConnectService
+        -translate: TranslateService
+        -toast: ToastrService
+        +resetMachineStatus(): Promise<boolean>
+        +getResetObservable(): Observable<void>
+        +getStepObservable(): Observable<number>
+        +getLineObservable(): Observable<number>
+        +getIsRunningObservable(): Observable<boolean>
+        +getIsCompleteObservable(): Observable<boolean>
+        +getStepSimulationObservable(): Observable<TypeSimulationStep>
+        +getCodeSimulationObservable(): Observable<TypeInstructionsData[]>
+        +getDebuggerObservable(): Observable<number>
+        +getDataStatisticsObservable(): Observable<TypeDataStatistics>
+        +getLoggerObservable(): Observable<string>
+        +getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect">
+        +getStatusWebsocket(): "Connect" | "Disconnect"
+        +getListStatusPipeline(): TypePipelineToProcess[]
+        +play(): Promise<void>
+        +reset(): Promise<void>
+        +nextStep(): Promise<void>
+        +pause(): Promise<void>
+        +resume(): Promise<void>
+        +end(): Promise<void>
+        -SimulationInit(): Promise<boolean>
+        -SimulationNextStep(): Promise<void>
+        -CheckConditions(): Promise<boolean>
+        -ProcessStep(): Promise<void>
+        +updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean>
+        +updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean>
+        +writeToLog(msg: string, level?: EnumLogLevel, params?: TypeLogger[]): void
+        -stringFormat(msg: string, params: TypeLogger[]): string
+        -shouldLog(level: EnumLogLevel): boolean
+        +getCode(address: `0x${string}`): TypeInstructionsData
+        +getAllStatusMachine(): TypeStatusMachine
+        +resetConnection(): void
+        -toastMessage(key_title?: string, key_message?: string): Promise<void>
+        -processResponsePipeline(): void
+}
+
+class PixiTHUMDER_Pipeline {
+    -InstStages_text: PIXI.Text
+    -IF_text: PIXI.Text
+    -ID_text: PIXI.Text
+    -intEX_text: PIXI.Text
+    -MEM_text: PIXI.Text
+    -WB_text: PIXI.Text
+    -faddEX_array: PIXI.Text[]
+    -fmultEX_array: PIXI.Text[]
+    -fdivEX_array: PIXI.Text[]
+    -faddEX_count: any
+    -fmultEX_count: any
+    -fdivEX_count: any
+    -initTexts(): void
+    -drawText(object: PIXI.Text, coords: CoordsType): void
+    -initArrows(): void
+    -initBoxes(): void
+    -drawBox(color: number, positionStart: CoordsType, text: string): void
+    -drawLine(from: CoordsType, to: CoordsType): void
+    -drawArrow(from: CoordsType, to: CoordsType): void
+    +update_IF_text(value: string): void
+    +update_ID_text(value: string): void
+    +update_intEX_text(value: string): void
+    +update_faddEX_text(count: number, value: string): void
+    +update_fmultEX_text(count: number, value: string): void
+    +update_fdivEX_text(count: number, value: string): void
+    +update_MEM_text(value: string): void
+    +update_WB_text(value: string): void
+    +draw(): PIXI.Container
+    +reset(faddEX_count: number, fmultEX_count: number, fdivEX_count: number): void
+    +toString(): string
+}
+
+class PixiTHUMDER_Table {
+    +table: Map<string, PIXI.Container>
+    -cellMaxWidth: any
+    -cellMaxHeight: any
+    -rowSeparation: any
+    -columnSeparation: any
+    -isDebug: false
+    +getAllPositions(): Position[]
+    +getAllRows(): number[]
+    +getAllColumns(): number[]
+    +deleteRow(row: number): void
+    +deleteCol(col: number): void
+    +deleteCell(row: number, col: number): boolean
+    +clearCell(row: number, col: number): void
+    +setCell(row: number, col: number, content: PIXI.Container): void
+    +drawCell(row: number, col: number): void
+    +draw(): PIXI.Container
+    +existCell(row: number, col: number): boolean
+    -getCell(row: number, col: number): PIXI.Container
+    +debug(): { table: Map<string, PIXI.Container>; }
+}
+class PixiTHUMDER_CycleClockDiagram {
+    +realStep: number
+    +instructions: number
+    -table: PixiTHUMDER_Table
+    -tableSteps: PixiTHUMDER_Table
+    -tableInstructions: PixiTHUMDER_Table
+    -arrows: PIXI.Graphics[]
+    -arrowsContainer: PIXI.Container
+    -borderTitle: PIXI.Graphics
+    -borderLeft: PIXI.Graphics
+    -borderTop: PIXI.Graphics
+    -stepToStart: number
+    -last: number
+    +borderTopWidth: number
+    +borderLeftHeight: number
+    +reset(): void
+    -initTables(): void
+    -drawBorders(): void
+    +nextStep(pipeline: TypePipeline, step?: number): void
+    +addInstruction(text: string): void
+    +addArrow(instructionArrow: TypeArrowDirection): void
+    -drawArrow(arrowDirection: TypeArrowDirection, color?: number): void
+    -drawInstruction(textValue: string): void
+    -drawSteps(displayStep?: number): void
+    +moveLeft(): void
+    +moveRight(): void
+    +moveTop(): void
+    +moveBottom(): void
+    +debug(): void
+    +draw(): PIXI.Container
+    +toString(): string
+    -{static} drawCycle(code?: TypePipelineStage | TypeStall): PIXI.Graphics
+}
+@enduml
