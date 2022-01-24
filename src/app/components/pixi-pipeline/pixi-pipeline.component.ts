@@ -7,7 +7,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector:    "thumder-pixi-pipeline",
   templateUrl: "./pixi-pipeline.component.html",
-  styleUrls:   ["./pixi-pipeline.component.scss"]
+  styleUrls:   [ "./pixi-pipeline.component.scss" ]
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -114,7 +114,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepSimulationSubscription.unsubscribe();
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener("window:resize", [ "$event" ])
   onResize(event) {
     event.preventDefault();
     event.stopPropagation();

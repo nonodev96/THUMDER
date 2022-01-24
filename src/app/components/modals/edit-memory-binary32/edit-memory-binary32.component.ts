@@ -1,9 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import {
-  DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS,
-  MAX_VALUE_TYPE_DATA,
-  REGEX_HEXADECIMAL_08,
-} from "../../../CONSTANTS";
+import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08, } from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -20,13 +16,6 @@ export class EditMemoryBinary32Component implements OnInit {
 
   readonly MAX_VALUE_TYPE_DATA = MAX_VALUE_TYPE_DATA;
 
-  //  Por como es la memoria "memory: Int32[]", debemos organizar de 32 bits en 32 bits,
-  // por lo que para acceder a un char (8 bits) debemos acceder a una sección de la memoria,
-  // ejemplo: memory[addressMemoryToEdit] es un decimal que lo mostramos en binario como:
-  //                                      "00000000000000010000001000000011"
-  // pero para acceder a un char ("00000000") no nos da la dirección correcta, por lo que usamos
-  // addressMemoryModule = addressMemoryToEdit % 4; para un char []
-
   /**
    * addressMemoryModule === 0 ==> "00000000"
    * addressMemoryModule === 1 ==> "00000001"
@@ -36,15 +25,16 @@ export class EditMemoryBinary32Component implements OnInit {
    * addressMemoryModule === 0 ==> "0000000000000001"
    * addressMemoryModule === 2 ==> "0000001000000011"
    */
-  addressMemoryModule = 0;
+  public addressMemoryModule = 0;
   // index in decimal value --> memory[addressMemoryToEdit] = new Int32
   // addressMemoryToEdit = addressMemoryDisplay % 4
-  addressIsValid = true;
-  typeDataSelected: TypeData = "Word";
+  public addressIsValid = true;
+  public typeDataSelected: TypeData = "Word";
+
   // Binary 8 16 32 64
-  _binaryValue: string = DEFAULT_BINARY_32_BITS;
+  private _binaryValue: string = DEFAULT_BINARY_32_BITS;
   // Hexadecimal 8 digits
-  _hexadecimalAddressMemory: string = DEFAULT_HEXADECIMAL_08_DIGITS;
+  private _hexadecimalAddressMemory: string = DEFAULT_HEXADECIMAL_08_DIGITS;
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
@@ -90,7 +80,7 @@ export class EditMemoryBinary32Component implements OnInit {
   }
 
   // Address: 0x00000001
-  //  Binary:   00000000 XXXXXXXX 00000000 00000000
+  // Binary:   00000000 XXXXXXXX 00000000 00000000
   get valueInSection_Byte(): number {
     const binary32 = this.memoryValueBinary32Display;
     const binary8_byte = binary32.substr(8 * this.addressMemoryModule, 8);
@@ -142,8 +132,6 @@ export class EditMemoryBinary32Component implements OnInit {
     this.binaryValue = Utils.convertIEEE754_Number_To_Binary64Bits(double);
   }
 
-  // ======
-
   private set binaryValue(binary: string) {
     if (binary.length === 32) {
       this._binaryValue = binary;
@@ -168,18 +156,9 @@ export class EditMemoryBinary32Component implements OnInit {
   ngOnInit(): void {
   }
 
-  /**
-   * Comprueba la dirección de memoria que le llega, estando en hexadecimal y comprobando si es multiplo del
-   * tamaño del dato que debe alterar.
-   *
-   * @param target.value ==> addressMemoryDisplay
-   */
-  async changeAddressMemoryToEdit(target: EventTarget | any) {
+  public async changeAddressMemoryToEdit(target: EventTarget | any): Promise<void> {
     if (REGEX_HEXADECIMAL_08.test(target.value)) {
-      // Dirección que se muestra
-      // Este indica el inicio del bloque de 32 bits
       this.addressMemory = target.value;
-      // Este indica la parte de los 32 bits que va a ser afectada
       this.addressMemoryModule = Utils.hexadecimalToDecimal(target.value) % 4;
 
       switch (this.typeDataSelected) {
@@ -217,7 +196,6 @@ export class EditMemoryBinary32Component implements OnInit {
 
       if (parseInt(this.addressMemory, 16) >= 0 && parseInt(this.addressMemory, 16) <= this.machine.memory.memorySizeBytes) {
         this.addressIsValid = true;
-        // Recuperamos el dato anterior
         switch (this.typeDataSelected) {
           case "Byte":
             this.valueInSection_Byte = parseInt(this.machine.memory.getMemoryByteBinaryByIndex(this.addressMemoryIndex), 2);
@@ -243,19 +221,17 @@ export class EditMemoryBinary32Component implements OnInit {
     } else {
       await this.TOAST_ErrorRegex();
     }
+
+    return Promise.resolve();
   }
 
-  /**
-   *
-   * @param value: string => decimal value
-   */
-  private async changeMemory(value: number) {
+  private async changeMemory(value: number): Promise<void> {
     try {
       if (!this.addressIsValid) {
         await this.TOAST_ErrorInValueMemory();
         this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
         console.error("Address not valid");
-        return;
+        return Promise.resolve();
       }
 
       // Ej:  "1." ---> 1.0
@@ -309,6 +285,7 @@ export class EditMemoryBinary32Component implements OnInit {
         value:    Utils.binaryToHexadecimal(this._binaryValue)
       } ]);
 
+      return Promise.resolve();
     } catch (e) {
       await this.TOAST_ErrorInValueMemory();
       this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
@@ -366,7 +343,7 @@ export class EditMemoryBinary32Component implements OnInit {
    *      00000000 00000000 00000000 00000000
    *      -------- -------- -------- --------
    */
-  drawDigitsToChangeByTypeData(): SafeHtml {
+  public drawDigitsToChangeByTypeData(): SafeHtml {
     // restart the position to de first element of 4 binaries
     const initIndex = this.addressMemoryIndex - this.addressMemoryModule;
     const string32bits = this.machine.memory.getMemoryWordBinaryByIndex(initIndex);
@@ -473,13 +450,13 @@ export class EditMemoryBinary32Component implements OnInit {
 
   // =================================================================================================================
 
-  async ngModelChange_ValueInSection_Hexadecimal(hexadecimal: string): Promise<void> {
+  public async ngModelChange_ValueInSection_Hexadecimal(hexadecimal: string): Promise<void> {
     this.valueInSection_Hexadecimal = hexadecimal;
     await this.changeMemory(this.valueInSection_Word);
     return Promise.resolve();
   }
 
-  async ngModelChange_ValueInSection_Decimal(value: number): Promise<void> {
+  public async ngModelChange_ValueInSection_Decimal(value: number): Promise<void> {
     if (typeof value === "string") {
       value = 0;
       console.error("Should be a number", value);

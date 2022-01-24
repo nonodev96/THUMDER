@@ -17,20 +17,16 @@ import { StorageService } from "../../../__core/storage/storage.service";
 export class MemoryView implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort, { static: true }) sort: MatSort;
-
   @ViewChild(EditMemoryBinary32Component) editBinary32Component: EditMemoryBinary32Component;
 
-  // Word puede cambiar por --> Word, HalfWord, Float, Double, Bytes
   public displayedColumnsMemory: string[] = [ "Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "Word" ];
   public dataSourceMemory = new TableVirtualScrollDataSource<number>();
-
   public typeDataSelected: TypeData | "InstructionCode" = "Word";
   public maxHeightCard = "75vh";
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
-              private storage: StorageService
-              /* private toastService: ToastrService */) {
+              private storage: StorageService) {
     this.dataSourceMemory.filter = null;
     this.dataSourceMemory.sort = this.sort;
   }
@@ -59,7 +55,7 @@ export class MemoryView implements OnInit, AfterViewInit {
     });
   }
 
-  changeTypeDataInTable(typeData: TypeData | "InstructionCode"): void {
+  public changeTypeDataInTable(typeData: TypeData | "InstructionCode"): void {
     // Word, HalfWord, Float, Double, Bytes
     this.typeDataSelected = typeData;
     switch (typeData) {
@@ -87,10 +83,9 @@ export class MemoryView implements OnInit, AfterViewInit {
     }
   }
 
-  refresh(): void {
+  public refresh(): void {
     this.dataSourceMemory.filter = null;
     this.dataSourceMemory.data = [ ...this.dataSourceMemory.data ];
-
     window.dispatchEvent(new Event("resize"));
   }
 
@@ -101,7 +96,7 @@ export class MemoryView implements OnInit, AfterViewInit {
     }, 500);
   }
 
-  getInstructionDLXFromIndex(index: number) {
+  public getInstructionDLXFromIndex(index: number) {
     const address: TypeAddress = `0x${ index.toString(16).padStart(8, "0") }`;
     return this.machine.code.has(address) ? this.machine.code.get(address).instruction : "";
   }

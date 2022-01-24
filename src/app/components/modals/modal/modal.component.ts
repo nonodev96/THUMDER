@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-modal',
-  templateUrl: './modal.component.html',
-  styleUrls: ['./modal.component.scss']
+  selector:    "app-modal",
+  templateUrl: "./modal.component.html",
+  styleUrls:   [ "./modal.component.scss" ]
 })
 export class ModalComponent implements OnInit {
 
@@ -12,8 +12,8 @@ export class ModalComponent implements OnInit {
   @Input() public modalTitle: string = "MODAL.TITLE";
   @Input() public buttonSize: "" | "btn-xs" | "btn-sm" | "btn-lg" | "btn-xl" = "";
   @Input() public buttonText: string = "MODAL.TEXT";
-  @Input() public buttonCloseText: string = 'MODAL.CLOSE';
-  @Input() public buttonSaveText: string = 'MODAL.OK';
+  @Input() public buttonCloseText: string = "MODAL.CLOSE";
+  @Input() public buttonSaveText: string = "MODAL.OK";
 
   constructor() {
   }

@@ -40,12 +40,9 @@ export class RegisterView implements OnInit {
               public electronService: ElectronService,
               public formBuilder: FormBuilder) {
     this.registerForm = this.formBuilder.group({
-      first_name: new FormControl("", Validators.compose([
+      first_name:       new FormControl("", Validators.compose([
         Validators.required
       ])),
-      // lname: new FormControl('', Validators.compose([
-      //   Validators.required
-      // ])),
       email:            new FormControl("", Validators.compose([
         Validators.required,
         Validators.email,
@@ -70,13 +67,13 @@ export class RegisterView implements OnInit {
   ngOnInit(): void {
   }
 
-  checkPassword(formGroup: FormGroup) {
+  public checkPassword(formGroup: FormGroup) {
     const { value: password } = formGroup.get("password");
     const { value: confirmPassword } = formGroup.get("confirm_password");
     return password === confirmPassword ? null : { passwordNotMatch: true };
   }
 
-  async GoogleAuth() {
+  public async GoogleAuth() {
     this.showSpinner = true;
     try {
       await this.authService.GoogleAuth();
@@ -87,7 +84,7 @@ export class RegisterView implements OnInit {
     }
   }
 
-  async GithubAuth() {
+  public async GithubAuth() {
     this.showSpinner = true;
     try {
       await this.authService.GithubAuth();

@@ -273,7 +273,7 @@ export class MachineService {
   }
 
   public getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect"> {
-    return this.socketProviderConnect.connectObservable;
+    return this.socketProviderConnect.connectObservable();
   }
 
   public getStatusWebsocket(): "Connect" | "Disconnect" {

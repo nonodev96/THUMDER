@@ -16,30 +16,30 @@ import {
 })
 export class StorageService {
 
+  private storageSub = new Subject<string>();
+
   constructor() {
     this.defaultDataInStorage();
   }
 
-  private storageSub = new Subject<string>();
-
-  watchStorage(): Observable<string> {
+  public watchStorage(): Observable<string> {
     return this.storageSub.asObservable();
   }
 
-  getItem(key: string): any {
+  public getItem(key: string): any {
     return JSON.parse(localStorage.getItem(key));
   }
 
-  setItem(key: string, data: any): void {
+  public setItem(key: string, data: any): void {
     localStorage.setItem(key, JSON.stringify(data));
     this.storageSub.next(key);
   }
 
-  hasItem(key: string): boolean {
+  public hasItem(key: string): boolean {
     return localStorage.getItem(key) !== null;
   }
 
-  defaultDataInStorage(): void {
+  public defaultDataInStorage(): void {
     if (!this.hasItem("lang")) {
       this.setItem("lang", DEFAULT_LANG);
     }

@@ -16,18 +16,6 @@ export class SocketProviderConnectService {
   private publicMessage$ = new Subject();
   private privateMessage$ = new Subject();
 
-  get connectObservable() {
-    return this.connect$.asObservable();
-  }
-
-  get publicMessageObservable() {
-    return this.publicMessage$.asObservable();
-  }
-
-  get privateMessageObservable() {
-    return this.privateMessage$.asObservable();
-  }
-
   public socketIO: Socket;
 
   constructor(
@@ -95,10 +83,22 @@ export class SocketProviderConnectService {
     this.socketIO.ioSocket.on("message", (data) => {
       console.debug("WebSocket-message");
       const title = this.translate.instant("WEBSOCKET.TITLE_NEW_MESSAGE");
-      const message = this.translate.instant("WEBSOCKET.MESSAGE_NEW_MESSAGE", {type: "message"});
+      const message = this.translate.instant("WEBSOCKET.MESSAGE_NEW_MESSAGE", { type: "message" });
       this.toast.info(title, message);
       this.publicMessage$.next(data);
     });
+  }
+
+  public connectObservable() {
+    return this.connect$.asObservable();
+  }
+
+  public publicMessageObservable() {
+    return this.publicMessage$.asObservable();
+  }
+
+  public privateMessageObservable() {
+    return this.privateMessage$.asObservable();
   }
 
   public updateSocketURl() {

@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from "@ngx-translate/core";
 
-import { PageNotFoundComponent } from './components/';
-import { WebviewDirective } from './directives/';
-import { FormsModule } from '@angular/forms';
+import { PageNotFoundComponent } from "./components/";
+import { WebviewDirective } from "./directives/";
+import { FormsModule } from "@angular/forms";
 import { AuthDirective } from "./directives/auth/auth.directive";
 
 import { RouterModule } from "@angular/router";
 
-import { AsyncClickDirective } from './directives/async-await/async-click.directive';
+import { AsyncClickDirective } from "./directives/async-await/async-click.directive";
 import { AwaitClickDirective } from "./directives/async-await/await-click.directive";
 
 import { BinaryPipe } from "./pipes/numbers/Binary.pipe";
@@ -34,7 +34,7 @@ import { FromBaseToBasePipe } from "./pipes/numbers/FromBaseToBase.pipe";
 import { Binary32ToWordPipe } from "./pipes/numbers/Binary32ToWord.pipe";
 
 @NgModule({
-  imports: [
+  imports:      [
     TranslateModule,
     CommonModule,
     FormsModule,
@@ -68,7 +68,7 @@ import { Binary32ToWordPipe } from "./pipes/numbers/Binary32ToWord.pipe";
     PadStartPipe,
     ReplaceAllPipe
   ],
-  exports: [
+  exports:      [
     FormsModule,
     TranslateModule,
 

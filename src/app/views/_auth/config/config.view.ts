@@ -78,7 +78,7 @@ export class ConfigView implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
   }
 
-  async updateConfiguration(): Promise<void> {
+  public async updateConfiguration(): Promise<void> {
     this.storage.setItem("multiview_configuration", this.multiviewConfiguration);
     this.storage.setItem("floating_point_stage_configuration", this.floatingPointStageConfiguration);
     this.storage.setItem("memory_size_configuration", this.memorySizeConfiguration);
@@ -90,7 +90,7 @@ export class ConfigView implements OnInit, AfterViewInit {
     return Promise.resolve();
   }
 
-  async resetConfiguration(): Promise<void> {
+  public async resetConfiguration(): Promise<void> {
     this.floatingPointStageConfiguration = DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
     this.memorySizeConfiguration = DEFAULT_MEMORY_SIZE_CONFIGURATION;
     this.timeSimulationConfiguration = DEFAULT_TIME_SIMULATION_CONFIGURATION;
@@ -110,12 +110,17 @@ export class ConfigView implements OnInit, AfterViewInit {
     return Promise.resolve();
   }
 
-  checkIfHttpUrlIsValid(url: EventTargetInput | any | string): boolean {
-    const regex = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
-    return !!regex.test(url.value);
+  public checkIfHttpUrlIsValid(_url: EventTargetInput | any | string): boolean {
+    try {
+      let url = new URL(_url);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
-  checkCount(target: EventTargetInput | any): void {
+  public checkCount(target: EventTargetInput | any): void {
     const count = parseInt(target.value.toString());
     if (count >= 1 && count <= 8) {
       target.value = count;
@@ -124,7 +129,7 @@ export class ConfigView implements OnInit, AfterViewInit {
     }
   }
 
-  checkDelay(target: EventTargetInput | any): void {
+  public checkDelay(target: EventTargetInput | any): void {
     const delay = parseInt(target.value.toString());
     if (delay >= 1 && delay <= 50) {
       target.value = delay;
@@ -133,7 +138,7 @@ export class ConfigView implements OnInit, AfterViewInit {
     }
   }
 
-  checkMemorySize(target: EventTargetInput | any): void {
+  public checkMemorySize(target: EventTargetInput | any): void {
     const size = parseInt(target.value.toString());
     if (size >= 512 && size <= 1048576) {
       target.value = size;
@@ -142,19 +147,19 @@ export class ConfigView implements OnInit, AfterViewInit {
     }
   }
 
-  updateAutoSave(target: EventTargetInput | any) {
+  public updateAutoSave(target: EventTargetInput | any) {
     this.autoSaveConfiguration = target.checked ?? false;
   }
 
-  updateTimeSimulation(target: EventTargetInput | any) {
+  public updateTimeSimulation(target: EventTargetInput | any) {
     this.timeSimulationConfiguration = parseInt(target.value.toString());
   }
 
-  updateMultiviewConfig(_target: EventTarget | any) {
+  public updateMultiviewConfig(_target: EventTarget | any) {
 
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  public drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.multiviewConfiguration.list, event.previousIndex, event.currentIndex);
   }
 }

@@ -1,8 +1,6 @@
-import { MachineService } from "./__core/machine/machine.service";
 import { ASCII_TABLE } from "./CONSTANTS";
 import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } from "./__core/DLX/__OPCODES";
 import { TypeAddress } from "./Types";
-
 
 export namespace Utils {
 
@@ -69,7 +67,6 @@ export namespace Utils {
   export function initSynchronousFactory() {
     return () => {
       console.log("initSynchronousFactory");
-      // run initialization code here
     };
   }
 
@@ -91,16 +88,6 @@ export namespace Utils {
     };
   }
 
-  export function initServicesFactory(service: MachineService | any) {
-    return async () => {
-      // console.log('initServicesFactory - started')
-      const finish = await service.resetMachineStatus();
-      if (finish === false) {
-        console.log("initServicesFactory - completed ", finish);
-      }
-    };
-  }
-
   export function isNullOrUndefined(object: any): boolean {
     return object == null || false;
   }
@@ -113,21 +100,6 @@ export namespace Utils {
       const v = c === "x" ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
-  }
-
-  export function arrayIsEqual(a: any[], b: any[]) {
-    // if length is not equal
-    if (a.length !== b.length) {
-      return false;
-    } else {
-      // comparing each element of array
-      for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) {
-          return false;
-        }
-      }
-      return true;
-    }
   }
 
   export function isSubsetV2(a, b): boolean {
@@ -212,16 +184,6 @@ export namespace Utils {
    */
   export function binaryStringSwap(binary_A: string, binary_B: string, index: number): string {
     return replaceAt(binary_A, index, binary_B);
-  }
-
-  export function binaryStringSwap_module(oldValueBinaryString: string, newValuePart: string, start: number, end: number, module: number) {
-    const result = oldValueBinaryString.split("");
-    for (let i = 0; i < 32; i++) {
-      if (i >= start && i < end) {
-        result[i] = newValuePart[i % module];
-      }
-    }
-    return result.join("");
   }
 
   export function integer8ToBin(integer8: number) {

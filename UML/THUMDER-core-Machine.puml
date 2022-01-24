@@ -2,7 +2,7 @@
 
 skinparam linetype ortho
 
-namespace Machine #DDDDDD {
+package Machine #DDDDDD {
   class PixiTHUMDER_Pipeline {
     -InstStages_text: PIXI.Text
     -IF_text: PIXI.Text
@@ -16,6 +16,7 @@ namespace Machine #DDDDDD {
     -faddEX_count: any
     -fmultEX_count: any
     -fdivEX_count: any
+    +reset(faddEX_count: number, fmultEX_count: number, fdivEX_count: number): void
     -initTexts(): void
     -drawText(object: PIXI.Text, coords: CoordsType): void
     -initArrows(): void
@@ -32,7 +33,6 @@ namespace Machine #DDDDDD {
     +update_MEM_text(value: string): void
     +update_WB_text(value: string): void
     +draw(): PIXI.Container
-    +reset(faddEX_count: number, fmultEX_count: number, fdivEX_count: number): void
     +toString(): string
   }
   class Position {
@@ -59,7 +59,6 @@ namespace Machine #DDDDDD {
     +draw(): PIXI.Container
     +existCell(row: number, col: number): boolean
     -getCell(row: number, col: number): PIXI.Container
-    +debug(): { table: Map<string, PIXI.Container>; }
   }
   class PixiTHUMDER_CycleClockDiagram {
     +realStep: number
@@ -78,13 +77,13 @@ namespace Machine #DDDDDD {
     +borderLeftHeight: number
     +reset(): void
     -initTables(): void
+    -drawArrow(arrowDirection: TypeArrowDirection, color?: number): void
     -drawBorders(): void
+    -drawSteps(displayStep?: number): void
+    -drawInstruction(textValue: string): void
     +nextStep(pipeline: TypePipeline, step?: number): void
     +addInstruction(text: string): void
     +addArrow(instructionArrow: TypeArrowDirection): void
-    -drawArrow(arrowDirection: TypeArrowDirection, color?: number): void
-    -drawInstruction(textValue: string): void
-    -drawSteps(displayStep?: number): void
     +moveLeft(): void
     +moveRight(): void
     +moveTop(): void
@@ -125,8 +124,8 @@ namespace Machine #DDDDDD {
     +reset(): void
   }
   class ManagerMemory implements InterfaceMemory {
-    -_memorySizeBytes: number
-    -_memoryInt8Array: Uint8Array
+    +_memorySizeBytes: number
+    +_memoryInt8Array: Uint8Array
     +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
     +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
     +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
@@ -148,12 +147,12 @@ namespace Machine #DDDDDD {
     -setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void
     +getAllMemoryWord(): Int32[]
     +getAllIndexByWord(): number[]
-    +reset(): void
     +setSize(memorySize: number): void
     +getAllMemory(): TypeMemory[]
+    +reset(newMemorySizeBytes: number): void
   }
   class ManagerBreakpoints implements InterfaceBreakpoints {
-    -breakpoints: TypeBreakpoints
+    +_breakpoints: TypeBreakpoints
     +toggleBreakpoint(lineNumber: number): void
     +getBreakpoint(lineNumber: number): boolean
     +updateManager(breakpoints: TypeBreakpoints): void
@@ -163,7 +162,7 @@ namespace Machine #DDDDDD {
     +reset(): void
   }
   class ManagerStatistics implements InterfaceDataStatistics {
-    -_data: TypeDataStatistics
+    +_data: TypeDataStatistics
     +processResponse(response: Partial<TypeDataStatistics>): void
     +getData(): TypeDataStatistics
     +reset(): void
@@ -177,7 +176,7 @@ namespace Machine #DDDDDD {
     +memory: ManagerMemory
     +memorySize: any
     +breakpointManager: ManagerBreakpoints
-    +code: UtilsDataStructures.THUMDER_Map<`0x${string}`, TypeInstructionsData>
+    +code: UtilsDataStructures.THUMDER_Map<TypeAddress, TypeInstructionsData>
     +canSimulate: boolean
     -statusMachineInStep: TypeSimulationStep
     +isBreakpoint$: Subject<number>
@@ -230,15 +229,13 @@ namespace Machine #DDDDDD {
     +updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean>
     +updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean>
     +writeToLog(msg: string, level?: EnumLogLevel, params?: TypeLogger[]): void
-    -stringFormat(msg: string, params: TypeLogger[]): string
-    -shouldLog(level: EnumLogLevel): boolean
-    +getCode(address: `0x${string}`): TypeInstructionsData
+    +getCode(address: TypeAddress): TypeInstructionsData
     +getAllStatusMachine(): TypeStatusMachine
     +resetConnection(): void
+    -stringFormat(msg: string, params: TypeLogger[]): string
+    -shouldLog(level: EnumLogLevel): boolean
     -toastMessage(key_title?: string, key_message?: string): Promise<void>
-    -processResponsePipeline(): void
   }
-
   interface InterfaceRegisters {
     +PC: Int32
     +IMAR: Int32
@@ -259,20 +256,22 @@ namespace Machine #DDDDDD {
     +R: Int32[]
     +F: Float32[]
     +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
+    +reset(): void
   }
   interface InterfaceBreakpoints {
-    +breakpoints: TypeBreakpoints
+    +_breakpoints: TypeBreakpoints
+    +reset(): void
   }
   interface InterfaceMemory {
-    +memorySizeBytes: number
-    +memoryInt8Array: Uint8Array
+    +_memorySizeBytes: number
+    +_memoryInt8Array: Uint8Array
     +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
     +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
     +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
-    +reset()
+    +reset(newMemorySizeBytes: number): void
   }
   interface InterfaceDataStatistics {
-    +data: TypeDataStatistics
+    +_data: TypeDataStatistics
     +processResponse(response: Partial<TypeDataStatistics>): void
     +reset()
   }
@@ -280,11 +279,10 @@ namespace Machine #DDDDDD {
   PixiTHUMDER_Pipeline-->PixiTHUMDER_Table
   MachineService-->PixiTHUMDER_Pipeline
   MachineService-->PixiTHUMDER_CycleClockDiagram
-'  MachineService-->StorageService
-  MachineService-->ManagerRegisters
-  MachineService-->ManagerMemory
-  MachineService-->ManagerBreakpoints
-  MachineService-->ManagerStatistics
+  MachineService--right>ManagerRegisters
+  MachineService--right>ManagerMemory
+  MachineService--left>ManagerBreakpoints
+  MachineService--left>ManagerStatistics
 }
 
 @enduml

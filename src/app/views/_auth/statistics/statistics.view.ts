@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { TypeDataStatistics } from "../../../Types";
 import { MachineService } from "../../../__core/machine/machine.service";
@@ -8,9 +8,9 @@ import { Subscription } from "rxjs";
 import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
 
 @Component({
-  selector: 'view-statistics',
-  templateUrl: './statistics.view.html',
-  styleUrls: []
+  selector:    "view-statistics",
+  templateUrl: "./statistics.view.html",
+  styleUrls:   []
 })
 export class StatisticsView implements OnInit, OnDestroy {
 

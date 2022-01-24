@@ -1,28 +1,19 @@
-import {
-  Directive,
-  HostListener,
-  Input,
-  OnChanges,
-  OnDestroy,
-  SimpleChanges,
-  Renderer2,
-  ElementRef
-} from '@angular/core';
+import { Directive, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, Renderer2, ElementRef } from "@angular/core";
 
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable } from "rxjs";
 
 const noop = () => {
 };
 
 @Directive({
-  selector: '[asyncClick]'
+  selector: "[asyncClick]"
 })
 export class AsyncClickDirective implements OnChanges, OnDestroy {
   private pending = true;
   private disabled = false;
   private subscription: Subscription;
 
-  @Input('asyncClick') clickFunc;
+  @Input("asyncClick") clickFunc;
 
   constructor(
     private _renderer: Renderer2,
@@ -33,10 +24,10 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
     console.log(this._elementRef);
   }
 
-  @HostListener('click')
+  @HostListener("click")
   onClick() {
-    console.log('click');
-    if (typeof this.clickFunc === 'function') {
+    console.log("click");
+    if (typeof this.clickFunc === "function") {
       this.subscribe(this.clickFunc());
     }
   }
@@ -53,23 +44,23 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
   disable() {
     this._renderer.setAttribute(
       this._elementRef.nativeElement,
-      'disabled',
-      'true'
+      "disabled",
+      "true"
     );
     this._renderer.addClass(
       this._elementRef.nativeElement,
-      'disabled',
+      "disabled",
     );
   }
 
   enable() {
     this._renderer.removeAttribute(
       this._elementRef.nativeElement,
-      'disabled'
+      "disabled"
     );
     this._renderer.removeClass(
       this._elementRef.nativeElement,
-      'disabled'
+      "disabled"
     );
   }
 
@@ -77,13 +68,13 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
     this.pending = true;
     this.disable();
     const enable = () => this.enable();
-    if (typeof r.subscribe === 'function') {
+    if (typeof r.subscribe === "function") {
       this.subscription = (<Observable<any>>r).subscribe({
-        next: noop,
+        next:     noop,
         complete: enable,
-        error: enable
+        error:    enable
       });
-    } else if (typeof r.then === 'function') {
+    } else if (typeof r.then === "function") {
       (<Promise<any>>r).then(enable).catch(enable);
       this.subscription = null;
     }

@@ -1,104 +1,94 @@
-<button class="btn btn-xs btn-outline-primary mr-1" (click)="this.log()">Log</button>
-<button class="btn btn-xs btn-outline-primary mr-1" (click)="this.tests()">Test get all files</button>
-<button class="btn btn-xs btn-outline-primary mr-1" (click)="this.generateDefaultFiles()">Generate default files</button>
-<button class="btn btn-xs btn-outline-primary mr-1" (click)="this.updateUI()">Refresh UI</button>
-<hr>
-<dx-file-manager id="fileManager"
-                 currentPath="Widescreen"
-                 *ngIf="show"
-                 [fileSystemProvider]="customFileProvider"
-                 [height]="height()"
-                 (onContextMenuItemClick)="onContextMenuItemClick($event)"
-                 (onSelectionChanged)="onSelectionChanged($event)"
-                 (onSelectedFileOpened)="onSelectedFileOpened($event)">
-  <!--                 (onContextMenuItemClick)="onItemClick($event)"-->
-  <!--                 (onContentReady)="onContentReady($event)"-->
-  <!--                 (onSelectedFileOpened)="onSelectedFileOpened($event)"-->
-  <!--&gt;-->
-
-  <dxo-permissions
-    [create]="true"
-    [copy]="true"
-    [delete]="true"
-    [rename]="true"
-    [move]="false"
-    [upload]="false"
-    [download]="false">
-  </dxo-permissions>
-
-  <dxo-item-view [showParentFolder]="false">
-    <dxo-details>
-      <dxi-column dataField="thumbnail"></dxi-column>
-      <dxi-column dataField="name"></dxi-column>
-      <dxi-column dataField="dateModified"></dxi-column>
-<!--      <dxi-column dataField="size"></dxi-column>-->
-<!--      <dxi-column dataField="category" caption="Category" width="95"></dxi-column>-->
-    </dxo-details>
-  </dxo-item-view>
-
-  <dxo-toolbar>
-    <dxi-item name="showNavPane" visible="true"></dxi-item>
-    <dxi-item name="separator"></dxi-item>
-    <!--    <dxi-item name="create"></dxi-item>-->
-    <dxi-item widget="dxMenu" location="before"
-              [options]="newFileMenuOptions"></dxi-item>
-    <dxi-item name="refresh"></dxi-item>
-    <dxi-item name="separator" location="after"></dxi-item>
-    <dxi-item name="switchView"></dxi-item>
-
-    <dxi-file-selection-item name="rename"></dxi-file-selection-item>
-    <dxi-file-selection-item name="separator"></dxi-file-selection-item>
-    <dxi-file-selection-item name="delete"></dxi-file-selection-item>
-    <dxi-file-selection-item name="separator"></dxi-file-selection-item>
-    <dxi-file-selection-item widget="dxMenu" location="before"
-                             [options]="changeCategoryMenuOptions"></dxi-file-selection-item>
-
-    <dxi-file-selection-item name="refresh"></dxi-file-selection-item>
-    <dxi-file-selection-item name="clearSelection"></dxi-file-selection-item>
-  </dxo-toolbar>
-
-  <dxo-context-menu>
-    <!--    <dxi-item name="create"></dxi-item>-->
-    <dxi-item text="Create new file" icon="plus">
-      <dxi-item text="WinDLX Document" [options]="{ extension: '.s' }"></dxi-item>
-    </dxi-item>
-    <dxi-item name="rename" beginGroup="true"></dxi-item>
-    <dxi-item name="delete"></dxi-item>
-
-    <dxi-item text="Category" icon="tags" beginGroup="true"></dxi-item>
-    <dxi-item name="refresh"></dxi-item>
-  </dxo-context-menu>
-</dx-file-manager>
 
 <hr>
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}}</h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
-      </button>
+<ng-container *ngIf="show">
+  <dx-file-manager id="fileManager"
+                   currentPath="Widescreen"
+                   [fileSystemProvider]="customFileProvider"
+                   [height]="height()"
+                   (onContextMenuItemClick)="onContextMenuItemClick($event)"
+                   (onSelectionChanged)="onSelectionChanged($event)"
+                   (onSelectedFileOpened)="onSelectedFileOpened($event)">
+    <!--                 (onContextMenuItemClick)="onItemClick($event)"-->
+    <!--                 (onContentReady)="onContentReady($event)"-->
+    <!--                 (onSelectedFileOpened)="onSelectedFileOpened($event)"-->
+
+    <dxo-permissions [create]="true" [copy]="true" [delete]="true" [rename]="true" [move]="false" [upload]="false" [download]="false"></dxo-permissions>
+
+    <dxo-item-view [showParentFolder]="false">
+      <dxo-details>
+        <dxi-column dataField="thumbnail"></dxi-column>
+        <dxi-column dataField="name"></dxi-column>
+        <dxi-column dataField="dateModified"></dxi-column>
+        <!--      <dxi-column dataField="size"></dxi-column>-->
+        <!--      <dxi-column dataField="category" caption="Category" width="95"></dxi-column>-->
+      </dxo-details>
+    </dxo-item-view>
+
+    <dxo-toolbar>
+      <dxi-item name="showNavPane" visible="true"></dxi-item>
+      <dxi-item name="separator"></dxi-item>
+      <!--    <dxi-item name="create"></dxi-item>-->
+      <dxi-item widget="dxMenu" location="before" [options]="newFileMenuOptions"></dxi-item>
+      <dxi-item name="refresh"></dxi-item>
+      <dxi-item name="separator" location="after"></dxi-item>
+      <dxi-item name="switchView"></dxi-item>
+      <dxi-file-selection-item name="rename"></dxi-file-selection-item>
+      <dxi-file-selection-item name="separator"></dxi-file-selection-item>
+      <dxi-file-selection-item name="delete"></dxi-file-selection-item>
+      <dxi-file-selection-item name="separator"></dxi-file-selection-item>
+      <dxi-file-selection-item widget="dxMenu" location="before" [options]="changeCategoryMenuOptions"></dxi-file-selection-item>
+      <dxi-file-selection-item name="refresh"></dxi-file-selection-item>
+      <dxi-file-selection-item name="clearSelection"></dxi-file-selection-item>
+    </dxo-toolbar>
+    <dxo-context-menu>
+      <!--    <dxi-item name="create"></dxi-item>-->
+      <dxi-item text="Create new file" icon="plus">
+        <dxi-item text="WinDLX Document" [options]="{ extension: '.s' }"></dxi-item>
+      </dxi-item>
+      <dxi-item name="rename" beginGroup="true"></dxi-item>
+      <dxi-item name="delete"></dxi-item>
+
+      <dxi-item text="Category" icon="tags" beginGroup="true"></dxi-item>
+      <dxi-item name="refresh"></dxi-item>
+    </dxo-context-menu>
+  </dx-file-manager>
+
+  <hr>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{'DEBUG' | translate}}</h3>
+      <div class="card-tools">
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.log()">Log</button>
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.tests()">Test get all files</button>
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.generateDefaultFiles()">Generate default files</button>
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.updateUI()">Refresh UI</button>
+
+        <button type="button" class="btn btn-tool" data-card-widget="maximize">
+          <i class="fas fa-expand"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Files selected: {{ filesSelected }}</p>
+    </div>
+    <div class="card-footer">
+
     </div>
   </div>
-  <div class="card-body">
-    <p>Files selected: {{filesSelected}}</p>
-  </div>
-  <div class="card-footer">
-
-  </div>
-</div>
-<!--
-<dx-popup id="photo-popup"
-          maxHeight="600"
-          closeOnOutsideClick="true"
-          [(title)]="imageItemToDisplay.name"
-          [(visible)]="popupVisible">
-  <div *dxTemplate="let data of 'content'" class="photo-popup-content">
-    <img src="{{imageItemToDisplay.dataItem.url}}" class="photo-popup-image" alt=""/>
-  </div>
-</dx-popup>
--->
+  <!--
+  <dx-popup id="photo-popup"
+            maxHeight="600"
+            closeOnOutsideClick="true"
+            [(title)]="imageItemToDisplay.name"
+            [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'" class="photo-popup-content">
+      <img src="{{imageItemToDisplay.dataItem.url}}" class="photo-popup-image" alt=""/>
+    </div>
+  </dx-popup>
+  -->
+</ng-container>

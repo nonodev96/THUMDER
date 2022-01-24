@@ -3,18 +3,17 @@ import { DOCUMENT } from "@angular/common";
 import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pipeline.component";
 
 @Component({
-  selector: "view-pipeline",
+  selector:    "view-pipeline",
   templateUrl: "./pipeline.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class PipelineView implements OnInit {
 
-  @ViewChild(PixiPipelineComponent) pixi_CycleClockDiagramComponent: PixiPipelineComponent;
+  @ViewChild(PixiPipelineComponent) pixi_PipelineComponent: PixiPipelineComponent;
 
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
   ngOnInit(): void {
   }
-
 }
