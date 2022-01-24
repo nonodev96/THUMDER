@@ -1,16 +1,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/firestore";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import firebase from "firebase/app";
+import Timestamp = firebase.firestore.Timestamp;
 
-import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/firestore";
 import { Utils } from "../../../Utils";
 import { THUMDER_FileItem } from "./file-system.service";
 import { InterfaceFileItem, InterfaceUser } from "../../../Types";
-import firebase from "firebase/app";
-import Timestamp = firebase.firestore.Timestamp;
-// import firebase from "firebase/app";
-// import "firebase/firestore";
 
 
 @Injectable({
@@ -18,7 +16,7 @@ import Timestamp = firebase.firestore.Timestamp;
 })
 export class FileSystemStorageService {
   private fileItems_Collections: AngularFirestoreCollection<InterfaceFileItem>;
-  private readonly UID: string;
+  private readonly UID: string = "";
 
   constructor(private httpClient: HttpClient,
               private afs: AngularFirestore) {
@@ -57,8 +55,8 @@ export class FileSystemStorageService {
           } as unknown as InterfaceFileItem;
         });
         return items.sort((a, b) => {
-          if(a.name < b.name) { return -1; }
-          if(a.name > b.name) { return 1; }
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
           return 0;
         });
       })
@@ -78,9 +76,7 @@ export class FileSystemStorageService {
         });
       })
     );
-    //  return this.fileItems_Collections.valueChanges();
   }
-
 
   public async addFileItem(fileItem: THUMDER_FileItem): Promise<THUMDER_FileItem> {
     try {

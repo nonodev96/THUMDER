@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector: 'app-modal-bottom',
-  templateUrl: './modal-bottom.component.html',
-  styleUrls: ['./modal-bottom.component.scss']
+  selector:    "app-modal-bottom",
+  templateUrl: "./modal-bottom.component.html",
+  styleUrls:   [ "./modal-bottom.component.scss" ]
 })
 export class ModalBottomComponent implements OnInit {
 

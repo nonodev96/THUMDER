@@ -1,39 +1,28 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  AfterViewInit,
-  ElementRef,
-  ViewChild,
-  SimpleChanges
-} from '@angular/core';
-import { Terminal } from 'xterm';
-import { SearchAddon } from 'xterm-addon-search';
-import { WebglAddon } from 'xterm-addon-webgl';
+import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit, ElementRef, ViewChild, SimpleChanges } from "@angular/core";
+import { Terminal } from "xterm";
+import { SearchAddon } from "xterm-addon-search";
+import { WebglAddon } from "xterm-addon-webgl";
 import { TypeOnKeyEvent } from "../../Types";
 
-
 @Component({
-  selector: 'thumder-xterm',
-  templateUrl: './xterm.component.html',
-  styleUrls: ['./xterm.component.scss']
+  selector:    "thumder-xterm",
+  templateUrl: "./xterm.component.html",
+  styleUrls:   [ "./xterm.component.scss" ]
 })
 export class XtermComponent implements OnInit, AfterViewInit {
-  @ViewChild('myTerminal') terminalDiv: ElementRef;
-  @Input() data = '';
+  @ViewChild("myTerminal") terminalDiv: ElementRef;
+  @Input() data = "";
   @Output() onKey = new EventEmitter<TypeOnKeyEvent>();
 
   terminal: Terminal;
 
   constructor() {
     this.terminal = new Terminal({
-      theme: {background: '#090c0f'},
-      bellStyle: 'sound',
+      theme:               { background: "#090c0f" },
+      bellStyle:           "sound",
       altClickMovesCursor: true,
-      cols: 120,
-      rendererType: "canvas"
+      cols:                120,
+      rendererType:        "canvas"
     });
   }
 
@@ -62,17 +51,17 @@ export class XtermComponent implements OnInit, AfterViewInit {
     this.terminal.loadAddon(new WebglAddon());
 
     //this.terminal.writeln(this.data)
-    this.terminal.writeln('Welcome to THUMDER\n');
-    this.terminal.write('$ ');
+    this.terminal.writeln("Welcome to THUMDER\n");
+    this.terminal.write("$ ");
 
     this.terminal.onKey((e) => {
       switch (e.domEvent.key) {
         case "Enter":
-          this.terminal.writeln('');
-          this.terminal.write('$ ');
+          this.terminal.writeln("");
+          this.terminal.write("$ ");
           break;
         case "Backspace":
-          this.terminal.write('\b \b');
+          this.terminal.write("\b \b");
           break;
         default:
           this.terminal.write(e.key);
@@ -81,7 +70,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
     });
   }
 
-  write(text: string): void {
+  public write(text: string): void {
     this.terminal.writeln(text);
   }
 

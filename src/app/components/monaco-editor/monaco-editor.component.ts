@@ -12,16 +12,13 @@ import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorCon
   styleUrls:   [ "./monaco-editor.component.scss" ]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
-  // export function create(domElement: HTMLElement, options?: IStandaloneEditorConstructionOptions, override?: IEditorOverrideServices): IStandaloneCodeEditor;
+
   public readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions = MonacoConfig.defaultOptions;
-
   public _height = 70;
-
   public content: string = "";
   public initialized$: Subject<boolean> = new Subject<boolean>();
 
   private editor: IStandaloneCodeEditor;
-  // private oldDecorationDebugTag_targetId: { line: number, target_id: string } []= [];
   private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
   private iteratorLine: number = 1;
@@ -176,9 +173,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   //   this.printLine(this.iteratorLine);
   // }
 
-  /**
-   * Este método busca las lineas marcadas como debug y va iterando en ellas
-   */
   public debugNextLineWithTag(): void {
     const listOfTags = this.getListOfTags();
     const listOfTags_filter = listOfTags.filter(value => value.line > this.iteratorLine);
@@ -195,10 +189,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
     return tags;
-  }
-
-  clearBreakpoints() {
-    this.breakpoints = {};
   }
 
   clearLines(): void {

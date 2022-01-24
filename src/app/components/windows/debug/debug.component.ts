@@ -7,7 +7,7 @@ import { Globals } from "../../../__core/services/globals/globals.service";
 @Component({
   selector:    "thumder-windows-debug",
   templateUrl: "./debug.component.html",
-  styleUrls:   ["./debug.component.scss"]
+  styleUrls:   [ "./debug.component.scss" ]
 })
 export class DebugComponent implements OnInit, OnDestroy {
 

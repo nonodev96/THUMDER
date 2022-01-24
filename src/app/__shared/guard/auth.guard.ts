@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
               private toast: ToastrService) {
   }
 
-  async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+  public async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     if (!this.authService.isLoggedIn) {
       if (this.router.url !== "/") {
         const config: Partial<IndividualConfig> = DEFAULT_CONFIG_TOAST;

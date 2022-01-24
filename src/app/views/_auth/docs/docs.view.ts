@@ -5,13 +5,13 @@ import { ViewportScroller } from "@angular/common";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
 
 @Component({
-  selector: "view-docs",
+  selector:    "view-docs",
   templateUrl: "./docs.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class DocsView implements OnInit {
 
-  @ViewChild("markdownComponentID", {static: false})
+  @ViewChild("markdownComponentID", { static: false })
   private markdownComponentID: MarkdownComponent;
   private listenObj: any;
 
@@ -28,8 +28,6 @@ export class DocsView implements OnInit {
   }
 
   public onMarkdownLoad(): void {
-    // because MarkdownComponent isn't 'compiled' the links don't use the angular router,
-    // so I'll catch the link click events here and pass them to the router...
     if (this.markdownComponentID) {
       this.listenObj = this.renderer.listen(this.markdownComponentID.element.nativeElement, "click", (e: Event) => {
         if (e.target && (e.target as any).tagName === "A") {
@@ -45,7 +43,7 @@ export class DocsView implements OnInit {
     }
   }
 
-  scrollToAnchor(scrollToAnchor: string): void {
+  private scrollToAnchor(scrollToAnchor: string): void {
     this.scroller.scrollToAnchor(scrollToAnchor);
   }
 }

@@ -1,22 +1,19 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from "@angular/router";
 import { AuthService } from "../../__core/auth/auth.service";
-import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class NoAuthGuard implements CanActivate {
 
   constructor(public authService: AuthService, public router: Router) {
   }
 
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+  public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     if (this.authService.isLoggedIn) {
-      await this.router.navigateByUrl('/');
+      await this.router.navigateByUrl("/");
     }
     return Promise.resolve(!this.authService.isLoggedIn);
   }
-
 }

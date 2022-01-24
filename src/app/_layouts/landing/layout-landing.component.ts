@@ -1,9 +1,9 @@
-import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 
 @Component({
-  selector: 'app-landing',
-  templateUrl: './layout-landing.component.html'
+  selector:    "app-landing",
+  templateUrl: "./layout-landing.component.html"
 })
 export class LayoutLandingComponent implements OnInit, AfterViewInit {
 
@@ -11,10 +11,10 @@ export class LayoutLandingComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.document.body.classList.add('dx-viewport', 'sidebar-mini', 'layout-fixed', 'layout-footer-fixed');
+    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
   }
 
   ngAfterViewInit(): void {
-    window.jQuery('[data-widget="pushmenu"]').PushMenu('collapse');
+    window.jQuery("[data-widget=\"pushmenu\"]").PushMenu("collapse");
   }
 }

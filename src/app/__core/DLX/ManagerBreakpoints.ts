@@ -2,8 +2,8 @@ import { InterfaceBreakpoints } from "./interfaces";
 import { TypeBreakpoints } from "../../Types";
 
 export class ManagerBreakpoints implements InterfaceBreakpoints {
-  // Line numbers are 1-indexed
-  private breakpoints: TypeBreakpoints = {};
+
+  public breakpoints: TypeBreakpoints = {};
 
   public toggleBreakpoint(lineNumber: number): void {
     if (lineNumber in this.breakpoints) {
@@ -11,7 +11,6 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
     } else {
       this.breakpoints[lineNumber] = true;
     }
-    console.log("enabled", lineNumber, this.breakpoints[lineNumber]);
   }
 
   public getBreakpoint(lineNumber: number): boolean | null {

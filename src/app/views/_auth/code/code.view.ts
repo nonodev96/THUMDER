@@ -14,18 +14,17 @@ import { Subscription } from "rxjs";
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatSort, { static: true }) public sort: MatSort;
 
   public displayedColumnsMemory: string[] = [ "Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction" ];
   public dataSourceCode = new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
-
   public listRowActives: { address: TypeAddress, stage: TypeStage }[] = [];
+  public maxHeightCard = "75vh";
   private privateStep = 0;
   private stepSubscription: Subscription = new Subscription();
   private stepSimulationSubscription: Subscription = new Subscription();
   private codeSimulationSubscription: Subscription = new Subscription();
   private resetSimulationSubscription: Subscription = new Subscription();
-  public maxHeightCard = "75vh";
 
   constructor(public machine: MachineService) {
     this.dataSourceCode.filter = null;
@@ -101,10 +100,9 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  refresh(): void {
+  public refresh(): void {
     this.dataSourceCode.filter = null;
     this.dataSourceCode.data = [ ...this.dataSourceCode.data ];
-
     window.dispatchEvent(new Event("resize"));
   }
 
@@ -116,7 +114,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
    * max size array ==> 8 + 8 + 8 + 5 = 29
    *
    */
-  setRow(index: number, tableCode: TypeInstructionsData, stage: TypeStage = ""): void {
+  private setRow(index: number, tableCode: TypeInstructionsData, stage: TypeStage = ""): void {
     this.dataSourceCode.data[index] = {
       text:        tableCode.text,
       address:     tableCode.address,
@@ -130,16 +128,16 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.refresh();
   }
 
-  checkIfContains(address: TypeAddress, stages: TypeStage[]): boolean {
-    return this.listRowActives.some((v) => {
-      return v.address === address && stages.includes(v.stage);
-    });
-  }
-
-  checkElementStage(address: TypeAddress): TypeStage {
+  public checkElementStage(address: TypeAddress): TypeStage {
     const elements = this.listRowActives.filter(v => v.address === address);
     if (elements.length > 0) return elements[0].stage;
     return "";
+  }
+
+  public checkIfContains(address: TypeAddress, stages: TypeStage[]): boolean {
+    return this.listRowActives.some((v) => {
+      return v.address === address && stages.includes(v.stage);
+    });
   }
 
   private resizeCard(height: string) {

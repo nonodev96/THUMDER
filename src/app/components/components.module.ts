@@ -16,9 +16,7 @@ import { PixiCycleClockDiagramComponent } from "./pixi-cycle-clock-diagram/pixi-
 import { SidebarComponent } from "./sidebar/sidebar.component";
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
-// import { MonacoEditorModule } from "@materia-ui/ngx-monaco-editor";
 import { DxFileManagerModule } from "devextreme-angular";
-// import { MemoryComponent } from './memory/memory.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { MatTableModule } from "@angular/material/table";

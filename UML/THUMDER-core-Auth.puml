@@ -1,0 +1,37 @@
+@startuml
+
+skinparam linetype ortho
+
+package Auth #DDDDDD {
+  class AuthService {
+    +isLogging$: Subject<boolean>
+    +userData: InterfaceUser
+    -subscriptions$: Subscription
+    -afs: AngularFirestore
+    -afAuth: AngularFireAuth
+    -ngZone: NgZone
+    -router: Router
+    -toast: ToastrService
+    -translate: TranslateService
+    -electronService: ElectronService
+    +ngOnInit(): void
+    +ngOnDestroy(): void
+    +getIsLoggingObservable(): Observable<boolean>
+    +SignIn(email: any, password: any): Promise<boolean>
+    +SignUp(email: any, password: any): Promise<void | UserCredential>
+    +SendVerificationMail(userCredential: UserCredential): Promise<void>
+    +ForgotPassword(passwordResetEmail: any): Promise<void>
+    +isLoggedIn: boolean
+    +GoogleAuth(): Promise<void>
+    +GithubAuth(): Promise<void>
+    +AuthLoginAnonymously(): Promise<void>
+    -AuthLogin(provider: any): Promise<void>
+    +SignOut(): Promise<void>
+    +AuthCheckLoginRedirect(): Promise<boolean>
+    +SetUserData(userCredential: UserCredential): any
+    -displayMessage(message: string): void
+    -displayError(error: firebase.FirebaseError): void
+  }
+}
+
+@enduml

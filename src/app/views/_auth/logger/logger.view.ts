@@ -4,14 +4,14 @@ import { TypeOnKeyEvent } from "../../../Types";
 import { MachineService } from "../../../__core/machine/machine.service";
 
 @Component({
-  selector: "view-logger",
+  selector:    "view-logger",
   templateUrl: "./logger.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class LoggerView implements OnInit {
 
   @ViewChild(XtermComponent) xtermComponent: XtermComponent;
-  text: string = "Hello";
+  public text: string = "Hello";
 
   constructor(public machine: MachineService) {
   }
@@ -19,11 +19,11 @@ export class LoggerView implements OnInit {
   ngOnInit(): void {
   }
 
-  onKey($event: TypeOnKeyEvent): void {
+  public onKey($event: TypeOnKeyEvent): void {
     console.log($event);
   }
 
-  test(): void {
+  public test(): void {
     this.text = this.machine.logger;
   }
 }

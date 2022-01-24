@@ -52,12 +52,12 @@ export type TypeOnContentReady = {
 export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(DxFileManagerComponent, { static: false }) fileManager: DxFileManagerComponent;
 
-  newFileMenuOptions: FileMenuOptions;
-  changeCategoryMenuOptions: FileMenuOptions;
-  customFileProvider: CustomFileSystemProvider;
-  show: boolean;
-  updateUISubscription: Subscription = new Subscription();
+  public newFileMenuOptions: FileMenuOptions;
+  public changeCategoryMenuOptions: FileMenuOptions;
+  public customFileProvider: CustomFileSystemProvider;
+  public show: boolean;
   private _filesSelected: any[] = [];
+  private updateUISubscription: Subscription = new Subscription();
 
   get filesSelected() {
     return this._filesSelected.map(v => v.name);

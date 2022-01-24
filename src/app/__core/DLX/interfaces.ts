@@ -1,8 +1,8 @@
 import { Float32, Int32 } from "../TypesData";
-import { stringOfLength, StringOfLength, TypeDataStatistics, TypeDirectiveData, TypeInstructionsData, TypeMemoryToUpdate, TypeRegisterToUpdate } from "../../Types";
+import { stringOfLength, StringOfLength, TypeBreakpoints, TypeDataStatistics, TypeDirectiveData, TypeInstructionsData, TypeMemoryToUpdate, TypeRegisterToUpdate } from "../../Types";
 
 export interface InterfaceBreakpoints {
-
+  breakpoints: TypeBreakpoints;
 }
 
 export interface InterfaceMemory {

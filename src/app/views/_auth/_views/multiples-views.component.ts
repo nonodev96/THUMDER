@@ -42,9 +42,9 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  drop(event: CdkDragDrop<any[]>) {
+  public drop(event: CdkDragDrop<any[]>) {
     const nodeToMove = event.item.element.nativeElement;
-    const {previousContainer, container, previousIndex, currentIndex} = event;
+    const { previousContainer, container, previousIndex, currentIndex } = event;
     if (previousContainer === container) {
       moveItemInArray(container.data, previousIndex, currentIndex);
       this.moveWithinContainer(
@@ -75,15 +75,12 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  moveWithinContainer(container, fromIndex, toIndex) {
+  public moveWithinContainer(container, fromIndex, toIndex) {
     if (fromIndex === toIndex) {
       return;
     }
-
     const nodeToMove = container.children[fromIndex];
     const targetNode = container.children[toIndex];
-
     if (fromIndex < toIndex) {
       targetNode.parentNode.insertBefore(nodeToMove, targetNode.nextSibling);
     } else {
@@ -91,7 +88,7 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
     }
   }
 
-  transferNodeToContainer(node, container, toIndex) {
+  public transferNodeToContainer(node, container, toIndex) {
     if (toIndex === container.children.length) {
       container.appendChild(node);
     } else {

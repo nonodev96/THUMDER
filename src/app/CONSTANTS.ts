@@ -1,10 +1,10 @@
 import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
-import npm from "../../package.json";
+import { SocketIoConfig } from "ngx-socket-io";
+import { AppConfig } from "../environments/_environment";
 import {
   PublicRoutes,
   PublicRoutesList,
   TypeInstructionsData,
-  TypeDataRegister,
   TypeLang,
   TypeFloatingPointStageConfiguration,
   TypeRegister,
@@ -17,8 +17,7 @@ import {
   TypeMultiviewConfiguration,
   TypeCycleCell, TypeCycleCellUnit, TypeWebSocketConfiguration
 } from "./Types";
-import { SocketIoConfig } from "ngx-socket-io";
-import { AppConfig } from "../environments/_environment";
+import npm from "../../package.json";
 
 export const NPM_VERSION = npm.version.toString();
 export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
@@ -39,9 +38,9 @@ export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
   thumbnail:         ""
 };
 
-export const REGEX_IS_ABSOLUTE_HREF = new RegExp("(?:^[a-z][a-z0-9+.-]*:|\/\/)", "i");
+export const REGEX_IS_ABSOLUTE_HREF = new RegExp("(?<TAG>^:[a-z][a-z0-9+.-]*:|\/\/)", "i");
 export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{08})$", "i");
-export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
+// export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
 
 export const DEFAULT_BREAKPOINTS: [] = [];
 export const DEFAULT_TIME_SIMULATION_CONFIGURATION: number = 250;
@@ -80,9 +79,9 @@ export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageC
   }
 };
 export const DEFAULT_HEXADECIMAL_08_DIGITS = "".padStart(8, "0");
-export const DEFAULT_HEXADECIMAL_16_DIGITS = "".padStart(16, "0");
-export const DEFAULT_BINARY_08_BITS = "".padStart(8, "0");
-export const DEFAULT_BINARY_16_BITS = "".padStart(16, "0");
+// export const DEFAULT_HEXADECIMAL_16_DIGITS = "".padStart(16, "0");
+// export const DEFAULT_BINARY_08_BITS = "".padStart(8, "0");
+// export const DEFAULT_BINARY_16_BITS = "".padStart(16, "0");
 export const DEFAULT_BINARY_32_BITS = "".padStart(32, "0");
 export const DEFAULT_BINARY_64_BITS = "".padStart(64, "0");
 
@@ -201,6 +200,9 @@ export const MAX_VALUE_TYPE_DATA = {
   "Double":   18446744073709551615
 };
 
+export const REGISTER_TO_EDIT: TypeRegister = "Control";
+
+/*
 export const STEP_TYPE_DATA = {
   "Byte":     1,
   "HalfWord": 1,
@@ -208,7 +210,6 @@ export const STEP_TYPE_DATA = {
   "Float":    0.1,
   "Double":   0.1
 };
-export const REGISTER_TO_EDIT: TypeRegister = "Control";
 
 export const REGISTERS_DATA: TypeDataRegister = {
   Control: {
@@ -237,6 +238,7 @@ export const REGISTERS_DATA: TypeDataRegister = {
     maxLengthHexadecimal: 8
   }
 };
+*/
 
 export const MACHINE_TYPE_REGISTERS: TypeRegister[] = [
   "Control", "Integer", "Float", "Double"

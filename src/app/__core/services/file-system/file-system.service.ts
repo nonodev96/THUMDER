@@ -1,12 +1,10 @@
 import { Injectable } from "@angular/core";
-import { FileSystemStorageService } from "./file-system-storage.service";
+import { Observable, Subject } from "rxjs";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import UploadInfo from "devextreme/file_management/upload_info";
-import { Utils } from "../../../Utils";
+import { FileSystemStorageService } from "./file-system-storage.service";
 import { InterfaceFileItem, InterfaceUser } from "../../../Types";
-import { Observable, Subject } from "rxjs";
-// import firebase from "firebase/app";
-// import Timestamp = firebase.firestore.Timestamp;
+import { Utils } from "../../../Utils";
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
   $key: string;
@@ -30,9 +28,7 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
 })
 export class FileSystemService {
 
-  // disk: Map<string, FileItem[]>;
   public items: THUMDER_FileItem[] = [];
-  // public ITEMS: InterfaceFileItem[] = [];
   private readonly UID: string;
   private updateUI$: Subject<void> = new Subject<void>();
 
