@@ -28,6 +28,11 @@ export class ElectronService {
     }
   }
 
+
+  public async openInExternal(url: string): Promise<void> {
+    await this.shell.openExternal(url);
+  }
+
   private get electron(): any {
     if (!this._electron) {
       if (window && window.require) {

@@ -46,16 +46,16 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
-            asset_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
+            asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
             asset_content_type: application/zip
           - os: windows-latest
-            artifact_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
+            asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe
           - os: macos-latest
-            artifact_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_name: "thumder-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+            asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
             asset_content_type: application/x-apple-diskimage
 
     steps:
@@ -76,7 +76,7 @@ jobs:
           fileName: 'environment.production.ts'
           fileDir: './src/environments/'
           encodedString: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
-        
+
       - name: Context
         env:
           RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
