@@ -107,20 +107,20 @@ const domain = "localhost";
 const cookieConfig: NgcCookieConsentConfig = {
   enabled: isServer,
   // autoOpen: isElectronApp,
-  cookie: {
+  cookie:   {
     domain: domain
   },
-  palette: {
-    popup: {
+  palette:  {
+    popup:  {
       background: "#000"
     },
     button: {
       background: "#f1d600"
     }
   },
-  theme: "edgeless",
-  type: "opt-out",
-  content: {
+  theme:    "edgeless",
+  type:     "opt-out",
+  content:  {
     href: "#"
   },
   elements: {
@@ -143,20 +143,36 @@ export function markedOptionsFactory(): MarkedOptions {
   markedRenderer.heading = (text: string, level: number) => {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
     return `
-<h${level}>
-    <a class="anchor" href="#${escapedText}" id="${escapedText}">
+<h${ level }>
+    <a class="anchor" href="#${ escapedText }" id="${ escapedText }">
         <span class="header-link"></span>
-    </a> ${text}
-</h${level}>`;
+    </a> ${ text }
+</h${ level }>`;
+  };
+
+  markedRenderer.link = (href: string, title: string, text: string) => {
+    if (!href) {
+      return markedRenderer.link.call(this, href, title, text);
+    }
+    const isElectron = window && window.process && window.process.type;
+    if (isElectron) {
+      if (href.startsWith("http://") || href.startsWith("https://")) {
+        return `<a href="javascript:;" onclick="window.require('electron').shell.openExternal('${ href }');" title="${ title }">${ text }</a>`;
+      } else if (href.indexOf("#") !== -1) {
+        return `<a href="javascript:;" title="${ title }">${ text }</a>`;
+      }
+    } else {
+      return `<a href="${ href }" title="${ title }">${ text }</a>`;
+    }
   };
 
   return {
-    renderer: markedRenderer,
-    headerIds: true,
-    gfm: true,
-    breaks: false,
-    pedantic: false,
-    smartLists: true,
+    renderer:    markedRenderer,
+    headerIds:   true,
+    gfm:         true,
+    breaks:      false,
+    pedantic:    false,
+    smartLists:  true,
     smartypants: false
   };
 }
@@ -193,7 +209,7 @@ export function markedOptionsFactory(): MarkedOptions {
     RegistersView,
     StatisticsView
   ],
-  imports: [
+  imports:      [
 
     CoreModule,
     SharedModule,
@@ -222,7 +238,7 @@ export function markedOptionsFactory(): MarkedOptions {
       loader: {
         provide:    TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps:       [HttpClient]
+        deps:       [ HttpClient ]
       }
     }),
     // MonacoEditorModule,
@@ -246,7 +262,7 @@ export function markedOptionsFactory(): MarkedOptions {
     TableVirtualScrollModule,
     DragDropModule
   ],
-  providers: [
+  providers:    [
     // {
     //   provide: MONACO_PATH,
     //   useValue: 'https://unpkg.com/browse/monaco-editor@0.26.1/min/vs/'
@@ -266,8 +282,8 @@ export function markedOptionsFactory(): MarkedOptions {
         }
      */
   ],
-  exports: [],
-  bootstrap: [
+  exports:      [],
+  bootstrap:    [
     AppComponent
   ]
 })

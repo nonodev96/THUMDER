@@ -1,10 +1,15 @@
 <footer class="main-footer">
-  <strong>Copyright &copy; 2020-2021 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong>
+  <ng-container *ngIf="electronService.isElectronApp">
+    <strong>Copyright &copy; 2020-2021 <a href="#" (click)="electronService.openInExternal('https://github.com/nonodev96/THUMDER')">THUMDER</a>.</strong>
+  </ng-container>
+  <ng-container *ngIf="!electronService.isElectronApp">
+    <strong>Copyright &copy; 2020-2021 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong>
+  </ng-container>
   All rights reserved. |
-  <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" (click)="globals.showDebug=!globals.showDebug">
-    Debug
-    <!--    data-target="#modal-p-bottom" -->
-  </button>
+  <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" (click)="globals.showDebug=!globals.showDebug">Debug</button>
+  <ng-container *ngIf="electronService.isElectronApp">
+    <button type="button" class="btn btn-xs btn-outline-primary" (click)="notification()">Debug notification</button>
+  </ng-container>
   <div class="float-right d-none d-sm-block">
     <b>{{ 'CONFIG.ENVIRONMENT' | translate }}</b> {{environment}} |
     <b>{{ 'CONFIG.LANG' | translate }}</b> {{lang}} |

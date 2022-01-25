@@ -3,18 +3,20 @@ import { AppConfig } from "../../../../environments/_environment";
 import { NPM_VERSION } from "../../../CONSTANTS";
 import { Globals } from "../../../__core/services/globals/globals.service";
 import { StorageService } from "../../../__core/storage/storage.service";
+import { ElectronService } from "../../../__core/services";
 
 @Component({
   selector:    "app-footer",
   templateUrl: "./footer.component.html"
 })
 export class FooterComponent implements OnInit {
-  date: number = new Date().getFullYear();
-  version: string = NPM_VERSION;
-  environment: string = AppConfig.environment;
-  lang: string = "";
+  public date: number = new Date().getFullYear();
+  public version: string = NPM_VERSION;
+  public environment: string = AppConfig.environment;
+  public lang: string = "";
 
   constructor(private storageService: StorageService,
+              public electronService: ElectronService,
               public globals: Globals) {
   }
 
@@ -25,5 +27,9 @@ export class FooterComponent implements OnInit {
         this.lang = this.storageService.getItem("lang");
       }
     });
+  }
+
+  public async notification() {
+    this.electronService.ipcRenderer.send("thumder-notification");
   }
 }

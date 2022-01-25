@@ -1,5 +1,27 @@
 <div class="card">
   <div class="card-header">
+    <h3 class="card-title">Debug electron 1</h3>
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+        <i class="fas fa-expand"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <button class="btn btn-outline-primary mr-1" (click)="notification()">Electron notification</button>
+  </div>
+  <div class="card-footer">
+
+  </div>
+</div>
+
+<hr>
+
+<div class="card">
+  <div class="card-header">
     <h3 class="card-title">{{'DEBUG' | translate}} 1</h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
@@ -84,7 +106,7 @@
     <h3 class="card-title">{{'DEBUG' | translate}} Memory</h3>
     <div class="card-tools">
       <button class="btn btn-xs btn-outline-primary mr-1"
-              (click)="updateMemoryServer($any(memoryTypeData.value), memoryAddress.value, memoryValue.value)">
+              (click)="updateMemoryServer($any(memoryTypeData.value), $any(memoryAddress.value), memoryValue.value)">
         Debug - Update memory
       </button>
       <button class="btn btn-xs btn-outline-primary mr-1"

@@ -1,6 +1,6 @@
 <div class="card" id="registers_Control_id">
   <div class="card-header">
-    <h3 class="card-title">{{'MACHINE.REGISTERS_CONTROL' | translate}}</h3>
+    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_CONTROL' | translate}}</span></h3>
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Byte"
               (click)="changeTypeDataInTableRegisters('Byte')">
@@ -100,7 +100,7 @@
 
 <div class="card" id="registers_R_id">
   <div class="card-header">
-    <h3 class="card-title">{{'MACHINE.REGISTERS_INTEGER' | translate}}</h3>
+    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_INTEGER' | translate}}</span></h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
         <i class="fas fa-edit"></i>
@@ -156,7 +156,7 @@
 
 <div class="card" id="registers_F_id">
   <div class="card-header">
-    <h3 class="card-title">{{'MACHINE.REGISTERS_FLOAT' | translate}}</h3>
+    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_FLOAT' | translate}}</span></h3>
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelectedFloat === 'Binary' ? 'btn--active' : '' }}" title="Binary"
               (click)="changeTypeDataInTableFloatRegisters('Binary')">
@@ -230,7 +230,7 @@
 
 <div class="card" id="registers_D_id">
   <div class="card-header">
-    <h3 class="card-title">{{'MACHINE.REGISTERS_DOUBLE' | translate}}</h3>
+    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_DOUBLE' | translate}}</span></h3>
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelectedDouble === 'Binary' ? 'btn--active' : '' }}" title="Binary"
               (click)="changeTypeDataInTableDoubleRegisters('Binary')">

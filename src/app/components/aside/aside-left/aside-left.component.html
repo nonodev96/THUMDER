@@ -18,7 +18,12 @@
              alt="User Image">
       </div>
       <div class="info">
-        <a href="https://github.com/nonodev96" class="d-block">by nonodev96</a>
+        <ng-container *ngIf="electronService.isElectronApp">
+          <a href="#" (click)="electronService.openInExternal('https://github.com/nonodev96')" class="d-block">by nonodev96</a>
+        </ng-container>
+        <ng-container *ngIf="!electronService.isElectronApp">
+          <a href="https://github.com/nonodev96" class="d-block">by nonodev96</a>
+        </ng-container>
       </div>
     </div>
 
