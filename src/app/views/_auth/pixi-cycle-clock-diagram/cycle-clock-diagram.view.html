@@ -1,6 +1,9 @@
 <div class="card" id="pixiCardCycleClockDiagram">
   <div class="card-header">
-    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> | {{ inCanvas }}</h3>
+    <h3 class="card-title"><span data-card-widget="collapse">
+      {{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> |
+      <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}"></i>
+    </h3>
     <div class="card-tools">
 
       <button type="button" class="btn btn-tool" (click)="this.pixi_CycleClockDiagramComponent.moveBottom()">

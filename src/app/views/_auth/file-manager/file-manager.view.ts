@@ -145,8 +145,7 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
           "interfaceFileItem": interfaceFileItem
         }
       };
-      this.router.navigateByUrl("/auth/editor", extras).then((r) => {
-        console.log(r);
+      this.router.navigateByUrl("/auth/editor", extras).then(() => {
       });
     }
   }

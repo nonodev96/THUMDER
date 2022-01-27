@@ -12,6 +12,7 @@ THUMDER
 
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/)
 [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
+
 ## Currently, runs with:
 
 - Angular v10.2.5
@@ -21,13 +22,13 @@ THUMDER
 ## Included Commands
 
 | Command                        | Description                                                                          |
-|--------------------------------|--------------------------------------------------------------------------------------|
+|:-------------------------------|:-------------------------------------------------------------------------------------|
 | `npm run ng:serve-angular:dev` | Execute the app in the browser                                                       |
 | `npm run electron:local`       | Builds your application and start electron                                           |
 | `npm run electron:build`       | Builds your application and creates an app consumable based on your operating system |
 
 | Command                               | Description |
-|---------------------------------------|-------------|
+|:--------------------------------------|:------------|
 | `npm run ng:build:dev`                |             |
 | `npm run ng:build:web`                |             |
 | `npm run ng:build:production`         |             |
@@ -58,13 +59,13 @@ E2E Test scripts can be found in `e2e` and `cypress` folder.
 ### Electron e2e
 
 | Command         | Description                           |
-| --------------- | ------------------------------------- |
+|:----------------|:--------------------------------------|
 | `npm run e2e`   | Execute end to end tests of electron  |
 
 ### Server e2e
 
 | Command                | Description                                        |
-| ---------------------- | -------------------------------------------------- |
+|:-----------------------|:---------------------------------------------------|
 | `npm run ng:server`    | Start the server                                   |
 | `npm run cypress:open` | Open cypress app and configure the commands        |
 | `npm run cypress:run`  | Run tests of cypress (BUG)                         |

@@ -506,7 +506,7 @@ export class MachineService {
   private stringFormat(msg: string, params: TypeLogger[]) {
     return msg.replace(/{([0-9]+)}/g, (match: string, index) => {
       const logValue: TypeLogger = params.filter(v => v.index == index)[0] ?? { index: -1, value: "" };
-      console.log("msg", msg, "params", params, "logValue", logValue, "match", match, "index", index);
+      // console.log("msg", msg, "params", params, "logValue", logValue, "match", match, "index", index);
       if (typeof logValue.value == "object") {
         return JSON.stringify(logValue.value);
       }

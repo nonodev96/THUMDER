@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, Notification, ipcMain, NotificationConstructorOptions } from "electron";
+import { app, screen, ipcMain, shell, nativeImage, BrowserWindow, Notification, NotificationConstructorOptions, Tray, Menu } from "electron";
 import * as path from "path";
 import * as url from "url";
 
@@ -12,33 +12,33 @@ function createWindow(): BrowserWindow {
 
   // Create the browser window.
   win = new BrowserWindow({
-    x:              0,
-    y:              0,
-    width:          size.width,
-    height:         size.height,
+    // titleBarStyle: 'hiddenInset',
+    x: 0,
+    y: 0,
+    width: size.width,
+    height: size.height,
+    minWidth: 400,
+    minHeight: 400,
     webPreferences: {
-      nodeIntegration:             true,
-      nativeWindowOpen:            true,
+      nodeIntegration: true,
+      nativeWindowOpen: true,
       allowRunningInsecureContent: (isServe),
-      contextIsolation:            false,  // false if you want to run 2e2 test with Spectron
-      enableRemoteModule:          true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
+      contextIsolation: false,  // false if you want to run 2e2 test with Spectron
+      enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
     },
   });
 
   if (isServe) {
-
     win.webContents.openDevTools();
-
     require("electron-reload")(__dirname, {
-      electron: require(`${ __dirname }/node_modules/electron`)
+      electron: require(`${__dirname}/node_modules/electron`)
     });
     win.loadURL("http://localhost:4200");
-
   } else {
     win.loadURL(url.format({
       pathname: path.join(__dirname, "dist/index.html"),
       protocol: "file:",
-      slashes:  true
+      slashes: true
     }));
   }
 
@@ -60,6 +60,31 @@ try {
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on("ready", () => setTimeout(createWindow, 400));
 
+  let tray = null
+  app.whenReady().then(() => {
+    const image = nativeImage.createFromPath(path.join(__dirname, "dist/assets/icons/faviconWhite.512x512.png"));
+    tray = new Tray(image.resize({ width: 20, height: 20 }));
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: "Reload app",
+        click: async () => {
+          if (isServe) {
+            win.loadURL("http://localhost:4200");
+          } else {
+            win.loadURL(url.format({
+              pathname: path.join(__dirname, "dist/index.html"),
+              protocol: "file:",
+              slashes: true
+            }));
+          }
+          // await shell.openExternal("https://electronjs.org");
+        }
+      },
+    ]);
+    tray.setToolTip("This is my application.");
+    tray.setContextMenu(contextMenu);
+  });
+
   // Quit when all windows are closed.
   app.on("window-all-closed", () => {
     // On OS X it is common for applications and their menu bar
@@ -79,28 +104,29 @@ try {
 
   ipcMain.on("thumder-notification", (event, args) => {
     const options: NotificationConstructorOptions = {
-      title:    "Custom Notification",
+      title: "Custom Notification",
       subtitle: "Subtitle of the Notification",
-      body:     "Body of Custom Notification",
-      silent:   false,
+      body: "Body of Custom Notification",
+      silent: false,
       // icon:             path.join(__dirname, "./src/assets/image.png"),
       // sound:            path.join(__dirname, "./src/assets/sound.mp3"),
-      hasReply:         true,
-      timeoutType:      "never",
+      hasReply: true,
+      timeoutType: "never",
       replyPlaceholder: "Reply Here",
-      urgency:          "critical",
-      closeButtonText:  "Close Button",
-      actions:          [ {
+      urgency: "critical",
+      closeButtonText: "Close Button",
+      actions: [{
         type: "button",
         text: "Show Button"
-      } ]
+      }]
     };
     const customNotification = new Notification(options);
     customNotification.show();
     // customNotification.close();
   });
 
-} catch (e) {
+} catch (error) {
+  console.error(error);
   // Catch Error
   // throw e;
 }

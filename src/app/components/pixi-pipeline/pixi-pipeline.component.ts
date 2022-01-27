@@ -100,10 +100,10 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pApp = new PIXI.Application({
       width:           width,
       height:          height,
-      backgroundColor: 0x1099bb,
+      backgroundColor: 0xEEEEEE,
       resolution:      1
     });
-    this.pApp.stage.addChild(this.pipeline.draw());
+    this.pApp.stage.addChild(<any>this.pipeline.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
     this.resize();
   }
