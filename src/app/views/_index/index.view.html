@@ -16,7 +16,7 @@
 -->
 <ng-template #card let-item='item'>
   <div class="col-lg-3 col-6">
-    <div class="small-box bg-success">
+    <div class="small-box bg-blue">
       <div class="inner">
         <h4>{{ ("NAVIGATION." + item.lang) | translate }}</h4>
         <p>{{ item.displayName }}</p>
@@ -31,7 +31,9 @@
   </div>
 </ng-template>
 
-<h5 class="mb-2 mt-4">{{ 'Machine' | translate }}</h5>
+<!--<div class="card">-->
+<!--  <div class="card-body">-->
+<h4 class="mb-2 mt-4">{{ 'Machine' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PIPELINE}"></ng-container>
@@ -46,8 +48,9 @@
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.STATISTICS}"></ng-container>
 </div>
+<hr>
 
-<h5 class="mb-2 mt-4">{{ 'IDE' | translate }}</h5>
+<h4 class="mb-2 mt-4">{{ 'IDE' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.FILE_MANAGER}"></ng-container>
@@ -56,8 +59,9 @@
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MULTIVIEW}"></ng-container>
 </div>
+<hr>
 
-<h5 class="mb-2 mt-4">{{ 'Utils' | translate }}</h5>
+<h4 class="mb-2 mt-4">{{ 'Utils' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CALCULATOR}"></ng-container>
@@ -66,15 +70,14 @@
 </div>
 
 
-<h5 class="mb-2 mt-4">{{ 'Config' | translate }}</h5>
+<h4 class="mb-2 mt-4">{{ 'Config' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CONFIG}"></ng-container>
 </div>
 
 <ng-container *ngIf="AppConfig.environment === 'DEV'">
-
-  <h5 class="mb-2 mt-4">{{ 'Debug' | translate }}</h5>
+  <h4 class="mb-2 mt-4">{{ 'Debug' | translate }}</h4>
   <div class="row">
     <ng-container [ngTemplateOutlet]="card"
                   [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DEBUG}"></ng-container>
@@ -86,7 +89,7 @@
 </ng-container>
 
 <!--
-<h5 class="mb-2 mt-4">{{ 'PAGES.INDEX.PAGES' | translate }}</h5>
+<h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.PAGES' | translate }}</h4>
 <div class="row">
   <ng-container *ngFor="let item of PRIVATE_AUTH_ROUTES">
     <div class="col-lg-3 col-6">
@@ -106,3 +109,5 @@
   </ng-container>
 </div>
 -->
+<!--  </div>-->
+<!--</div>-->

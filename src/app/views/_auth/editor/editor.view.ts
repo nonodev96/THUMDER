@@ -53,21 +53,15 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
+
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        let content: string;
-        let dataFileItem: InterfaceFileItem;
-        if (this.extrasIDE) {
-          dataFileItem = this.extrasIDE?.interfaceFileItem ?? new THUMDER_FileItem("", false, []);
-          localStorage.setItem("interfaceFileItem", JSON.stringify(dataFileItem));
-        }
-        dataFileItem = JSON.parse(localStorage.getItem("interfaceFileItem")) as InterfaceFileItem;
-        content = dataFileItem.content ?? "";
-        const item = new THUMDER_FileItem(dataFileItem.path, dataFileItem.isDirectory, dataFileItem.pathKeys);
-        this.interfaceFileItem = Object.assign({}, item, dataFileItem);
-        await this.monacoEditorComponent.updateContent(content);
+        this.interfaceFileItem = this.extrasIDE?.interfaceFileItem ?? JSON.parse(localStorage.getItem("interfaceFileItem")) as InterfaceFileItem;
         const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints ?? {};
-        this.monacoEditorComponent.setBreakpoints(breakpoints);
+
+        await this.monacoEditorComponent.updateFile(this.interfaceFileItem);
+        await this.monacoEditorComponent.updateContent(this.interfaceFileItem.content);
+        await this.monacoEditorComponent.setBreakpoints(breakpoints);
         return Promise.resolve();
       }
     });
@@ -82,6 +76,26 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
         this.monacoEditorComponent.clearLines();
       } else {
         this.monacoEditorComponent.printLine(line);
+      }
+    });
+    this.monacoEditorComponent.getFileSaveObservable().subscribe(async (interfaceFileItem) => {
+      try {
+        await this.fileSystem.editFileItem(interfaceFileItem, interfaceFileItem.$key);
+
+        const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
+        const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
+        this.toastService.success(message, title, {
+          timeOut:       1500,
+          positionClass: "toast-bottom-left"
+        });
+      } catch (error) {
+        console.error(error);
+        const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
+        const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
+        this.toastService.error(message, title, {
+          timeOut:       2500,
+          positionClass: "toast-bottom-left"
+        });
       }
     });
   }
@@ -101,54 +115,22 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     return Promise.resolve();
   }
 
-  toggleDebuggerTag(): void {
+  public toggleDebuggerTag(): void {
     this.monacoEditorComponent.toggleDebuggerTag();
   }
 
-  getListOfTags(): void {
+  public getListOfTags(): void {
     this.machine.writeToLog("ListOfTags: {0}", EnumLogLevel.Debug, [
       { index: 0, value: this.monacoEditorComponent.getListOfTags() }
     ]);
   }
 
-  changeHeight(): void {
+  public changeHeight(): void {
     this.monacoEditorComponent.height = 1000;
   }
 
   public async save(): Promise<void> {
-    let interfaceFileItem;
-    const updateContent = this.monacoEditorComponent.content;
-    if (this.extrasIDE) {
-      interfaceFileItem = this.extrasIDE.interfaceFileItem;
-    } else {
-      interfaceFileItem = JSON.parse(localStorage.getItem("interfaceFileItem"));
-    }
-    if (interfaceFileItem.$key === "") {
-      console.warn("Debes crear un fichero antes de guardarlo");
-      return Promise.resolve();
-    }
-
-    interfaceFileItem.content = updateContent;
-    localStorage.setItem("interfaceFileItem", JSON.stringify(interfaceFileItem));
-    try {
-      await this.fileSystem.editFileItem(interfaceFileItem, interfaceFileItem.$key);
-
-      const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
-      const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
-      this.toastService.success(message, title, {
-        timeOut:       1500,
-        positionClass: "toast-bottom-left"
-      });
-    } catch (error) {
-      console.error(error);
-      const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
-      const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
-      this.toastService.error(message, title, {
-        timeOut:       2500,
-        positionClass: "toast-bottom-left"
-      });
-    }
-
+    await this.monacoEditorComponent.save();
     return Promise.resolve();
   }
 }

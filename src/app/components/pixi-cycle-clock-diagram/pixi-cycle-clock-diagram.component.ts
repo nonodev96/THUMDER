@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Component, HostListener, OnInit, AfterViewInit, ViewChild, OnDestroy, Output, EventEmitter } from "@angular/core";
 import { MachineService } from "../../__core/machine/machine.service";
-import { PixiTHUMDER_CycleClockDiagram, TypeArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
+import { TypeArrowDirection } from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
 import { Subscription } from "rxjs";
 import * as Keyboard from "pixi.js-keyboard";
 
@@ -17,7 +17,6 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   public pApp: PIXI.Application;
   private inCanvas: boolean = false;
-  private cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
   private loader: PIXI.Loader;
   private ticker: PIXI.Ticker;
   private keyboard;
@@ -29,30 +28,27 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   constructor(public machine: MachineService) {
     this.keyboard = Keyboard;
-    this.cycleClockDiagram = this.machine.cycleClockDiagram;
   }
 
   ngOnInit(): void {
     this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       if (stepSimulation.isNewInstruction === true) {
-        this.cycleClockDiagram.addInstruction(this.machine.code.getOrDefaultValue(stepSimulation.pipeline.IF.address).instruction);
+        this.machine.cycleClockDiagram.addInstruction(this.machine.code.getOrDefaultValue(stepSimulation.pipeline.IF.address).instruction);
       }
-      if (stepSimulation.pipeline.arrows !== []) {
-        for (const arrow of stepSimulation.pipeline.arrows) {
-          const arrowDraw = {
-            start: {
-              instruction: arrow.fromAddressRow,
-              step:        arrow.fromStep
-            },
-            to:    {
-              instruction: arrow.toAddressRow,
-              step:        arrow.toStep
-            }
-          };
-          this.cycleClockDiagram.addArrow(arrowDraw);
-        }
+      for (const arrow of stepSimulation.pipeline.arrows) {
+        const arrowDraw = {
+          start: {
+            instruction: arrow.fromAddressRow,
+            step:        arrow.fromStep
+          },
+          to:    {
+            instruction: arrow.toAddressRow,
+            step:        arrow.toStep
+          }
+        };
+        this.machine.cycleClockDiagram.addArrow(arrowDraw);
       }
-      this.cycleClockDiagram.nextStep(stepSimulation.pipeline, stepSimulation.step);
+      this.machine.cycleClockDiagram.nextStep(stepSimulation.pipeline, stepSimulation.step);
     });
   }
 
@@ -65,11 +61,11 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     this.pApp = new PIXI.Application({
       width:           width,
       height:          height,
-      backgroundColor: 0x1099BB,
+      backgroundColor: 0xEEEEEE,
       resolution:      1,
       view:            canvas
     });
-    this.pApp.stage.addChild(<any>this.cycleClockDiagram.draw());
+    this.pApp.stage.addChild(<any>this.machine.cycleClockDiagram.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
 
     this.loader = PIXI.Loader.shared;
@@ -102,19 +98,19 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   private play(_delta: number): void {
     if (this.keyboard.isKeyDown("ArrowLeft", "KeyA", "KeyJ")) {
-      this.cycleClockDiagram.moveRight();
+      this.machine.cycleClockDiagram.moveRight();
     }
     if (this.keyboard.isKeyDown("ArrowRight", "KeyD", "KeyL")) {
-      this.cycleClockDiagram.moveLeft();
+      this.machine.cycleClockDiagram.moveLeft();
     }
     if (this.keyboard.isKeyDown("ArrowUp", "KeyW", "KeyI")) {
-      this.cycleClockDiagram.moveBottom();
+      this.machine.cycleClockDiagram.moveBottom();
     }
     if (this.keyboard.isKeyDown("ArrowDown", "KeyS", "KeyK")) {
-      this.cycleClockDiagram.moveTop();
+      this.machine.cycleClockDiagram.moveTop();
     }
     if (this.keyboard.isKeyDown("KeyR")) {
-      this.cycleClockDiagram.reset();
+      this.machine.cycleClockDiagram.reset();
     }
   }
 
@@ -145,27 +141,27 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   moveBottom(): void {
-    this.cycleClockDiagram.moveBottom();
+    this.machine.cycleClockDiagram.moveBottom();
   }
 
   moveTop(): void {
-    this.cycleClockDiagram.moveTop();
+    this.machine.cycleClockDiagram.moveTop();
   }
 
   moveRight(): void {
-    this.cycleClockDiagram.moveRight();
+    this.machine.cycleClockDiagram.moveRight();
   }
 
   moveLeft(): void {
-    this.cycleClockDiagram.moveLeft();
+    this.machine.cycleClockDiagram.moveLeft();
   }
 
   addArrow(instructionArrow: TypeArrowDirection): void {
-    this.cycleClockDiagram.addArrow(instructionArrow);
+    this.machine.cycleClockDiagram.addArrow(instructionArrow);
   }
 
   reset(): void {
-    this.cycleClockDiagram.reset();
+    this.machine.cycleClockDiagram.reset();
   }
 
   private resize(): void {
@@ -173,7 +169,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     let height = this.pixiContainer.nativeElement.offsetHeight;
     height = height === 0 ? 900 : height;
     this.pApp.renderer.resize(width, height);
-    this.cycleClockDiagram.borderTopWidth = width;
-    this.cycleClockDiagram.borderLeftHeight = height;
+    this.machine.cycleClockDiagram.borderTopWidth = width;
+    this.machine.cycleClockDiagram.borderLeftHeight = height;
   }
 }

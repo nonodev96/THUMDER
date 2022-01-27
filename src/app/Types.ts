@@ -47,10 +47,8 @@ export interface InterfaceFileItem {
   $key?: string; // ---? Firebase
   f_id: string; //-
   e1_uid: string; //-
-
   key: string; //-
   pathKeys: string[]; //-
-
   path: string;
   name: string;
   content: string;

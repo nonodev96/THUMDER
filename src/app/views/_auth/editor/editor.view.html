@@ -1,14 +1,14 @@
-<!-- Default box -->
-<div class="card" id="card-IDE">
+<div class="card">
+  <div class="card-body">
+    <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
+  </div>
+</div>
+<hr>
+
+<div class="card">
   <div class="card-header">
     <h3 class="card-title">{{ 'NAVIGATION.EDITOR' | translate }}</h3>
     <div class="card-tools">
-
-      <!--
-            <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="changeHeight()">
-              Change Height
-            </button>
-      -->
       <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="getListOfTags()">
         Get List Of Tags
       </button>
@@ -34,28 +34,19 @@
     </div>
   </div>
 
-  <div class="card-body" id="ide-container">
-    <div id="ide">
-      <div id="ide-main">
-        <div id="ide-monaco-editor-container">
-          <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
-        </div>
-        <div id="ide-sidebar">
-          <!--          <button (click)="toggleDebuggerTag()">Toggle Debugger in cursor</button>-->
-          <!--          <button (click)="getListOfTags()">Get List Of Tags</button>-->
-        </div>
-      </div>
-
-
-    </div>
+  <div class="card-body">
+    <ng-container *ngIf="interfaceFileItem">
+<pre>
+         $Key: {{interfaceFileItem.$key ?? ''}}
+         User: {{interfaceFileItem.e1_uid ?? ''}}
+          Key: {{interfaceFileItem.key ?? ''}}
+         Name: {{interfaceFileItem.name ?? ''}}
+         Path: {{interfaceFileItem.path ?? ''}}
+Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}}
+</pre>
+    </ng-container>
   </div>
 
-  <div class="card-footer">
-    <p>$Key: {{interfaceFileItem.$key ?? ''}} </p>
-    <p> Key: {{interfaceFileItem.key ?? ''}} </p>
-    <p> Name: {{interfaceFileItem.name ?? ''}} </p>
-    <p> Path: {{interfaceFileItem.path ?? ''}} </p>
-    <p> Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}} </p>
-  </div>
+  <div class="card-footer"></div>
 </div>
 <!-- /.card -->

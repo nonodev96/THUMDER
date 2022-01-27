@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import * as monaco from "monaco-editor";
-import { TypeBreakpoints, TypeComponentStatus, TypeTags } from "../../Types";
+import { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeTags } from "../../Types";
 import MonacoConfig from "../../../monaco-config";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
+import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
 
 @Component({
   selector:    "thumder-monaco-editor",
@@ -15,17 +16,19 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions = MonacoConfig.defaultOptions;
   public _height = 70;
-  public content: string = "";
-  public initialized$: Subject<boolean> = new Subject<boolean>();
+  // public content: string = "";
 
+  public file: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
+  public breakpoints: TypeBreakpoints = {};
   private editor: IStandaloneCodeEditor;
   private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
   private iteratorLine: number = 1;
 
-  public breakpoints: TypeBreakpoints = {};
+  public initialized$: Subject<boolean> = new Subject<boolean>();
   public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();
   public componentStatus$: Subject<TypeComponentStatus> = new Subject<TypeComponentStatus>();
+  public fileSave$: Subject<THUMDER_FileItem> = new Subject<THUMDER_FileItem>();
 
   constructor() {
   }
@@ -54,8 +57,8 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
     this.editor.layout();
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
-
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, async () => {
+      await this.save();
     });
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D, () => {
       this.toggleDebuggerTag();
@@ -82,9 +85,13 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.componentStatus$.asObservable();
   }
 
+  getFileSaveObservable(): Observable<InterfaceFileItem> {
+    return this.fileSave$.asObservable();
+  }
+
   async updateContent(content: string): Promise<void> {
-    this.content = content;
-    this.editor.setValue(this.content);
+    this.file.content = content;
+    this.editor.setValue(this.file.content);
     return Promise.resolve();
   }
 
@@ -206,10 +213,40 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [ newDecoration ]);
   }
 
-  setBreakpoints(breakpoints: TypeBreakpoints) {
+  public async save(): Promise<void> {
+    if (this.file.$key === "") {
+      console.warn("Debes crear un fichero antes de guardarlo");
+      return Promise.resolve();
+    }
+    localStorage.setItem("interfaceFileItem", JSON.stringify(this.file));
+    this.fileSave$.next(this.file);
+    return Promise.resolve();
+  }
+
+  public async setBreakpoints(breakpoints: TypeBreakpoints): Promise<void> {
     this.breakpoints = breakpoints;
     for (const line of Object.keys(this.breakpoints)) {
       this.toggleDebuggerTag(parseInt(line));
     }
+    return Promise.resolve();
+  }
+
+  public async updateFile(fileItem: InterfaceFileItem): Promise<void> {
+    this.file.$key = fileItem.$key;
+    this.file.f_id = fileItem.f_id;
+    this.file.e1_uid = fileItem.e1_uid;
+    this.file.key = fileItem.key;
+    this.file.pathKeys = fileItem.pathKeys;
+    this.file.path = fileItem.path;
+    this.file.name = fileItem.name;
+    this.file.content = fileItem.content;
+    this.file.description = fileItem.description;
+    this.file.dateModified = fileItem.dateModified;
+    this.file.size = fileItem.size;
+    this.file.isDirectory = fileItem.isDirectory;
+    this.file.hasSubDirectories = fileItem.hasSubDirectories;
+    this.file.thumbnail = fileItem.thumbnail;
+    this.file.dataItem = fileItem.dataItem;
+    return Promise.resolve();
   }
 }

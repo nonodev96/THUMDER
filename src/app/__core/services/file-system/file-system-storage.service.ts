@@ -48,6 +48,7 @@ export class FileSystemStorageService {
     return this.fileItems_Collections.valueChanges([ "added", "removed", "modified" ]).pipe(
       map((changes) => {
         const items = changes.map((interfaceFileItem) => {
+          if (interfaceFileItem.e1_uid !== this.UID) return;
           const time = interfaceFileItem.dateModified as unknown as Timestamp;
           return {
             ...interfaceFileItem,

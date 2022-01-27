@@ -67,6 +67,12 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.popupOpenSubscription = this.ccService.popupOpen$.subscribe(() => {
       // you can use this.ccService.getConfig() to do stuff...
+      document.getElementById("cookieconsent:link").addEventListener("click", async (_$event) => {
+        console.log("Go to cookies");
+        await this.router.navigateByUrl("/landing/about");
+        await new Promise(resolve => setTimeout(resolve, 750));
+        document.getElementById('collapse-header-cookies').click();
+      });
     });
     this.popupCloseSubscription = this.ccService.popupClose$.subscribe(() => {
       // you can use this.ccService.getConfig() to do stuff...
@@ -85,11 +91,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       // you can use this.ccService.getConfig() to do stuff...
     });
     this.updateCookiesConsentLang();
-
-    document.getElementById("cookieconsent:link").addEventListener("click", async (_$event) => {
-      console.log("Go to cookies");
-      await this.router.navigateByUrl("/cookies");
-    });
   }
 
   ngAfterViewInit(): void {

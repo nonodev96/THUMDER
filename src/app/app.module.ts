@@ -98,6 +98,7 @@ import * as PIXI from "pixi.js";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
+
 import { ElectronService } from "./__core/services";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 
@@ -121,14 +122,14 @@ const cookieConfig: NgcCookieConsentConfig = {
   theme:    "edgeless",
   type:     "opt-out",
   content:  {
-    href: "#"
+    href: "#/landing/about"
   },
   elements: {
     messagelink: `
     <span id="cookieconsent:desc" class="cc-message">{{message}}&nbsp;
         <a id="cookieconsent:link" aria-label="learn more about cookies" tabindex="0" class="cc-link">{{link}}</a>
     </span>
-     `
+    `
   }
 };
 
@@ -138,7 +139,15 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 }
 
 export function markedOptionsFactory(): MarkedOptions {
+  const defaultMarkedRenderer = new MarkedRenderer();
   const markedRenderer = new MarkedRenderer();
+
+  markedRenderer.table = (header, body) => {
+    // console.log(header, body);
+    // console.log(`<table class="table">${ header }${ body }</table>`);
+    // return defaultMarkedRenderer.table.call(this, header, body);
+    return `<table class="table table-striped">${ header }${ body }</table>`;
+  };
 
   markedRenderer.heading = (text: string, level: number) => {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
@@ -152,7 +161,7 @@ export function markedOptionsFactory(): MarkedOptions {
 
   markedRenderer.link = (href: string, title: string, text: string) => {
     if (!href) {
-      return markedRenderer.link.call(this, href, title, text);
+      return defaultMarkedRenderer.link.call(this, href, title, text);
     }
     const isElectron = window && window.process && window.process.type;
     if (isElectron) {

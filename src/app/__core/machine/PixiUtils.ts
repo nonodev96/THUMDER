@@ -57,7 +57,6 @@ export namespace PixiUtils {
     const x4 = to_x + (15 / L) * ((start_x - to_x) * Math.abs(Math.cos(angle)) - (start_y - to_y) * Math.abs(Math.sin(angle)));
     const y4 = to_y + (15 / L) * ((start_y - to_y) * Math.abs(Math.cos(angle)) + (start_x - to_x) * Math.abs(Math.sin(angle)));
     const bezierArrow = new PIXI.Graphics();
-    console.log(start_x, start_y, to_x, to_y);
     bezierArrow.lineStyle(3, color);
     bezierArrow.moveTo(start_x, start_y);
     bezierArrow.lineTo(to_x, to_y);

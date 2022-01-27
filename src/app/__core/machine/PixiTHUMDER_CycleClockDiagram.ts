@@ -128,7 +128,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
       this.arrowsContainer.removeChild(this.arrowsContainer.children[0]);
     }
     this.arrowsContainer = new PIXI.Container();
-
+    this.arrowsContainer.zIndex = 2;
   }
 
   private initTables() {
@@ -181,7 +181,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   public nextStep(pipeline: TypePipeline, step: number = this.realStep) {
     this.drawSteps();
-    const stages: TypePipelineStage[] = ["IF", "ID", "intEX", "MEM", "WB"];
+    const stages: TypePipelineStage[] = [ "IF", "ID", "intEX", "MEM", "WB" ];
     for (const iterStage of stages) {
       const stage = iterStage as TypeStage;
       if (pipeline[stage].draw === true) {
@@ -245,13 +245,15 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   private drawArrow(arrowDirection: TypeArrowDirection, color = 0xFF0000) {
     const initDistance_x = 210 + 37.5;
     const initDistance_y = 90 + 12.5;
-    const start_x = initDistance_x + (arrowDirection.start.step * 87.5);
-    const start_y = initDistance_y + (arrowDirection.start.instruction * 37.5);
-    const to_x = initDistance_x + (arrowDirection.to.step * 87.5);
-    const to_y = initDistance_y + (arrowDirection.to.instruction * 37.5);
+    const start_x = initDistance_x + (arrowDirection.start.step * 87.5) + 15;
+    const start_y = initDistance_y + (arrowDirection.start.instruction * 37.5) + 5;
+    const to_x = initDistance_x + (arrowDirection.to.step * 87.5) - 15;
+    const to_y = initDistance_y + (arrowDirection.to.instruction * 37.5) - 5;
     const bezierArrow = PixiUtils.drawArrow(start_x, start_y, to_x, to_y, color);
+    bezierArrow.zIndex = 80;
     this.arrows.push(bezierArrow);
     this.arrowsContainer.addChild(bezierArrow);
+    this.addChild(this.arrowsContainer);
   }
 
   private drawInstruction(textValue: string) {
@@ -275,7 +277,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     rectangle.beginFill(0x66CCFF);
     rectangle.drawRect(0, 0, 75, 25);
     rectangle.endFill();
-    const text = new PIXI.Text(`${displayStep}`, styleFontTextInstruction);
+    const text = new PIXI.Text(`${ displayStep }`, styleFontTextInstruction);
     text.position.x += (rectangle.width - text.width) / 2;
     text.position.y += ((rectangle.height - text.height) / 2) - 2.5;
     rectangle.addChild(text);
