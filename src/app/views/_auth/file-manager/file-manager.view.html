@@ -1,4 +1,3 @@
-
 <hr>
 
 <ng-container *ngIf="show">
@@ -19,6 +18,9 @@
       <dxo-details>
         <dxi-column dataField="thumbnail"></dxi-column>
         <dxi-column dataField="name"></dxi-column>
+        <ng-container *ngIf="showUID">
+          <dxi-column dataField="e1_uid"></dxi-column>
+        </ng-container>
         <dxi-column dataField="dateModified"></dxi-column>
         <!--      <dxi-column dataField="size"></dxi-column>-->
         <!--      <dxi-column dataField="category" caption="Category" width="95"></dxi-column>-->
@@ -60,7 +62,9 @@
     <div class="card-header">
       <h3 class="card-title">{{'DEBUG' | translate}}</h3>
       <div class="card-tools">
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="showUID = !showUID">Toggle UID</button>
         <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.log()">Log</button>
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.debug()">Debug</button>
         <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.tests()">Test get all files</button>
         <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.generateDefaultFiles()">Generate default files</button>
         <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.updateUI()">Refresh UI</button>

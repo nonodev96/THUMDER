@@ -57,6 +57,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
     this.editor.layout();
+    this.editor.updateOptions({ readOnly: this.file.$key == "" });
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, async () => {
       await this.save();
     });
@@ -232,6 +233,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public async updateFile(fileItem: InterfaceFileItem): Promise<void> {
+    console.log(this.file, fileItem);
     this.file.$key = fileItem.$key;
     this.file.f_id = fileItem.f_id;
     this.file.e1_uid = fileItem.e1_uid;
@@ -247,6 +249,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.file.hasSubDirectories = fileItem.hasSubDirectories;
     this.file.thumbnail = fileItem.thumbnail;
     this.file.dataItem = fileItem.dataItem;
+
+    this.editor.updateOptions({ readOnly: this.file.$key == "" });
+
     return Promise.resolve();
   }
 }

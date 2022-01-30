@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { NavigationExtras, Router } from "@angular/router";
 import { THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
@@ -49,68 +49,65 @@ export type TypeOnContentReady = {
   templateUrl: "./file-manager.view.html",
   styleUrls:   []
 })
-export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(DxFileManagerComponent, { static: false }) fileManager: DxFileManagerComponent;
-
-  public newFileMenuOptions: FileMenuOptions;
-  public changeCategoryMenuOptions: FileMenuOptions;
-  public customFileProvider: CustomFileSystemProvider;
-  public show: boolean;
-  private _filesSelected: any[] = [];
-  private updateUISubscription: Subscription = new Subscription();
-
+export class FileManagerView implements OnInit, OnDestroy {
   get filesSelected() {
     return this._filesSelected.map(v => v.name);
   }
 
+  @ViewChild(DxFileManagerComponent, { static: false }) fileManager: DxFileManagerComponent;
+
+  public customFileProvider: CustomFileSystemProvider;
+  public newFileMenuOptions: FileMenuOptions = {
+    items:       [ { text: "Create new file", icon: "plus", items: [ { text: "WinDLX Document", options: { extension: ".s" } } ] } ],
+    onItemClick: this.onContextMenuItemClick.bind(this)
+  };
+  public changeCategoryMenuOptions: FileMenuOptions = {
+    items:       [ /*{ text: 'Category', icon: 'tags', items: [] }*/ ],
+    onItemClick: this.onContextMenuItemClick.bind(this)
+  };
+  public show: boolean = false;
+  public showUID: boolean = false;
+  private _filesSelected: any[] = [];
+  private updateUISubscription: Subscription = new Subscription();
+
   constructor(@Inject(DOCUMENT) private document: Document,
               public fileSystemService: FileSystemService,
               private router: Router) {
-    this.customFileProvider = new CustomFileSystemProvider({
-      getItems:        (parentDirectory) => {
-        return this.fileSystemService.getItems(parentDirectory);
-      },
-      createDirectory: (parentDirectory, name) => {
-        return this.fileSystemService.createDirectory(parentDirectory, name);
-      },
-      renameItem:      (item: FileSystemItem, name: string) => {
-        return this.fileSystemService.renameItem(item, name);
-      },
-      deleteItem:      (item: FileSystemItem) => {
-        return this.fileSystemService.deleteItem(item);
-      },
-      moveItem:        (item, destinationDirectory) => {
-        return this.fileSystemService.moveItem(item, destinationDirectory);
-      },
-      uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
-        return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
-      },
-      downloadItems:   (items) => {
-        return this.fileSystemService.downloadItem(items);
-      }
-    });
     this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(async () => {
       await this.updateUI();
     });
-    this.newFileMenuOptions = {
-      items:       [ { text: "Create new file", icon: "plus", items: [ { text: "WinDLX Document", options: { extension: ".s" } } ] } ],
-      onItemClick: this.onContextMenuItemClick.bind(this)
-    };
-    this.changeCategoryMenuOptions = {
-      items:       [ /*{ text: 'Category', icon: 'tags', items: [] }*/ ],
-      onItemClick: this.onContextMenuItemClick.bind(this)
-    };
   }
 
   ngOnInit(): void {
+    this.fileSystemService.init().then(() => {
+      this.customFileProvider = new CustomFileSystemProvider({
+        getItems:        (parentDirectory) => {
+          return this.fileSystemService.getItems(parentDirectory);
+        },
+        createDirectory: (parentDirectory, name) => {
+          return this.fileSystemService.createDirectory(parentDirectory, name);
+        },
+        renameItem:      (item: FileSystemItem, name: string) => {
+          return this.fileSystemService.renameItem(item, name);
+        },
+        deleteItem:      (item: FileSystemItem) => {
+          return this.fileSystemService.deleteItem(item);
+        },
+        moveItem:        (item, destinationDirectory) => {
+          return this.fileSystemService.moveItem(item, destinationDirectory);
+        },
+        uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
+          return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
+        },
+        downloadItems:   (items) => {
+          return this.fileSystemService.downloadItem(items);
+        }
+      });
+    });
     this.show = true;
   }
 
-  ngAfterViewInit(): void {
-  }
-
   ngOnDestroy(): void {
-    // Fix memory leak
     this.show = false;
     this.fileManager = null;
     this.customFileProvider = null;
@@ -186,7 +183,13 @@ export class FileManagerView implements OnInit, AfterViewInit, OnDestroy {
     console.log(this.fileSystemService.items);
   }
 
+  public debug(): void {
+    this.fileSystemService.fileSystemStorageService.collectionFileItems().valueChanges().subscribe((i) => {
+      console.log(i);
+    });
+  }
+
   public async tests() {
-    await this.fileSystemService.fileSystemStorageService.getAllFilesFromFirestore();
+    await this.fileSystemService.fileSystemStorageService.getAllFilesFromFirestoreAsObservable();
   }
 }

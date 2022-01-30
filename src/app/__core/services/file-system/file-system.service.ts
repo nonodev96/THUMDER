@@ -3,7 +3,7 @@ import { Observable, Subject } from "rxjs";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import UploadInfo from "devextreme/file_management/upload_info";
 import { FileSystemStorageService } from "./file-system-storage.service";
-import { InterfaceFileItem, InterfaceUser } from "../../../Types";
+import { InterfaceFileItem } from "../../../Types";
 import { Utils } from "../../../Utils";
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
@@ -29,17 +29,17 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
 export class FileSystemService {
 
   public items: THUMDER_FileItem[] = [];
-  private readonly UID: string;
   private updateUI$: Subject<void> = new Subject<void>();
 
   constructor(public fileSystemStorageService: FileSystemStorageService) {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    this.UID = userData.uid;
+  }
 
-    this.fileSystemStorageService.getAllFilesFromFirestore().subscribe((items) => {
+  public async init(): Promise<void> {
+    this.fileSystemStorageService.getAllFilesFromFirestoreAsObservable().subscribe(async (items) => {
       this.items = [];
-      this.updateItems(items);
+      await this.updateItems(items);
     });
+    return Promise.resolve();
   }
 
   public getUpdateUIObservable(): Observable<void> {
@@ -47,7 +47,7 @@ export class FileSystemService {
   }
 
   public async getItems(path: FileSystemItem): Promise<Array<THUMDER_FileItem>> {
-    // await this.updateLocalItems();
+    //await this.updateLocalItems();
     const results = this.items.filter(value => value.path === path.path);
     const fileItems = results.map((fileItem) => {
       const item: THUMDER_FileItem = new THUMDER_FileItem(fileItem.path, fileItem.isDirectory, fileItem.pathKeys);
@@ -141,7 +141,7 @@ export class FileSystemService {
     console.log("TODO", items);
   }
 
-  private updateItems(items: InterfaceFileItem[]) {
+  private async updateItems(items: InterfaceFileItem[]): Promise<void> {
     for (const item of items) {
       const { pathKeys, path, isDirectory }: InterfaceFileItem = item;
       const thumderFileItem = new THUMDER_FileItem(path, isDirectory, pathKeys);
@@ -153,5 +153,14 @@ export class FileSystemService {
         this.items.push(newItem);
     }
     this.updateUI$.next();
+    return Promise.resolve();
+  }
+
+  private async updateLocalItems(): Promise<void> {
+    this.fileSystemStorageService.getAllFilesFromFirestoreAsObservable().subscribe((items) => {
+      this.items = [];
+      this.updateItems(items);
+    });
+    return Promise.resolve();
   }
 }

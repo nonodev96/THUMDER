@@ -1,0 +1,3 @@
+[submodule "THUMDER.wiki"]
+	path = wiki
+	url = git@github.com:nonodev96/THUMDER.wiki.git

@@ -24,7 +24,7 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.multiviewConfiguration = JSON.parse(localStorage.getItem("multiview_configuration")) as TypeMultiviewConfiguration;
+    this.multiviewConfiguration = JSON.parse(localStorage.getItem("multiview_configuration")) as TypeMultiviewConfiguration ?? DEFAULT_MULTIVIEW_CONFIGURATION;
   }
 
   ngAfterViewInit(): void {
