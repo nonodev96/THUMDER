@@ -33,6 +33,8 @@ import { CookieService } from "ngx-cookie-service";
 import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
 // ngx-cookieconsent
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from "ngx-cookieconsent";
+// ng2-charts
+import { ChartsModule } from 'ng2-charts';
 
 // Services
 import { UtilityService } from "./__core/services/utility/utility.service";
@@ -231,6 +233,7 @@ export function markedOptionsFactory(): MarkedOptions {
     RouterModule,
 
     AppRoutingModule,
+    ChartsModule,
     NgcCookieConsentModule.forRoot(cookieConfig),
 
     MarkdownModule.forRoot({

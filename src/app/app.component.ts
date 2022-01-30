@@ -40,7 +40,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
               private electronService: ElectronService,
               private translate: TranslateService,
               private router: Router) {
-
+    this.auth.getIsLoggingObservable().subscribe((isLogging) => {
+      if (isLogging) this.storageService.defaultDataInStorage();
+    });
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationStart) {
         this.document.body.className = "";
@@ -71,7 +73,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log("Go to cookies");
         await this.router.navigateByUrl("/landing/about");
         await new Promise(resolve => setTimeout(resolve, 750));
-        document.getElementById('collapse-header-cookies').click();
+        document.getElementById("collapse-header-cookies").click();
       });
     });
     this.popupCloseSubscription = this.ccService.popupClose$.subscribe(() => {

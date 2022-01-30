@@ -56,7 +56,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        this.interfaceFileItem = this.extrasIDE?.interfaceFileItem ?? JSON.parse(localStorage.getItem("interfaceFileItem")) as InterfaceFileItem;
+        this.interfaceFileItem = (this.extrasIDE?.interfaceFileItem ?? JSON.parse(localStorage.getItem("interfaceFileItem")) ?? DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
         const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints ?? {};
 
         await this.monacoEditorComponent.updateFile(this.interfaceFileItem);
