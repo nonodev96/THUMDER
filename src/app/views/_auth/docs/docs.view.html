@@ -8,7 +8,8 @@
           </h4>
         </div>
       </a>
-      <div id="collapse_readme" class="collapse show" data-parent="#accordion">
+      <!-- show -->
+      <div id="collapse_readme" class="collapse " data-parent="#accordion">
         <div class="card-body ">
           <markdown [src]="'assets/docs.md'" (load)="onMarkdownLoad()" #markdownID></markdown>
         </div>
@@ -38,31 +39,34 @@
       </a>
       <div id="collapseOne" class="collapse" data-parent="#accordion">
         <div class="card-body">
-            <pre>
-The current values of all registers are displayed in this window. It is possible to change the contents of the
-registers.
+          <markdown [src]="'assets/wiki/1.TheRegisterWindow.md'" (load)="onMarkdownLoad()"></markdown>
+          <!--
+          <pre>
+          The current values of all registers are displayed in this window. It is possible to change the contents of the
+          registers.
 
-The Register Menu
+          The Register Menu
 
-There are several options in this menu to fix the type of representing the contents and the type of registers to be
-displayed:
+          There are several options in this menu to fix the type of representing the contents and the type of registers to be
+          displayed:
 
-+ Hexadecimal
-+ Decimal
-+ Display Special Registers
-+ Display Integer Registers
-+ Display Floating point Registers
-+ Display Double precision-Floatingpoints
-+ Display All Registers
+          + Hexadecimal
+          + Decimal
+          + Display Special Registers
+          + Display Integer Registers
+          + Display Floating point Registers
+          + Display Double precision-Floatingpoints
+          + Display All Registers
 
-Change the contents of Registers
+          Change the contents of Registers
 
-You can change the contents of all GPRs, FPRs, the PC and the FPSR, but not the contents of the special
-(Hardware-)registers.
-You can select a register double clicking its name with the mouse. A dialog box is displayed, allowing you to change
-the content of the selected register. Legal values for integer registers are integer expressions and for floating point
-registers constant values.
+          You can change the contents of all GPRs, FPRs, the PC and the FPSR, but not the contents of the special
+          (Hardware-)registers.
+          You can select a register double clicking its name with the mouse. A dialog box is displayed, allowing you to change
+          the content of the selected register. Legal values for integer registers are integer expressions and for floating point
+          registers constant values.
           </pre>
+          -->
         </div>
       </div>
     </div>
@@ -76,29 +80,32 @@ registers constant values.
       </a>
       <div id="collapseTwo" class="collapse" data-parent="#accordion">
         <div class="card-body ">
+          <markdown [src]="'assets/wiki/2.TheCodeWindow.md'" (load)="onMarkdownLoad()"></markdown>
+          <!--
           <pre>
-The DLX instructions loaded in the memory and their addresses are diplayed (hexadecimal and disassembled) in the Code
-window. Further, the set breakpoints for each instruction are marked with Bxx, where xx is the type of the breakpoint.
-If an instruction is currently executing in a pipeline stage, the characteristic colour of the stage is used as
-background colour for the instruction and it is also labled adequately.
+          The DLX instructions loaded in the memory and their addresses are diplayed (hexadecimal and disassembled) in the Code
+          window. Further, the set breakpoints for each instruction are marked with Bxx, where xx is the type of the breakpoint.
+          If an instruction is currently executing in a pipeline stage, the characteristic colour of the stage is used as
+          background colour for the instruction and it is also labeled adequately.
 
-You can scroll up/down the memory using the arrows or the page keys. After executing one or more steps of a DLX code,
-the instructions executed at last are displayed.
+          You can scroll up/down the memory using the arrows or the page keys. After executing one or more steps of a DLX code,
+          the instructions executed at last are displayed.
 
-You can get detailed information about an instruction being in the pipeline or set /delete breakpoints selecting the
-instruction with the arrows or page keys and using the TAB-Key (You can also click the mouse button once). If you press
-the ENTER key (or double clicking the muse button), the Instruction-Information-Window is displayed.
+          You can get detailed information about an instruction being in the pipeline or set /delete breakpoints selecting the
+          instruction with the arrows or page keys and using the TAB-Key (You can also click the mouse button once). If you press
+          the ENTER key (or double clicking the muse button), the Instruction-Information-Window is displayed.
 
-There are menu commands to set or delete breakpoints.
+          There are menu commands to set or delete breakpoints.
 
-The Code Menu:
+          The Code Menu:
 
-This menu contains the following commands:
+          This menu contains the following commands:
 
-+ From Address
-+ Set Breakpoint
-+ Delete Breakpoint
+          + From Address
+          + Set Breakpoint
+          + Delete Breakpoint
           </pre>
+          -->
         </div>
       </div>
     </div>
@@ -112,19 +119,23 @@ This menu contains the following commands:
       </a>
       <div id="collapseThree" class="collapse" data-parent="#accordion">
         <div class="card-body ">
+          <markdown [src]="'assets/wiki/3.ThePipelineWindow.md'" (load)="onMarkdownLoad()" #markdownID></markdown>
+
+          <!--
           <pre>
-The Structure of the DLX-Pipeline will be displayed in this Child window. If the window is large enough, additional
-information about the instructions currently being executed in the pipeline will be displayed.
+          The Structure of the DLX-Pipeline will be displayed in this Child window. If the window is large enough, additional
+          information about the instructions currently being executed in the pipeline will be displayed.
 
-Each stage is represented by different colours, characterizing this stage through all windows.
+          Each stage is represented by different colours, characterizing this stage through all windows.
 
-After pressing TAB, you can select a stage with the arrow keys. Pressing ENTER (or doubleclicking the stage)
-allows you to get detailed information about the instruction in the stage via the Instruction-Information-Window.
+          After pressing TAB, you can select a stage with the arrow keys. Pressing ENTER (or double clicking the stage)
+          allows you to get detailed information about the instruction in the stage via the Instruction-Information-Window.
 
-The Pipeline Menu:
+          The Pipeline Menu:
 
-+ Display Floating point stages Display Floating point stages
+          + Display Floating point stages Display Floating point stages
           </pre>
+          -->
         </div>
       </div>
     </div>
