@@ -9,9 +9,9 @@ export type CoordsType = {
 
 const styleFontTextPipe = new PIXI.TextStyle({
   fontFamily: "Arial",
-  fontSize: 16,
-  fill: "black",
-  stroke: "#000000"
+  fontSize:   16,
+  fill:       "black",
+  stroke:     "#000000"
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -22,9 +22,9 @@ const styleFontTextPipe = new PIXI.TextStyle({
 
 const styleFontTextBox = new PIXI.TextStyle({
   fontFamily: "Arial",
-  fontSize: 16,
-  fill: "black",
-  stroke: "#000000"
+  fontSize:   16,
+  fill:       "black",
+  stroke:     "#000000"
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -82,19 +82,19 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     this.InstStages_text.position.x = 175 - this.InstStages_text.width / 2;
     this.InstStages_text.position.y = 20;
     this.addChild(this.InstStages_text);
-    this.drawText(this.IF_text, {x: 100 + 5, y: 100});
-    this.drawText(this.ID_text, {x: 100 + 5, y: 200});
-    this.drawText(this.intEX_text, {x: 100 + 5, y: 300});
-    this.drawText(this.MEM_text, {x: 100 + 5, y: 400});
-    this.drawText(this.WB_text, {x: 100 + 5, y: 500});
+    this.drawText(this.IF_text, { x: 100 + 5, y: 115 });
+    this.drawText(this.ID_text, { x: 100 + 5, y: 215 });
+    this.drawText(this.intEX_text, { x: 100 + 5, y: 315 });
+    this.drawText(this.MEM_text, { x: 100 + 5, y: 415 });
+    this.drawText(this.WB_text, { x: 100 + 5, y: 515 });
     for (let i = 0; i < this.faddEX_count; i++) {
-      this.drawText(this.faddEX_array[i], {x: 400 + 5, y: 100 + i * 100});
+      this.drawText(this.faddEX_array[i], { x: 400 + 5, y: (100 + i * 100) + 15 });
     }
     for (let i = 0; i < this.fmultEX_count; i++) {
-      this.drawText(this.fmultEX_array[i], {x: 650 + 5, y: 100 + i * 100});
+      this.drawText(this.fmultEX_array[i], { x: 650 + 5, y: (100 + i * 100) + 15 });
     }
     for (let i = 0; i < this.fdivEX_count; i++) {
-      this.drawText(this.fdivEX_array[i], {x: 900 + 5, y: 100 + i * 100});
+      this.drawText(this.fdivEX_array[i], { x: 900 + 5, y: (100 + i * 100) + 15 });
     }
   }
 
@@ -107,53 +107,53 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
 
   private initArrows() {
     // IF
-    this.drawArrow({x: 175, y: 50}, {x: 175, y: 100});
+    this.drawArrow({ x: 175, y: 50 }, { x: 175, y: 100 });
     // ID
-    this.drawArrow({x: 175, y: 125}, {x: 175, y: 200});
+    this.drawArrow({ x: 175, y: 125 }, { x: 175, y: 200 });
     // intEX
-    this.drawArrow({x: 175, y: 225}, {x: 175, y: 300});
+    this.drawArrow({ x: 175, y: 225 }, { x: 175, y: 300 });
     // MEM
-    this.drawArrow({x: 175, y: 325}, {x: 175, y: 400});
+    this.drawArrow({ x: 175, y: 325 }, { x: 175, y: 400 });
     // WB
-    this.drawArrow({x: 175, y: 425}, {x: 175, y: 500});
-    this.drawArrow({x: 175, y: 525}, {x: 175, y: 600});
+    this.drawArrow({ x: 175, y: 425 }, { x: 175, y: 500 });
+    this.drawArrow({ x: 175, y: 525 }, { x: 175, y: 600 });
 
     // Lines
-    this.drawLine({x: 175, y: 275}, {x: 300, y: 275});
-    this.drawLine({x: 300, y: 275}, {x: 300, y: 50});
-    this.drawLine({x: 300, y: 50}, {x: 975, y: 50});
+    this.drawLine({ x: 175, y: 275 }, { x: 300, y: 275 });
+    this.drawLine({ x: 300, y: 275 }, { x: 300, y: 50 });
+    this.drawLine({ x: 300, y: 50 }, { x: 975, y: 50 });
 
     // input faddEX, fmultEX, fdivEX
-    this.drawArrow({x: 400 + 75, y: 50}, {x: 400 + 75, y: 100});
-    this.drawArrow({x: 650 + 75, y: 50}, {x: 650 + 75, y: 100});
-    this.drawArrow({x: 900 + 75, y: 50}, {x: 900 + 75, y: 100});
+    this.drawArrow({ x: 400 + 75, y: 50 }, { x: 400 + 75, y: 100 });
+    this.drawArrow({ x: 650 + 75, y: 50 }, { x: 650 + 75, y: 100 });
+    this.drawArrow({ x: 900 + 75, y: 50 }, { x: 900 + 75, y: 100 });
 
     // output faddEX, fmultEX, fdivEX
-    this.drawArrow({x: 400 + 75, y: 125}, {x: 400 + 75, y: 900});
-    this.drawArrow({x: 650 + 75, y: 125}, {x: 650 + 75, y: 900});
-    this.drawArrow({x: 900 + 75, y: 125}, {x: 900 + 75, y: 900});
+    this.drawArrow({ x: 400 + 75, y: 125 }, { x: 400 + 75, y: 900 });
+    this.drawArrow({ x: 650 + 75, y: 125 }, { x: 650 + 75, y: 900 });
+    this.drawArrow({ x: 900 + 75, y: 125 }, { x: 900 + 75, y: 900 });
 
     // faddEX, fmultEX, fdivEX to MEM
-    this.drawLine({x: 975, y: 900}, {x: 300, y: 900});
-    this.drawLine({x: 300, y: 900}, {x: 300, y: 375});
-    this.drawArrow({x: 300, y: 375}, {x: 175, y: 375});
+    this.drawLine({ x: 975, y: 900 }, { x: 300, y: 900 });
+    this.drawLine({ x: 300, y: 900 }, { x: 300, y: 375 });
+    this.drawArrow({ x: 300, y: 375 }, { x: 175, y: 375 });
   }
 
   private initBoxes() {
-    this.drawBox(0xffff00, {x: 100, y: 100}, "IF");
-    this.drawBox(0xffa200, {x: 100, y: 200}, "ID");
-    this.drawBox(0xff001c, {x: 100, y: 300}, "intEX");
-    this.drawBox(0x00ff00, {x: 100, y: 400}, "MEM");
-    this.drawBox(0xa2a2ff, {x: 100, y: 500}, "WB");
+    this.drawBox(0xffff00, { x: 100, y: 100 }, "IF");
+    this.drawBox(0xffa200, { x: 100, y: 200 }, "ID");
+    this.drawBox(0xff001c, { x: 100, y: 300 }, "intEX");
+    this.drawBox(0x00ff00, { x: 100, y: 400 }, "MEM");
+    this.drawBox(0xa2a2ff, { x: 100, y: 500 }, "WB");
 
     for (let i = 0; i < this.faddEX_count; i++) {
-      this.drawBox(0xffc3ff, {x: 400, y: 100 + i * 100}, "faddEX[" + i + "]");
+      this.drawBox(0xffc3ff, { x: 400, y: 100 + i * 100 }, "faddEX[" + i + "]");
     }
     for (let i = 0; i < this.fmultEX_count; i++) {
-      this.drawBox(0xc3ffc3, {x: 650, y: 100 + i * 100}, "fmultEX[" + i + "]");
+      this.drawBox(0xc3ffc3, { x: 650, y: 100 + i * 100 }, "fmultEX[" + i + "]");
     }
     for (let i = 0; i < this.fdivEX_count; i++) {
-      this.drawBox(0xffcb8e, {x: 900, y: 100 + i * 100}, "fdivEX[" + i + "]");
+      this.drawBox(0xffcb8e, { x: 900, y: 100 + i * 100 }, "fdivEX[" + i + "]");
     }
   }
 
@@ -167,7 +167,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
 
     const pixi_text = new PIXI.Text(text, styleFontTextPipe);
     pixi_text.position.x = positionStart.x - (pixi_text.width + 10);
-    pixi_text.position.y = positionStart.y;
+    pixi_text.position.y = positionStart.y + 2.5;
     rectangle.addChild(pixi_text);
     this.addChild(rectangle);
   }
@@ -283,14 +283,14 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     const fmultEX_array = this.fmultEX_array.map((v) => v.text);
     const fdivEX_array = this.fdivEX_array.map((v) => v.text);
     return JSON.stringify({
-      IF_text: this.IF_text.text,
-      ID_text: this.ID_text.text,
-      intEX_text: this.intEX_text.text,
-      MEM_text: this.MEM_text.text,
-      WB_text: this.WB_text.text,
-      faddEX_array: faddEX_array,
+      IF_text:       this.IF_text.text,
+      ID_text:       this.ID_text.text,
+      intEX_text:    this.intEX_text.text,
+      MEM_text:      this.MEM_text.text,
+      WB_text:       this.WB_text.text,
+      faddEX_array:  faddEX_array,
       fmultEX_array: fmultEX_array,
-      fdivEX_array: fdivEX_array
+      fdivEX_array:  fdivEX_array
     });
   }
 }

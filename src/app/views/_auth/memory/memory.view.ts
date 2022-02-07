@@ -9,6 +9,8 @@ import {
 import { TypeAddress, TypeData } from "../../../Types";
 import { StorageService } from "../../../__core/storage/storage.service";
 
+type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-2-3" | "HalfWord-0-1"
+
 @Component({
   selector:    "view-memory",
   templateUrl: "./memory.view.html",
@@ -19,9 +21,10 @@ export class MemoryView implements OnInit, AfterViewInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(EditMemoryBinary32Component) editBinary32Component: EditMemoryBinary32Component;
 
-  public displayedColumnsMemory: string[] = [ "Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "Word" ];
+  // "Address-0", "Address-1", "Address-2", "Address-3"
+  public displayedColumnsMemory: string[] = [ "Address", "Hexadecimal", "Binary", "Word" ];
   public dataSourceMemory = new TableVirtualScrollDataSource<number>();
-  public typeDataSelected: TypeData | "InstructionCode" = "Word";
+  public typeDataSelected: TypeDataDisplayColumn = "Word";
   public maxHeightCard = "75vh";
 
   constructor(public machine: MachineService,
@@ -55,30 +58,36 @@ export class MemoryView implements OnInit, AfterViewInit {
     });
   }
 
-  public changeTypeDataInTable(typeData: TypeData | "InstructionCode"): void {
+  public changeTypeDataInTable(typeData: TypeDataDisplayColumn): void {
     // Word, HalfWord, Float, Double, Bytes
     this.typeDataSelected = typeData;
     switch (typeData) {
       case "Byte":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "Bytes" ];
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Bytes" ];
         break;
       case "HalfWord":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "HalfWord-0", "HalfWord-1", "HalfWord" ];
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "HalfWord" ];
         break;
       case "Word":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "Word" ];
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Word" ];
         break;
       case "ASCII":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Address-0", "Address-1", "Address-2", "Address-3", "ASCII" ];
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "ASCII" ];
         break;
       case "Float":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "BinaryFloat", "Address-0", "Address-1", "Address-2", "Address-3", "Float" ];
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "BinaryFloat", "Float" ];
         break;
       case "Double":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "BinaryDouble", "Address-0", "Address-1", "Address-2", "Address-3", "Double" ];
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "BinaryDouble", "Double" ];
         break;
       case "InstructionCode":
         this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "InstructionCode" ];
+        break;
+      case "Address-0-1-2-3":
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Address-0", "Address-1", "Address-2", "Address-3" ];
+        break;
+      case "HalfWord-0-1":
+        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "HalfWord-0", "HalfWord-1" ];
         break;
     }
   }
