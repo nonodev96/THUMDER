@@ -24,7 +24,7 @@ import {
   TypeSimulationStep,
   TypeStage,
   TypeBreakpoints,
-  TypeStatusMachine
+  TypeStatusMachine, TypeErrorInCode
 } from "../../Types";
 import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_STEP_SIMULATION } from "../../CONSTANTS";
 import { Utils } from "../../Utils";
@@ -64,6 +64,7 @@ export class MachineService {
   public codeSimulation$: Subject<TypeInstructionsData[]> = new Subject<TypeInstructionsData[]>();
   public stepSimulation$: Subject<TypeSimulationStep> = new Subject<TypeSimulationStep>();
   public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
+  public errorsInCode$: Subject<TypeErrorInCode[]> = new Subject<TypeErrorInCode[]>();
 
   public logger: string = "";
   private readonly level: EnumLogLevel;
@@ -276,10 +277,14 @@ export class MachineService {
     return this.socketProviderConnect.connectObservable();
   }
 
+  public getErrorsInCodeObservable():Observable<TypeErrorInCode[]> {
+    return this.errorsInCode$.asObservable();
+  }
+
+
   public getStatusWebsocket(): "Connect" | "Disconnect" {
     return this.socketProviderConnect.socketIO.ioSocket.id === "" ? "Disconnect" : "Connect";
   }
-
 
   public getListStatusPipeline(): TypePipelineToProcess[] {
     const { IF, ID, intEX, MEM, WB } = this.statusMachineInStep.pipeline;
@@ -360,6 +365,9 @@ export class MachineService {
       } as TypeSimulationInitRequest);
       this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response) => {
         const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
+
+        this.errorsInCode$.next(simulationInit.errors);
+
         this.canSimulate = simulationInit.canSimulate;
 
         this.memory.processResponseMachineDirectives(simulationInit.machineDirectives);
@@ -503,6 +511,7 @@ export class MachineService {
     }
   }
 
+
   private stringFormat(msg: string, params: TypeLogger[]) {
     return msg.replace(/{([0-9]+)}/g, (match: string, index) => {
       const logValue: TypeLogger = params.filter(v => v.index == index)[0] ?? { index: -1, value: "" };
@@ -513,7 +522,6 @@ export class MachineService {
       return typeof logValue.value === "undefined" ? match : logValue.value;
     });
   }
-
 
   private shouldLog(level: EnumLogLevel): boolean {
     let ret: boolean = false;

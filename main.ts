@@ -1,4 +1,14 @@
-import { app, screen, ipcMain, shell, nativeImage, BrowserWindow, Notification, NotificationConstructorOptions, Tray, Menu } from "electron";
+import {
+  app,
+  screen,
+  ipcMain,
+  nativeImage,
+  BrowserWindow,
+  Notification,
+  NotificationConstructorOptions,
+  Tray,
+  Menu
+} from "electron";
 import * as path from "path";
 import * as url from "url";
 
@@ -60,18 +70,29 @@ try {
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   app.on("ready", () => setTimeout(createWindow, 400));
 
-  let tray = null
+  let tray = null;
+  let alwaysOnTop = false;
   app.whenReady().then(() => {
     const image = nativeImage.createFromPath(path.join(__dirname, "dist/assets/icons/faviconWhite.512x512.png"));
-    tray = new Tray(image.resize({ width: 20, height: 20 }));
+    tray = new Tray(image.resize({width: 20, height: 20}));
     const contextMenu = Menu.buildFromTemplate([
+      {
+        label: "Always on top",
+        type: "checkbox",
+        checked: alwaysOnTop,
+        click: () => {
+          alwaysOnTop = !alwaysOnTop;
+          if (win != null) win.setAlwaysOnTop(alwaysOnTop);
+        }
+      },
+      {type: 'separator'},
       {
         label: "Reload app",
         click: async () => {
           if (isServe) {
-            win.loadURL("http://localhost:4200");
+            await win.loadURL("http://localhost:4200");
           } else {
-            win.loadURL(url.format({
+            await win.loadURL(url.format({
               pathname: path.join(__dirname, "dist/index.html"),
               protocol: "file:",
               slashes: true
@@ -102,7 +123,7 @@ try {
     }
   });
 
-  ipcMain.on("thumder-notification", (event, args) => {
+  ipcMain.on("thumder-notification", (_$event, _args) => {
     const options: NotificationConstructorOptions = {
       title: "Custom Notification",
       subtitle: "Subtitle of the Notification",

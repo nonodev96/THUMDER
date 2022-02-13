@@ -1,4 +1,4 @@
-import { InterfaceRegisters } from "./__core/DLX/interfaces";
+import {InterfaceRegisters} from "./__core/DLX/interfaces";
 
 declare global {
   interface Window {
@@ -17,6 +17,13 @@ export enum EnumLogLevel {
   Error = 4,
   Fatal = 5,
   Off = 6
+}
+
+export enum EnumSeverity {
+  Hint = 1,
+  Info = 2,
+  Warning = 4,
+  Error = 8
 }
 
 export type TypeLogger = {
@@ -131,7 +138,7 @@ export type PublicRoutesList = PublicRoutes_SET;
 
 export type TypeLine = number;
 
-export type TypeAddress = `0x${ string }`;
+export type TypeAddress = `0x${string}`;
 
 export type TypeData = "Byte" | "HalfWord" | "Word" | "Float" | "Double" | "ASCII";
 
@@ -141,7 +148,18 @@ export type TypePipelineStage = "IF" | "ID" | "intEX" | "MEM" | "WB" | "faddEX" 
 
 export type TypeStall = "Aborted" | "R-Stall" | "T-Stall" | "W-Stall" | "S-Stall" | "Stall";
 
-export type TypeDirective = "GLOBAL" | "TEXT" | "SPACE" | "DATA" | "ALIGN" | "ASCII" | "ASCIIZ" | "BYTE" | "FLOAT" | "DOUBLE" | "WORD";
+export type TypeDirective =
+  "GLOBAL"
+  | "TEXT"
+  | "SPACE"
+  | "DATA"
+  | "ALIGN"
+  | "ASCII"
+  | "ASCIIZ"
+  | "BYTE"
+  | "FLOAT"
+  | "DOUBLE"
+  | "WORD";
 
 export type TypeDataRegister = {
   Control: {
@@ -639,6 +657,11 @@ export type TypePipeline = {
   arrows: TypeArrowCycle[];
 };
 
+export type TypeErrorInCode = {
+  line: number;
+  message: string;
+  severity: EnumSeverity;
+}
 
 export type TypeSimulationStep = {
   isComplete?: boolean;
@@ -661,6 +684,7 @@ export type TypeSimulationInitResponse = {
   date: string;
   lines: number;
   canSimulate: boolean;
+  errors: TypeErrorInCode[];
 
   machineDirectives: TypeDirectiveData[];
   machineInstructions: TypeInstructionsData[];

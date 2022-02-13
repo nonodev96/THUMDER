@@ -1,16 +1,17 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import {AfterViewInit, Component, OnDestroy, OnInit} from "@angular/core";
+import {Observable, Subject} from "rxjs";
 import * as monaco from "monaco-editor";
-import { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeTags } from "../../Types";
+import {InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags} from "../../Types";
 import MonacoConfig from "../../../monaco-config";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
-import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
+import {THUMDER_FileItem} from "../../__core/services/file-system/file-system.service";
+
 
 @Component({
-  selector:    "thumder-monaco-editor",
+  selector: "thumder-monaco-editor",
   templateUrl: "./monaco-editor.component.html",
-  styleUrls:   [ "./monaco-editor.component.scss" ]
+  styleUrls: ["./monaco-editor.component.scss"]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -57,7 +58,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
     this.editor.layout();
-    this.editor.updateOptions({ readOnly: this.file.$key == "" });
+    this.editor.updateOptions({readOnly: this.file.$key == ""});
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, async () => {
       await this.save();
     });
@@ -136,19 +137,19 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
       // remove the tag
       this.breakpoints[line] = false;
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([ ...decorations_target_id ], []);
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
     } else {
       // add the tag
       this.breakpoints[line] = true;
       const newDecoration = {
-        range:   new monaco.Range(line, 0, line, 0),
+        range: new monaco.Range(line, 0, line, 0),
         options: {
           isWholeLine: true,
           // inlineClassName: 'fas fa-circle color-red',
           glyphMarginClassName: "fas fa-circle color-red",
         }
       };
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [ newDecoration ]);
+      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [newDecoration]);
     }
     localStorage.setItem("breakpoints", JSON.stringify(this.breakpoints));
   }
@@ -160,7 +161,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       const decorations = this.editor.getModel().getLineDecorations(line);
       if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
         vectorOfInstructions.push({
-          line:    line,
+          line: line,
           content: this.editor.getModel().getLineContent(line),
         });
       }
@@ -188,7 +189,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.printLine(this.iteratorLine);
   }
 
-  getAllBreakpoints(): TypeBreakpoints {
+  public getAllBreakpoints(): TypeBreakpoints {
     const allDecorations = this.editor.getModel().getAllDecorations();
     const tags: { [line: number]: boolean } = {};
     for (const decoration of allDecorations) {
@@ -199,19 +200,33 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return tags;
   }
 
-  clearLines(): void {
+  public clearLines(): void {
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, []);
   }
 
-  printLine(line: number): void {
+  public printLine(line: number): void {
     const newDecoration = {
-      range:   new monaco.Range(line, 1, line, 1),
+      range: new monaco.Range(line, 1, line, 1),
       options: {
         isWholeLine: true,
-        className:   "debug-line"
+        className: "debug-line"
       }
     };
-    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [ newDecoration ]);
+    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
+  }
+
+  public printErrorsInEditor(errors: TypeErrorInCode[]) {
+    const markers = errors.map(error => {
+      return {
+        startColumn: 1,
+        endColumn: 1000,
+        startLineNumber: error.line,
+        endLineNumber: error.line,
+        message: error.message,
+        severity: error.severity as unknown as monaco.MarkerSeverity
+      } as monaco.editor.IMarkerData
+    })
+    monaco.editor.setModelMarkers(this.editor.getModel(), "IDK", markers)
   }
 
   public async save(): Promise<void> {
@@ -250,7 +265,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.file.thumbnail = fileItem.thumbnail;
     this.file.dataItem = fileItem.dataItem;
 
-    this.editor.updateOptions({ readOnly: this.file.$key == "" });
+    this.editor.updateOptions({readOnly: this.file.$key == ""});
 
     return Promise.resolve();
   }
