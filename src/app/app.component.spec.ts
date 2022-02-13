@@ -1,8 +1,8 @@
-import { TestBed, waitForAsync } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { AppComponent } from "./app.component";
-import { TranslateModule } from "@ngx-translate/core";
-import { ElectronService } from "./__core/services";
+import {TestBed, waitForAsync} from "@angular/core/testing";
+import {RouterTestingModule} from "@angular/router/testing";
+import {AppComponent} from "./app.component";
+import {TranslateModule} from "@ngx-translate/core";
+import {ElectronService} from "./__core/services";
 
 describe("AppComponent", () => {
   beforeEach(waitForAsync(() => {
@@ -17,5 +17,6 @@ describe("AppComponent", () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
+    // expect(true).toBe(true);
   }));
 });

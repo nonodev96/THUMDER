@@ -53,12 +53,10 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngAfterViewInit(): void {
-
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
         this.interfaceFileItem = (this.extrasIDE?.interfaceFileItem ?? JSON.parse(localStorage.getItem("interfaceFileItem")) ?? DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
         const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints ?? {};
-
         await this.monacoEditorComponent.updateFile(this.interfaceFileItem);
         await this.monacoEditorComponent.updateContent(this.interfaceFileItem.content);
         await this.monacoEditorComponent.setBreakpoints(breakpoints);
@@ -71,6 +69,9 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.debuggerSubscription = this.machine.getDebuggerObservable().subscribe((line) => {
       this.monacoEditorComponent.printLine(line);
     });
+    this.debuggerSubscription = this.machine.getErrorsInCodeObservable().subscribe((errors) => {
+      this.monacoEditorComponent.printErrorsInEditor(errors);
+    });
     this.lineSubscription = this.machine.getLineObservable().subscribe((line) => {
       if (line === -1) {
         this.monacoEditorComponent.clearLines();
@@ -81,7 +82,6 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.monacoEditorComponent.getFileSaveObservable().subscribe(async (interfaceFileItem) => {
       try {
         await this.fileSystem.editFileItem(interfaceFileItem, interfaceFileItem.$key);
-
         const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
         const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
         this.toastService.success(message, title, {
