@@ -1,5 +1,6 @@
 ## <small>1.3.6 (2022-02-14)</small>
 
+* .browserslistrc, fix package.json, components, tests with karma and README ([d0c5fad](https://github.com/nonodev96/THUMDER/commit/d0c5fad))
 * minor changes ([e0514eb](https://github.com/nonodev96/THUMDER/commit/e0514eb))
 * polyfills for karma tests ([d6fa110](https://github.com/nonodev96/THUMDER/commit/d6fa110))
 
