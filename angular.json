@@ -17,6 +17,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "allowedCommonJsDependencies": [
+              "@covalent/code-editor",
               "admin-lte/plugins/chart.js/Chart.js",
               "chart.js",
               "pixi.js-keyboard",
@@ -218,6 +219,7 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "allowedCommonJsDependencies": [
+              "@covalent/code-editor",
               "admin-lte/plugins/chart.js/Chart.js",
               "chart.js",
               "pixi.js-keyboard",
