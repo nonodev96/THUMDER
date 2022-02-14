@@ -1,31 +1,47 @@
 THUMDER
 =======
-[![Netlify Status](https://api.netlify.com/api/v1/badges/491cdbc6-34ea-4ef0-92c0-be4f2a2ec3cb/deploy-status)](https://app.netlify.com/sites/thumder/deploys)
 
-# Introduction | THUMDER
+<div style="text-align:center"><img src="./src/assets/icons/favicon.256x256.png" alt="ICON" width="10%" height="10%"/></div>
 
-![Datapath Schematic](./assets/Datapath_Schematic.svg)
 
-[![License](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENSE.md)
 
-# Introduction | Angular - Electron
+<div style="text-align:center">
+
+[//]: # (![Datapath Schematic]&#40;./assets/Datapath_Schematic.svg&#41;)
 
 [![Angular Logo](https://www.vectorlogo.zone/logos/angular/angular-icon.svg)](https://angular.io/)
 [![Electron Logo](https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg)](https://electronjs.org/)
 
-## Currently, runs with:
+[![Netlify Status](https://api.netlify.com/api/v1/badges/491cdbc6-34ea-4ef0-92c0-be4f2a2ec3cb/deploy-status)](https://app.netlify.com/sites/thumder/deploys) 
 
-- Angular v10.2.5
-- Electron v8.4.1
-- Electron Builder v22.8.1
+[THUMDER page](https://thumder.netlify.com)
+
+</div>
+
+## Installation
+
+```bash
+sudo npm install -g  @angular/cli@12.2.10
+npm install 
+# npm install --only=prod
+```
 
 ## Included Commands
 
-| Command                        | Description                                                                          |
-|:-------------------------------|:-------------------------------------------------------------------------------------|
-| `npm run ng:serve-angular:dev` | Execute the app in the browser                                                       |
-| `npm run electron:local`       | Builds your application and start electron                                           |
-| `npm run electron:build`       | Builds your application and creates an app consumable based on your operating system |
+### Develop
+
+| Command                               | Description                                                                          |
+|:--------------------------------------|:-------------------------------------------------------------------------------------|
+| `npm run ng:serve-angular:dev`        | Develop the app in the browser                                                       |
+
+### Deploy 
+
+| Command                               | Description                                                                          |
+|:--------------------------------------|:-------------------------------------------------------------------------------------|
+| `npm run ng:build-angular:production` | Deploy Angular app for browser version                                               |
+| `npm run electron:build`              | Builds your application and creates an app consumable based on your operating system |
+
+### Others command
 
 | Command                               | Description |
 |:--------------------------------------|:------------|
@@ -52,17 +68,17 @@ YES! You can do it! Just by importing your library in npm dependencies section (
 with `npm install --save`. It will be loaded by electron during build phase and added to your final package. Then use
 your library by importing it in `main.ts` file. Quite simple, isn't it ?
 
+## Unit Tests
+
+| Command | Description                                                  |
+|:--------|:-------------------------------------------------------------|
+| ng test | Run unit tests with karma, for components, views and modules |
+
 ## E2E Testing
 
 E2E Test scripts can be found in `e2e` and `cypress` folder.
 
-### Electron e2e
-
-| Command         | Description                           |
-|:----------------|:--------------------------------------|
-| `npm run e2e`   | Execute end to end tests of electron  |
-
-### Server e2e
+## Server e2e
 
 | Command                | Description                                        |
 |:-----------------------|:---------------------------------------------------|
@@ -72,3 +88,19 @@ E2E Test scripts can be found in `e2e` and `cypress` folder.
 
 Note: To make it work behind a proxy, you can add this proxy exception in your terminal
 `export {no_proxy,NO_PROXY}="127.0.0.1,localhost"`
+
+
+### Coverage
+
+```bash
+npx browserslist
+npx browserslist --coverage
+```
+
+These browsers account for 86.79% of all users globally
+
+## Currently, runs with:
+
+- Angular v12.2.10
+- Electron v12.2.2
+- Electron Builder v22.10.5

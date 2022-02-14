@@ -1,5 +1,36 @@
+## <small>1.3.6 (2022-02-14)</small>
+
+* minor changes ([e0514eb](https://github.com/nonodev96/THUMDER/commit/e0514eb))
+* polyfills for karma tests ([d6fa110](https://github.com/nonodev96/THUMDER/commit/d6fa110))
+
+
+
+## <small>1.3.5 (2022-01-30)</small>
+
+* Add submodule with wiki reference, ChartJS in statistics, fix filesystem, reset localstorage with lo ([312f833](https://github.com/nonodev96/THUMDER/commit/312f833))
+* Add to angular.json glob Wiki and update github actions with recursive submodule ([4f3bf81](https://github.com/nonodev96/THUMDER/commit/4f3bf81))
+* fixed Pixi arrow, pipeline, add favicon, add redirect to cookies, profile and save project ([79583c7](https://github.com/nonodev96/THUMDER/commit/79583c7))
+* version 1.3.5 ([b2f9963](https://github.com/nonodev96/THUMDER/commit/b2f9963))
+
+
+
+## <small>1.3.4 (2022-01-25)</small>
+
+* Add icons, electron ipcMain, electron notification, toggle card with title, fix href and config cols ([80126c1](https://github.com/nonodev96/THUMDER/commit/80126c1))
+
+
+
+## <small>1.3.3 (2022-01-24)</small>
+
+* Refactor: clean code ([039c3f9](https://github.com/nonodev96/THUMDER/commit/039c3f9))
+* FileSystem fixed and new Observables and performance, UML refactor, refactor in __core ([a9c0142](https://github.com/nonodev96/THUMDER/commit/a9c0142))
+
+
+
 ## <small>1.3.2 (2022-01-14)</small>
 
+* add AppAdminLTE init, refactor in CONSTANTS, Types and routes, fix layout page, new layout in index, ([bce3545](https://github.com/nonodev96/THUMDER/commit/bce3545))
+* fix config with default value ([c243f19](https://github.com/nonodev96/THUMDER/commit/c243f19))
 * Multiview performance, Drag & Drop, card resize, items default in project, fix guard in path /, tran ([62e3ef2](https://github.com/nonodev96/THUMDER/commit/62e3ef2))
 
 
