@@ -1,6 +1,6 @@
 {
   "name": "thumder",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "private": true,
   "description": "TFG - THUMDER (THe UltiMate Dlx EmulatoR): emulador multiplataforma DLX con fines didácticos",
   "keywords": [
@@ -41,7 +41,6 @@
     "ng:serve-angular:dev": "ng run thumder-angular-electron:serve-angular:dev -o",
     "ng:serve-angular:web": "ng run thumder-angular-electron:serve-angular:web -o",
     "ng:serve-angular:production": "ng run thumder-angular-electron:serve-angular:production -o",
-    "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve:dev",
     "build": "npm run electron:serve-tsc && ng build --base-href ./",
     "build:prod": "npm run build -- -c production",
@@ -140,7 +139,7 @@
     "eslint-plugin-cypress": "2.12.1",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
-    "karma": "6.3.14",
+    "karma": ">=6.3.16",
     "karma-coverage-istanbul-reporter": "3.0.3",
     "karma-electron": "6.3.4",
     "karma-jasmine": "4.0.1",
