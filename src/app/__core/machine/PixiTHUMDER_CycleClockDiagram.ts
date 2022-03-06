@@ -234,8 +234,8 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   }
 
 
-  public addArrow(instructionArrow: TypeArrowDirection) {
-    this.drawArrow(instructionArrow);
+  public addArrow(instructionArrow: TypeArrowDirection, color: number) {
+    this.drawArrow(instructionArrow, color);
   }
 
   /**

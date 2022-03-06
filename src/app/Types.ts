@@ -642,6 +642,7 @@ export type TypeArrowCycle = {
   fromStep: number;
   toAddressRow: number;
   toStep: number;
+  color: number; // hexadecimal 0xff00ff rgb
 };
 
 export type TypePipeline = {

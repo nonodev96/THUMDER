@@ -83,7 +83,7 @@ package Machine #DDDDDD {
     -drawInstruction(textValue: string): void
     +nextStep(pipeline: TypePipeline, step?: number): void
     +addInstruction(text: string): void
-    +addArrow(instructionArrow: TypeArrowDirection): void
+    +addArrow(instructionArrow: TypeArrowDirection, color: number): void
     +moveLeft(): void
     +moveRight(): void
     +moveTop(): void

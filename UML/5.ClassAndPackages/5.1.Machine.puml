@@ -145,7 +145,7 @@ class PixiTHUMDER_CycleClockDiagram {
     -drawBorders(): void
     +nextStep(pipeline: TypePipeline, step?: number): void
     +addInstruction(text: string): void
-    +addArrow(instructionArrow: TypeArrowDirection): void
+    +addArrow(instructionArrow: TypeArrowDirection, color: number): void
     -drawArrow(arrowDirection: TypeArrowDirection, color?: number): void
     -drawInstruction(textValue: string): void
     -drawSteps(displayStep?: number): void
