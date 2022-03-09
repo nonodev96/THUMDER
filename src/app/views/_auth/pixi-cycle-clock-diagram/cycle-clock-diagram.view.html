@@ -1,7 +1,10 @@
 <div class="card" id="pixiCardCycleClockDiagram">
   <div class="card-header">
-    <h3 class="card-title"><span data-card-widget="collapse">
-      {{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> |
+    <h3 class="card-title">
+      <!-- Drag button -->
+      <ng-content></ng-content>
+
+      <span data-card-widget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> |
       <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}"></i>
     </h3>
     <div class="card-tools">
@@ -18,9 +21,6 @@
       <button type="button" class="btn btn-tool" (click)="this.pixi_CycleClockDiagramComponent.moveLeft()">
         <i class="fas fa-arrow-right"></i>
       </button>
-
-      <!-- Drag button -->
-      <ng-content></ng-content>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>

@@ -32,7 +32,7 @@ export class AuthService {
       this.afAuth.authState.subscribe(user => {
         if (user) {
           window.document.body.className = "";
-          window.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
+          window.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
 
           this.userData = user;
           localStorage.setItem("user", JSON.stringify(this.userData));

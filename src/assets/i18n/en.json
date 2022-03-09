@@ -150,11 +150,12 @@
     "CLOSE": "Close"
   },
   "CONFIG": {
+    "LANG": "Language",
+    "ENABLE_FORWARDING": "Forwarding",
+    "VERSION": "Version",
     "MULTIVIEW": "Multi view",
     "WEBSOCKET": "Web Socket",
     "ENVIRONMENT": "Environment",
-    "LANG": "Language",
-    "VERSION": "Version",
     "AUTO_SAVE": "Auto save",
     "COUNT": "Count",
     "DELAY": "Delay",

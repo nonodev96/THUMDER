@@ -17,7 +17,7 @@ export class LayoutAuthComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
+    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
     const trees: any = window.jQuery("[data-widget=\"treeview\"]");
     trees.Treeview("toggleRow");
   }

@@ -565,6 +565,8 @@ export type TypeMultiviewConfiguration = {
   list: string[];
 };
 
+export type TypeEnabledForwardingConfiguration = boolean;
+
 export type TypeFloatingPointStageConfiguration = {
   addition: {
     count: number;
@@ -600,6 +602,7 @@ export type TypeConfigurationMachine = {
     delay: number;
   },
   memorySize: number;
+  enabledForwarding: TypeEnabledForwardingConfiguration;
 };
 
 // DEBUG

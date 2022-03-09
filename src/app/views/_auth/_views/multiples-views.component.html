@@ -1,103 +1,117 @@
 <ng-container cdkDropListGroup>
-  <div cdkDropList #mainList="cdkDropList" [cdkDropListData]="main"
-       class="example-list" (cdkDropListDropped)="drop($event)">
+  <div class="container-fluid">
+    <div class="row">
+      <div cdkDropList #mainList="cdkDropList" [cdkDropListData]="main"
+           class="example-list col-xxl-6" (cdkDropListDropped)="drop($event)">
 
-    <ng-container *ngFor="let component of this.multiviewConfiguration.list">
-      <ng-container [ngSwitch]="component">
+        <ng-container *ngFor="let component of this.multiviewConfiguration.list">
+          <ng-container [ngSwitch]="component">
 
-        <ng-container *ngSwitchCase="'calculator'">
-          <ng-container *ngIf="multiviewConfiguration.calculator">
-            <div cdkDrag>
-              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <view-calculator>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-calculator>
-            </div>
+            <ng-container *ngSwitchCase="'calculator'">
+              <ng-container *ngIf="multiviewConfiguration.calculator">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  <view-calculator>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-calculator>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'pipeline'">
+              <ng-container *ngIf="multiviewConfiguration.pipeline">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  <view-pipeline>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-pipeline>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'cycle_clock_diagram'">
+              <ng-container *ngIf="multiviewConfiguration.cycle_clock_diagram">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  <view-cycle-clock-diagram>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-cycle-clock-diagram>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'memory'">
+              <ng-container *ngIf="multiviewConfiguration.memory">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  <view-memory>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-memory>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'code'">
+              <ng-container *ngIf="multiviewConfiguration.code">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  <view-code>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-code>
+                </div>
+              </ng-container>
+            </ng-container>
+
           </ng-container>
         </ng-container>
 
-        <ng-container *ngSwitchCase="'pipeline'">
-          <ng-container *ngIf="multiviewConfiguration.pipeline">
-            <div cdkDrag>
-              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <view-pipeline>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-pipeline>
-            </div>
+      </div>
+      <div cdkDropList [cdkDropListData]="main_list_2"
+           class="example-list col-xxl-6" (cdkDropListDropped)="drop($event)">
+
+        <ng-container *ngFor="let component of this.multiviewConfiguration.list">
+          <ng-container [ngSwitch]="component">
+
+            <ng-container *ngSwitchCase="'registers'">
+              <ng-container *ngIf="multiviewConfiguration.registers">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder-registers" *cdkDragPlaceholder></div>
+                  <view-registers>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-registers>
+                </div>
+              </ng-container>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'statistics'">
+              <ng-container *ngIf="multiviewConfiguration.statistics">
+                <div cdkDrag>
+                  <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                  <view-statistics>
+                    <button type="button" class="btn btn-tool" cdkDragHandle>
+                      <i class="fas fa-arrows-alt"></i>
+                    </button>
+                  </view-statistics>
+                </div>
+              </ng-container>
+            </ng-container>
+
           </ng-container>
         </ng-container>
 
-        <ng-container *ngSwitchCase="'cycle_clock_diagram'">
-          <ng-container *ngIf="multiviewConfiguration.cycle_clock_diagram">
-            <div cdkDrag>
-              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <view-cycle-clock-diagram>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-cycle-clock-diagram>
-            </div>
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="'memory'">
-          <ng-container *ngIf="multiviewConfiguration.memory">
-            <div cdkDrag>
-              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <view-memory>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-memory>
-            </div>
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="'registers'">
-          <ng-container *ngIf="multiviewConfiguration.registers">
-            <div cdkDrag>
-              <div class="example-custom-placeholder-registers " *cdkDragPlaceholder></div>
-              <view-registers>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-registers>
-            </div>
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="'code'">
-          <ng-container *ngIf="multiviewConfiguration.code">
-            <div cdkDrag>
-              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <view-code>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-code>
-            </div>
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="'statistics'">
-          <ng-container *ngIf="multiviewConfiguration.statistics">
-            <div cdkDrag>
-              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-              <view-statistics>
-                <button type="button" class="btn btn-tool" cdkDragHandle>
-                  <i class="fas fa-arrows-alt"></i>
-                </button>
-              </view-statistics>
-            </div>
-          </ng-container>
-        </ng-container>
-
-      </ng-container>
-    </ng-container>
-
+      </div>
+    </div>
   </div>
 </ng-container>

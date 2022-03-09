@@ -15,7 +15,7 @@ import {
   TypeSimulationStep,
   InterfaceFileItem,
   TypeMultiviewConfiguration,
-  TypeCycleCell, TypeCycleCellUnit, TypeWebSocketConfiguration
+  TypeCycleCell, TypeCycleCellUnit, TypeWebSocketConfiguration, TypeEnabledForwardingConfiguration
 } from "./Types";
 import npm from "../../package.json";
 
@@ -63,6 +63,8 @@ export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
   statistics:          false,
   list:                [ "calculator", "code", "cycle_clock_diagram", "memory", "pipeline", "registers", "statistics" ]
 };
+
+export const DEFAULT_ENABLED_FORWARDING_CONFIGURATION: TypeEnabledForwardingConfiguration = true;
 
 export const DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION: TypeFloatingPointStageConfiguration = {
   addition:       {

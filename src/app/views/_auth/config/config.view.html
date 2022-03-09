@@ -1,6 +1,7 @@
 <div class="card">
   <div class="card-header">
     <h3 class="card-title"><span data-card-widget="collapse">{{ 'NAVIGATION.CONFIG' | translate }}</span></h3>
+    <!--
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -9,6 +10,7 @@
         <i class="fas fa-minus"></i>
       </button>
     </div>
+    -->
   </div>
 
   <div class="card-body">
@@ -85,6 +87,25 @@
                    [(ngModel)]="memorySizeConfiguration"
                    (change)="checkMemorySize($event.target)"
                    class="form-control" min="512" max="1048576" step="8">
+          </td>
+        </tr>
+
+        <tr>
+          <th></th>
+          <th colspan="2">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</th>
+        </tr>
+        <tr>
+          <th>{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</th>
+          <td colspan="2">
+            <div class="form-check">
+              <input type="checkbox"
+                     [ngModelOptions]="{standalone: true}"
+                     [(ngModel)]="enabledForwardingConfiguration"
+                     (change)="updateEnableForwarding($event.target)"
+                     class="form-check-input"
+                     id="enableForwarding_ID">
+              <label class="form-check-label" for="enableForwarding_ID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
+            </div>
           </td>
         </tr>
 

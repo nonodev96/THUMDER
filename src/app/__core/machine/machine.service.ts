@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { interval, Observable, PartialObserver, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { ToastrService } from "ngx-toastr";
-import { TranslateService } from "@ngx-translate/core";
-import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
-import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
-import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
+import {Injectable} from "@angular/core";
+import {interval, Observable, PartialObserver, Subject} from "rxjs";
+import {takeUntil} from "rxjs/operators";
+import {ToastrService} from "ngx-toastr";
+import {TranslateService} from "@ngx-translate/core";
+import {IndividualConfig} from "ngx-toastr/toastr/toastr-config";
+import {PixiTHUMDER_Pipeline} from "./PixiTHUMDER_Pipeline";
+import {PixiTHUMDER_CycleClockDiagram} from "./PixiTHUMDER_CycleClockDiagram";
 import {
   EnumLogLevel,
   InterfaceFileItem,
@@ -15,7 +15,8 @@ import {
   TypeConfigurationMachine,
   TypeDataStatistics,
   TypeFloatingPointStageConfiguration,
-  TypeInstructionsData, TypeLogger,
+  TypeInstructionsData,
+  TypeLogger,
   TypeMemoryToUpdate,
   TypePipelineToProcess,
   TypeRegisterToUpdate,
@@ -24,17 +25,24 @@ import {
   TypeSimulationStep,
   TypeStage,
   TypeBreakpoints,
-  TypeStatusMachine, TypeErrorInCode
+  TypeStatusMachine,
+  TypeErrorInCode,
+  TypeEnabledForwardingConfiguration
 } from "../../Types";
-import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_STEP_SIMULATION } from "../../CONSTANTS";
-import { Utils } from "../../Utils";
-import { StorageService } from "../storage/storage.service";
-import { ManagerRegisters } from "../DLX/ManagerRegisters";
-import { ManagerMemory } from "../DLX/ManagerMemory";
-import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
-import { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
-import { ManagerStatistics } from "../DLX/ManagerStatistics";
-import { UtilsDataStructures } from "../../UtilsDataStructures";
+import {
+  CONFIG_WEBSOCKET,
+  DEFAULT_CODE,
+  DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
+  DEFAULT_STEP_SIMULATION
+} from "../../CONSTANTS";
+import {Utils} from "../../Utils";
+import {StorageService} from "../storage/storage.service";
+import {ManagerRegisters} from "../DLX/ManagerRegisters";
+import {ManagerMemory} from "../DLX/ManagerMemory";
+import {ManagerBreakpoints} from "../DLX/ManagerBreakpoints";
+import {SocketProviderConnectService} from "../services/socket/socket-provider-connect.service";
+import {ManagerStatistics} from "../DLX/ManagerStatistics";
+import {UtilsDataStructures} from "../../UtilsDataStructures";
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
 
 
@@ -50,7 +58,8 @@ export class MachineService {
   public dataStatistics: ManagerStatistics;
   public registers: ManagerRegisters;
   public memory: ManagerMemory;
-  public memorySize;
+  public memorySize: number;
+  public enabledForwarding: TypeEnabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
 
   public breakpointManager: ManagerBreakpoints;
   // address --> TypeCode
@@ -156,7 +165,7 @@ export class MachineService {
       console.log("GetAllMemory", allMemory);
     });
     this.socketProviderConnect.socketIO.on("UpdateConfigurationMachineResponse", (response) => {
-      const configurationMachine = JSON.parse(response) as TypeConfigurationMachine[];
+      const configurationMachine = JSON.parse(response) as TypeConfigurationMachine;
       console.log("Configuration machine", configurationMachine);
     });
 
@@ -208,6 +217,28 @@ export class MachineService {
 
       this.dataStatistics.reset();
       this.dataStatistics$.next(this.dataStatistics.getData());
+      this.enabledForwarding = this.store.getItem("enabled_forwarding_configuration") as TypeEnabledForwardingConfiguration;
+
+      const payload: TypeConfigurationMachine = {
+        enabledForwarding: this.enabledForwarding,
+        memorySize: this.memorySize,
+        addition: {
+          count: this.floatingPointStageConfiguration.addition.count,
+          delay: this.floatingPointStageConfiguration.addition.delay
+        },
+        division: {
+          count: this.floatingPointStageConfiguration.division.count,
+          delay: this.floatingPointStageConfiguration.division.delay
+        },
+        multiplication: {
+          count: this.floatingPointStageConfiguration.multiplication.count,
+          delay: this.floatingPointStageConfiguration.multiplication.delay
+        }
+      };
+      this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", JSON.stringify(payload), (response) => {
+        console.log(response);
+        this.writeToLog(JSON.stringify(response))
+      });
 
       // Reset Editor
       this.line$.next(-1);
@@ -277,7 +308,7 @@ export class MachineService {
     return this.socketProviderConnect.connectObservable();
   }
 
-  public getErrorsInCodeObservable():Observable<TypeErrorInCode[]> {
+  public getErrorsInCodeObservable(): Observable<TypeErrorInCode[]> {
     return this.errorsInCode$.asObservable();
   }
 
@@ -287,21 +318,21 @@ export class MachineService {
   }
 
   public getListStatusPipeline(): TypePipelineToProcess[] {
-    const { IF, ID, intEX, MEM, WB } = this.statusMachineInStep.pipeline;
+    const {IF, ID, intEX, MEM, WB} = this.statusMachineInStep.pipeline;
     const list_elements: TypePipelineToProcess[] = [];
-    if (IF.draw) list_elements.push({ ...IF, stage: "IF" });
-    if (ID.draw) list_elements.push({ ...ID, stage: "ID" });
-    if (intEX.draw) list_elements.push({ ...intEX, stage: "intEX" });
-    if (MEM.draw) list_elements.push({ ...MEM, stage: "MEM" });
-    if (WB.draw) list_elements.push({ ...WB, stage: "WB" });
+    if (IF.draw) list_elements.push({...IF, stage: "IF"});
+    if (ID.draw) list_elements.push({...ID, stage: "ID"});
+    if (intEX.draw) list_elements.push({...intEX, stage: "intEX"});
+    if (MEM.draw) list_elements.push({...MEM, stage: "MEM"});
+    if (WB.draw) list_elements.push({...WB, stage: "WB"});
     for (const f_a of this.statusMachineInStep.pipeline.faddEX) {
-      if (f_a.draw) list_elements.push({ ...f_a, stage: "addEX" as TypeStage, unit: f_a.unit });
+      if (f_a.draw) list_elements.push({...f_a, stage: "addEX" as TypeStage, unit: f_a.unit});
     }
     for (const f_m of this.statusMachineInStep.pipeline.fmultEX) {
-      if (f_m.draw) list_elements.push({ ...f_m, stage: "fmultEX" as TypeStage, unit: f_m.unit });
+      if (f_m.draw) list_elements.push({...f_m, stage: "fmultEX" as TypeStage, unit: f_m.unit});
     }
     for (const f_d of this.statusMachineInStep.pipeline.fdivEX) {
-      if (f_d.draw) list_elements.push({ ...f_d, stage: "fdivEX" as TypeStage, unit: f_d.unit });
+      if (f_d.draw) list_elements.push({...f_d, stage: "fdivEX" as TypeStage, unit: f_d.unit});
     }
     return list_elements;
   }
@@ -356,12 +387,12 @@ export class MachineService {
       const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
       const content = file.content;
       const payload = JSON.stringify({
-        id:        this.socketProviderConnect.socketIO.ioSocket.id,
-        filename:  file.name,
-        date:      Utils.dateToStringFormat(new Date()),
-        content:   content,
+        id: this.socketProviderConnect.socketIO.ioSocket.id,
+        filename: file.name,
+        date: Utils.dateToStringFormat(new Date()),
+        content: content,
         registers: [],
-        memory:    []
+        memory: []
       } as TypeSimulationInitRequest);
       this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response) => {
         const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
@@ -375,8 +406,8 @@ export class MachineService {
 
         const code_data_array: TypeInstructionsData[] = [];
         for (const instruction of simulationInit.machineInstructions) {
-          this.code.set(Utils.stringToAddress(instruction.address), { ...instruction });
-          code_data_array.push({ ...instruction });
+          this.code.set(Utils.stringToAddress(instruction.address), {...instruction});
+          code_data_array.push({...instruction});
         }
 
         for (const step of simulationInit.runner) {
@@ -399,7 +430,7 @@ export class MachineService {
         step: this.privateStep + 1
       });
       this.writeToLog("payload S: {0}", EnumLogLevel.Debug, [
-        { index: 0, value: this.privateStep },
+        {index: 0, value: this.privateStep},
       ]);
       this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response) => {
         this.statusMachineInStep = DEFAULT_STEP_SIMULATION;
@@ -408,9 +439,9 @@ export class MachineService {
         if (canNextInstruction) {
           await this.ProcessStep();
           this.writeToLog("SimulationNextStep S: {0} L: {1} JSON: {2}", EnumLogLevel.Debug, [
-            { index: 0, value: this.privateStep },
-            { index: 1, value: this.privateLine },
-            { index: 2, value: this.statusMachineInStep }
+            {index: 0, value: this.privateStep},
+            {index: 1, value: this.privateLine},
+            {index: 2, value: this.statusMachineInStep}
           ]);
         }
         // console.log("MachineInStep: ", this.statusMachineInStep);
@@ -514,7 +545,7 @@ export class MachineService {
 
   private stringFormat(msg: string, params: TypeLogger[]) {
     return msg.replace(/{([0-9]+)}/g, (match: string, index) => {
-      const logValue: TypeLogger = params.filter(v => v.index == index)[0] ?? { index: -1, value: "" };
+      const logValue: TypeLogger = params.filter(v => v.index == index)[0] ?? {index: -1, value: ""};
       // console.log("msg", msg, "params", params, "logValue", logValue, "match", match, "index", index);
       if (typeof logValue.value == "object") {
         return JSON.stringify(logValue.value);
@@ -543,21 +574,21 @@ export class MachineService {
 
   public getAllStatusMachine(): TypeStatusMachine {
     return {
-      registers:   this.registers,
-      memory:      this.memory.getAllMemory(),
+      registers: this.registers,
+      memory: this.memory.getAllMemory(),
       breakpoints: this.breakpointManager.getAllBreakpoints(),
-      statistics:  this.dataStatistics.getData()
+      statistics: this.dataStatistics.getData()
     };
   }
 
   public resetConnection() {
-    this.socketProviderConnect.socketIO.ioSocket.connect(CONFIG_WEBSOCKET.url, { "force new connection": true });
+    this.socketProviderConnect.socketIO.ioSocket.connect(CONFIG_WEBSOCKET.url, {"force new connection": true});
   }
 
   private async toastMessage(key_title: string = "TOAST.LOGIN_FALSE",
                              key_message: string = "TOAST.ACCESS_DENIED"): Promise<void> {
     const config: Partial<IndividualConfig> = {
-      timeOut:       500,
+      timeOut: 500,
       positionClass: "toast-bottom-left"
     };
     const message = await this.translate.get(key_message).toPromise();

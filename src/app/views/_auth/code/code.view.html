@@ -1,13 +1,15 @@
 <div class="card" id="Code-card">
   <div class="card-header">
-    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.CODE' | translate}}</span></h3>
+    <h3 class="card-title">
+      <!-- Drag button -->
+      <ng-content></ng-content>
+
+      <span data-card-widget="collapse">{{'MACHINE.CODE' | translate}}</span>
+    </h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" (click)="refresh()">
         <i class="fas fa-sync-alt"></i>
       </button>
-
-      <!-- Drag button -->
-      <ng-content></ng-content>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -75,6 +77,6 @@
   </div>
 
   <div class="card-footer">
-    Footer
+
   </div>
 </div>
