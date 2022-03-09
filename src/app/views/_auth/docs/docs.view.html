@@ -4,14 +4,14 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
         <div class="card-header">
           <h4 class="card-title w-100">
-            0. README
+            README
           </h4>
         </div>
       </a>
       <!-- show -->
       <div id="collapse_readme" class="collapse " data-parent="#accordion">
         <div class="card-body ">
-          <markdown [src]="'assets/docs.md'" (load)="onMarkdownLoad()" #markdownID></markdown>
+          <markdown [src]="'assets/docs.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
@@ -19,13 +19,27 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme_table_DLX">
         <div class="card-header">
           <h4 class="card-title w-100">
-            0. Table DLX OPCODES
+            Tabla DLX "OPCODES"
           </h4>
         </div>
       </a>
       <div id="collapse_readme_table_DLX" class="collapse" data-parent="#accordion">
         <div class="card-body ">
           <markdown [src]="'assets/md/DLX-TABLE-Instructions.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse_DLX">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            0. Instructions
+          </h4>
+        </div>
+      </a>
+      <div id="collapse_DLX" class="collapse" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/wiki/00.TheExecutionOfInstructions.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
@@ -39,249 +53,164 @@
       </a>
       <div id="collapseOne" class="collapse" data-parent="#accordion">
         <div class="card-body">
-          <markdown [src]="'assets/wiki/1.TheRegisterWindow.md'" (load)="onMarkdownLoad()"></markdown>
-          <!--
-          <pre>
-          The current values of all registers are displayed in this window. It is possible to change the contents of the
-          registers.
-
-          The Register Menu
-
-          There are several options in this menu to fix the type of representing the contents and the type of registers to be
-          displayed:
-
-          + Hexadecimal
-          + Decimal
-          + Display Special Registers
-          + Display Integer Registers
-          + Display Floating point Registers
-          + Display Double precision-Floatingpoints
-          + Display All Registers
-
-          Change the contents of Registers
-
-          You can change the contents of all GPRs, FPRs, the PC and the FPSR, but not the contents of the special
-          (Hardware-)registers.
-          You can select a register double clicking its name with the mouse. A dialog box is displayed, allowing you to change
-          the content of the selected register. Legal values for integer registers are integer expressions and for floating point
-          registers constant values.
-          </pre>
-          -->
+          <markdown [src]="'assets/wiki/01.TheRegisterWindow.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTwo">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseMemory">
         <div class="card-header">
           <h4 class="card-title w-100">
-            2. The Code Window
+            2. The Memory
           </h4>
         </div>
       </a>
-      <div id="collapseTwo" class="collapse" data-parent="#accordion">
+      <div id="collapseMemory" class="collapse" data-parent="#accordion">
         <div class="card-body ">
-          <markdown [src]="'assets/wiki/2.TheCodeWindow.md'" (load)="onMarkdownLoad()"></markdown>
-          <!--
-          <pre>
-          The DLX instructions loaded in the memory and their addresses are diplayed (hexadecimal and disassembled) in the Code
-          window. Further, the set breakpoints for each instruction are marked with Bxx, where xx is the type of the breakpoint.
-          If an instruction is currently executing in a pipeline stage, the characteristic colour of the stage is used as
-          background colour for the instruction and it is also labeled adequately.
-
-          You can scroll up/down the memory using the arrows or the page keys. After executing one or more steps of a DLX code,
-          the instructions executed at last are displayed.
-
-          You can get detailed information about an instruction being in the pipeline or set /delete breakpoints selecting the
-          instruction with the arrows or page keys and using the TAB-Key (You can also click the mouse button once). If you press
-          the ENTER key (or double clicking the muse button), the Instruction-Information-Window is displayed.
-
-          There are menu commands to set or delete breakpoints.
-
-          The Code Menu:
-
-          This menu contains the following commands:
-
-          + From Address
-          + Set Breakpoint
-          + Delete Breakpoint
-          </pre>
-          -->
+          <markdown [src]="'assets/wiki/02.TheMemoryWindow.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseThree">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheCodeWindow">
         <div class="card-header">
           <h4 class="card-title w-100">
-            3. The Pipeline Window
+            3. The Code Window
           </h4>
         </div>
       </a>
-      <div id="collapseThree" class="collapse" data-parent="#accordion">
+      <div id="collapseTheCodeWindow" class="collapse" data-parent="#accordion">
         <div class="card-body ">
-          <markdown [src]="'assets/wiki/3.ThePipelineWindow.md'" (load)="onMarkdownLoad()" #markdownID></markdown>
-
-          <!--
-          <pre>
-          The Structure of the DLX-Pipeline will be displayed in this Child window. If the window is large enough, additional
-          information about the instructions currently being executed in the pipeline will be displayed.
-
-          Each stage is represented by different colours, characterizing this stage through all windows.
-
-          After pressing TAB, you can select a stage with the arrow keys. Pressing ENTER (or double clicking the stage)
-          allows you to get detailed information about the instruction in the stage via the Instruction-Information-Window.
-
-          The Pipeline Menu:
-
-          + Display Floating point stages Display Floating point stages
-          </pre>
-          -->
+          <markdown [src]="'assets/wiki/03.TheCodeWindow.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseFour">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapsePipeline">
         <div class="card-header">
           <h4 class="card-title w-100">
-            4. The Clock Cycle Diagram
+            4.A The Pipeline Window
           </h4>
         </div>
       </a>
-      <div id="collapseFour" class="collapse" data-parent="#accordion">
+      <div id="collapsePipeline" class="collapse" data-parent="#accordion">
         <div class="card-body ">
-          <pre>
-In this Child window is displayed, what is done in which cycle and in which stage. Each column represents the state of
-the pipeline in a given clock cycle. The current state of the pipeline (the last column) is underlayed with gray.
-
-You can select an instruction the same way as in the Code window and get more information about it via the
-Instruction-Information-Window.
-
-Furthermore, details about the stalls and executed forwardings (if enabled) are displayed:
-
-Stalls and Forwarding:
-
-Stalls are represented in boxes, that are underlayed with a colour corresponding to the stalled stage. The contents of
-the box give more information about the type of the stall:
-
-"R-Stall" - RAW-Stall. A dark red arrow shows (if enabled) the instruction that causes the stall.
-
-"T-Stall" - Trap-Stall. This stall occurs only by a Trap-Instruction . A Trap instruction remains in the IF-stage,
-until no other instructions are in the pipeline.
-
-"W-Stall" - WAW-Stalls. A dark red arrow shows (if enabled) the instruction that causes the stall.
-
-"S-Stall" - structural Stall, There are not enough resources to serving the instruction.
-
-"Stall" - If a Floating point instruction is in MEM-stage, the next instruction will be stalled in the intEX-stage,
-labeled with "Stall".
-
-If "Display Forwarding" is enabled, forwarding is represented with a green arrow, showing the source and the
-destination of forwarding.
-
-See also Instruction execution for more details.
-
-The Clock Cycle Diagram Menu:
-
-The clock cycle diagram menu contains the following options:
-
-+ Display Forwarding
-+ Display Cause of Stalls
-+ Delete History
-+ Set History Length
-          </pre>
+          <markdown [src]="'assets/wiki/04.ThePipelineWindow.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseFive">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheClockCycleDiagram">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            4.B The Clock Cycle Diagram
+          </h4>
+        </div>
+      </a>
+      <div id="collapseTheClockCycleDiagram" class="collapse" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/wiki/04.TheClockCycleDiagramWindow.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheStatisticsWindow">
         <div class="card-header">
           <h4 class="card-title w-100">
             5. The Statistics Window
           </h4>
         </div>
       </a>
-      <div id="collapseFive" class="collapse" data-parent="#accordion">
+      <div id="collapseTheStatisticsWindow" class="collapse" data-parent="#accordion">
         <div class="card-body ">
-          <pre>
-Statistics about the simulation are displayed in the Statistics window. This data is arranged in several groups. You
-can select the groups to be displayed in the Statistics window. The group "Total" will always be displayed and contains:
-
-+ Total number of cycles executed.
-
-+ The number of instructions, which have already passed the ID-stage.
-
-+ The number of instructions currently being executed in the pipeline (if Detail info (see Statistic Menu) is set).
-
-The Statistic Menu:
-
-This menu contains several options to control the display of information in the Statistics window. Further, you can
-reset the statistics:
-
-+ Display:
-- Hardware
-- Stalls
-- Conditional Branches
-- Load/Store-Instructions
-- Floating point stages instructions
-- Traps
-- All
-+ Detail info
-+ Reset
-            </pre>
+          <markdown [src]="'assets/wiki/05.TheStatisticsWindow.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseSix">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheBreakpointWindow">
         <div class="card-header">
           <h4 class="card-title w-100">
             6. The Breakpoint Window
           </h4>
         </div>
       </a>
-      <div id="collapseSix" class="collapse" data-parent="#accordion">
+      <div id="collapseTheBreakpointWindow" class="collapse" data-parent="#accordion">
         <div class="card-body ">
-          <pre>
-In the Breakpoint window, you can view, set, change or delete breakpoints. It is possible to set up to 20 breakpoints.
-You can also set /delete breakpoints via the Code window.
-
-The Breakpoint Menu:
-
-This menu allows you to manipulate breakpoints. To do this, you must first select a breakpoint using arrow keys or the
-mouse. Double clicking a breakpoint allows to change the breakpoint.
-
-The Breakpoint menu contains the following commands:
-
-+ Set
-+ Delete
-+ Delete All
-+ Change
-          </pre>
+          <markdown [src]="'assets/wiki/06.TheBreakpoints.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseSeven">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheExecutionProcess">
         <div class="card-header">
           <h4 class="card-title w-100">
             7. The Memory Windows
           </h4>
         </div>
       </a>
-      <div id="collapseSeven" class="collapse" data-parent="#accordion">
+      <div id="collapseTheExecutionProcess" class="collapse" data-parent="#accordion">
         <div class="card-body ">
-          <pre>
-You can open up to 10 memory windows with the command memory / Display in the main menu.
+          <markdown [src]="'assets/wiki/07.TheExecutionProcess.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheConfiguration">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            8. The Configuration
+          </h4>
+        </div>
+      </a>
+      <div id="collapseTheConfiguration" class="collapse" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/wiki/08.TheConfiguration.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
 
-For more details about memory windows see also Memory / Display.
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseFileManager">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            9. The File Manager
+          </h4>
+        </div>
+      </a>
+      <div id="collapseFileManager" class="collapse" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/wiki/09.FileManager.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
 
-The Memory Display Menu
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseFileEditor">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            10. File Editor
+          </h4>
+        </div>
+      </a>
+      <div id="collapseFileEditor" class="collapse" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/wiki/10.FileEditor.md'" (load)="onMarkdownLoad()"></markdown>
+        </div>
+      </div>
+    </div>
 
-This menu contains the following commands, that are applicable to the active memory window:
-
-+ Change
-+ Close
-          </pre>
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapseMultiview">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            11. The Multiview
+          </h4>
+        </div>
+      </a>
+      <div id="collapseMultiview" class="collapse" data-parent="#accordion">
+        <div class="card-body ">
+          <markdown [src]="'assets/wiki/11.Multiview.md'" (load)="onMarkdownLoad()"></markdown>
         </div>
       </div>
     </div>

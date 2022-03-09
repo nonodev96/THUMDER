@@ -304,6 +304,7 @@ span.underline-text:after {
 
 .example-custom-placeholder {
   min-height: 64px;
+  width: 100%;
   background: #ccc;
   border: dotted 3px #999;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
@@ -312,6 +313,7 @@ span.underline-text:after {
 .example-custom-placeholder-registers {
   background: #ccc;
   border: dotted 3px #999;
+  width: 100%;
   min-height: 256px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -352,3 +354,6 @@ span.underline-text:after {
   }
 }
 
+markdown img {
+  max-width: 50%;
+}

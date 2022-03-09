@@ -18,7 +18,7 @@ export class IndexView implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
+    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
   }
 
   ngAfterViewInit(): void {

@@ -19,6 +19,7 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
   @ViewChildren(CdkDrag) draggable_list: QueryList<CdkDrag>;
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   public main = [];
+  public main_list_2 = [];
 
   constructor(public globals: Globals) {
   }

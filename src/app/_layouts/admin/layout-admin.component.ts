@@ -15,6 +15,6 @@ export class LayoutAdminComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed");
+    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
   }
 }

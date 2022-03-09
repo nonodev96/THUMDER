@@ -1,10 +1,12 @@
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title"><span data-card-widget="collapse">{{'NAVIGATION.STATISTICS' | translate}}</span></h3>
-    <div class="card-tools">
-
+    <h3 class="card-title">
       <!-- Drag button -->
       <ng-content></ng-content>
+
+      <span data-card-widget="collapse">{{'NAVIGATION.STATISTICS' | translate}}</span>
+    </h3>
+    <div class="card-tools">
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -63,6 +65,33 @@
 </pre>
     <!-- @formatter:on -->
       <!-- Force next columns to break to new line -->
+<!--      <div class="w-100"></div>-->
+
+      <!--
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
+        <h2>Text</h2>
+        <canvas baseChart
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [legend]="barChartLegend"
+                [chartType]="barChartType">
+        </canvas>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
+        <h2>Text</h2>
+        <canvas baseChart
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [plugins]="barChartPlugins"
+                [legend]="barChartLegend"
+                [chartType]="barChartType">
+        </canvas>
+      </div>
+
+      &lt;!&ndash; Force next columns to break to new line &ndash;&gt;
       <div class="w-100"></div>
 
       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
@@ -87,36 +116,10 @@
                 [chartType]="barChartType">
         </canvas>
       </div>
-
-      <!-- Force next columns to break to new line -->
-      <div class="w-100"></div>
-
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
-        <h2>Text</h2>
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-        </canvas>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
-        <h2>Text</h2>
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-        </canvas>
-      </div>
+      -->
     </div>
   </div>
   <div class="card-footer">
 
   </div>
-
 </div>

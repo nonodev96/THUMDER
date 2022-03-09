@@ -4,7 +4,7 @@ import { StorageService } from "../../../__core/storage/storage.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { AppConfig } from "../../../../environments/_environment";
 import {
-  DEFAULT_AUTO_SAVE_CONFIGURATION,
+  DEFAULT_AUTO_SAVE_CONFIGURATION, DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
   DEFAULT_MEMORY_SIZE_CONFIGURATION,
   DEFAULT_MULTIVIEW_CONFIGURATION,
@@ -12,6 +12,7 @@ import {
   DEFAULT_WEB_SOCKET_CONFIGURATION
 } from "../../../CONSTANTS";
 import {
+  TypeEnabledForwardingConfiguration,
   TypeFloatingPointStageConfiguration,
   TypeMultiviewConfiguration,
   TypeWebSocketConfiguration
@@ -31,6 +32,7 @@ export class ConfigView implements OnInit, AfterViewInit {
 
   public readonly webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
 
+  public enabledForwardingConfiguration: TypeEnabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration = DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
   public memorySizeConfiguration: number = DEFAULT_MEMORY_SIZE_CONFIGURATION;
   public timeSimulationConfiguration: number = DEFAULT_TIME_SIMULATION_CONFIGURATION;
@@ -44,6 +46,7 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.enabledForwardingConfiguration = this.storage.getItem("enabled_forwarding_configuration") ?? DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
     this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration") ?? DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
     this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration") ?? DEFAULT_MEMORY_SIZE_CONFIGURATION;
     this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration") ?? DEFAULT_TIME_SIMULATION_CONFIGURATION;
@@ -53,6 +56,9 @@ export class ConfigView implements OnInit, AfterViewInit {
 
     this.storage.watchStorage().subscribe((key) => {
       switch (key) {
+        case "enabled_forwarding_configuration":
+          this.enabledForwardingConfiguration = this.storage.getItem("enabled_forwarding_configuration");
+          break;
         case "floating_point_stage_configuration":
           this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration");
           break;
@@ -79,11 +85,12 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   public async updateConfiguration(): Promise<void> {
-    this.storage.setItem("multiview_configuration", this.multiviewConfiguration);
+    this.storage.setItem("enabled_forwarding_configuration", this.enabledForwardingConfiguration);
     this.storage.setItem("floating_point_stage_configuration", this.floatingPointStageConfiguration);
     this.storage.setItem("memory_size_configuration", this.memorySizeConfiguration);
     this.storage.setItem("time_simulation_configuration", this.timeSimulationConfiguration);
     this.storage.setItem("auto_save_configuration", this.autoSaveConfiguration);
+    this.storage.setItem("multiview_configuration", this.multiviewConfiguration);
     this.storage.setItem("web_socket_configuration", this.webSocketConfiguration);
     this.socket.updateSocketURl();
     await this.machine.resetMachineStatus();
@@ -91,6 +98,7 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   public async resetConfiguration(): Promise<void> {
+    this.enabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
     this.floatingPointStageConfiguration = DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
     this.memorySizeConfiguration = DEFAULT_MEMORY_SIZE_CONFIGURATION;
     this.timeSimulationConfiguration = DEFAULT_TIME_SIMULATION_CONFIGURATION;
@@ -99,6 +107,7 @@ export class ConfigView implements OnInit, AfterViewInit {
     this.multiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
     this.webSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
 
+    this.storage.setItem("enabled_forwarding_configuration", DEFAULT_ENABLED_FORWARDING_CONFIGURATION);
     this.storage.setItem("multiview_configuration", DEFAULT_MULTIVIEW_CONFIGURATION);
     this.storage.setItem("floating_point_stage_configuration", DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
     this.storage.setItem("memory_size_configuration", DEFAULT_MEMORY_SIZE_CONFIGURATION);
@@ -145,6 +154,10 @@ export class ConfigView implements OnInit, AfterViewInit {
     } else {
       target.value = 1;
     }
+  }
+
+  public updateEnableForwarding(target: EventTargetInput | any) {
+    this.enabledForwardingConfiguration = target.checked ?? false;
   }
 
   public updateAutoSave(target: EventTargetInput | any) {

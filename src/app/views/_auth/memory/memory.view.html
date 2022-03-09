@@ -1,42 +1,47 @@
 <div class="card" id="Memory-card">
   <div class="card-header">
-    <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.MEMORY' | translate}}</span></h3>
+    <h3 class="card-title">
+      <!-- Drag button -->
+      <ng-content></ng-content>
+
+      <span data-card-widget="collapse">{{'MACHINE.MEMORY' | translate}}</span>
+    </h3>
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Bytes"
               (click)="changeTypeDataInTable('Byte')">
-        <i class="fas fa-table"></i> Bytes
+        <i class="fas fa-table"></i> <span> Bytes </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="Half Word"
               (click)="changeTypeDataInTable('HalfWord')">
-        <i class="fas fa-table"></i> Half Word
+        <i class="fas fa-table"></i> <span> Half Word </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="Word"
               (click)="changeTypeDataInTable('Word')">
-        <i class="fas fa-table"></i> Word
+        <i class="fas fa-table"></i> <span> Word </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="ASCII"
               (click)="changeTypeDataInTable('ASCII')">
-        <i class="fas fa-table"></i> ASCII
+        <i class="fas fa-table"></i> <span> ASCII </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Float' ? 'btn--active' : '' }}" title="Float"
               (click)="changeTypeDataInTable('Float')">
-        <i class="fas fa-table"></i> Float
+        <i class="fas fa-table"></i> <span> Float </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Double' ? 'btn--active' : '' }}" title="Double"
               (click)="changeTypeDataInTable('Double')">
-        <i class="fas fa-table"></i> Double
+        <i class="fas fa-table"></i> <span> Double </span>
       </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'InstructionCode' ? 'btn--active' : '' }}" title="Double"
+      <button class="btn btn-tool {{ typeDataSelected === 'InstructionCode' ? 'btn--active' : '' }}" title="Instruction code"
               (click)="changeTypeDataInTable('InstructionCode')">
-        <i class="fas fa-table"></i> InstructionCode
+        <i class="fas fa-table"></i> <span class="d-xxl-none"> Instruction Code </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Address-0-1-2-3' ? 'btn--active' : '' }}" title="Address-0-1-2-3"
               (click)="changeTypeDataInTable('Address-0-1-2-3')">
-        <i class="fas fa-table"></i> Address-0-1-2-3
+        <i class="fas fa-table"></i> <span class="d-xxl-none"> Address-0-1-2-3 </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'HalfWord-0-1' ? 'btn--active' : '' }}" title="HalfWord-0-1"
               (click)="changeTypeDataInTable('HalfWord-0-1')">
-        <i class="fas fa-table"></i> HalfWord-0-1
+        <i class="fas fa-table"></i> <span class="d-xxl-none"> HalfWord-0-1 </span>
       </button>
 
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#editMemoryModal"
@@ -46,9 +51,6 @@
       <button type="button" class="btn btn-tool" (click)="refresh()">
         <i class="fas fa-sync-alt"></i>
       </button>
-
-      <!-- Drag button -->
-      <ng-content></ng-content>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
         <i class="fas fa-expand"></i>
@@ -192,6 +194,9 @@
 
       </table>
     </cdk-virtual-scroll-viewport>
+  </div>
+  <div class="card-footer">
+
   </div>
 </div>
 

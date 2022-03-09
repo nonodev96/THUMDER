@@ -151,6 +151,7 @@
   },
   "CONFIG": {
     "LANG": "Idioma",
+    "ENABLE_FORWARDING": "Activar adelantamientos",
     "VERSION": "Versión",
     "MULTIVIEW": "Multiples vistas",
     "WEBSOCKET": "Web Socket",
