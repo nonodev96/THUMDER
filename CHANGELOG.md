@@ -1,6 +1,19 @@
+## <small>1.3.8 (2022-03-09)</small>
+
+* Add submodule wiki ([7d7a041](https://github.com/nonodev96/THUMDER/commit/7d7a041))
+* CHANGELOG ([f04025e](https://github.com/nonodev96/THUMDER/commit/f04025e))
+* Deleted submodule wiki ([41b6bb9](https://github.com/nonodev96/THUMDER/commit/41b6bb9))
+* fix karma version ([ee905d3](https://github.com/nonodev96/THUMDER/commit/ee905d3))
+* fix layout header ([a8d0230](https://github.com/nonodev96/THUMDER/commit/a8d0230))
+* Wiki ([b737a0f](https://github.com/nonodev96/THUMDER/commit/b737a0f))
+* Wiki assets 3 and color in cycle clock diagram ([66f67b5](https://github.com/nonodev96/THUMDER/commit/66f67b5))
+
+
+
 ## <small>1.3.6 (2022-02-14)</small>
 
 * .browserslistrc, fix package.json, components, tests with karma and README ([d0c5fad](https://github.com/nonodev96/THUMDER/commit/d0c5fad))
+* CHANGELOG ([c70702c](https://github.com/nonodev96/THUMDER/commit/c70702c))
 * minor changes ([e0514eb](https://github.com/nonodev96/THUMDER/commit/e0514eb))
 * polyfills for karma tests ([d6fa110](https://github.com/nonodev96/THUMDER/commit/d6fa110))
 

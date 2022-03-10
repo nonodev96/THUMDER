@@ -562,7 +562,8 @@ export type TypeMultiviewConfiguration = {
   registers: boolean;
   code: boolean;
   statistics: boolean;
-  list: string[];
+  list_1: string[];
+  list_2: string[];
 };
 
 export type TypeEnabledForwardingConfiguration = boolean;
