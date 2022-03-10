@@ -104,7 +104,8 @@
                      (change)="updateEnableForwarding($event.target)"
                      class="form-check-input"
                      id="enableForwarding_ID">
-              <label class="form-check-label" for="enableForwarding_ID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
+              <label class="form-check-label"
+                     for="enableForwarding_ID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
             </div>
           </td>
         </tr>
@@ -147,12 +148,39 @@
           <th></th>
           <th colspan="2">{{ 'CONFIG.MULTIVIEW' | translate }}</th>
         </tr>
-        <tr>
-          <th>{{ 'CONFIG.MULTIVIEW' | translate }}</th>
-          <td colspan="2">
-            <div class="form-group">
-              <div cdkDropList class="form-group-list-drag" (cdkDropListDropped)="drop($event)">
-                <ng-container *ngFor="let component of this.multiviewConfiguration.list">
+        <ng-container cdkDropListGroup>
+          <tr>
+            <th>{{ 'CONFIG.MULTIVIEW' | translate }}</th>
+            <td>
+              <div class="form-group">
+                <div class="form-group-list-drag"
+                     cdkDropList
+                     #list_1="cdkDropList"
+                     [cdkDropListConnectedTo]="[list_2]"
+                     [cdkDropListData]="this.multiviewConfiguration.list_1"
+                     (cdkDropListDropped)="globals.drop($event)">
+                  <ng-container *ngFor="let component of this.multiviewConfiguration.list_1">
+                    <div class="form-check" cdkDrag>
+                      <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
+                      <input class="form-check-input" type="checkbox"
+                             [ngModelOptions]="{standalone: true}"
+                             [(ngModel)]="multiviewConfiguration[component]">
+                      <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
+                      <i class="fas fa-arrows-alt float-right" cdkDragHandle></i>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </td>
+
+            <td>
+              <div class="form-group-list-drag"
+                   cdkDropList
+                   #list_2="cdkDropList"
+                   [cdkDropListConnectedTo]="[list_1]"
+                   [cdkDropListData]="this.multiviewConfiguration.list_2"
+                   (cdkDropListDropped)="globals.drop($event)">
+                <ng-container *ngFor="let component of this.multiviewConfiguration.list_2">
                   <div class="form-check" cdkDrag>
                     <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
                     <input class="form-check-input" type="checkbox"
@@ -163,54 +191,9 @@
                   </div>
                 </ng-container>
               </div>
-              <!--
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.calculator">
-                              <label class="form-check-label">{{ 'NAVIGATION.CALCULATOR' | translate }}</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.pipeline">
-                              <label class="form-check-label">{{ 'NAVIGATION.PIPELINE' | translate }}</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.cycle_clock_diagram">
-                              <label class="form-check-label">{{ 'NAVIGATION.CYCLE_CLOCK_DIAGRAM' | translate }}</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.memory">
-                              <label class="form-check-label">{{ 'NAVIGATION.MEMORY' | translate }}</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.registers">
-                              <label class="form-check-label">{{ 'NAVIGATION.REGISTERS' | translate }}</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.code">
-                              <label class="form-check-label">{{ 'NAVIGATION.CODE' | translate }}</label>
-                            </div>
-                            <div class="form-check">
-                              <input class="form-check-input" type="checkbox"
-                                     [ngModelOptions]="{standalone: true}"
-                                     [(ngModel)]="multiviewConfiguration.statistics">
-                              <label class="form-check-label">{{ 'NAVIGATION.STATISTICS' | translate }}</label>
-                              <i class="fas fa-arrows-alt"></i>
-                            </div>
-                -->
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        </ng-container>
 
         <tr>
           <th></th>

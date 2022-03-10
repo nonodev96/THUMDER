@@ -1,7 +1,7 @@
 THUMDER - DLX Processor Simulator
 =================================
 
-Copyright (©) 2021 The THUMDER project, University of Jaén
+Copyright (©) 2022 The THUMDER project, University of Jaén
 
 * Interface: Antonio Mudarra Machuca
 * Core contributors: Antonio Mudarra Machuca

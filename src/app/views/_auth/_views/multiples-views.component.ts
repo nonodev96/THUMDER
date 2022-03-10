@@ -18,7 +18,7 @@ import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";
 export class MultiplesViewsComponent implements OnInit, AfterViewInit {
   @ViewChildren(CdkDrag) draggable_list: QueryList<CdkDrag>;
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
-  public main = [];
+  public main_list_1 = [];
   public main_list_2 = [];
 
   constructor(public globals: Globals) {
@@ -26,11 +26,13 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.multiviewConfiguration = JSON.parse(localStorage.getItem("multiview_configuration")) as TypeMultiviewConfiguration ?? DEFAULT_MULTIVIEW_CONFIGURATION;
+    this.main_list_1 = this.multiviewConfiguration.list_1;
+    this.main_list_2 = this.multiviewConfiguration.list_2;
   }
 
   ngAfterViewInit(): void {
     MultiplesViewsComponent.closeAllCards();
-    this.main.push(this.draggable_list.toArray());
+    this.main_list_1.push(this.draggable_list.toArray());
     const cards: any = window.jQuery(".card").not("#card-debug");
     cards.on("expanded.lte.cardwidget", async () => {
       await Utils.wait(500);
@@ -41,61 +43,6 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
       await Utils.wait(500);
       window.dispatchEvent(new Event("resize"));
     });
-  }
-
-  public drop(event: CdkDragDrop<any[]>) {
-    const nodeToMove = event.item.element.nativeElement;
-    const { previousContainer, container, previousIndex, currentIndex } = event;
-    if (previousContainer === container) {
-      moveItemInArray(container.data, previousIndex, currentIndex);
-      this.moveWithinContainer(
-        container.element.nativeElement,
-        previousIndex,
-        currentIndex
-      );
-      window.dispatchEvent(new Event("resize"));
-    } else {
-      transferArrayItem(
-        previousContainer.data,
-        container.data,
-        previousIndex,
-        currentIndex
-      );
-      this.transferNodeToContainer(
-        nodeToMove,
-        container.element.nativeElement,
-        currentIndex
-      );
-      window.dispatchEvent(new Event("resize"));
-      Promise.resolve().then(() => {
-        previousContainer.removeItem(event.item);
-        event.item.dropContainer = container;
-        event.item._dragRef._withDropContainer(container._dropListRef);
-        container.addItem(event.item);
-      });
-    }
-  }
-
-  public moveWithinContainer(container, fromIndex, toIndex) {
-    if (fromIndex === toIndex) {
-      return;
-    }
-    const nodeToMove = container.children[fromIndex];
-    const targetNode = container.children[toIndex];
-    if (fromIndex < toIndex) {
-      targetNode.parentNode.insertBefore(nodeToMove, targetNode.nextSibling);
-    } else {
-      targetNode.parentNode.insertBefore(nodeToMove, targetNode);
-    }
-  }
-
-  public transferNodeToContainer(node, container, toIndex) {
-    if (toIndex === container.children.length) {
-      container.appendChild(node);
-    } else {
-      const targetItem = container.children[toIndex];
-      targetItem.parentNode.insertBefore(node, targetItem);
-    }
   }
 
   private static closeAllCards() {

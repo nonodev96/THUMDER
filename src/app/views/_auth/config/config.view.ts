@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
-import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
-import { StorageService } from "../../../__core/storage/storage.service";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { AppConfig } from "../../../../environments/_environment";
+import {AfterViewInit, Component, OnInit} from "@angular/core";
+import {SocketProviderConnectService} from "../../../__core/services/socket/socket-provider-connect.service";
+import {StorageService} from "../../../__core/storage/storage.service";
+import {MachineService} from "../../../__core/machine/machine.service";
+import {AppConfig} from "../../../../environments/_environment";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION, DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
@@ -17,16 +17,17 @@ import {
   TypeMultiviewConfiguration,
   TypeWebSocketConfiguration
 } from "../../../Types";
-import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
+import {Globals} from "../../../__core/services/globals/globals.service";
 
 interface EventTargetInput extends EventTarget {
   value: string | number | boolean;
 }
 
 @Component({
-  selector:    "view-config",
+  selector: "view-config",
   templateUrl: "./config.view.html",
-  styleUrls:   []
+  styleUrls: []
 })
 export class ConfigView implements OnInit, AfterViewInit {
 
@@ -40,7 +41,8 @@ export class ConfigView implements OnInit, AfterViewInit {
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   public webSocketConfiguration: TypeWebSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
 
-  constructor(private storage: StorageService,
+  constructor(public globals: Globals,
+              private storage: StorageService,
               private socket: SocketProviderConnectService,
               private machine: MachineService) {
   }
@@ -170,9 +172,5 @@ export class ConfigView implements OnInit, AfterViewInit {
 
   public updateMultiviewConfig(_target: EventTarget | any) {
 
-  }
-
-  public drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.multiviewConfiguration.list, event.previousIndex, event.currentIndex);
   }
 }
