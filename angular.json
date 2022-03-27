@@ -42,6 +42,11 @@
                 "output": "./wiki-assets/"
               },
               {
+                "glob": "*.gif",
+                "input": "./wiki/wiki-assets",
+                "output": "./wiki-assets/"
+              },
+              {
                 "glob": "LICENSE.md",
                 "input": "./",
                 "output": "./assets/md/"
@@ -246,6 +251,11 @@
               },
               {
                 "glob": "*.png",
+                "input": "./wiki/wiki-assets",
+                "output": "./wiki-assets/"
+              },
+              {
+                "glob": "*.gif",
                 "input": "./wiki/wiki-assets",
                 "output": "./wiki-assets/"
               },

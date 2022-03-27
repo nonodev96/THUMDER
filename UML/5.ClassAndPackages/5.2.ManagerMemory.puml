@@ -1,5 +1,6 @@
 @startuml
 'https://plantuml.com/class-diagram
+!theme plain
 left to right direction
 
 class ManagerMemory implements InterfaceMemory {

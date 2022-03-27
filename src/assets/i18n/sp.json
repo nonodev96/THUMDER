@@ -38,7 +38,8 @@
     "ABOUT": "Sobre nosotros",
     "MULTIVIEW": "Multiples vistas",
     "LOGGER": "Historial de logs",
-    "DEBUG": "Pruebas"
+    "DEBUG": "Pruebas",
+    "GRID_VIEW": "Grid view"
   },
   "ST": {
     "TOTAL": {

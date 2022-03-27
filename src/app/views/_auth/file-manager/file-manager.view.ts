@@ -58,11 +58,15 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   public customFileProvider: CustomFileSystemProvider;
   public newFileMenuOptions: FileMenuOptions = {
-    items:       [ { text: "Create new file", icon: "plus", items: [ { text: "WinDLX Document", options: { extension: ".s" } } ] } ],
+    items:       [{
+      text:  "Create new file",
+      icon:  "plus",
+      items: [{ text: "WinDLX Document", options: { extension: ".s" } }]
+    }],
     onItemClick: this.onContextMenuItemClick.bind(this)
   };
   public changeCategoryMenuOptions: FileMenuOptions = {
-    items:       [ /*{ text: 'Category', icon: 'tags', items: [] }*/ ],
+    items:       [ /*{ text: 'Category', icon: 'tags', items: [] }*/],
     onItemClick: this.onContextMenuItemClick.bind(this)
   };
   public show: boolean = false;
@@ -81,26 +85,26 @@ export class FileManagerView implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fileSystemService.init().then(() => {
       this.customFileProvider = new CustomFileSystemProvider({
-        getItems:        (parentDirectory) => {
-          return this.fileSystemService.getItems(parentDirectory);
+        getItems:        async (parentDirectory) => {
+          return await this.fileSystemService.getItems(parentDirectory);
         },
-        createDirectory: (parentDirectory, name) => {
-          return this.fileSystemService.createDirectory(parentDirectory, name);
+        createDirectory: async (parentDirectory, name) => {
+          return await this.fileSystemService.createDirectory(parentDirectory, name);
         },
-        renameItem:      (item: FileSystemItem, name: string) => {
-          return this.fileSystemService.renameItem(item, name);
+        renameItem:      async (item: FileSystemItem, name: string) => {
+          return await this.fileSystemService.renameItem(item, name);
         },
-        deleteItem:      (item: FileSystemItem) => {
-          return this.fileSystemService.deleteItem(item);
+        deleteItem:      async (item: FileSystemItem) => {
+          return await this.fileSystemService.deleteItem(item);
         },
-        moveItem:        (item, destinationDirectory) => {
-          return this.fileSystemService.moveItem(item, destinationDirectory);
+        moveItem:        async (item, destinationDirectory) => {
+          return await this.fileSystemService.moveItem(item, destinationDirectory);
         },
-        uploadFileChunk: (fileData, uploadInfo, destinationDirectory) => {
-          return this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
+        uploadFileChunk: async (fileData, uploadInfo, destinationDirectory) => {
+          return await this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
         },
-        downloadItems:   (items) => {
-          return this.fileSystemService.downloadItem(items);
+        downloadItems:   async (items) => {
+          return await this.fileSystemService.downloadItem(items);
         }
       });
     });

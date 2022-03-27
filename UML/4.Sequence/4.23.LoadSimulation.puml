@@ -1,5 +1,7 @@
 @startuml
 'https://plantuml.com/sequence-diagram
+!theme plain
+
 '!pragma teoz true &
 autonumber
 

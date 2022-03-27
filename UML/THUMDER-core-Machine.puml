@@ -1,4 +1,8 @@
 @startuml
+hide class fields
+hide class method
+hide interface fields
+hide interface method
 
 skinparam linetype ortho
 

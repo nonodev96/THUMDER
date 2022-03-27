@@ -1,5 +1,6 @@
 @startuml
 'https://plantuml.com/sequence-diagram
+!theme plain
 
 autonumber
 actor User

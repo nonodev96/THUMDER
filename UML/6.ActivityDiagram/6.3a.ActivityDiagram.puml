@@ -1,6 +1,6 @@
 @startuml
 'https://plantuml.com/activity-diagram-beta
-'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+!theme plain
 
 'Crear fichero / carpeta
 skinparam defaultFontName consolas

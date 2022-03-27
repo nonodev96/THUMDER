@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/class-diagram
+!theme plain
+left to right direction
+
+package Component {
+  [Aside]-up-Left
+  [Aside]-down-Right
+  [Breadcrumb]
+  [Footers]
+  [Modals]-up-ModalBottom
+  [Modals]-up-Modal
+  [Modals]-down-EditMemoryBinary32
+  [Modals]-down-EditRegisterBinary32
+  [Monaco-Editor]
+  [Navbars]-up-Auth
+  [Navbars]-down-Admin
+  [PipelinePixi]
+  [CycleClockDiagram]
+  [Sidebar]
+  [Windows]
+  [Xterm]
+}
+
+
+@enduml

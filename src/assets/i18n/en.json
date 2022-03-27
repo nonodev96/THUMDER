@@ -38,7 +38,8 @@
     "ABOUT": "About",
     "MULTIVIEW": "Multiview",
     "LOGGER": "Logger",
-    "DEBUG": "Debug"
+    "DEBUG": "Debug",
+    "GRID_VIEW": "Grid view"
   },
   "ST": {
     "TOTAL": {

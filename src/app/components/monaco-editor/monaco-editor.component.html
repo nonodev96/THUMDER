@@ -1,3 +1,9 @@
+<ng-container *ngIf="isReadOnly() === true">
+  <div id="bg-lock">
+    <i class="fas fa-lock"></i>
+  </div>
+</ng-container>
+
 <td-code-editor
   [style.height.vh]="height"
   editorStyle="border:0; overflow: hidden;"
@@ -12,3 +18,4 @@
   (editorLanguageChanged)="editorLanguageChanged()"
   (editorValueChange)="editorValueChange()">
 </td-code-editor>
+

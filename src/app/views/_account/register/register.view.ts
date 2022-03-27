@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { ElectronService } from "../../../__core/services";
 
@@ -15,25 +15,25 @@ export class RegisterView implements OnInit {
   error_messages = {
     first_name:       [
       { type: "required", message: "First Name is required." },
+      { type: "minlength", message: "First Name min length is 6." },
+      { type: "maxlength", message: "First Name max length is 30." }
     ],
     email:            [
       { type: "required", message: "Email is required." },
-      { type: "minlength", message: "Email length." },
-      { type: "maxlength", message: "Email length." },
-      { type: "required", message: "please enter a valid email address." }
+      { type: "email", message: "Please enter a valid email address." }
     ],
     password:         [
-      { type: "required", message: "password is required." },
-      { type: "minlength", message: "password length." },
-      { type: "maxlength", message: "password length." }
+      { type: "required", message: "Password is required." },
+      { type: "minlength", message: "Password min length is 6." },
+      { type: "maxlength", message: "Password max length is 30." }
     ],
     confirm_password: [
-      { type: "required", message: "password is required." },
-      { type: "minlength", message: "password length." },
-      { type: "maxlength", message: "password length." }
+      { type: "required", message: "Confirm password is required." },
+      { type: "minlength", message: "Confirm password min length is 6." },
+      { type: "maxlength", message: "Confirm password max length is 30." },
+      { type: "password_not_match", message: "Password not match." }
     ],
   };
-  private emailPattern = "^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService,
@@ -41,12 +41,13 @@ export class RegisterView implements OnInit {
               public formBuilder: FormBuilder) {
     this.registerForm = this.formBuilder.group({
       first_name:       new FormControl("", Validators.compose([
-        Validators.required
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(30)
       ])),
       email:            new FormControl("", Validators.compose([
         Validators.required,
-        Validators.email,
-        Validators.pattern(this.emailPattern)
+        Validators.email
       ])),
       password:         new FormControl("", Validators.compose([
         Validators.required,
@@ -56,7 +57,8 @@ export class RegisterView implements OnInit {
       confirm_password: new FormControl("", Validators.compose([
         Validators.required,
         Validators.minLength(6),
-        Validators.maxLength(30)
+        Validators.maxLength(30),
+        RegisterView.matchValues('password')
       ])),
     }, {
       validators: this.checkPassword.bind(this)
@@ -67,10 +69,20 @@ export class RegisterView implements OnInit {
   ngOnInit(): void {
   }
 
+  static matchValues(matchTo: string): (AbstractControl) => ValidationErrors | null {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return !!control.parent
+      && !!control.parent.value
+      && control.value === control.parent.controls[matchTo].value
+        ? null : { password_not_match: true };
+    };
+  }
+
+
   public checkPassword(formGroup: FormGroup) {
     const { value: password } = formGroup.get("password");
     const { value: confirmPassword } = formGroup.get("confirm_password");
-    return password === confirmPassword ? null : { passwordNotMatch: true };
+    return password === confirmPassword ? null : { password_not_match: true };
   }
 
   public async GoogleAuth() {

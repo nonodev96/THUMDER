@@ -2,11 +2,11 @@
   Login but isLoggedIn
 </ng-container>
 <ng-container *ngIf="authService.isLoggedIn === false">
-  <div class="login-page" style="justify-content: start !important; padding-top: 7em">
+  <div class="login-page" style="justify-content: center !important">
     <div class="login-box">
       <div class="login-logo">
         <img src="assets/icons/favicon.256x256.png" alt="Logo" class="img-fluid mb-4">
-        <h2>THUMDER</h2>
+        <h2>{{ 'PAGES.HOME.TITLE' | translate }}</h2>
       </div>
       <!-- /.login-logo -->
       <div class="card">
@@ -14,25 +14,29 @@
           <p class="login-box-msg">Sign in to start your session</p>
           <form [formGroup]="loginForm">
             <div class="input-group mb-3">
-              <input type="email" class="form-control" placeholder="Email" formControlName="email"
-                     id="userEmail" #userEmail>
+              <input type="email" class="form-control" placeholder="Email"
+                     [class.is-valid]="loginForm.get('email').valid"
+                     [class.is-invalid]="!loginForm.get('email').valid"
+                     formControlName="email" id="userEmail" #userEmail>
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-envelope"></span>
                 </div>
               </div>
             </div>
-            <div class="error-messages">
-              <ng-container *ngFor="let error of error_messages.email">
-                <div class="error-message"
-                     *ngIf="loginForm.get('email').hasError(error.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
-                  {{ error.message }}
-                </div>
-              </ng-container>
-            </div>
+
+            <ng-container *ngFor="let error of error_messages.email">
+              <div class="error-messages"
+                   *ngIf="loginForm.get('email').hasError(error.type) && (loginForm.get('email').dirty || loginForm.get('email').touched)">
+                <p>{{ error.message }}</p>
+              </div>
+            </ng-container>
 
             <div class="input-group mb-3">
-              <input type="password" class="form-control" placeholder="Password" formControlName="password"
+              <input type="password" class="form-control"
+                     [class.is-valid]="loginForm.get('password').valid"
+                     [class.is-invalid]="!loginForm.get('password').valid"
+                     placeholder="Password" formControlName="password"
                      id="userPassword" #userPassword>
               <div class="input-group-append">
                 <div class="input-group-text">
@@ -40,14 +44,13 @@
                 </div>
               </div>
             </div>
-            <div class="error-messages">
-              <ng-container *ngFor="let error of error_messages.password">
-                <div class="error-message"
-                     *ngIf="loginForm.get('password').hasError(error.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
-                  {{ error.message }}
-                </div>
-              </ng-container>
-            </div>
+
+            <ng-container *ngFor="let error of error_messages.password">
+              <div class="error-messages"
+                   *ngIf="loginForm.get('password').hasError(error.type) && (loginForm.get('password').dirty || loginForm.get('password').touched)">
+                <p>{{ error.message }}</p>
+              </div>
+            </ng-container>
           </form>
 
           <div class="row">

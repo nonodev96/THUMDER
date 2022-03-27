@@ -1,4 +1,10 @@
 @startuml
+hide class fields
+hide class method
+hide interface fields
+hide interface method
+skinparam linetype ortho
+
 class CoreModule
 class Int32 {
     -_value: number

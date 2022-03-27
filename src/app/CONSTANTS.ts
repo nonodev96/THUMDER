@@ -61,8 +61,8 @@ export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
   pipeline:            true,
   registers:           true,
   statistics:          false,
-  list_1:              [ "code", "cycle_clock_diagram", "memory", "pipeline", "registers" ],
-  list_2:              [ "calculator", "statistics" ]
+  list_1:              [ "code", "cycle_clock_diagram", "memory", "pipeline" ],
+  list_2:              [ "registers", "calculator", "statistics" ]
 };
 
 export const DEFAULT_ENABLED_FORWARDING_CONFIGURATION: TypeEnabledForwardingConfiguration = true;

@@ -82,7 +82,7 @@ export class FileSystemService {
   }
 
   public async updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean> {
-    const items = (viewArea === "navPane") ? [ directory ] : selectedItems;
+    const items = (viewArea === "navPane") ? [directory] : selectedItems;
     for (const item of items) {
       const index = this.items.findIndex(value => value.key === item.key);
       if (item.dataItem) {
@@ -116,29 +116,33 @@ export class FileSystemService {
     return Promise.resolve(this.items[index]);
   }
 
-  public async deleteItem(item: FileSystemItem): Promise<THUMDER_FileItem> {
+  public async deleteItem(item: FileSystemItem): Promise<void> {
+    console.log({ item });
     const indexToDelete = this.items.findIndex(value => value.key === item.key);
     if (indexToDelete > -1) {
-      const fileItemToDelete = this.items[indexToDelete];
-      await this.fileSystemStorageService.deleteFileItem(fileItemToDelete.$key);
-      this.items.splice(indexToDelete, 1);
-      // this.updateUI$.next();
-      return Promise.resolve(fileItemToDelete);
+      const element = this.items.find(value => value.key === item.key);
+      // Actualizamos this.items
+      await this.fileSystemStorageService.deleteFileItem(element.$key);
+      this.updateUI$.next();
+      return Promise.resolve();
     } else {
       return Promise.reject();
     }
   }
 
-  public moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): PromiseLike<THUMDER_FileItem> | any {
+  public moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
     console.log("TODO", item, destinationDirectory);
+    return Promise.resolve()
   }
 
-  public uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): PromiseLike<THUMDER_FileItem> | any {
+  public async uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
     console.log("TODO", fileData, uploadInfo, destinationDirectory);
+    return Promise.resolve()
   }
 
-  public downloadItem(items: Array<FileSystemItem>): void {
+  public async downloadItem(items: Array<FileSystemItem>): Promise<void> {
     console.log("TODO", items);
+    return Promise.resolve()
   }
 
   private async updateItems(items: InterfaceFileItem[]): Promise<void> {
