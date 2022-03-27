@@ -32,6 +32,7 @@ import { PadStartPipe } from "./pipes/numbers/PadStart.pipe";
 import { ReplaceAllPipe } from "./pipes/numbers/ReplaceAll.pipe";
 import { FromBaseToBasePipe } from "./pipes/numbers/FromBaseToBase.pipe";
 import { Binary32ToWordPipe } from "./pipes/numbers/Binary32ToWord.pipe";
+import { ObjectsPipe } from './pipes/Objects/objects.pipe';
 
 @NgModule({
   imports:      [
@@ -66,9 +67,10 @@ import { Binary32ToWordPipe } from "./pipes/numbers/Binary32ToWord.pipe";
     Uint_IEEE754_64_Pipe,
     BinaryByteToNumberPipe,
     PadStartPipe,
-    ReplaceAllPipe
+    ReplaceAllPipe,
+    ObjectsPipe
   ],
-  exports:      [
+  exports: [
     FormsModule,
     TranslateModule,
 
@@ -97,7 +99,8 @@ import { Binary32ToWordPipe } from "./pipes/numbers/Binary32ToWord.pipe";
     Uint_IEEE754_64_Pipe,
     BinaryByteToNumberPipe,
     PadStartPipe,
-    ReplaceAllPipe
+    ReplaceAllPipe,
+    ObjectsPipe
   ]
 })
 export class SharedModule {

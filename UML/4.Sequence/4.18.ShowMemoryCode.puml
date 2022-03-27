@@ -1,5 +1,6 @@
 @startuml
 'https://plantuml.com/sequence-diagram
+!theme plain
 
 autonumber
 
@@ -13,10 +14,10 @@ activate User
 group#Gold User login
 
 end
-User -> InterfaceUI: Open Pipeline
+User -> InterfaceUI: Open code
 
 activate InterfaceUI
-User <- InterfaceUI: Show Pipeline
+User <- InterfaceUI: Show code
 deactivate InterfaceUI
 
 deactivate User

@@ -54,10 +54,14 @@ package-lock.json
 .DS_Store
 Thumbs.db
 
+# THUMDER
+UML/*/*.png
 cypress.env.json
+cypress/fixtures/example.json
 
 cypress/screenshots/*
 cypress/videos/*
 src/environments/environment.dev.ts
 src/environments/environment.production.ts
 src/environments/environment.web.ts
+

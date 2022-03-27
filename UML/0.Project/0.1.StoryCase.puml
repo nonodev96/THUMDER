@@ -1,6 +1,7 @@
 @startuml
 'https://plantuml.com/es/use-case-diagram
 '!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
+!theme plain
 skinparam defaultFontName consolas
 skinparam minClassWidth 100
 skinparam conditionStyle inside

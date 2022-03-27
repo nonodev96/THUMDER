@@ -44,6 +44,7 @@ import { AuthGuard } from "./__shared/guard/auth.guard";
 import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
 import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
 import { LoggerView } from "./views/_auth/logger/logger.view";
+import { GridViewComponent } from "./views/_auth/_grid_view/grid-view.component";
 
 
 const routes: Routes = [
@@ -85,6 +86,7 @@ const routes: Routes = [
       { path: "registers", component: RegistersView, data: { breadcrumb: "Registers" } },
       { path: "statistics", component: StatisticsView, data: { breadcrumb: "Statistics" } },
       { path: "multiview", component: MultiplesViewsComponent, data: { breadcrumb: "Multiview" } },
+      { path: "grid-view", component: GridViewComponent, data: { breadcrumb: "Grid view" } },
 
       { path: "debug", component: DebugView, data: { breadcrumb: "Debug" } }
     ]

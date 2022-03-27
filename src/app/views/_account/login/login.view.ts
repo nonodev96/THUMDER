@@ -17,14 +17,12 @@ export class LoginView implements OnInit {
   error_messages = {
     email:    [
       { type: "required", message: "Email is required." },
-      { type: "minlength", message: "Email length." },
-      { type: "maxlength", message: "Email length." },
-      { type: "required", message: "please enter a valid email address." }
+      { type: "email", message: "Please enter a valid email address." }
     ],
     password: [
-      { type: "required", message: "password is required." },
-      { type: "minlength", message: "password length." },
-      { type: "maxlength", message: "password length." }
+      { type: "required", message: "Password is required." },
+      { type: "minlength", message: "Password min length." },
+      { type: "maxlength", message: "Password max length." }
     ],
   };
 
@@ -45,11 +43,10 @@ export class LoginView implements OnInit {
       ])),
     }, {});
 
-    this.authService.getIsLoggingObservable().subscribe((isLogging) => {
+    this.authService.getIsLoggingObservable().subscribe(async (isLogging) => {
       if (isLogging) {
-        this.router.navigateByUrl("/").then(() => {
-
-        });
+        const isValid = await this.router.navigateByUrl("/");
+        console.log("navigateByUrl('/') => IsValid", isValid);
       }
     });
   }
@@ -58,9 +55,18 @@ export class LoginView implements OnInit {
   }
 
   async SignIn(email: string, password: string): Promise<void> {
-    const userData = await this.authService.SignIn(email, password);
-    if (userData) {
-      await this.router.navigateByUrl("/");
+    this.showSpinner = true;
+    try {
+      // =====
+      const userData = await this.authService.SignIn(email, password);
+      if (userData) {
+        await this.router.navigateByUrl("/");
+      }
+      // =====
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.showSpinner = false;
     }
     return Promise.resolve();
   }
@@ -68,7 +74,9 @@ export class LoginView implements OnInit {
   async GoogleAuth(): Promise<void> {
     this.showSpinner = true;
     try {
+      // =====
       await this.authService.GoogleAuth();
+      // =====
     } catch (e) {
       console.error(e);
     } finally {
@@ -80,7 +88,9 @@ export class LoginView implements OnInit {
   async GithubAuth(): Promise<void> {
     this.showSpinner = true;
     try {
+      // =====
       await this.authService.GithubAuth();
+      // =====
     } catch (e) {
       console.error(e);
     } finally {

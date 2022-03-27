@@ -10,7 +10,6 @@ import { THUMDER_FileItem } from "./file-system.service";
 import { InterfaceFileItem, InterfaceUser } from "../../../Types";
 import Timestamp = firebase.firestore.Timestamp;
 
-
 @Injectable({
   providedIn: "root"
 })
@@ -148,7 +147,6 @@ export class FileSystemStorageService {
 
   public async deleteFileItem($key: string): Promise<void> {
     try {
-      console.debug("The document with ID will be deleted on firestore: %s", $key);
       await this.collectionFileItems().doc($key).delete();
       return Promise.resolve();
     } catch (error) {

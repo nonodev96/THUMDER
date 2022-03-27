@@ -1,227 +1,44 @@
-<div class="row">
-  <div class="col-12" id="accordion">
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            README
-          </h4>
-        </div>
-      </a>
-      <!-- show -->
-      <div id="collapse_readme" class="collapse " data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/docs.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme_table_DLX">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            Tabla DLX "OPCODES"
-          </h4>
-        </div>
-      </a>
-      <div id="collapse_readme_table_DLX" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/md/DLX-TABLE-Instructions.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapse_DLX">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            0. Instructions
-          </h4>
-        </div>
-      </a>
-      <div id="collapse_DLX" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/00.TheExecutionOfInstructions.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            1. The Register window
-          </h4>
-        </div>
-      </a>
-      <div id="collapseOne" class="collapse" data-parent="#accordion">
-        <div class="card-body">
-          <markdown [src]="'assets/wiki/01.TheRegisterWindow.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseMemory">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            2. The Memory
-          </h4>
-        </div>
-      </a>
-      <div id="collapseMemory" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/02.TheMemoryWindow.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheCodeWindow">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            3. The Code Window
-          </h4>
-        </div>
-      </a>
-      <div id="collapseTheCodeWindow" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/03.TheCodeWindow.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapsePipeline">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            4.A The Pipeline Window
-          </h4>
-        </div>
-      </a>
-      <div id="collapsePipeline" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/04.ThePipelineWindow.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheClockCycleDiagram">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            4.B The Clock Cycle Diagram
-          </h4>
-        </div>
-      </a>
-      <div id="collapseTheClockCycleDiagram" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/04.TheClockCycleDiagramWindow.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheStatisticsWindow">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            5. The Statistics Window
-          </h4>
-        </div>
-      </a>
-      <div id="collapseTheStatisticsWindow" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/05.TheStatisticsWindow.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheBreakpointWindow">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            6. The Breakpoint Window
-          </h4>
-        </div>
-      </a>
-      <div id="collapseTheBreakpointWindow" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/06.TheBreakpoints.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheExecutionProcess">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            7. The Memory Windows
-          </h4>
-        </div>
-      </a>
-      <div id="collapseTheExecutionProcess" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/07.TheExecutionProcess.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseTheConfiguration">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            8. The Configuration
-          </h4>
-        </div>
-      </a>
-      <div id="collapseTheConfiguration" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/08.TheConfiguration.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
+<ng-container cdkDropListGroup>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12 col-xxl-12 example-list" id="accordion"
+           cdkDropList
+           #mainList="cdkDropList"
+           [cdkDropListData]="main_list"
+           (cdkDropListDropped)="MyDrop($event)">
 
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseFileManager">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            9. The File Manager
-          </h4>
+        <div *ngFor="let document of main_list" cdkDrag>
+          <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+          <ng-container [ngTemplateOutlet]="AccordionCard"
+                        [ngTemplateOutletContext]="{item: document}"></ng-container>
         </div>
-      </a>
-      <div id="collapseFileManager" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/09.FileManager.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
 
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseFileEditor">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            10. File Editor
-          </h4>
-        </div>
-      </a>
-      <div id="collapseFileEditor" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/10.FileEditor.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
-      </div>
-    </div>
-
-    <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseMultiview">
-        <div class="card-header">
-          <h4 class="card-title w-100">
-            11. The Multiview
-          </h4>
-        </div>
-      </a>
-      <div id="collapseMultiview" class="collapse" data-parent="#accordion">
-        <div class="card-body ">
-          <markdown [src]="'assets/wiki/11.Multiview.md'" (load)="onMarkdownLoad()"></markdown>
-        </div>
       </div>
     </div>
   </div>
-</div>
-<!--
-<div class="row">
-  <div class="col-12 mt-3 text-center">
-    <p class="lead">
-      if you found not the right answer or you have a other question?<br/>
-    </p>
+</ng-container>
+
+<ng-template #AccordionCard let-item='item'>
+  <div class="card card-primary card-outline">
+
+    <div class="card-header">
+      <h4 class="card-title">
+        <a class="d-block w-100" data-toggle="collapse" href="#collapse_{{item.id}}">
+          {{ item.title }}
+        </a>
+      </h4>
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" cdkDragHandle>
+          <i class="fas fa-arrows-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="collapse_{{item.id}}" class="collapse " data-parent="#accordion">
+      <div class="card-body">
+        <markdown [src]="item.file" (load)="onMarkdownLoad()"></markdown>
+      </div>
+    </div>
+
   </div>
-</div>
--->
+</ng-template>

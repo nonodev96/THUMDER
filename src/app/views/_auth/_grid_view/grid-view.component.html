@@ -1,0 +1,39 @@
+<div class="container-fluid">
+  <div class="row mb-2">
+    <div class="col-12">
+      <button class="btn btn-outline-primary btn-lg" (click)="addItem()">Add Item</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12" style="height: 100vh">
+      <gridster [options]="options">
+        <gridster-item [item]="item" *ngFor="let item of dashboard">
+          <!-- your content here -->
+
+          <div class="gridster-item-content" *ngIf="item.calculator">
+            <view-calculator>
+              <button type="button" class="btn btn-tool drag-handler">
+                <i class="fas fa-arrows-alt"></i>
+              </button>
+            </view-calculator>
+          </div>
+
+          <div class="gridster-item-content" *ngIf="item.pipeline">
+            <view-pipeline>
+              <button type="button" class="btn btn-tool drag-handler">
+                <i class="fas fa-arrows-alt"></i>
+              </button>
+            </view-pipeline>
+          </div>
+
+          <button type="button" class="btn btn-outline-primary btn-lg" *ngIf="item.itemVoid"
+                  (mousedown)="removeItem($event, item)"
+                  (touchstart)="removeItem($event, item)">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+
+        </gridster-item>
+      </gridster>
+    </div>
+  </div>
+</div>

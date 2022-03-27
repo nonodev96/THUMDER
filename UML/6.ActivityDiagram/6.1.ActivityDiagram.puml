@@ -1,5 +1,6 @@
 @startuml
 'https://plantuml.com/activity-diagram-beta
+!theme plain
 
 'Crear una cuenta
 

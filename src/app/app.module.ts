@@ -35,6 +35,8 @@ import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from "ngx-cookieconsent";
 // ng2-charts
 import { ChartsModule } from 'ng2-charts';
+// angular-gridster2
+import { GridsterModule } from 'angular-gridster2';
 
 // Services
 import { UtilityService } from "./__core/services/utility/utility.service";
@@ -103,6 +105,7 @@ PIXI.settings.SORTABLE_CHILDREN = true;
 
 import { ElectronService } from "./__core/services";
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { GridViewComponent } from './views/_auth/_grid_view/grid-view.component';
 
 const isServer = ElectronService.isServer;
 const domain = "localhost";
@@ -218,7 +221,8 @@ export function markedOptionsFactory(): MarkedOptions {
     PipelineView,
     ProfileView,
     RegistersView,
-    StatisticsView
+    StatisticsView,
+    GridViewComponent
   ],
   imports:      [
 
@@ -234,6 +238,7 @@ export function markedOptionsFactory(): MarkedOptions {
 
     AppRoutingModule,
     ChartsModule,
+    GridsterModule,
     NgcCookieConsentModule.forRoot(cookieConfig),
 
     MarkdownModule.forRoot({
