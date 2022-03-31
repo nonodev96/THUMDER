@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { TypeMultiviewConfiguration } from "../../../Types";
 import {
   CdkDragDrop,
@@ -15,7 +15,7 @@ import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";
   templateUrl: "./multiples-views.component.html",
   styleUrls:   []
 })
-export class MultiplesViewsComponent implements OnInit, AfterViewInit {
+export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CdkDrag) draggable_list: QueryList<CdkDrag>;
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   public main_list_1 = [];
@@ -43,6 +43,10 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit {
       await Utils.wait(500);
       window.dispatchEvent(new Event("resize"));
     });
+  }
+
+  ngOnDestroy(): void {
+
   }
 
   private static closeAllCards() {

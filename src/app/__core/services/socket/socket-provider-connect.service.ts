@@ -21,7 +21,7 @@ export class SocketProviderConnectService {
   constructor(
     private translate: TranslateService,
     private toast: ToastrService) {
-    console.log("constructor socket");
+
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
     const config: SocketIoConfig = CONFIG_WEBSOCKET;
     config.url = configWebSocket.socket_url;
@@ -41,7 +41,6 @@ export class SocketProviderConnectService {
     // When the client is in the process of connecting.
     this.socketIO.ioSocket.on("connecting", () => {
       console.debug("WebSocket-connecting");
-
     });
     // When the client is disconnected.
     this.socketIO.ioSocket.on("disconnect", () => {
@@ -114,6 +113,6 @@ export class SocketProviderConnectService {
   }
 
   private static handleErrors(err) {
-    console.error(err);
+    // console.error(err);
   }
 }

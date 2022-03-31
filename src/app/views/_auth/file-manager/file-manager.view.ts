@@ -7,6 +7,7 @@ import CustomFileSystemProvider from "devextreme/file_management/custom_provider
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import FileManager from "devextreme/ui/file_manager";
 import { Subscription } from "rxjs";
+import { getDoc } from "@angular/fire/firestore";
 
 export type FileMenuOptions = {
   items: {
@@ -138,7 +139,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   public onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
-    const index = this.fileSystemService.items.findIndex(value => $event.file.key === value.key);
+    const index = this.fileSystemService.items.findIndex((value) => $event.file.key === value.key);
     if (index > -1) {
       const interfaceFileItem = this.fileSystemService.items[index];
       const extras: NavigationExtras = {
@@ -188,12 +189,12 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   public debug(): void {
-    this.fileSystemService.fileSystemStorageService.collectionFileItems().valueChanges().subscribe((i) => {
+    this.fileSystemService.fileSystemStorageService.FileItems_Collections_valueChanges().subscribe((i) => {
       console.log(i);
     });
   }
 
   public async tests() {
-    await this.fileSystemService.fileSystemStorageService.getAllFilesFromFirestoreAsObservable();
+    await this.fileSystemService.fileSystemStorageService.getFiles();
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import { ipcRenderer, webFrame, remote } from "electron";
+import { ipcRenderer, webFrame } from "electron";
+// import { remote } from "electron";
 import * as childProcess from "child_process";
 import * as fs from "fs";
 
@@ -12,7 +13,7 @@ export class ElectronService {
 
   public ipcRenderer: typeof ipcRenderer;
   public webFrame: typeof webFrame;
-  public remote: typeof remote;
+  // public remote: typeof remote;
   public childProcess: typeof childProcess;
   public fs: typeof fs;
 
@@ -21,7 +22,7 @@ export class ElectronService {
     if (ElectronService.isElectron()) {
       this.ipcRenderer = window.require("electron").ipcRenderer;
       this.webFrame = window.require("electron").webFrame;
-      this.remote = window.require("electron").remote;
+      // this.remote = window.require("electron").remote;
 
       this.childProcess = window.require("child_process");
       this.fs = window.require("fs");
@@ -83,9 +84,9 @@ export class ElectronService {
     return ElectronService.isElectronApp && process.arch === "x64";
   }
 
-  public get nativeImage(): Electron.nativeImage {
-    return this.electron ? this.electron.nativeImage : null;
-  }
+  // public get nativeImage(): Electron.nativeImage {
+  //   return this.electron ? this.electron.nativeImage : null;
+  // }
 
   public get screen(): Electron.Screen {
     return this.electron ? this.electron.screen : null;

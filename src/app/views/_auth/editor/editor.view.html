@@ -13,7 +13,7 @@
         <i class="fas fa-circle"></i>
       </button>
 
-      <button type="button" class="btn btn-tool" (click)="save()">
+      <button type="button" class="btn btn-tool" (click)="closeAndSave()">
         <i class="fas fa-save"></i>
       </button>
 
@@ -37,12 +37,12 @@
 
     <ng-container *ngIf="interfaceFileItem">
 <pre>
-  $Key: {{interfaceFileItem.$key ?? ''}}
-  User: {{interfaceFileItem.e1_uid ?? ''}}
-  Key: {{interfaceFileItem.key ?? ''}}
-  Name: {{interfaceFileItem.name ?? ''}}
-  Path: {{interfaceFileItem.path ?? ''}}
-  Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}}
+$Key: {{interfaceFileItem.$key ?? ''}}
+User: {{interfaceFileItem.e1_uid ?? ''}}
+Key: {{interfaceFileItem.key ?? ''}}
+Name: {{interfaceFileItem.name ?? ''}}
+Path: {{interfaceFileItem.path ?? ''}}
+Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}}
 </pre>
     </ng-container>
 

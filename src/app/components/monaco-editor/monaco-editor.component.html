@@ -11,7 +11,7 @@
   theme="thumderTheme"
   language="thumderLanguage"
   [editorOptions]="EDITOR_OPTIONS_THUMDER"
-  [(ngModel)]="file.content"
+  [(ngModel)]="editorFile.content"
   (ngModelChange)="callBackFunc($event)"
   (editorInitialized)="editorInitialized($any($event))"
   (editorConfigurationChanged)="editorConfigurationChanged()"

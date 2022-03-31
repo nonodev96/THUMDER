@@ -52,11 +52,14 @@
         </a>
       </li>
 
-      <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/grid-view']" class="nav-link badge-beta" title="GRID-VIEW">
-          {{ 'NAVIGATION.GRID_VIEW' | translate }}
-        </a>
-      </li>
+      <ng-container *ngIf="isDEV">
+        <li class="nav-item d-none d-sm-inline-block">
+          <a [routerLink]="['/auth/grid-view']" class="nav-link badge-beta" title="GRID-VIEW">
+            {{ 'NAVIGATION.GRID_VIEW' | translate }}
+          </a>
+        </li>
+      </ng-container>
+
     </ng-container>
 
   </ul>

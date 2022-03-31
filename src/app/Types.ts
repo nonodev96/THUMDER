@@ -51,7 +51,7 @@ export interface InterfaceUser {
 }
 
 export interface InterfaceFileItem {
-  $key?: string; // ---? Firebase
+  $key: string; // ---? Firebase
   f_id: string; //-
   e1_uid: string; //-
   key: string; //-
@@ -677,7 +677,6 @@ export type TypeSimulationStep = {
   // stage: TypeStage;
 
   pipeline: TypePipeline;
-
   registers: TypeRegisterToUpdate[];
   memory: TypeMemoryToUpdate[];
   statistics: Partial<TypeDataStatistics>;

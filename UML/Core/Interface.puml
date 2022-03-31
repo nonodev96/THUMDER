@@ -1,0 +1,51 @@
+@startdef(id=InterfaceRegisters)
+  interface InterfaceRegisters {
+    +PC: Int32
+    +IMAR: Int32
+    +IR: Int32
+    +A: Int32
+    +AHI: Int32
+    +B: Int32
+    +BHI: Int32
+    +BTA: Int32
+    +ALU: Int32
+    +ALUHI: Int32
+    +FPSR: Int32
+    +DMAR: Int32
+    +SDR: Int32
+    +SDRHI: Int32
+    +LDR: Int32
+    +LDRHI: Int32
+    +R: Int32[]
+    +F: Float32[]
+    +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
+    +reset(): void
+  }
+@enddef
+
+@startdef(id=InterfaceBreakpoints)
+  interface InterfaceBreakpoints {
+    +_breakpoints: TypeBreakpoints
+    +getBreakpoints(): TypeBreakpoints[]
+    +reset(): void
+  }
+@enddef
+
+@startdef(id=InterfaceMemory)
+  interface InterfaceMemory {
+    +_memorySizeBytes: number
+    +_memoryInt8Array: Uint8Array
+    +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
+    +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
+    +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
+    +reset(newMemorySizeBytes: number): void
+  }
+@enddef
+
+@startdef(id=InterfaceDataStatistics)
+  interface InterfaceDataStatistics {
+    +_data: TypeDataStatistics
+    +processResponse(response: Partial<TypeDataStatistics>): void
+    +reset()
+  }
+@enddef

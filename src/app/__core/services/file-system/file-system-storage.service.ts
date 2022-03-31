@@ -1,44 +1,72 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { AngularFirestore, AngularFirestoreCollection } from "@angular/fire/firestore";
+
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import firebase from "firebase/app";
 
 import { Utils } from "../../../Utils";
 import { THUMDER_FileItem } from "./file-system.service";
-import { InterfaceFileItem, InterfaceUser } from "../../../Types";
-import Timestamp = firebase.firestore.Timestamp;
+import { InterfaceUser } from "../../../Types";
+import { map, filter } from "rxjs/operators";
+import { from } from "rxjs";
+
+import {
+  CollectionReference,
+  Firestore, Timestamp,
+  query, where,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  setDoc,
+  deleteDoc,
+  collection,
+  onSnapshot,
+  // for valueChanges and snapShotChanges
+  docSnapshots,
+  collectionChanges,
+  collectionData,
+  docData,
+} from "@angular/fire/firestore";
+import { DocumentReference } from "@firebase/firestore";
 
 @Injectable({
   providedIn: "root"
 })
 export class FileSystemStorageService {
 
+  private readonly dbFileItemsPath = "/fileitems";
+
+  // https://dev.to/jdgamble555/angular-12-with-firebase-9-49a0
   constructor(private httpClient: HttpClient,
-              private afs: AngularFirestore) {
+              private afs: Firestore) {
   }
 
+  // TODO
   public async isInitialize(): Promise<boolean> {
-    const vector = await this.collectionFileItems().get().toPromise();
-    return Promise.resolve(vector.size > 0);
+    const documents = await getDocs(this.queryAllFilesFromUser());
+    return Promise.resolve(documents.size > 0);
   }
 
   // region getters
-  public getCollectionFileItemsByFilter(name: string) {
+  public queryFileFromUser(filename: string) {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    return this.afs.collection<InterfaceFileItem>("/fileitems", (ref) => {
-      return ref
-        .where("e1_uid", "==", userData.uid)
-        .where("name", "==", name);
-    });
+    return getDocs(query(
+      collection(this.afs, this.dbFileItemsPath),
+      where("e1_uid", "==", userData.uid),
+      where("name", "==", filename)
+    ));
   }
 
-  public collectionFileItems(): AngularFirestoreCollection<InterfaceFileItem> {
+  private queryAllFilesFromUser() {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    return this.afs.collection<InterfaceFileItem>("/fileitems", (ref) => {
-      return ref.where("e1_uid", "==", userData.uid);
-    });
+    return query(
+      collection(this.afs, this.dbFileItemsPath),
+      where("e1_uid", "==", userData.uid),
+    )
+  }
+
+  private collectionFileItems() {
+    return getDocs(this.queryAllFilesFromUser());
   }
 
   // endregion
@@ -47,7 +75,7 @@ export class FileSystemStorageService {
     if (await this.isInitialize()) {
       return Promise.resolve(1);
     }
-    const files = [ "prim.s", "win-dlx.s" ];
+    const files = ["prim.s", "win-dlx.s"];
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     for (const filename of files) {
       const defaultFileItem = new THUMDER_FileItem("", false, []);
@@ -56,20 +84,21 @@ export class FileSystemStorageService {
       defaultFileItem.e1_uid = userData.uid;
       defaultFileItem.dateModified = new Date();
       defaultFileItem.content = await this.httpClient.get("assets/examples-dlx/" + filename, { responseType: "text" }).toPromise();
-      await this.addFileItem(defaultFileItem);
+      await this.createFileItem(defaultFileItem);
     }
     return Promise.resolve(0);
   }
 
-  public getAllFilesFromFirestoreAsObservable(): Observable<InterfaceFileItem[]> {
-    return this.collectionFileItems().valueChanges([ "added", "removed", "modified" ]).pipe(
+  // Observable<InterfaceFileItem[]>
+  public getAllFilesFromFirestoreAsObservable() {
+    return this.FileItems_Collections_valueChanges().pipe(
       map((changes) => {
         const items = changes.map((interfaceFileItem) => {
-          const time = interfaceFileItem.dateModified as unknown as Timestamp;
+          // const time = interfaceFileItem.dateModified as unknown as Timestamp;
           return {
             ...interfaceFileItem,
-            dateModified: new Timestamp(time.seconds, time.nanoseconds).toDate()
-          } as unknown as InterfaceFileItem;
+            // dateModified: new Timestamp(time.seconds, time.nanoseconds).toDate()
+          } as unknown as THUMDER_FileItem;
         });
         return items.sort((a, b) => {
           if (a.name < b.name) return -1;
@@ -80,28 +109,15 @@ export class FileSystemStorageService {
     );
   }
 
-  public getFileItemsAsObservable(): Observable<InterfaceFileItem[]> {
-    return this.collectionFileItems().snapshotChanges().pipe(
-      map((changes) => {
-        return changes.map((c) => {
-          const time = c.payload.doc.data().dateModified as unknown as Timestamp;
-          return {
-            $key: c.payload.doc.id,
-            ...c.payload.doc.data(),
-            dateModified: new Timestamp(time.seconds, time.nanoseconds).toDate()
-          } as unknown as InterfaceFileItem;
-        });
-      })
-    );
-  }
-
-  public async addFileItem(fileItem: THUMDER_FileItem): Promise<THUMDER_FileItem> {
+  public async createFileItem(fileItem: THUMDER_FileItem): Promise<boolean> {
     try {
       const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-      const $key = this.afs.createId();
+      const newDocument = this.createNewDocument();
+
       const { path, isDirectory, pathKeys } = fileItem;
       const thumderFileItem = new THUMDER_FileItem(path, isDirectory, pathKeys);
-      thumderFileItem.$key = $key;
+      thumderFileItem.$key = newDocument.id; // ID firebase doc
+
       thumderFileItem.e1_uid = userData.uid;
       thumderFileItem.content = fileItem.content ?? "";
       thumderFileItem.dataItem = fileItem.dataItem ?? "";
@@ -117,54 +133,94 @@ export class FileSystemStorageService {
       thumderFileItem.size = fileItem.size ?? 0;
       thumderFileItem.thumbnail = fileItem.thumbnail ?? "";
 
-      const obj: InterfaceFileItem = {
-        $key:              thumderFileItem.$key,
-        content:           thumderFileItem.content,
-        dataItem:          thumderFileItem.dataItem,
-        dateModified:      thumderFileItem.dateModified,
-        description:       thumderFileItem.description,
-        e1_uid:            thumderFileItem.e1_uid,
-        f_id:              thumderFileItem.f_id,
-        hasSubDirectories: thumderFileItem.hasSubDirectories,
-        isDirectory:       thumderFileItem.isDirectory,
-        key:               thumderFileItem.key,
-        name:              thumderFileItem.name,
-        path:              thumderFileItem.path,
-        pathKeys:          thumderFileItem.pathKeys,
-        size:              thumderFileItem.size,
-        thumbnail:         thumderFileItem.thumbnail,
-      };
-
-      console.log("New document in firestore with ID: %s, %o", $key, obj);
-
-      await this.collectionFileItems().doc($key).set(obj, { merge: true });
-      return Promise.resolve(thumderFileItem);
+      console.log("New document in firestore with ID: %s, %o", thumderFileItem.$key, thumderFileItem);
+      await setDoc(newDocument.ref, JSON.parse(JSON.stringify(thumderFileItem)), { merge: true })
+      return Promise.resolve(true);
     } catch (error) {
       console.error(error);
       return Promise.reject();
     }
   }
 
-  public async deleteFileItem($key: string): Promise<void> {
-    try {
-      await this.collectionFileItems().doc($key).delete();
-      return Promise.resolve();
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error.message);
-    }
+  public async deleteFileItem($key: string): Promise<boolean> {
+    await deleteDoc(doc(this.afs, this.dbFileItemsPath, $key));
+    return Promise.resolve(true)
   }
 
-  public async editFileItem(fileItem: THUMDER_FileItem, $key: string): Promise<void> {
-    try {
-      console.debug("Se va a editar en el servidor el documento con ID: %s", $key);
-      const id = $key ?? this.afs.createId();
-      const data = { $key: id, ...fileItem };
-      const result_void = await this.collectionFileItems().doc(id).set(data);
-      return Promise.resolve(result_void);
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error.message);
-    }
+  public async updateFileItem($key: string, fileItem: THUMDER_FileItem): Promise<boolean> {
+    await updateDoc(doc(this.afs, this.dbFileItemsPath, $key), JSON.parse(JSON.stringify(fileItem)));
+    return Promise.resolve(true)
+  }
+
+  //  Documents
+  public FileItem_Documents_valueChanges(id) {
+    return docData(
+      doc(this.afs, this.dbFileItemsPath, id) as DocumentReference<THUMDER_FileItem>
+    );
+  }
+
+  public FileItem_Documents_snapShotChanges(id) {
+    return docSnapshots(
+      doc(this.afs, id) as DocumentReference<THUMDER_FileItem>
+    );
+  }
+
+  // Collections
+  public FileItems_Collections_valueChanges() {
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    return collectionData<THUMDER_FileItem>(
+      query<THUMDER_FileItem>(
+        collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
+        where('e1_uid', '==', userData.uid)
+      ), { idField: '$key' }
+    );
+  }
+
+  public FileItems_Collections_snapShotChanges() {
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    return collectionChanges<THUMDER_FileItem>(
+      query<THUMDER_FileItem>(
+        collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
+        where('e1_uid', '==', userData.uid)
+      )
+    );
+  }
+
+  public createNewDocument() {
+    const newDocument = doc(collection(this.afs, this.dbFileItemsPath));
+    return {
+      ref: newDocument,
+      id:  newDocument.id
+    };
+  }
+
+  public async getAllFilesFromFirestore() {
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    return getDocs<THUMDER_FileItem>(
+      query<THUMDER_FileItem>(
+        collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
+        where('e1_uid', '==', userData.uid)
+      )
+    );
+  }
+
+  public async getFiles(): Promise<THUMDER_FileItem[]> {
+    const files: THUMDER_FileItem[] = [];
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const q = query<THUMDER_FileItem>(
+      collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
+      where("e1_uid", "==", userData.uid)
+    );
+    const querySnapshot = await getDocs<THUMDER_FileItem>(q);
+    querySnapshot.forEach((doc) => {
+      files.push(doc.data());
+    });
+    return files;
   }
 }
+
+// update file
+// delete file
+// create file
+// async data
+// generate 2 files by default

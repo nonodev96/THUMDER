@@ -1,9 +1,11 @@
 @startuml
-hide class fields
-hide class method
-hide interface fields
-hide interface method
+!theme plain
+'hide class fields
+'hide class method
+'hide interface fields
+'hide interface method
 
+skinparam defaultFontName "JetBrains Mono"
 skinparam linetype ortho
 
 package Services #DDDDDD {
@@ -19,7 +21,7 @@ package Services #DDDDDD {
     +nativeImage: Electron.NativeImage
     +screen: Electron.Screen
     +shell: Electron.Shell
-    +{static} isElectron(): "" | "browser" | "renderer" | "worker"
+    +{static} serviceElectron(): "" | "browser" | "renderer" | "worker"
     +{static} isServer: boolean
     +{static} isElectronApp: boolean
     +{static} isMacOS: boolean
