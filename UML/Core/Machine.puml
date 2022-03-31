@@ -1,0 +1,71 @@
+@startdef(id=MachineService)
+ class MachineService {
+    +floatingPointStageConfiguration: TypeFloatingPointStageConfiguration
+    +pipeline: PixiTHUMDER_Pipeline
+    +cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
+    +dataStatistics: ManagerStatistics
+    +registers: ManagerRegisters
+    +memory: ManagerMemory
+    +memorySize: any
+    +breakpointManager: ManagerBreakpoints
+    +code: UtilsDataStructures.THUMDER_Map<TypeAddress, TypeInstructionsData>
+    +canSimulate: boolean
+    -statusMachineInStep: TypeSimulationStep
+    +isBreakpoint$: Subject<number>
+    +codeSimulation$: Subject<TypeInstructionsData[]>
+    +stepSimulation$: Subject<TypeSimulationStep>
+    +dataStatistics$: Subject<TypeDataStatistics>
+    +logger: string
+    -level: EnumLogLevel
+    -privateStep: number
+    -privateLine: number
+    -timer: Observable<number>
+    -timerObserver: PartialObserver<number>
+    +reset$: Subject<void>
+    +logger$: Subject<string>
+    +step$: Subject<number>
+    +line$: Subject<number>
+    +isRunning$: Subject<boolean>
+    +isComplete$: Subject<boolean>
+    +isRunning: boolean
+    +isComplete: boolean
+    +isBreakpoint: boolean
+    -store: StorageService
+    -socketProviderConnect: SocketProviderConnectService
+    -translate: TranslateService
+    -toast: ToastrService
+    +resetMachineStatus(): Promise<boolean>
+    +getResetObservable(): Observable<void>
+    +getStepObservable(): Observable<number>
+    +getLineObservable(): Observable<number>
+    +getIsRunningObservable(): Observable<boolean>
+    +getIsCompleteObservable(): Observable<boolean>
+    +getStepSimulationObservable(): Observable<TypeSimulationStep>
+    +getCodeSimulationObservable(): Observable<TypeInstructionsData[]>
+    +getDebuggerObservable(): Observable<number>
+    +getDataStatisticsObservable(): Observable<TypeDataStatistics>
+    +getLoggerObservable(): Observable<string>
+    +getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect">
+    +getStatusWebsocket(): "Connect" | "Disconnect"
+    +getListStatusPipeline(): TypePipelineToProcess[]
+    +play(): Promise<void>
+    +reset(): Promise<void>
+    +nextStep(): Promise<void>
+    +pause(): Promise<void>
+    +resume(): Promise<void>
+    +end(): Promise<void>
+    -SimulationInit(): Promise<boolean>
+    -SimulationNextStep(): Promise<void>
+    -CheckConditions(): Promise<boolean>
+    -ProcessStep(): Promise<void>
+    +updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean>
+    +updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean>
+    +writeToLog(msg: string, level?: EnumLogLevel, params?: TypeLogger[]): void
+    +getCode(address: TypeAddress): TypeInstructionsData
+    +getAllStatusMachine(): TypeStatusMachine
+    +resetConnection(): void
+    -stringFormat(msg: string, params: TypeLogger[]): string
+    -shouldLog(level: EnumLogLevel): boolean
+    -toastMessage(key_title?: string, key_message?: string): Promise<void>
+  }
+@enddef

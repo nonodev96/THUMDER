@@ -24,7 +24,9 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   private initializedSubscription: Subscription = new Subscription();
   private breakpointSubscription: Subscription = new Subscription();
   private debuggerSubscription: Subscription = new Subscription();
+  private fileSaveSubscription: Subscription = new Subscription();
   private lineSubscription: Subscription = new Subscription();
+
   private readonly extrasIDE: TypeExtrasIDE;
   public date: Date = new Date();
 
@@ -55,12 +57,21 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        this.interfaceFileItem = (this.extrasIDE?.interfaceFileItem ?? JSON.parse(localStorage.getItem("interfaceFileItem")) ?? DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
+        this.interfaceFileItem = (
+          this.extrasIDE?.interfaceFileItem ??
+          JSON.parse(localStorage.getItem("interfaceFileItem")) ??
+          DEFAULT_INTERFACE_FILE_ITEM
+        ) as InterfaceFileItem;
+        // console.log({
+        //   extra:             this.extrasIDE?.interfaceFileItem,
+        //   local:             JSON.parse(localStorage.getItem("interfaceFileItem")),
+        //   default_interface: DEFAULT_INTERFACE_FILE_ITEM
+        // });
+        await this.monacoEditorComponent.setEditorFile(this.interfaceFileItem);
+        await this.monacoEditorComponent.setEditorContent(this.interfaceFileItem.content);
+
         const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints ?? {};
-        await this.monacoEditorComponent.updateFile(this.interfaceFileItem);
-        await this.monacoEditorComponent.updateContent(this.interfaceFileItem.content);
         await this.monacoEditorComponent.setBreakpoints(breakpoints);
-        return Promise.resolve();
       }
     });
     this.breakpointSubscription = this.monacoEditorComponent.getBreakpointsObservable().subscribe((breakpoints) => {
@@ -79,38 +90,25 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
         this.monacoEditorComponent.printLine(line);
       }
     });
-    this.monacoEditorComponent.getFileSaveObservable().subscribe(async (interfaceFileItem) => {
-      try {
-        await this.fileSystem.editFileItem(interfaceFileItem, interfaceFileItem.$key);
-        const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
-        const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
-        this.toastService.success(message, title, {
-          timeOut:       1500,
-          positionClass: "toast-bottom-left"
-        });
-      } catch (error) {
-        console.error(error);
-        const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
-        const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
-        this.toastService.error(message, title, {
-          timeOut:       2500,
-          positionClass: "toast-bottom-left"
-        });
-      }
+    this.fileSaveSubscription = this.monacoEditorComponent.getFileSaveStorageObservable().subscribe(async (editorFile) => {
+      await this.saveFileInLocalStorage(editorFile);
+      await this.saveFileInCloudStorage(editorFile);
     });
   }
 
   async ngOnDestroy(): Promise<void> {
-    const auto_save = localStorage.getItem("auto_save_configuration") ?? false;
+    const auto_save = JSON.parse(localStorage.getItem("auto_save_configuration") ?? "false");
     if (auto_save) {
-      localStorage.setItem("breakpoints", JSON.stringify(this.monacoEditorComponent.breakpoints));
-      await this.save();
+      const breakpoints = this.monacoEditorComponent.getBreakpoints();
+      localStorage.setItem("breakpoints", JSON.stringify(breakpoints));
+      await this.closeAndSave()
     } else {
       localStorage.setItem("breakpoints", JSON.stringify({}));
     }
     this.initializedSubscription.unsubscribe();
     this.breakpointSubscription.unsubscribe();
     this.debuggerSubscription.unsubscribe();
+    this.fileSaveSubscription.unsubscribe();
     this.lineSubscription.unsubscribe();
     return Promise.resolve();
   }
@@ -129,8 +127,36 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.monacoEditorComponent.height = 1000;
   }
 
-  public async save(): Promise<void> {
-    await this.monacoEditorComponent.save();
-    return Promise.resolve();
+
+  public async closeAndSave() {
+    const editorFile = await this.monacoEditorComponent.getEditorFile();
+
+    await this.saveFileInLocalStorage(editorFile);
+    await this.saveFileInCloudStorage(editorFile);
+  }
+
+  private async saveFileInLocalStorage(editorFile: THUMDER_FileItem) {
+    localStorage.setItem("interfaceFileItem", JSON.stringify(editorFile));
+  }
+
+  private async saveFileInCloudStorage(editorFile: THUMDER_FileItem) {
+    try {
+      await this.fileSystem.editFileItem(editorFile, editorFile.$key);
+
+      const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
+      const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
+      this.toastService.success(message, title, {
+        timeOut:       1500,
+        positionClass: "toast-bottom-left"
+      });
+    } catch (error) {
+      console.error(error);
+      const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
+      const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
+      this.toastService.error(message, title, {
+        timeOut:       2500,
+        positionClass: "toast-bottom-left"
+      });
+    }
   }
 }

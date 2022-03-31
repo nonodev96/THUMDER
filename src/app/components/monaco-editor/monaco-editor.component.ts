@@ -19,8 +19,8 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public _height = 70;
   // public content: string = "";
 
-  public file: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
-  public breakpoints: TypeBreakpoints = {};
+  public editorFile: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
+  private breakpoints: TypeBreakpoints = {};
   private editor: IStandaloneCodeEditor;
   private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
@@ -29,7 +29,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public initialized$: Subject<boolean> = new Subject<boolean>();
   public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();
   public componentStatus$: Subject<TypeComponentStatus> = new Subject<TypeComponentStatus>();
-  public fileSave$: Subject<THUMDER_FileItem> = new Subject<THUMDER_FileItem>();
+  public editorFileSave$: Subject<THUMDER_FileItem> = new Subject<THUMDER_FileItem>();
 
   constructor() {
   }
@@ -58,9 +58,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
     this.editor.layout();
-    this.editor.updateOptions({ readOnly: this.file.$key == "" });
+    this.editor.updateOptions({ readOnly: this.editorFile.$key == "" });
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, async () => {
-      await this.save();
+      this.save();
     });
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D, () => {
       this.toggleDebuggerTag();
@@ -87,13 +87,13 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.componentStatus$.asObservable();
   }
 
-  getFileSaveObservable(): Observable<InterfaceFileItem> {
-    return this.fileSave$.asObservable();
+  getFileSaveStorageObservable(): Observable<THUMDER_FileItem> {
+    return this.editorFileSave$.asObservable();
   }
 
-  async updateContent(content: string): Promise<void> {
-    this.file.content = content;
-    this.editor.setValue(this.file.content);
+  async setEditorContent(content: string): Promise<void> {
+    this.editorFile.content = content;
+    this.editor.setValue(this.editorFile.content);
     return Promise.resolve();
   }
 
@@ -233,14 +233,12 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     monaco.editor.setModelMarkers(this.editor.getModel(), "IDK", markers)
   }
 
-  public async save(): Promise<void> {
-    if (this.file.$key === "") {
-      console.warn("Debes crear un fichero antes de guardarlo");
-      return Promise.resolve();
+  private updatedEditorFile() {
+    if (this.editorFile.$key === "") {
+      throw new Error("Debes crear un fichero antes de guardarlo");
     }
-    localStorage.setItem("interfaceFileItem", JSON.stringify(this.file));
-    this.fileSave$.next(this.file);
-    return Promise.resolve();
+    console.log("editorFile", this.editorFile)
+    this.editorFile.content = this.editor?.getModel()?.getLinesContent()?.join("\n") ?? "";
   }
 
   public async setBreakpoints(breakpoints: TypeBreakpoints): Promise<void> {
@@ -251,26 +249,39 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return Promise.resolve();
   }
 
-  public async updateFile(fileItem: InterfaceFileItem): Promise<void> {
-    console.log(this.file, fileItem);
-    this.file.$key = fileItem.$key;
-    this.file.f_id = fileItem.f_id;
-    this.file.e1_uid = fileItem.e1_uid;
-    this.file.key = fileItem.key;
-    this.file.pathKeys = fileItem.pathKeys;
-    this.file.path = fileItem.path;
-    this.file.name = fileItem.name;
-    this.file.content = fileItem.content;
-    this.file.description = fileItem.description;
-    this.file.dateModified = fileItem.dateModified;
-    this.file.size = fileItem.size;
-    this.file.isDirectory = fileItem.isDirectory;
-    this.file.hasSubDirectories = fileItem.hasSubDirectories;
-    this.file.thumbnail = fileItem.thumbnail;
-    this.file.dataItem = fileItem.dataItem;
+  public getBreakpoints(): TypeBreakpoints {
+    return this.breakpoints
+  }
 
-    this.editor.updateOptions({ readOnly: this.file.$key == "" });
+  public async setEditorFile(fileItem: InterfaceFileItem): Promise<void> {
+    console.log(this.editorFile, fileItem);
+    this.editorFile.$key = fileItem.$key;
+    this.editorFile.f_id = fileItem.f_id;
+    this.editorFile.e1_uid = fileItem.e1_uid;
+    this.editorFile.key = fileItem.key;
+    this.editorFile.pathKeys = fileItem.pathKeys;
+    this.editorFile.path = fileItem.path;
+    this.editorFile.name = fileItem.name;
+    this.editorFile.content = fileItem.content;
+    this.editorFile.description = fileItem.description;
+    this.editorFile.dateModified = fileItem.dateModified;
+    this.editorFile.size = fileItem.size;
+    this.editorFile.isDirectory = fileItem.isDirectory;
+    this.editorFile.hasSubDirectories = fileItem.hasSubDirectories;
+    this.editorFile.thumbnail = fileItem.thumbnail;
+    this.editorFile.dataItem = fileItem.dataItem;
+
+    this.editor.updateOptions({ readOnly: this.editorFile.$key == "" });
 
     return Promise.resolve();
+  }
+
+  public getEditorFile():THUMDER_FileItem {
+    return this.editorFile;
+  }
+
+  public save() {
+    this.updatedEditorFile();
+    this.editorFileSave$.next(this.editorFile);
   }
 }

@@ -7,6 +7,7 @@ import { AuthService } from "../../../__core/auth/auth.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { PublicRoutes } from "../../../Types";
 import { AUTH_ROUTES } from "../../../CONSTANTS";
+import { AppConfig } from "../../../../environments/_environment";
 
 @Component({
   selector:    "app-auth-navbar",
@@ -14,6 +15,7 @@ import { AUTH_ROUTES } from "../../../CONSTANTS";
 })
 export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);
+  public readonly isDEV = AppConfig.environment === "DEV";
   public navbarOpen = false;
   public isRunning = false;
   public colorWebsocketStatus: string = "orange";

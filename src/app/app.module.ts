@@ -3,9 +3,20 @@ import "../polyfills";
 
 import { NgModule, SecurityContext } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { AngularFireModule } from "@angular/fire";
-import { AngularFireAuthModule } from "@angular/fire/auth";
-import { AngularFirestoreModule } from "@angular/fire/firestore";
+import { AngularFireModule } from "@angular/fire/compat";
+import { AngularFireAnalyticsModule } from "@angular/fire/compat/analytics";
+import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { AngularFireStorageModule } from "@angular/fire/compat/storage";
+import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
+import { AngularFireAuthModule } from "@angular/fire/compat/auth";
+import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth, initializeAuth } from "@angular/fire/auth";
+import { provideStorage, getStorage } from "@angular/fire/storage";
+import { provideFirestore, getFirestore, initializeFirestore } from '@angular/fire/firestore';
+import { provideAnalytics, getAnalytics, initializeAnalytics } from '@angular/fire/analytics';
+import { provideDatabase, getDatabase } from "@angular/fire/database";
+import { provideFunctions, getFunctions } from "@angular/fire/functions";
+
 import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { ScrollingModule } from "@angular/cdk/scrolling";
@@ -151,17 +162,17 @@ export function markedOptionsFactory(): MarkedOptions {
     // console.log(header, body);
     // console.log(`<table class="table">${ header }${ body }</table>`);
     // return defaultMarkedRenderer.table.call(this, header, body);
-    return `<table class="table table-striped">${ header }${ body }</table>`;
+    return `<table class="table table-striped">${header}${body}</table>`;
   };
 
   markedRenderer.heading = (text: string, level: number) => {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
     return `
-<h${ level }>
-    <a class="anchor" href="#${ escapedText }" id="${ escapedText }">
+<h${level}>
+    <a class="anchor" href="#${escapedText}" id="${escapedText}">
         <span class="header-link"></span>
-    </a> ${ text }
-</h${ level }>`;
+    </a> ${text}
+</h${level}>`;
   };
 
   markedRenderer.link = (href: string, title: string, text: string) => {
@@ -171,12 +182,12 @@ export function markedOptionsFactory(): MarkedOptions {
     const isElectron = window && window.process && window.process.type;
     if (isElectron) {
       if (href.startsWith("http://") || href.startsWith("https://")) {
-        return `<a href="javascript:;" onclick="window.require('electron').shell.openExternal('${ href }');" title="${ title }">${ text }</a>`;
+        return `<a href="javascript:;" onclick="window.require('electron').shell.openExternal('${href}');" title="${title}">${text}</a>`;
       } else if (href.indexOf("#") !== -1) {
-        return `<a href="javascript:;" title="${ title }">${ text }</a>`;
+        return `<a href="javascript:;" title="${title}">${text}</a>`;
       }
     } else {
-      return `<a href="${ href }" title="${ title }">${ text }</a>`;
+      return `<a href="${href}" title="${title}">${text}</a>`;
     }
   };
 
@@ -190,6 +201,14 @@ export function markedOptionsFactory(): MarkedOptions {
     smartypants: false
   };
 }
+
+// const app = initializeApp(AppConfig.firebase);
+// const auth = getAuth(app);
+// const analytics = getAnalytics(app);
+// const firebase_firestore = getFirestore(app);
+// const firebase_storage = getStorage(app);
+// const firebase_database = getDatabase(app);
+// const firebase_functions = getFunctions(app);
 
 @NgModule({
   declarations: [
@@ -255,7 +274,7 @@ export function markedOptionsFactory(): MarkedOptions {
       loader: {
         provide:    TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps:       [ HttpClient ]
+        deps:       [HttpClient]
       }
     }),
     // MonacoEditorModule,
@@ -269,10 +288,27 @@ export function markedOptionsFactory(): MarkedOptions {
     // use forRoot() in main app module only.
 
     BrowserAnimationsModule,
-    AngularFireModule.initializeApp(AppConfig.firebase),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
-
+    // AngularFireModule,
+    // AngularFireModule.initializeApp(AppConfig.firebase),
+    // AngularFireAnalyticsModule,
+    // AngularFireDatabaseModule,
+    // AngularFireStorageModule,
+    // AngularFirestoreModule,
+    // AngularFireAuthModule,
+    provideFirebaseApp(() => initializeApp(AppConfig.firebase)),
+    provideAuth(() => getAuth()),
+    provideAnalytics(() => getAnalytics()),
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage()),
+    provideDatabase(() => getDatabase()),
+    provideFunctions(() => getFunctions()),
+    // provideFirebaseApp(() => app),
+    // provideAuth(() => auth),
+    // provideAnalytics(() => analytics),
+    // provideFirestore(() => firebase_firestore),
+    // provideStorage(() => firebase_storage),
+    // provideDatabase(() => firebase_database),
+    // provideFunctions(() => firebase_functions),
     MatSortModule,
     MatTableModule,
     ScrollingModule,

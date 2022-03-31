@@ -1,0 +1,90 @@
+@startdef(id=ManagerMemory)
+' implements InterfaceMemory
+  class ManagerMemory {
+    +_memorySizeBytes: number
+    +_memoryInt8Array: Uint8Array
+    +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
+    +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
+    +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
+    +getMemoryWordByIndex(index: number): Int32
+    +getMemoryWordByAddress(address: string): Int32
+    +getMemoryWordBinaryByIndex(index: number): string
+    +setMemoryWordByIndex(index: number, data: Int32): void
+    +setMemoryWordByAddress(address: string, data: Int32): void
+    +setMemoryWordBinaryByAddress(address: string, binary32: string): void
+    +setMemoryWordBinaryByIndex(index: number, binary32: string): void
+    +getMemoryByteBinaryByIndex(index: number): string
+    +setMemoryByteBinaryByIndex(index: number, binary: string): void
+    +setMemoryByteBinaryByAddress(address: string, binary08: string): void
+    +getMemoryHalfWordBinaryByIndex(index: number): string
+    +setMemoryHalfWordBinaryByIndex(index: number, binary16: string): void
+    +setMemoryHalfWordBinaryByAddress(address: string, binary16: string): void
+    +setMemoryFloatBinaryByAddress(address: string, binary32: string): void
+    +setMemoryDoubleBinaryByAddress(address: string, binary64: string): void
+    -setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void
+    +getAllMemoryWord(): Int32[]
+    +getAllIndexByWord(): number[]
+    +setSize(memorySize: number): void
+    +getAllMemory(): TypeMemory[]
+    +reset(newMemorySizeBytes: number): void
+  }
+@enddef
+
+@startdef(id=ManagerBreakpoints)
+' implements InterfaceBreakpoints
+  class ManagerBreakpoints {
+    +_breakpoints: TypeBreakpoints
+    +toggleBreakpoint(lineNumber: number): void
+    +getBreakpoint(lineNumber: number): boolean
+    +updateManager(breakpoints: TypeBreakpoints): void
+    +getAllBreakpoints(): TypeBreakpoints
+    +getAllLinesWithBreakpoints(): number[]
+    +isBreakpoint(line: number): boolean
+    +reset(): void
+  }
+@enddef
+
+@startdef(id=ManagerStatistics)
+  ' implements InterfaceDataStatistics
+  class ManagerStatistics {
+    +_data: TypeDataStatistics
+    +processResponse(response: Partial<TypeDataStatistics>): void
+    +getData(): TypeDataStatistics
+    +reset(): void
+  }
+@enddef
+
+@startdef(id=ManagerRegisters)
+  ' implements InterfaceRegisters
+  class ManagerRegisters {
+    +PC: Int32
+    +IMAR: Int32
+    +IR: Int32
+    +A: Int32
+    +AHI: Int32
+    +B: Int32
+    +BHI: Int32
+    +BTA: Int32
+    +ALU: Int32
+    +ALUHI: Int32
+    +FPSR: Int32
+    +DMAR: Int32
+    +SDR: Int32
+    +SDRHI: Int32
+    +LDR: Int32
+    +LDRHI: Int32
+    +R: Int32[]
+    +F: Float32[]
+    +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
+    +setRegisterControlWithHexadecimal(registerControl: TypeRegisterControl, hexadecimal: string): void
+    +setRegisterIntegerWithHexadecimal(index: number, hexadecimal: string): void
+    +setRegisterFloatWithHexadecimal(index: number, hexadecimal: string): void
+    +setRegisterDoubleWithHexadecimal(index: number, hexadecimal: string): void
+    +setRegisterControlWithBinary(registerControl: TypeRegisterControl, binary: string): void
+    +setRegisterIntegerWithBinary(index: number, binary: string): void
+    +setRegisterFloatWithBinary(index: number, binary: string): void
+    +setRegisterDoubleWithBinary(index: number, binary: string): void
+    +reset(): void
+  }
+@enddef
+

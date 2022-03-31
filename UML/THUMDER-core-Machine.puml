@@ -1,284 +1,36 @@
 @startuml
-hide class fields
-hide class method
-hide interface fields
-hide interface method
+!theme plain
+'hide class fields
+'hide class method
+'hide interface fields
+'hide interface method
 
+skinparam defaultFontName "JetBrains Mono"
 skinparam linetype ortho
 
-package Machine #DDDDDD {
-  class PixiTHUMDER_Pipeline {
-    -InstStages_text: PIXI.Text
-    -IF_text: PIXI.Text
-    -ID_text: PIXI.Text
-    -intEX_text: PIXI.Text
-    -MEM_text: PIXI.Text
-    -WB_text: PIXI.Text
-    -faddEX_array: PIXI.Text[]
-    -fmultEX_array: PIXI.Text[]
-    -fdivEX_array: PIXI.Text[]
-    -faddEX_count: any
-    -fmultEX_count: any
-    -fdivEX_count: any
-    +reset(faddEX_count: number, fmultEX_count: number, fdivEX_count: number): void
-    -initTexts(): void
-    -drawText(object: PIXI.Text, coords: CoordsType): void
-    -initArrows(): void
-    -initBoxes(): void
-    -drawBox(color: number, positionStart: CoordsType, text: string): void
-    -drawLine(from: CoordsType, to: CoordsType): void
-    -drawArrow(from: CoordsType, to: CoordsType): void
-    +update_IF_text(value: string): void
-    +update_ID_text(value: string): void
-    +update_intEX_text(value: string): void
-    +update_faddEX_text(count: number, value: string): void
-    +update_fmultEX_text(count: number, value: string): void
-    +update_fdivEX_text(count: number, value: string): void
-    +update_MEM_text(value: string): void
-    +update_WB_text(value: string): void
-    +draw(): PIXI.Container
-    +toString(): string
-  }
-  class Position {
-    +row: any
-    +col: any
-    +toString(): string
-  }
-  class PixiTHUMDER_Table {
-    +table: Map<string, PIXI.Container>
-    -cellMaxWidth: any
-    -cellMaxHeight: any
-    -rowSeparation: any
-    -columnSeparation: any
-    -isDebug: false
-    +getAllPositions(): Position[]
-    +getAllRows(): number[]
-    +getAllColumns(): number[]
-    +deleteRow(row: number): void
-    +deleteCol(col: number): void
-    +deleteCell(row: number, col: number): boolean
-    +clearCell(row: number, col: number): void
-    +setCell(row: number, col: number, content: PIXI.Container): void
-    +drawCell(row: number, col: number): void
-    +draw(): PIXI.Container
-    +existCell(row: number, col: number): boolean
-    -getCell(row: number, col: number): PIXI.Container
-  }
-  class PixiTHUMDER_CycleClockDiagram {
-    +realStep: number
-    +instructions: number
-    -table: PixiTHUMDER_Table
-    -tableSteps: PixiTHUMDER_Table
-    -tableInstructions: PixiTHUMDER_Table
-    -arrows: PIXI.Graphics[]
-    -arrowsContainer: PIXI.Container
-    -borderTitle: PIXI.Graphics
-    -borderLeft: PIXI.Graphics
-    -borderTop: PIXI.Graphics
-    -stepToStart: number
-    -last: number
-    +borderTopWidth: number
-    +borderLeftHeight: number
-    +reset(): void
-    -initTables(): void
-    -drawArrow(arrowDirection: TypeArrowDirection, color?: number): void
-    -drawBorders(): void
-    -drawSteps(displayStep?: number): void
-    -drawInstruction(textValue: string): void
-    +nextStep(pipeline: TypePipeline, step?: number): void
-    +addInstruction(text: string): void
-    +addArrow(instructionArrow: TypeArrowDirection, color: number): void
-    +moveLeft(): void
-    +moveRight(): void
-    +moveTop(): void
-    +moveBottom(): void
-    +debug(): void
-    +draw(): PIXI.Container
-    +toString(): string
-    -{static} drawCycle(code?: TypePipelineStage | TypeStall): PIXI.Graphics
-  }
-  class ManagerRegisters implements InterfaceRegisters {
-    +PC: Int32
-    +IMAR: Int32
-    +IR: Int32
-    +A: Int32
-    +AHI: Int32
-    +B: Int32
-    +BHI: Int32
-    +BTA: Int32
-    +ALU: Int32
-    +ALUHI: Int32
-    +FPSR: Int32
-    +DMAR: Int32
-    +SDR: Int32
-    +SDRHI: Int32
-    +LDR: Int32
-    +LDRHI: Int32
-    +R: Int32[]
-    +F: Float32[]
-    +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
-    +setRegisterControlWithHexadecimal(registerControl: TypeRegisterControl, hexadecimal: string): void
-    +setRegisterIntegerWithHexadecimal(index: number, hexadecimal: string): void
-    +setRegisterFloatWithHexadecimal(index: number, hexadecimal: string): void
-    +setRegisterDoubleWithHexadecimal(index: number, hexadecimal: string): void
-    +setRegisterControlWithBinary(registerControl: TypeRegisterControl, binary: string): void
-    +setRegisterIntegerWithBinary(index: number, binary: string): void
-    +setRegisterFloatWithBinary(index: number, binary: string): void
-    +setRegisterDoubleWithBinary(index: number, binary: string): void
-    +reset(): void
-  }
-  class ManagerMemory implements InterfaceMemory {
-    +_memorySizeBytes: number
-    +_memoryInt8Array: Uint8Array
-    +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
-    +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
-    +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
-    +getMemoryWordByIndex(index: number): Int32
-    +getMemoryWordByAddress(address: string): Int32
-    +getMemoryWordBinaryByIndex(index: number): string
-    +setMemoryWordByIndex(index: number, data: Int32): void
-    +setMemoryWordByAddress(address: string, data: Int32): void
-    +setMemoryWordBinaryByAddress(address: string, binary32: string): void
-    +setMemoryWordBinaryByIndex(index: number, binary32: string): void
-    +getMemoryByteBinaryByIndex(index: number): string
-    +setMemoryByteBinaryByIndex(index: number, binary: string): void
-    +setMemoryByteBinaryByAddress(address: string, binary08: string): void
-    +getMemoryHalfWordBinaryByIndex(index: number): string
-    +setMemoryHalfWordBinaryByIndex(index: number, binary16: string): void
-    +setMemoryHalfWordBinaryByAddress(address: string, binary16: string): void
-    +setMemoryFloatBinaryByAddress(address: string, binary32: string): void
-    +setMemoryDoubleBinaryByAddress(address: string, binary64: string): void
-    -setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void
-    +getAllMemoryWord(): Int32[]
-    +getAllIndexByWord(): number[]
-    +setSize(memorySize: number): void
-    +getAllMemory(): TypeMemory[]
-    +reset(newMemorySizeBytes: number): void
-  }
-  class ManagerBreakpoints implements InterfaceBreakpoints {
-    +_breakpoints: TypeBreakpoints
-    +toggleBreakpoint(lineNumber: number): void
-    +getBreakpoint(lineNumber: number): boolean
-    +updateManager(breakpoints: TypeBreakpoints): void
-    +getAllBreakpoints(): TypeBreakpoints
-    +getAllLinesWithBreakpoints(): number[]
-    +isBreakpoint(line: number): boolean
-    +reset(): void
-  }
-  class ManagerStatistics implements InterfaceDataStatistics {
-    +_data: TypeDataStatistics
-    +processResponse(response: Partial<TypeDataStatistics>): void
-    +getData(): TypeDataStatistics
-    +reset(): void
-  }
-  class MachineService {
-    +floatingPointStageConfiguration: TypeFloatingPointStageConfiguration
-    +pipeline: PixiTHUMDER_Pipeline
-    +cycleClockDiagram: PixiTHUMDER_CycleClockDiagram
-    +dataStatistics: ManagerStatistics
-    +registers: ManagerRegisters
-    +memory: ManagerMemory
-    +memorySize: any
-    +breakpointManager: ManagerBreakpoints
-    +code: UtilsDataStructures.THUMDER_Map<TypeAddress, TypeInstructionsData>
-    +canSimulate: boolean
-    -statusMachineInStep: TypeSimulationStep
-    +isBreakpoint$: Subject<number>
-    +codeSimulation$: Subject<TypeInstructionsData[]>
-    +stepSimulation$: Subject<TypeSimulationStep>
-    +dataStatistics$: Subject<TypeDataStatistics>
-    +logger: string
-    -level: EnumLogLevel
-    -privateStep: number
-    -privateLine: number
-    -timer: Observable<number>
-    -timerObserver: PartialObserver<number>
-    +reset$: Subject<void>
-    +logger$: Subject<string>
-    +step$: Subject<number>
-    +line$: Subject<number>
-    +isRunning$: Subject<boolean>
-    +isComplete$: Subject<boolean>
-    +isRunning: boolean
-    +isComplete: boolean
-    +isBreakpoint: boolean
-    -store: StorageService
-    -socketProviderConnect: SocketProviderConnectService
-    -translate: TranslateService
-    -toast: ToastrService
-    +resetMachineStatus(): Promise<boolean>
-    +getResetObservable(): Observable<void>
-    +getStepObservable(): Observable<number>
-    +getLineObservable(): Observable<number>
-    +getIsRunningObservable(): Observable<boolean>
-    +getIsCompleteObservable(): Observable<boolean>
-    +getStepSimulationObservable(): Observable<TypeSimulationStep>
-    +getCodeSimulationObservable(): Observable<TypeInstructionsData[]>
-    +getDebuggerObservable(): Observable<number>
-    +getDataStatisticsObservable(): Observable<TypeDataStatistics>
-    +getLoggerObservable(): Observable<string>
-    +getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect">
-    +getStatusWebsocket(): "Connect" | "Disconnect"
-    +getListStatusPipeline(): TypePipelineToProcess[]
-    +play(): Promise<void>
-    +reset(): Promise<void>
-    +nextStep(): Promise<void>
-    +pause(): Promise<void>
-    +resume(): Promise<void>
-    +end(): Promise<void>
-    -SimulationInit(): Promise<boolean>
-    -SimulationNextStep(): Promise<void>
-    -CheckConditions(): Promise<boolean>
-    -ProcessStep(): Promise<void>
-    +updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean>
-    +updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean>
-    +writeToLog(msg: string, level?: EnumLogLevel, params?: TypeLogger[]): void
-    +getCode(address: TypeAddress): TypeInstructionsData
-    +getAllStatusMachine(): TypeStatusMachine
-    +resetConnection(): void
-    -stringFormat(msg: string, params: TypeLogger[]): string
-    -shouldLog(level: EnumLogLevel): boolean
-    -toastMessage(key_title?: string, key_message?: string): Promise<void>
-  }
-  interface InterfaceRegisters {
-    +PC: Int32
-    +IMAR: Int32
-    +IR: Int32
-    +A: Int32
-    +AHI: Int32
-    +B: Int32
-    +BHI: Int32
-    +BTA: Int32
-    +ALU: Int32
-    +ALUHI: Int32
-    +FPSR: Int32
-    +DMAR: Int32
-    +SDR: Int32
-    +SDRHI: Int32
-    +LDR: Int32
-    +LDRHI: Int32
-    +R: Int32[]
-    +F: Float32[]
-    +processRegisterToUpdateArray(response: TypeRegisterToUpdate[]): void
-    +reset(): void
-  }
-  interface InterfaceBreakpoints {
-    +_breakpoints: TypeBreakpoints
-    +reset(): void
-  }
-  interface InterfaceMemory {
-    +_memorySizeBytes: number
-    +_memoryInt8Array: Uint8Array
-    +processResponseMachineDirectives(directives: TypeDirectiveData[]): void
-    +processResponseMachineInstructions(instructions: TypeInstructionsData[]): void
-    +processMemoryToUpdateArray(response: TypeMemoryToUpdate[]): void
-    +reset(newMemorySizeBytes: number): void
-  }
-  interface InterfaceDataStatistics {
-    +_data: TypeDataStatistics
-    +processResponse(response: Partial<TypeDataStatistics>): void
-    +reset()
-  }
+package Core #DDDDDD {
+
+'left
+!include ./Core/Interface.puml!InterfaceMemory
+!include ./Core/Manager.puml!ManagerMemory
+!include ./Core/Interface.puml!InterfaceRegisters
+!include ./Core/Manager.puml!ManagerRegisters
+
+'right
+!include ./Core/Interface.puml!InterfaceDataStatistics
+!include ./Core/Manager.puml!ManagerStatistics
+!include ./Core/Interface.puml!InterfaceBreakpoints
+!include ./Core/Manager.puml!ManagerBreakpoints
+
+'down
+!include ./Core/PixiTHUMDER.puml!PixiTHUMDER_Pipeline
+!include ./Core/PixiTHUMDER.puml!PixiTHUMDER_Table
+!include ./Core/PixiTHUMDER.puml!Position
+!include ./Core/PixiTHUMDER.puml!PixiTHUMDER_CycleClockDiagram
+
+'center
+!include ./Core/Machine.puml!MachineService
+
   PixiTHUMDER_Table--*Position
   PixiTHUMDER_Pipeline-->PixiTHUMDER_Table
   MachineService-->PixiTHUMDER_Pipeline
@@ -287,6 +39,11 @@ package Machine #DDDDDD {
   MachineService--right>ManagerMemory
   MachineService--left>ManagerBreakpoints
   MachineService--left>ManagerStatistics
+
+  ManagerStatistics..up|>InterfaceDataStatistics
+  ManagerBreakpoints..up|>InterfaceBreakpoints
+  ManagerMemory..up|>InterfaceMemory
+  ManagerRegisters..up|>InterfaceRegisters
 }
 
 @enduml
