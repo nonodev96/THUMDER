@@ -1,0 +1,38 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+'December
+Project starts 30 29 of November 2021
+
+-- Análisis, Diseño e Implementación--
+
+[Pre release v1.1.0] happens 2021/11/30
+
+
+'M+S+S+S+S+S+S+S+L+XL => 2+1+1+1+1+1+1+1+3+4  = 16 días
+[UML - Config] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
+then [Component-view Config] lasts 6 days
+then [Tests - Config] lasts 2 days
+
+'M+M+M+L+L+XL         => 2+2+2+3+3+4    = 16 días
+[UML - Editor of files] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
+[Component-view Editor of files] lasts 5 days and starts 0 days after [UML - Config]'s end
+[Tests - Editor of files] lasts 2 days and starts 0 days after [Component-view Config]'s end
+
+[Pre release v1.2.0] happens at 0 day after [Tests - Config]'s end
+[Pre release v1.2.0] happens at 0 day after [Tests - Editor of files]'s end
+
+
+
+-- Reuniones --
+
+[4ª Reunión] happens 0 days after [Pre release v1.1.0]'s end
+[5ª Reunión] happens 0 days after [Pre release v1.2.0]'s end
+
+
+2021/12/01 to 2021/12/14 are colored in lightblue and are named [Sprint 3]
+2021/12/15 to 2021/12/31 are closed
+2021/12/15 to 2021/12/31 are named [Holidays]
+2021/12/15 to 2022/01/01 are colored salmon
+'2021/12/15 to 2022/01/14 are colored in lightgreen and are named [Sprint 3]
+
+@endgantt

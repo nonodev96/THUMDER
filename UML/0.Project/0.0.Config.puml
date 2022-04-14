@@ -1,0 +1,46 @@
+@startuml(id=Config)
+'https://plantuml.com/es/gantt-diagram
+!theme plain
+
+'page 2x2
+skinparam defaultFontName consolas
+skinparam minClassWidth 100
+skinparam conditionStyle inside
+
+'printscale daily zoom 2
+saturday are closed and are colored in pink
+sunday are closed and are colored in pink
+@enduml
+
+
+'2021-08-01 to 2021-08-05 are named [Holidays]
+'2021-08-01 to 2021-08-05 are colored in lime
+
+
+''XL+M+L               => 6+2+4          = 12 días
+'then [UML Gestión cuentas] lasts 4 days
+''L+L+L                => 4+4+4          = 12 días
+'then [UML Gestión ficheros] lasts 4 days
+''M+M+M+L+L+XL         => 2+2+2+4+4+6    = 20 días
+'then [UML Editor de ficheros] lasts 7 days
+''XL+XL+M+M+M+L+L      => 6+6+2+2+2+4+4  = 26 días
+'then [UML Simulación] lasts 9 days
+''M+S+S+S+S+S+S+S+L+XL => 2+1+1+1+1+1+1+1+4+6  = 19 días
+'then [UML Configuración] lasts 6 days
+'
+''M                    => 2              = 2 días
+'then [UML Componente Calculadora] lasts 1 days
+''M+XXL                 => 2+10            = 12 días
+'then [UML Componente Memoria] lasts 4 days
+''L                    => 6              = 6 días
+'then [UML Componente Código] lasts 2 days
+''S+S+M+L+M+M+L+XL     => 1+1+2+4+2+2+4+6  = 22 días
+'then [UML Componente Registros] lasts 7 days
+''XL                   => 6              = 6 días
+'then [UML Componente Pipeline] lasts 2 days
+''XL+L+L               => 6+4+4        = 14 días
+'then [UML Componente Cycle Clock] lasts 5 days
+''XL+L+L               => 6+4+4        = 14 días
+'then [UML Componente Cycle Clock] lasts 5 days
+''L+M+L+L+L+XL+L       => 4+2+4+4+4+6+4        = 28 días
+'then [UML Servidor de pruebas] lasts 9 days

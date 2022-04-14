@@ -125,7 +125,6 @@ export class FileSystemService {
   }
 
   public async deleteItem(item: FileSystemItem): Promise<void> {
-    console.log({ item });
     const indexToDelete = this.items.findIndex(value => value.key === item.key);
     if (indexToDelete > -1) {
       const element = this.items.find(value => value.key === item.key);
@@ -138,18 +137,21 @@ export class FileSystemService {
     }
   }
 
+  // TODO
   public moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
-    console.log("TODO", item, destinationDirectory);
+    console.debug("TODO", item, destinationDirectory);
     return Promise.resolve()
   }
 
+  // TODO
   public async uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
-    console.log("TODO", fileData, uploadInfo, destinationDirectory);
+    console.debug("TODO", fileData, uploadInfo, destinationDirectory);
     return Promise.resolve()
   }
 
+  // TODO
   public async downloadItem(items: Array<FileSystemItem>): Promise<void> {
-    console.log("TODO", items);
+    console.debug("TODO", items);
     return Promise.resolve()
   }
 

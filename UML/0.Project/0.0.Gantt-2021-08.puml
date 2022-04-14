@@ -1,0 +1,20 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+
+Project starts the 1st of November 2021
+
+-- Planteamiento del proyecto --
+
+-- Desarrollo de los prototipos --
+
+-- Análisis y Diseño--
+
+-- Implementación --
+
+-- Pruebas --
+
+-- Entregas --
+
+-- Reuniones --
+
+@endgantt

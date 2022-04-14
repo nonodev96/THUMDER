@@ -6,13 +6,14 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapse_about">
         <div class="card-header">
           <h4 class="card-title w-100">
-            0. About
+            0. {{'VIEWS.ABOUT.TITLE_ABOUT' | translate}}
           </h4>
         </div>
       </a>
       <div id="collapse_about" class="collapse show" data-parent="#accordion_ABOUT">
         <div class="card-body">
-          <markdown [src]="'assets/md/ABOUT.md'" (load)="onMarkdownLoad('markdownComponentID_ABOUT')" #markdownComponentID_ABOUT></markdown>
+          <markdown [src]="'assets/md/ABOUT.md'" (load)="onMarkdownLoad('markdownComponentID_ABOUT')"
+                    #markdownComponentID_ABOUT></markdown>
         </div>
       </div>
     </div>
@@ -21,13 +22,14 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
         <div class="card-header">
           <h4 class="card-title w-100">
-            1. Readme
+            1. {{'VIEWS.ABOUT.TITLE_README' | translate}} Readme
           </h4>
         </div>
       </a>
       <div id="collapse_readme" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
-          <markdown [src]="'assets/md/README.md'" (load)="onMarkdownLoad('markdownComponentID_README')" #markdownComponentID_README></markdown>
+          <markdown [src]="'assets/md/README.md'" (load)="onMarkdownLoad('markdownComponentID_README')"
+                    #markdownComponentID_README></markdown>
         </div>
       </div>
     </div>
@@ -36,13 +38,14 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_LICENSE">
         <div class="card-header">
           <h4 class="card-title w-100">
-            2. License
+            2. {{'VIEWS.ABOUT.TITLE_LICENSE' | translate}}
           </h4>
         </div>
       </a>
       <div id="collapseOne_LICENSE" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
-          <markdown [src]="'assets/md/LICENSE.md'" (load)="onMarkdownLoad('markdownComponentID_LICENSE')" #markdownComponentID_LICENSE></markdown>
+          <markdown [src]="'assets/md/LICENSE.md'" (load)="onMarkdownLoad('markdownComponentID_LICENSE')"
+                    #markdownComponentID_LICENSE></markdown>
         </div>
       </div>
     </div>
@@ -51,13 +54,14 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_COOKIES">
         <div class="card-header">
           <h4 class="card-title w-100" id="collapse-header-cookies">
-            3. Cookies
+            3. {{'VIEWS.ABOUT.TITLE_COOKIES' | translate}}
           </h4>
         </div>
       </a>
       <div id="collapseOne_COOKIES" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
-          <markdown [src]="'assets/md/COOKIES.md'" (load)="onMarkdownLoad('markdownComponentID_COOKIES')" #markdownComponentID_COOKIES></markdown>
+          <markdown [src]="'assets/md/COOKIES.md'" (load)="onMarkdownLoad('markdownComponentID_COOKIES')"
+                    #markdownComponentID_COOKIES></markdown>
         </div>
       </div>
     </div>
@@ -66,16 +70,72 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_CHANGELOG">
         <div class="card-header">
           <h4 class="card-title w-100">
-            4. Changelog
+            4. {{'VIEWS.ABOUT.TITLE_CHANGELOG' | translate}}
           </h4>
         </div>
       </a>
       <div id="collapseOne_CHANGELOG" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
-          <markdown [src]="'assets/md/CHANGELOG.md'" (load)="onMarkdownLoad('markdownComponentID_CHANGELOG')" #markdownComponentID_CHANGELOG></markdown>
+          <markdown [src]="'assets/md/CHANGELOG.md'" (load)="onMarkdownLoad('markdownComponentID_CHANGELOG')"
+                    #markdownComponentID_CHANGELOG></markdown>
         </div>
       </div>
     </div>
+
+    <div class="card card-primary card-outline">
+      <a class="d-block w-100" data-toggle="collapse" href="#accordion_dependencies">
+        <div class="card-header">
+          <h4 class="card-title w-100">
+            5. {{'VIEWS.ABOUT.TITLE_DEPENDENCIES' | translate}}
+          </h4>
+        </div>
+      </a>
+      <div id="accordion_dependencies" class="collapse" data-parent="#accordion_ABOUT">
+        <div class="card-body">
+
+          <div class="container-fluid">
+            <div class="row">
+
+              <div class="col-12">
+                <table class="table">
+                  <tr>
+                    <th>{{ "TABLE.NAME" | translate }}</th>
+                    <th>{{ "TABLE.VERSION" | translate }}</th>
+                    <th>{{ "TABLE.LICENSE" | translate }}</th>
+                    <th>{{ "TABLE.AUTHOR" | translate }}</th>
+                    <th>{{ "TABLE.DESCRIPTION" | translate }}</th>
+                  </tr>
+
+                  <ng-container *ngFor="let data of this.dependenciesData">
+                    <tr>
+                      <td>{{data?.name}}</td>
+                      <td>{{data?.version}}</td>
+                      <td>{{data?.license}}</td>
+                      <td>{{data?.author?.name}}</td>
+                      <td>{{data?.description}}</td>
+                    </tr>
+                  </ng-container>
+
+                  <ng-container *ngFor="let data of this.devDependenciesData">
+                    <tr>
+                      <td>{{data?.name}}</td>
+                      <td>{{data?.version}}</td>
+                      <td>{{data?.license}}</td>
+                      <td>{{data?.author?.name}}</td>
+                      <td>{{data?.description}}</td>
+                    </tr>
+                  </ng-container>
+
+                </table>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
 
   </div>
   <div class="col-2"></div>

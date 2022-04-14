@@ -18,7 +18,7 @@ package Services #DDDDDD {
     -_electron: any
     -electron: any
     +isElectronApp: boolean
-    +nativeImage: Electron.NativeImage
+    '+nativeImage: Electron.NativeImage
     +screen: Electron.Screen
     +shell: Electron.Shell
     +{static} serviceElectron(): "" | "browser" | "renderer" | "worker"
@@ -50,40 +50,54 @@ package Services #DDDDDD {
     +thumbnail: string
     +dataItem: any
   }
-  class FileItem extends FileSystemItem implements InterfaceFileItem {
+  class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
+      +$key: string
+      +content: string
+      +description: string
+      +e1_uid: string
+      +f_id: string
   }
   class FileSystemService {
-    +items: FileItem[]
-    +ITEMS: InterfaceFileItem[]
-    -UID: string
-    -updateUI$: Subject<void>
-    -fileSystemStorageService: FileSystemStorageService
-    +initialize(): Promise<boolean>
-    +getUpdateUIObservable(): Observable<void>
-    +getItems(_path: FileSystemItem): Promise<FileItem[]>
-    +createDirectory(parentDirectory: FileSystemItem, name: string): Promise<FileItem>
-    +createFile(item: FileSystemItem, extension: string): Promise<boolean>
-    +updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean>
-    +editFileItem(updateFileItem: InterfaceFileItem, $key: string): Promise<void>
-    +renameItem(item: FileSystemItem, newName: string): Promise<FileItem>
-    +deleteItem(item: FileSystemItem): Promise<FileItem>
-    +moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): any
-    +uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): any
-    +downloadItem(items: FileSystemItem[]): void
-    +generateDefaultFiles(): Promise<number>
+      +items: THUMDER_FileItem[]
+      -updateUI$: Subject<void>
+      -subscription: Subscription
+      +fileSystemStorageService: FileSystemStorageService
+      +init(): Promise<void>
+      +getUpdateUIObservable(): Observable<void>
+      +getItems(path: FileSystemItem): Promise<THUMDER_FileItem[]>
+      +createDirectory(parentDirectory: FileSystemItem, name: string): Promise<THUMDER_FileItem>
+      +createFile(item: FileSystemItem, extension: string): Promise<boolean>
+      +updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean>
+      +editFileItem(updateFileItem: THUMDER_FileItem, $key: string): Promise<void>
+      +renameItem(item: FileSystemItem, newName: string): Promise<THUMDER_FileItem>
+      +deleteItem(item: FileSystemItem): Promise<void>
+      +moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): Promise<any>
+      +uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): Promise<any>
+      +downloadItem(items: FileSystemItem[]): Promise<void>
+      -setList_FileItems(items: THUMDER_FileItem[]): Promise<void>
+      -updateLocalItems(): Promise<void>
+      -{static} transform_InterfaceFileItem_to_THUMDER_FileItem(interfaceFileItem: InterfaceFileItem): THUMDER_FileItem
   }
   class FileSystemStorageService {
-    -fileItems_Collections: AngularFirestoreCollection<InterfaceFileItem>
-    -UID: string
-    -httpClient: HttpClient
-    -afs: AngularFirestore
-    +generateDefaultFiles(): Promise<number>
-    +getAllFilesFromFirestore(): Observable<InterfaceFileItem[]>
-    +getFileItemsAsObservable(): Observable<InterfaceFileItem[]>
-    +addFileItem(interfaceFileItem: InterfaceFileItem): Promise<void>
-    +deleteFileItem(id: string): Promise<void>
-    +editFileItem(fileItem: InterfaceFileItem, $key: string): Promise<void>
-    -isInitialize(): Promise<boolean>
+      -dbFileItemsPath: "/fileitems"
+      -httpClient: HttpClient
+      -afs: Firestore
+      +isInitialize(): Promise<boolean>
+      +queryFileFromUser(filename: string): Promise<QuerySnapshot<DocumentData>>
+      -queryAllFilesFromUser(): Query<DocumentData>
+      -collectionFileItems(): Promise<QuerySnapshot<DocumentData>>
+      +generateDefaultFiles(): Promise<number>
+      +getAllFilesFromFirestoreAsObservable(): Observable<THUMDER_FileItem[]>
+      +createFileItem(fileItem: THUMDER_FileItem): Promise<boolean>
+      +deleteFileItem($key: string): Promise<boolean>
+      +updateFileItem($key: string, fileItem: THUMDER_FileItem): Promise<boolean>
+      +FileItem_Documents_valueChanges(id: any): Observable<THUMDER_FileItem>
+      +FileItem_Documents_snapShotChanges(id: any): Observable<DocumentSnapshot<THUMDER_FileItem>>
+      +FileItems_Collections_valueChanges(): Observable<THUMDER_FileItem[]>
+      +FileItems_Collections_snapShotChanges(): Observable<DocumentChange<THUMDER_FileItem>[]>
+      +createNewDocument(): { ref: DocumentReference<DocumentData>; id: string; }
+      +getAllFilesFromFirestore(): Promise<QuerySnapshot<THUMDER_FileItem>>
+      +getFiles(): Promise<THUMDER_FileItem[]>
   }
 
   class Globals {

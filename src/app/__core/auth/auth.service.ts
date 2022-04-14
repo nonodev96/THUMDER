@@ -193,7 +193,7 @@ export class AuthService {
     if (!this.electronService.isElectronApp) {
       const userCredential = await getRedirectResult(this.afAuth);
       if (userCredential.user !== null) {
-        console.log("getRedirectResult", userCredential);
+        // console.debug("getRedirectResult", userCredential);
         await this.SetUserData(userCredential);
         this.ngZone.run(() => {
           this.router.navigate(["/"]);

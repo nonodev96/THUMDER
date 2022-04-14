@@ -1,0 +1,52 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+
+Project starts the 28 of February 2022
+
+
+-- Análisis, Diseño e Implementación--
+
+[Pre release v1.4.0] happens 2022/01/31
+
+' Statistics TODO
+[UML - Component Statistics] lasts 1 days and starts 1 days after [Pre release v1.4.0]'s end
+then [Component-view Statistics] lasts 6 days
+then [Tests - Component Statistics] lasts 2 days
+
+'L                    => 4              = 4 días
+[UML - Component Código] lasts 2 days and starts 0 days before [Pre release v1.4.0]'s end
+[Component-view Código] lasts 5 days and starts 0 days after [UML - Component Statistics]'s end
+[Tests - Component Código] lasts 2 days and starts 0 days after [Component-view Statistics]'s end
+
+
+[Pre release v1.5.0] happens at 0 days after [Tests - Component Código]'s end
+[Pre release v1.5.0] happens at 0 days after [Tests - Component Statistics]'s end
+
+
+' Multiview       TODO
+[UML - Component Multiview] lasts 2 days and starts 0 days before [Pre release v1.5.0]'s end
+[Component-view Multiview] lasts 8 days and starts 0 days after [UML - Component Multiview]'s end
+[Tests - Component Multiview] lasts 3 days and starts 0 days after [Component-view Multiview]'s end
+
+'M                    => 2              = 2 días
+[UML - Component Calculator] lasts 1 days and starts 0 days before [Pre release v1.5.0]'s end
+[Component-view Calculator] lasts 3 days and starts 0 days after [UML - Component Multiview]'s end
+[Tests - Component Calculator] lasts 1 days and starts 0 days after [Component-view Multiview]'s end
+
+
+[Pre release v1.6.0] happens at 0 days after [Tests - Component Multiview]'s end
+[Pre release v1.6.0] happens at 0 days after [Tests - Component Calculator]'s end
+
+
+-- Reuniones --
+
+[7ª Reunión] happens 0 days after [Pre release v1.4.0]'s end
+[8ª Reunión] happens 0 days after [Pre release v1.5.0]'s end
+[9ª Reunión] happens 0 days after [Pre release v1.6.0]'s end
+
+
+2022/03/01 to 2022/03/14 are colored in lightblue and are named [Sprint 8]
+2022/03/15 to 2022/04/02 are colored in lightgreen and are named [Sprint 9]
+2022/04/01 to 2022/04/04 are colored in lightblue and are named [Sprint 10]
+
+@endgantt

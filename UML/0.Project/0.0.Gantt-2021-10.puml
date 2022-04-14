@@ -1,0 +1,26 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+
+Project starts the 1st of October 2021
+
+
+-- Desarrollo de los prototipos --
+
+[Presentación análisis] lasts 1 days and starts at 2021/10/01
+then [UML - Proyecto plantilla] lasts 3 days
+then [Proyecto plantilla] lasts 5 days
+then [Proyecto plantilla - Frameworks] lasts 6 days
+then [Proyecto plantilla - Tests] lasts 4 days
+[Proyecto plantilla - CI] lasts 3 days and starts 0 days before [Proyecto plantilla - Tests]'s end
+[Pre release v1.0.0] happens at [Proyecto plantilla - CI]'s end
+
+
+2021/10/01 to 2021/10/31 are colored in orange and are named [Sprint Init]
+2021/11/01 to 2021/11/06 are colored in lightblue and are named [Sprint 1]
+
+-- Reuniones --
+
+[2ª Reunión] starts 2021-10-01
+
+
+@endgantt

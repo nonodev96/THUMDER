@@ -55,6 +55,8 @@ export class FileManagerView implements OnInit, OnDestroy {
     return this._filesSelected.map(v => v.name);
   }
 
+  public CreateNewFile_lang = "Create new file";
+
   @ViewChild(DxFileManagerComponent, { static: false }) fileManager: DxFileManagerComponent;
 
   public customFileProvider: CustomFileSystemProvider;
@@ -182,19 +184,5 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   public height(): number | string {
     return window.innerHeight / 1.25;
-  }
-
-  public log(): void {
-    console.log(this.fileSystemService.items);
-  }
-
-  public debug(): void {
-    this.fileSystemService.fileSystemStorageService.FileItems_Collections_valueChanges().subscribe((i) => {
-      console.log(i);
-    });
-  }
-
-  public async tests() {
-    await this.fileSystemService.fileSystemStorageService.getFiles();
   }
 }

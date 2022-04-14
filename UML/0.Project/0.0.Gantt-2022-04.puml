@@ -1,0 +1,36 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+'April
+Project starts the 31st of March 2022
+
+
+
+[Pre release v1.6.0] happens 2022/03/31
+
+
+
+' About           TODO
+[UML - Component Documentation] lasts 3 days and starts 0 days before [Pre release v1.6.0]'s end
+then [Component-view Documentation] lasts 6 days
+then [Tests - Component Documentation] lasts 1 days
+
+' Documentation   TODO
+[UML - Component About] lasts 2 days and starts 0 days before [Pre release v1.6.0]'s end
+[Component-view About] lasts 5 days and starts 0 days after [UML - Component Documentation]'s end
+[Tests - Component About] lasts 1 days and starts 0 days after [Component-view Documentation]'s end
+
+
+[Pre release v1.7.0] happens at 0 days after [Tests - Component Documentation]'s end
+[Pre release v1.7.0] happens at 0 days after [Tests - Component About]'s end
+
+
+-- Reuniones --
+
+[9ª Reunión] happens 0 days after [Pre release v1.6.0]'s end
+[10ª Reunión] happens 0 days after [Pre release v1.7.0]'s end
+
+
+2022/04/01 to 2022/04/14 are colored in lightblue and are named [Sprint 10]
+2022/04/15 to 2022/04/30 are colored in lightgreen and are named [Sprint 11]
+
+@endgantt

@@ -1,38 +1,51 @@
-import { Directive, HostListener, Input, OnChanges, OnDestroy, SimpleChanges, Renderer2, ElementRef } from "@angular/core";
+import {
+  Directive,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  SimpleChanges,
+  Renderer2,
+  ElementRef,
+} from "@angular/core";
 
 import { Subscription, Observable } from "rxjs";
 
-const noop = () => {
-};
 
 @Directive({
-  selector: "[asyncClick]"
+  selector: "[asyncClick]",
 })
 export class AsyncClickDirective implements OnChanges, OnDestroy {
   private pending = true;
-  private disabled = false;
   private subscription: Subscription;
 
   @Input("asyncClick") clickFunc;
 
-  constructor(
-    private _renderer: Renderer2,
-    private _elementRef: ElementRef
-  ) {
-    this.pending = true;
-    this.disabled = false;
-    console.log(this._elementRef);
+  @Input() defaultButtonClass = '';
+  @Input() successButtonClass = '';
+  @Input() warningButtonClass = '';
+
+  constructor(private _renderer: Renderer2,
+              private _elementRef: ElementRef) {
+    this._renderer.setAttribute(
+      this._elementRef.nativeElement,
+      "class",
+      ""
+    );
   }
 
   @HostListener("click")
   onClick() {
-    console.log("click");
     if (typeof this.clickFunc === "function") {
       this.subscribe(this.clickFunc());
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    const vector = this.defaultButtonClass.split(" ")
+    this._elementRef.nativeElement.classList.add(
+      ...vector
+    );
     if (this.pending) {
       this.enable();
     }
@@ -47,35 +60,65 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
       "disabled",
       "true"
     );
-    this._renderer.addClass(
-      this._elementRef.nativeElement,
-      "disabled",
-    );
   }
 
   enable() {
     this._renderer.removeAttribute(
       this._elementRef.nativeElement,
-      "disabled"
+      "disabled",
     );
-    this._renderer.removeClass(
+  }
+
+  noop() {
+
+  }
+
+  complete() {
+    this._renderer.removeAttribute(
       this._elementRef.nativeElement,
       "disabled"
+    );
+
+    const vector_successButtonClass = this.successButtonClass.split(" ")
+    const vector_warningButtonClass = this.warningButtonClass.split(" ")
+    this._elementRef.nativeElement.classList.add(
+      ...vector_successButtonClass
+    );
+    this._elementRef.nativeElement.classList.remove(
+      ...vector_warningButtonClass
+    );
+  }
+
+  error() {
+    this._renderer.removeAttribute(
+      this._elementRef.nativeElement,
+      "disabled"
+    );
+
+    const vector_successButtonClass = this.successButtonClass.split(" ")
+    const vector_warningButtonClass = this.warningButtonClass.split(" ")
+    this._elementRef.nativeElement.classList.remove(
+      ...vector_successButtonClass
+    );
+    this._elementRef.nativeElement.classList.add(
+      ...vector_warningButtonClass
     );
   }
 
   subscribe(r) {
     this.pending = true;
     this.disable();
-    const enable = () => this.enable();
+    const noop = () => this.noop();
+    const complete = () => this.complete();
+    const error = () => this.error();
     if (typeof r.subscribe === "function") {
-      this.subscription = (<Observable<any>>r).subscribe({
+      this.subscription = (r as Observable<any>).subscribe({
         next:     noop,
-        complete: enable,
-        error:    enable
+        complete: complete,
+        error:    error,
       });
     } else if (typeof r.then === "function") {
-      (<Promise<any>>r).then(enable).catch(enable);
+      (r as Promise<any>).then(complete).catch(error);
       this.subscription = null;
     }
   }

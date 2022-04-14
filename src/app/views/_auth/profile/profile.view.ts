@@ -16,6 +16,6 @@ export class ProfileView implements OnInit {
   }
 
   public log(msg: string): void {
-    console.log(msg);
+    console.debug(msg);
   }
 }

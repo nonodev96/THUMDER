@@ -1,0 +1,35 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+'November
+Project starts the 29 of October 2021
+
+
+-- Análisis, Diseño e Implementación--
+
+[Pre release v1.0.0] happens 2021/10/29
+
+'XL+M+L               => 4+2+3          = 9 días
+[UML - Manager accounts] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
+[Servicio - Manager accounts] lasts 10 days and starts 0 days after [UML - Manager accounts]'s end
+[Tests - Manager accounts] lasts 3 days and starts 5 days after [Servicio - Manager accounts]'s end
+
+'L+L+L                => 3+3+3          = 9 días
+[UML - Manager files] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
+[Component-view Manager files] lasts 13 days and starts 0 days after [UML - Manager accounts]'s end
+[Tests - Manager files] lasts 4 days and starts 0 days after [Component-view Manager files]'s end
+
+[Pre release v1.1.0] happens at [Tests - Manager accounts]'s end
+[Pre release v1.1.0] happens at [Tests - Manager files]'s end
+
+
+-- Reuniones --
+
+[3ª Reunión] happens 0 days after [Pre release v1.0.0]'s end
+[4ª Reunión] happens 0 days after [Pre release v1.1.0]'s end
+
+
+2021/11/01 to 2021/11/14 are colored in lightblue and are named [Sprint 1]
+2021/11/15 to 2021/11/30 are colored in lightgreen and are named [Sprint 2]
+2021/12/01 to 2021/12/05 are colored in lightblue and are named [Sprint 3]
+
+@endgantt

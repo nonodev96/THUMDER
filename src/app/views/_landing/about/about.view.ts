@@ -1,28 +1,39 @@
-import { Component, OnInit, Renderer2, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, Renderer2, ViewChild } from "@angular/core";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
 import { MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { ViewportScroller } from "@angular/common";
 import { Router } from "@angular/router";
+import npm from "../../../../../package.json";
+import { HttpClient } from "@angular/common/http";
+import { IPackageJson } from 'package-json-type';
 
 @Component({
-  selector: "app-about",
+  selector:    "app-about",
   templateUrl: "./about.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
-export class AboutView implements OnInit {
-  @ViewChild("markdownComponentID_README", {static: false})
+export class AboutView implements OnInit, AfterViewInit {
+
+  private readonly SERVER_API = "https://unpkg.com/"
+
+  public dependencies = Object.entries(npm.dependencies) as unknown as [string, string];
+  public devDependencies = Object.entries(npm.devDependencies) as unknown as [string, string];
+  public dependenciesData: IPackageJson[] = []
+  public devDependenciesData: IPackageJson[] = []
+
+  @ViewChild("markdownComponentID_README", { static: false })
   private markdownComponentID_README: MarkdownComponent;
 
-  @ViewChild("markdownComponentID_LICENSE", {static: false})
+  @ViewChild("markdownComponentID_LICENSE", { static: false })
   private markdownComponentID_LICENSE: MarkdownComponent;
 
-  @ViewChild("markdownComponentID_ABOUT", {static: false})
+  @ViewChild("markdownComponentID_ABOUT", { static: false })
   private markdownComponentID_ABOUT: MarkdownComponent;
 
-  @ViewChild("markdownComponentID_COOKIES", {static: false})
+  @ViewChild("markdownComponentID_COOKIES", { static: false })
   private markdownComponentID_COOKIES: MarkdownComponent;
 
-  @ViewChild("markdownComponentID_CHANGELOG", {static: false})
+  @ViewChild("markdownComponentID_CHANGELOG", { static: false })
   private markdownComponentID_CHANGELOG: MarkdownComponent;
 
   private listenObj: any;
@@ -30,10 +41,39 @@ export class AboutView implements OnInit {
   constructor(private markdownService: MarkdownService,
               private scroller: ViewportScroller,
               private router: Router,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private httpClient: HttpClient) {
   }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    this.prepareData().then((r) => {
+      console.log("End");
+    })
+  }
+
+  private async prepareData() {
+    let dependenciesData_Promises: Promise<IPackageJson>[] = [];
+    let devDependenciesData_Promises: Promise<IPackageJson>[] = [];
+    for (const dependency of this.dependencies) {
+      dependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
+    }
+    for (const dependency of this.devDependencies) {
+      devDependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
+    }
+    this.dependenciesData = await Promise.all(dependenciesData_Promises)
+    this.devDependenciesData = await Promise.all(devDependenciesData_Promises)
+  }
+
+  private async queryNPMPackage(package_name: string, version: string): Promise<IPackageJson> {
+    return new Promise((resolve, reject) => {
+      const QUERY = this.SERVER_API + package_name + "@" + version + "/package.json";
+      this.httpClient.get<IPackageJson>(QUERY).toPromise().then((response) => {
+        resolve(JSON.parse(JSON.stringify(response)));
+      })
+    })
   }
 
   public onMarkdownLoad(id: string) {
