@@ -1,0 +1,33 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+
+Project starts the 1st of September 2021
+
+
+-- Planteamiento del proyecto --
+
+[Desarrollar la planificación] starts 2021-09-01 and lasts 4 days
+[Gantt] lasts 5 days and starts 4 days before [Desarrollar la planificación]'s end
+
+-- Desarrollo de los prototipos --
+
+[Mockups] lasts 3 days  and starts 0 days before [Gantt]'s end
+[Wireframes] lasts 5 days and starts 0 days before [Mockups]'s end
+
+note bottom
+  Generar una versión de prueba
+  con los diseños y prototipos
+end note
+
+
+[Story Case] lasts 5 days and starts 0 days before [Wireframes]'s end
+then [Story Case] lasts 3 days
+then [State Diagram] lasts 4 days
+
+
+-- Reuniones --
+
+[1ª Reunión] starts 2021-09-01
+
+
+@endgantt

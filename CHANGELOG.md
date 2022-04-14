@@ -1,6 +1,14 @@
+## <small>1.3.9 (2022-03-31)</small>
+
+* fix files in file system storage (delete item) ([86b65fa](https://github.com/nonodev96/THUMDER/commit/86b65fa))
+* Refactor in all firebase method with new modular functions and providers for electron. ([f8de3f8](https://github.com/nonodev96/THUMDER/commit/f8de3f8))
+* update wiki and multiview drag and drop ([6d42941](https://github.com/nonodev96/THUMDER/commit/6d42941))
+
+
+
 ## <small>1.3.8 (2022-03-09)</small>
 
-* Add submodule wiki ([7d7a041](https://github.com/nonodev96/THUMDER/commit/7d7a041))
+* Add submodul wiki ([7d7a041](https://github.com/nonodev96/THUMDER/commit/7d7a041))
 * CHANGELOG ([f04025e](https://github.com/nonodev96/THUMDER/commit/f04025e))
 * Deleted submodule wiki ([41b6bb9](https://github.com/nonodev96/THUMDER/commit/41b6bb9))
 * fix karma version ([ee905d3](https://github.com/nonodev96/THUMDER/commit/ee905d3))

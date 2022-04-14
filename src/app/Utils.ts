@@ -66,7 +66,7 @@ export namespace Utils {
 
   export function initSynchronousFactory() {
     return () => {
-      console.log("initSynchronousFactory");
+
     };
   }
 
@@ -83,7 +83,7 @@ export namespace Utils {
 
   export function initWithDependencyFactory(service: any) {
     return () => {
-      console.log("initWithDependencyFactory - started");
+
       return service;
     };
   }

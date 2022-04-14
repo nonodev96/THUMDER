@@ -402,3 +402,38 @@ markdown img {
   justify-items: center;
   align-items: center;
 }
+
+:root {
+  --slider-width: 400px;
+}
+
+body {
+  background-color: gray;
+}
+
+.slider {
+  width: var(--slider-width);
+  height: 1.1em;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.text {
+  font-size: 1em;
+  display: inline-block;
+  animation: slide 20s linear infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+
+  50% {
+    transform: translateX(calc(-100% + 400px));
+  }
+
+  100% {
+    transform: translateX(0%);
+  }
+}

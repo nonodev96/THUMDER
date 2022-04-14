@@ -1,61 +1,237 @@
 @startgantt
-'https://plantuml.com/es/gantt-diagram
-'!theme amiga from https://raw.githubusercontent.com/plantuml/plantuml/master/themes
-skinparam defaultFontName consolas
-skinparam minClassWidth 100
-skinparam conditionStyle inside
-printscale daily zoom 2
+!include ./0.0.Config.puml!Config
+' Norma Estimación
+' Talla S --> 1 día
+' Talla M --> 2 días
+' Talla L --> 3 días
+' Talla XL --> 4 días
+' Talla XXL --> 6 días
+'Ejemplo si Gestión de cuentas tiene 3 tareas: Crear cuenta, recuperar cuenta, iniciar y cerrar sesión
+'Se suman todas las tallas y se dividen en UML e implementación
+'Crear cuenta             --> XL -->  6 días
+'Recuperar cuenta         -->  M -->  2 días
+'Iniciar y cerrar sesión  -->  L -->  4 días
+'                             Total: 12 días
+' 50 % de los días para planteamiento
+' 50 % de los días para la implementación
+'2+2+2+4+4+6
 
-saturday are closed
-sunday are closed
 
-Project starts the 1st of july 2021
+Project starts the 1st of September 2021
 
--- Planteamiento del proyeto --
-[Desarrollar la planificación] starts 2021-07-01 and lasts 3 days
-'[Test prototype] lasts 3 days and starts 7 days before [Desarrollar la planificación]'s end
-then [Gantt] lasts 2 days
-then [Story Case] lasts 3 days
-then [State Diagram] lasts 3 days
-then [UML] lasts 6 days
-'then [Presentación] is deleted
-'[Presentación] happens at [UML]'s end
+-- Planteamiento del proyecto --
 
-note bottom
-  Diagrama de clase
-  Diagrama de casos de uso
-  Diagrama de secuencia
-  Diagrama de actividad
-  Diagrama de Despliegue
-  Diagrama de componentes
-  Diagrama de máquina de estado
-  Diagrama de paquete
-end note
-
+[Desarrollar la planificación] starts 2021-07-02 and lasts 4 days
+[Gantt] lasts 5 days and starts 1 days before [Desarrollar la planificación]'s end
 
 -- Desarrollo de los prototipos --
 
-[Mockups] starts 2021-07-25 and lasts 3 days
-[Wireframes] lasts 3 days and starts 1 days before [Mockups]'s end
+[Mockups] lasts 3 days  and starts 1 days before [Gantt]'s end
+[Wireframes] lasts 5 days and starts 1 days before [Mockups]'s end
 
-[Pre release v1 prototype] starts 2021-08-06 and lasts 1 days
 note bottom
-  Generar la versión de prueba
-  de los diseños y prototipos
+  Generar una versión de prueba
+  con los diseños y prototipos
 end note
 
 
+[Story Case] lasts 5 days and starts 0 days before [Wireframes]'s end
+then [Story Case] lasts 3 days
+then [State Diagram] lasts 4 days
+'then [UML] lasts 9 days
+then [Presentación análisis] lasts 1 days
+'then [Presentación] is deleted
+
+then [UML - Proyecto plantilla] lasts 3 days
+then [Proyecto plantilla] lasts 5 days
+then [Proyecto plantilla - Frameworks] lasts 6 days
+then [Proyecto plantilla - Tests] lasts 4 days
+[Proyecto plantilla - CI] lasts 3 days and starts 0 days before [Proyecto plantilla - Tests]'s end
+[Pre release v1.0.0] happens at [Proyecto plantilla - CI]'s end
+
+
+-- Análisis, Diseño e Implementación--
+
+
+'XL+M+L               => 4+2+3          = 9 días
+[UML - Manager accounts] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
+[Servicio - Manager accounts] lasts 10 days and starts 0 days after [UML - Manager accounts]'s end
+[Tests - Manager accounts] lasts 3 days and starts 5 days after [Servicio - Manager accounts]'s end
+
+'L+L+L                => 3+3+3          = 9 días      and starts 0 days before [Servicio Manager accounts]'s end
+[UML - Manager files] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
+[Component-view Manager files] lasts 13 days and starts 0 days after [UML - Manager accounts]'s end
+[Tests - Manager files] lasts 4 days and starts 0 days after [Component-view Manager files]'s end
+
+[Pre release v1.1.0] happens at [Tests - Manager accounts]'s end
+[Pre release v1.1.0] happens at [Tests - Manager files]'s end
 
 
 
 
-2021-08-01 to 2021-08-05 are named [Holidays]
-2021-08-01 to 2021-08-05 are colored in salmon
+'M+S+S+S+S+S+S+S+L+XL => 2+1+1+1+1+1+1+1+3+4  = 16 días
+[UML - Config] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
+then [Component-view Config] lasts 6 days
+then [Tests - Config] lasts 2 days
 
+'M+M+M+L+L+XL         => 2+2+2+3+3+4    = 16 días
+[UML - Editor of files] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
+[Component-view Editor of files] lasts 5 days and starts 0 days after [UML - Config]'s end
+[Tests - Editor of files] lasts 2 days and starts 0 days after [Component-view Config]'s end
+
+[Pre release v1.2.0] happens at 0 day after [Tests - Config]'s end
+[Pre release v1.2.0] happens at 0 day after [Tests - Editor of files]'s end
+
+
+
+
+
+
+
+'S+S+M+L+M+M+L+XL     => 1+1+2+3+2+2+3+4  = 18 días
+[UML - Manager Registers] lasts 5 days and starts 0 days after [Pre release v1.2.0]'s end
+[Component-view Registers] lasts 10 days and starts 17 days after [UML - Manager Registers]'s end
+[Tests - Manager Registers] lasts 5 days and starts 0 days after [Component-view Registers]'s end
+
+'M+XXL                 => 2+6            = 8 días
+[UML - Manager Memory] lasts 5 days and starts 0 days after [Pre release v1.2.0]'s end
+[Component-view Memory] lasts 11 days and starts 17 days after [UML - Manager Memory]'s end
+[Tests - Manager Memory] lasts 5 days and starts 0 days after [Component-view Memory]'s end
+
+[Pre release v1.3.0] happens at 0 day after [Tests - Manager Registers]'s end
+[Pre release v1.3.0] happens at 0 day after [Tests - Manager Memory]'s end
+
+
+
+
+
+
+
+'XL+L+L               => 4+3+3          = 10 días
+[UML - Component Cycle Clock] lasts 4 days and starts 0 days after [Pre release v1.3.0]'s end
+then [Component-view Cycle Clock] lasts 13 days
+then [Tests - Component Cycle Clock] lasts 3 days
+
+'XL                   => 4              = 4 días
+[UML - Component Pipeline] lasts 2 days and starts 0 days after [Pre release v1.3.0]'s end
+[Component-view Pipeline] lasts 10 days and starts 0 days before [UML - Component Cycle Clock]'s end
+[Tests - Component Pipeline] lasts 3 days and starts 0 days after [Component-view Cycle Clock]'s end
+
+[Pre release v1.4.0] happens at 0 days after [Tests - Component Cycle Clock]'s end
+[Pre release v1.4.0] happens at 0 days after [Tests - Component Pipeline]'s end
+
+
+
+
+
+
+
+
+' Statistics TODO
+[UML - Component Statistics] lasts 1 days and starts 1 days after [Pre release v1.4.0]'s end
+then [Component-view Statistics] lasts 6 days
+then [Tests - Component Statistics] lasts 2 days
+
+'L                    => 4              = 4 días
+[UML - Component Código] lasts 2 days and starts 0 days before [Pre release v1.4.0]'s end
+[Component-view Código] lasts 5 days and starts 0 days after [UML - Component Statistics]'s end
+[Tests - Component Código] lasts 2 days and starts 0 days after [Component-view Statistics]'s end
+
+
+[Pre release v1.5.0] happens at 0 days after [Tests - Component Código]'s end
+[Pre release v1.5.0] happens at 0 days after [Tests - Component Statistics]'s end
+
+
+
+
+
+' Multiview       TODO
+[UML - Component Multiview] lasts 2 days and starts 0 days before [Pre release v1.5.0]'s end
+[Component-view Multiview] lasts 8 days and starts 0 days after [UML - Component Multiview]'s end
+[Tests - Component Multiview] lasts 3 days and starts 0 days after [Component-view Multiview]'s end
+
+'M                    => 2              = 2 días
+[UML - Component Calculator] lasts 1 days and starts 0 days before [Pre release v1.5.0]'s end
+[Component-view Calculator] lasts 3 days and starts 0 days after [UML - Component Multiview]'s end
+[Tests - Component Calculator] lasts 1 days and starts 0 days after [Component-view Multiview]'s end
+
+
+[Pre release v1.6.0] happens at 0 days after [Tests - Component Multiview]'s end
+[Pre release v1.6.0] happens at 0 days after [Tests - Component Calculator]'s end
+
+
+
+
+
+
+' About           TODO
+[UML - Component Documentation] lasts 3 days and starts 0 days before [Pre release v1.6.0]'s end
+then [Component-view Documentation] lasts 6 days
+then [Tests - Component Documentation] lasts 1 days
+
+' Documentation   TODO
+[UML - Component About] lasts 2 days and starts 0 days before [Pre release v1.6.0]'s end
+[Component-view About] lasts 5 days and starts 0 days after [UML - Component Documentation]'s end
+[Tests - Component About] lasts 1 days and starts 0 days after [Component-view Documentation]'s end
+
+
+[Pre release v1.7.0] happens at 0 days after [Tests - Component Documentation]'s end
+[Pre release v1.7.0] happens at 0 days after [Tests - Component About]'s end
+
+
+
+'L+M+L+L+L+XL+L       => 3+2+3+3+3+4+3  = 21 días
+[UML - THUMDER Server] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
+[THUMDER Server] starts 0 day before [UML - THUMDER Server]'s start and ends 0 day after [Pre release v1.5.0]'s end
+[Tests - THUMDER Server] lasts 13 days and starts 0 days after [THUMDER Server]'s end
+
+'-- Pruebas --
+
+'XL+XL+M+M+M+L+L      => 4+4+2+2+2+3+3  = 20 días
+'[UML - Simulación] lasts 4 days and starts 0 days before [Pre release v1.0.0]'s end
+'then [Servicio Simulación] happens at [Release v2.0.0]'s end
+'then [Tests - Simulación] lasts 4 days
+
+-- Entregas --
+
+[Release] happens at 0 days after  [Pre release v1.7.0]'s end
+
+'[Pre release v1.0.0] starts 2021-07-30 and lasts 1 days
 
 -- Reuniones --
 
-'[Reunión 1] starts 2021-06-10
-[Reunión 2] starts 2021-07-20
+[1ª Reunión] starts 2021-09-01
+[2ª Reunión] starts 2021-10-01
+[3ª Reunión] happens 0 days after [Pre release v1.0.0]'s end
+[4ª Reunión] happens 0 days after [Pre release v1.1.0]'s end
+[5ª Reunión] happens 0 days after [Pre release v1.2.0]'s end
+[6ª Reunión] happens 0 days after [Pre release v1.3.0]'s end
+[7ª Reunión] happens 0 days after [Pre release v1.4.0]'s end
+[8ª Reunión] happens 0 days after [Pre release v1.5.0]'s end
+[9ª Reunión] happens 0 days after [Pre release v1.6.0]'s end
+[10ª Reunión] happens 0 days after [Pre release v1.7.0]'s end
+
+
+'2021/09/21 to 2021/09/22 and colored in lightgreen and are named [Sprint 11]
+2021/10/01 to 2021/10/31 are colored in orange and are named [Sprint Init]
+
+'2021/10/15 to 2021/10/31 are colored in lightgreen and are named [Sprint 1]
+2021/11/01 to 2021/11/14 are colored in lightblue and are named [Sprint 1]
+2021/11/15 to 2021/11/30 are colored in lightgreen and are named [Sprint 2]
+2021/12/01 to 2021/12/14 are colored in lightblue and are named [Sprint 3]
+'2021/12/15 to 2021/12/31 are colored in lightgreen and are named [Sprint 5]
+2021/12/15 to 2021/12/31 are closed
+2021/12/15 to 2021/12/31 are named [Holidays]
+2021/12/15 to 2022/01/01 are colored salmon
+2022/01/01 to 2022/01/14 are colored in lightblue and are named [Sprint 4]
+2022/01/15 to 2022/01/31 are colored in lightgreen and are named [Sprint 5]
+2022/02/01 to 2022/02/14 are colored in lightblue and are named [Sprint 6]
+2022/02/15 to 2022/02/28 are colored in lightgreen and are named [Sprint 7]
+2022/03/01 to 2022/03/14 are colored in lightblue and are named [Sprint 8]
+2022/03/15 to 2022/03/31 are colored in lightgreen and are named [Sprint 9]
+2022/04/01 to 2022/04/14 are colored in lightblue and are named [Sprint 10]
+2022/04/15 to 2022/04/30 are colored in lightgreen and are named [Sprint 11]
+'2022/10/15 to 2022/10/31 are colored in lightblue and are named [Sprint 12]
+'2022/10/15 to 2022/10/31 are colored in lightgreen and are named [Sprint 13]
 
 @endgantt

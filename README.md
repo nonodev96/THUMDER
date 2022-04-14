@@ -2,7 +2,7 @@ THUMDER
 =======
 
 <center>
-  <img src="./src/assets/icons/favicon.256x256.png" alt="ICON" width="10%" height="10%"/>
+  <img src="./assets/favicon.256x256.png" alt="ICON" width="10%" height="10%"/>
 </center>
 
 <center>

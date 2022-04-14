@@ -138,35 +138,35 @@ export class MachineService {
 
     //  this.socketProviderConnect.socket.on("SimulationInitResponse", (response) => {
     //    const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
-    //    console.log("Simulation Init", simulationInit);
+    //    console.debug("Simulation Init", simulationInit);
     //  });
     //  this.socketProviderConnect.socket.on("SimulationNextStepResponse", (response) => {
     //    const simulationStep = JSON.parse(response) as TypeSimulationStep;
-    //    console.log("Simulation Step", simulationStep);
+    //    console.debug("Simulation Step", simulationStep);
     //  });
     // TODO CHECK
     this.socketProviderConnect.socketIO.on("UpdateRegisterResponse", (response) => {
       const registers = JSON.parse(response) as TypeRegisterToUpdate[];
       this.registers.processRegisterToUpdateArray(registers);
-      console.log("Registers update", registers);
+      console.debug("Registers update", registers);
     });
     // TODO CHECK
     this.socketProviderConnect.socketIO.on("UpdateMemoryResponse", (response) => {
       const memory = JSON.parse(response) as TypeMemoryToUpdate[];
       this.memory.processMemoryToUpdateArray(memory);
-      console.log("Memory update", memory);
+      console.debug("Memory update", memory);
     });
     this.socketProviderConnect.socketIO.on("GetAllRegistersResponse", (response) => {
       const allRegisters = JSON.parse(response) as TypeAllRegisters;
-      console.log("GetAllRegisters", allRegisters);
+      console.debug("GetAllRegisters", allRegisters);
     });
     this.socketProviderConnect.socketIO.on("GetAllMemoryResponse", (response) => {
       const allMemory = JSON.parse(response) as TypeAllMemory;
-      console.log("GetAllMemory", allMemory);
+      console.debug("GetAllMemory", allMemory);
     });
     this.socketProviderConnect.socketIO.on("UpdateConfigurationMachineResponse", (response) => {
       const configurationMachine = JSON.parse(response) as TypeConfigurationMachine;
-      console.log("Configuration machine", configurationMachine);
+      console.debug("Configuration machine", configurationMachine);
     });
 
     const timeSimulation = this.store.getItem("time_simulation_configuration");

@@ -46,7 +46,6 @@ export class LoginView implements OnInit {
     this.authService.getIsLoggingObservable().subscribe(async (isLogging) => {
       if (isLogging) {
         const isValid = await this.router.navigateByUrl("/");
-        console.log("navigateByUrl('/') => IsValid", isValid);
       }
     });
   }

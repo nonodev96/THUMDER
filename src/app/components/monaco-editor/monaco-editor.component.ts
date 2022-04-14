@@ -179,13 +179,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.printLine(this.iteratorLine);
   }
 
-  // public debugToLine(iteratorLine: number): void {
-  //   console.log("debugToLine");
-  //   const lineCount = this.editor.getModel().getLineCount();
-  //   this.iteratorLine = iteratorLine % lineCount;
-  //   this.printLine(this.iteratorLine);
-  // }
-
   public debugNextLineWithTag(): void {
     const listOfTags = this.getListOfTags();
     const listOfTags_filter = listOfTags.filter(value => value.line > this.iteratorLine);
@@ -237,7 +230,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.editorFile.$key === "") {
       throw new Error("Debes crear un fichero antes de guardarlo");
     }
-    console.log("editorFile", this.editorFile)
     this.editorFile.content = this.editor?.getModel()?.getLinesContent()?.join("\n") ?? "";
   }
 
@@ -254,7 +246,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public async setEditorFile(fileItem: InterfaceFileItem): Promise<void> {
-    console.log(this.editorFile, fileItem);
     this.editorFile.$key = fileItem.$key;
     this.editorFile.f_id = fileItem.f_id;
     this.editorFile.e1_uid = fileItem.e1_uid;

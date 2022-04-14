@@ -62,11 +62,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
           JSON.parse(localStorage.getItem("interfaceFileItem")) ??
           DEFAULT_INTERFACE_FILE_ITEM
         ) as InterfaceFileItem;
-        // console.log({
-        //   extra:             this.extrasIDE?.interfaceFileItem,
-        //   local:             JSON.parse(localStorage.getItem("interfaceFileItem")),
-        //   default_interface: DEFAULT_INTERFACE_FILE_ITEM
-        // });
+
         await this.monacoEditorComponent.setEditorFile(this.interfaceFileItem);
         await this.monacoEditorComponent.setEditorContent(this.interfaceFileItem.content);
 

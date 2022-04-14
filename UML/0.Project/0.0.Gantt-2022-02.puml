@@ -1,0 +1,33 @@
+@startgantt
+!include ./0.0.Config.puml!Config
+
+Project starts the 31 of January 2022
+
+
+-- Análisis, Diseño e Implementación--
+
+[Pre release v1.3.0] happens 2021/01/31
+
+'XL+L+L               => 4+3+3          = 10 días
+[UML - Component Cycle Clock] lasts 4 days and starts 0 days after [Pre release v1.3.0]'s end
+then [Component-view Cycle Clock] lasts 13 days
+then [Tests - Component Cycle Clock] lasts 3 days
+
+'XL                   => 4              = 4 días
+[UML - Component Pipeline] lasts 2 days and starts 0 days after [Pre release v1.3.0]'s end
+[Component-view Pipeline] lasts 10 days and starts 0 days before [UML - Component Cycle Clock]'s end
+[Tests - Component Pipeline] lasts 3 days and starts 0 days after [Component-view Cycle Clock]'s end
+
+[Pre release v1.4.0] happens at 0 days after [Tests - Component Cycle Clock]'s end
+[Pre release v1.4.0] happens at 0 days after [Tests - Component Pipeline]'s end
+
+
+-- Reuniones --
+
+[6ª Reunión] happens 0 days after [Pre release v1.3.0]'s end
+[7ª Reunión] happens 0 days after [Pre release v1.4.0]'s end
+
+2022/02/01 to 2022/02/14 are colored in lightblue and are named [Sprint 6]
+2022/02/15 to 2022/02/28 are colored in lightgreen and are named [Sprint 7]
+
+@endgantt
