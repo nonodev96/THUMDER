@@ -6,8 +6,9 @@
 skinparam defaultFontName consolas
 skinparam minClassWidth 100
 skinparam conditionStyle inside
-
+skinparam dpi 250
 'printscale daily zoom 2
+ganttscale daily zoom 2
 saturday are closed and are colored in pink
 sunday are closed and are colored in pink
 @enduml

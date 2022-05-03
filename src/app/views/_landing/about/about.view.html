@@ -22,7 +22,7 @@
       <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
         <div class="card-header">
           <h4 class="card-title w-100">
-            1. {{'VIEWS.ABOUT.TITLE_README' | translate}} Readme
+            1. {{'VIEWS.ABOUT.TITLE_README' | translate}}
           </h4>
         </div>
       </a>
@@ -95,8 +95,9 @@
 
           <div class="container-fluid">
             <div class="row">
-
               <div class="col-12">
+
+                <h3>{{ "TABLE.DEPENDENCIES" | translate }}</h3>
                 <table class="table">
                   <tr>
                     <th>{{ "TABLE.NAME" | translate }}</th>
@@ -105,27 +106,55 @@
                     <th>{{ "TABLE.AUTHOR" | translate }}</th>
                     <th>{{ "TABLE.DESCRIPTION" | translate }}</th>
                   </tr>
-
                   <ng-container *ngFor="let data of this.dependenciesData">
                     <tr>
-                      <td>{{data?.name}}</td>
+                      <td>
+                        <ng-container *ngIf="data?.homepage">
+                          <a (click)="openInExternal(data?.homepage)" class="link-primary">
+                            {{data?.name}}
+                          </a>
+                        </ng-container>
+                        <ng-container *ngIf="!data?.homepage">
+                          {{data?.name}}
+                        </ng-container>
+                      </td>
                       <td>{{data?.version}}</td>
                       <td>{{data?.license}}</td>
                       <td>{{data?.author?.name}}</td>
                       <td>{{data?.description}}</td>
                     </tr>
                   </ng-container>
+                </table>
+              </div>
 
+              <div class="col-12">
+                <h3>{{ "TABLE.DEV_DEPENDENCIES" | translate }}</h3>
+                <table class="table">
+                  <tr>
+                    <th>{{ "TABLE.NAME" | translate }}</th>
+                    <th>{{ "TABLE.VERSION" | translate }}</th>
+                    <th>{{ "TABLE.LICENSE" | translate }}</th>
+                    <th>{{ "TABLE.AUTHOR" | translate }}</th>
+                    <th>{{ "TABLE.DESCRIPTION" | translate }}</th>
+                  </tr>
                   <ng-container *ngFor="let data of this.devDependenciesData">
                     <tr>
-                      <td>{{data?.name}}</td>
+                      <td>
+                        <ng-container *ngIf="data?.homepage">
+                          <a (click)="openInExternal(data?.homepage)" class="link-primary">
+                            {{data?.name}}
+                          </a>
+                        </ng-container>
+                        <ng-container *ngIf="!data?.homepage">
+                          {{data?.name}}
+                        </ng-container>
+                      </td>
                       <td>{{data?.version}}</td>
                       <td>{{data?.license}}</td>
                       <td>{{data?.author?.name}}</td>
                       <td>{{data?.description}}</td>
                     </tr>
                   </ng-container>
-
                 </table>
               </div>
 

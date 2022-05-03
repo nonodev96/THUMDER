@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
 @Component({
-  selector:    "app-aside-right",
+  selector:    "THUMDER-aside-right",
   templateUrl: "./aside-right.component.html",
   styleUrls:   [ "./aside-right.component.scss" ]
 })

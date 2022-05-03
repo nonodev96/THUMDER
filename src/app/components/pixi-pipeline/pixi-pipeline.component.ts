@@ -3,11 +3,12 @@ import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } 
 import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 import { Subscription } from "rxjs";
+import { TypeCycleCell, TypeCycleCellUnit, TypePipelineInstructions } from "../../Types";
 
 @Component({
   selector:    "thumder-pixi-pipeline",
   templateUrl: "./pixi-pipeline.component.html",
-  styleUrls:   [ "./pixi-pipeline.component.scss" ]
+  styleUrls:   ["./pixi-pipeline.component.scss"]
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -40,57 +41,18 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
       //   this.pipeline.update_fdivEX_text(fdivEX_unit.unit, this.machine.getCode(fdivEX_unit.address).instruction ?? '');
       // }
 
-      this.pipeline.update_IF_text("");
-      this.pipeline.update_ID_text("");
-      this.pipeline.update_intEX_text("");
-      this.pipeline.update_MEM_text("");
-      this.pipeline.update_WB_text("");
-      if (stepSimulation.pipeline.IF.draw !== false) {
-        const instruction = this.machine.getCode(stepSimulation.pipeline.IF.address).instruction;
-        this.pipeline.update_IF_text(instruction);
-      }
-      if (stepSimulation.pipeline.ID.draw !== false) {
-        const instruction = this.machine.getCode(stepSimulation.pipeline.ID.address).instruction;
-        this.pipeline.update_ID_text(instruction);
-      }
-      if (stepSimulation.pipeline.intEX.draw !== false) {
-        const instruction = this.machine.getCode(stepSimulation.pipeline.intEX.address).instruction;
-        this.pipeline.update_intEX_text(instruction);
-      }
-      if (stepSimulation.pipeline.MEM.draw !== false) {
-        const instruction = this.machine.getCode(stepSimulation.pipeline.MEM.address).instruction;
-        this.pipeline.update_MEM_text(instruction);
-      }
-      if (stepSimulation.pipeline.WB.draw !== false) {
-        const instruction = this.machine.getCode(stepSimulation.pipeline.WB.address).instruction;
-        this.pipeline.update_WB_text(instruction);
-      }
+      const instructions: TypePipelineInstructions = {
+        IF:      this.getInstructionItem(stepSimulation.pipeline.IF),
+        ID:      this.getInstructionItem(stepSimulation.pipeline.ID),
+        intEX:   this.getInstructionItem(stepSimulation.pipeline.intEX),
+        MEM:     this.getInstructionItem(stepSimulation.pipeline.MEM),
+        WB:      this.getInstructionItem(stepSimulation.pipeline.WB),
+        faddEX:  this.getInstruction(stepSimulation.pipeline.faddEX),
+        fmultEX: this.getInstruction(stepSimulation.pipeline.fmultEX),
+        fdivEX:  this.getInstruction(stepSimulation.pipeline.fdivEX),
+      };
 
-      for (const faddEX of stepSimulation.pipeline.faddEX) {
-        this.pipeline.update_faddEX_text(faddEX.unit, "");
-        if (faddEX.draw !== false) {
-          const instruction = this.machine.getCode(faddEX.address).instruction;
-          this.pipeline.update_faddEX_text(faddEX.unit, instruction);
-        }
-      }
-
-      for (const fmultEX of stepSimulation.pipeline.fmultEX) {
-        this.pipeline.update_fmultEX_text(fmultEX.unit, "");
-        if (fmultEX.draw !== false) {
-          const instruction = this.machine.getCode(fmultEX.address).instruction;
-          this.pipeline.update_fmultEX_text(fmultEX.unit, instruction);
-        }
-      }
-
-      for (const fdivEX of stepSimulation.pipeline.fdivEX) {
-        this.pipeline.update_fdivEX_text(fdivEX.unit, "");
-        if (fdivEX.draw !== false) {
-          const instruction = this.machine.getCode(fdivEX.address).instruction;
-          this.pipeline.update_fdivEX_text(fdivEX.unit, instruction);
-        }
-      }
-
-
+      this.pipeline.processStep(instructions);
     });
   }
 
@@ -114,18 +76,34 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepSimulationSubscription.unsubscribe();
   }
 
-  @HostListener("window:resize", [ "$event" ])
+  @HostListener("window:resize", ["$event"])
   onResize(event) {
     event.preventDefault();
     event.stopPropagation();
     this.resize();
   }
 
-
   private resize() {
     const width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
     height = height === 0 ? 900 : height;
     this.pApp.renderer.resize(width, height);
+  }
+
+  private getInstructionItem(item: TypeCycleCell) {
+    return {
+      text: this.machine.getCode(item.address).instruction,
+      draw: item.draw
+    };
+  }
+
+  private getInstruction(item: TypeCycleCellUnit[]) {
+    return item.map((v) => {
+      return {
+        unit: v.unit,
+        text: this.machine.getCode(v.address).instruction,
+        draw: v.draw
+      };
+    });
   }
 }

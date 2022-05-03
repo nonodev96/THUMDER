@@ -1,17 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-
 import { Observable } from "rxjs";
-
-import { Utils } from "../../../Utils";
-import { THUMDER_FileItem } from "./file-system.service";
-import { InterfaceUser } from "../../../Types";
-import { map, filter } from "rxjs/operators";
-import { from } from "rxjs";
-
+import { map } from "rxjs/operators";
 import {
-  CollectionReference,
-  Firestore, Timestamp,
+  Firestore,
   query, where,
   doc,
   getDoc,
@@ -26,8 +18,18 @@ import {
   collectionChanges,
   collectionData,
   docData,
+  Query,
+  DocumentData,
+  DocumentChange,
+  DocumentSnapshot,
+  CollectionReference,
+  DocumentReference,
+  QuerySnapshot
 } from "@angular/fire/firestore";
-import { DocumentReference } from "@firebase/firestore";
+
+import { THUMDER_FileItem } from "./file-system.service";
+import { Utils } from "../../../Utils";
+import { InterfaceUser } from "../../../Types";
 
 @Injectable({
   providedIn: "root"
@@ -47,30 +49,6 @@ export class FileSystemStorageService {
     return Promise.resolve(documents.size > 0);
   }
 
-  // region getters
-  public queryFileFromUser(filename: string) {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    return getDocs(query(
-      collection(this.afs, this.dbFileItemsPath),
-      where("e1_uid", "==", userData.uid),
-      where("name", "==", filename)
-    ));
-  }
-
-  private queryAllFilesFromUser() {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    return query(
-      collection(this.afs, this.dbFileItemsPath),
-      where("e1_uid", "==", userData.uid),
-    )
-  }
-
-  private collectionFileItems() {
-    return getDocs(this.queryAllFilesFromUser());
-  }
-
-  // endregion
-
   public async generateDefaultFiles(): Promise<number> {
     if (await this.isInitialize()) {
       return Promise.resolve(1);
@@ -89,8 +67,29 @@ export class FileSystemStorageService {
     return Promise.resolve(0);
   }
 
+  public queryFileFromUser(filename: string): Promise<QuerySnapshot<DocumentData>> {
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    return getDocs(query(
+      collection(this.afs, this.dbFileItemsPath),
+      where("e1_uid", "==", userData.uid),
+      where("name", "==", filename)
+    ));
+  }
+
+  private queryAllFilesFromUser(): Query<DocumentData> {
+    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    return query(
+      collection(this.afs, this.dbFileItemsPath),
+      where("e1_uid", "==", userData.uid),
+    )
+  }
+
+  private collectionFileItems(): Promise<QuerySnapshot<DocumentData>> {
+    return getDocs(this.queryAllFilesFromUser());
+  }
+
   // Observable<InterfaceFileItem[]>
-  public getAllFilesFromFirestoreAsObservable() {
+  public getAllFilesFromFirestoreAsObservable(): Observable<THUMDER_FileItem[]> {
     return this.FileItems_Collections_valueChanges().pipe(
       map((changes) => {
         const items = changes.map((interfaceFileItem) => {
@@ -153,20 +152,20 @@ export class FileSystemStorageService {
   }
 
   //  Documents
-  public FileItem_Documents_valueChanges(id) {
+  public FileItem_Documents_valueChanges(id): Observable<THUMDER_FileItem> {
     return docData(
       doc(this.afs, this.dbFileItemsPath, id) as DocumentReference<THUMDER_FileItem>
     );
   }
 
-  public FileItem_Documents_snapShotChanges(id) {
+  public FileItem_Documents_snapShotChanges(id): Observable<DocumentSnapshot<THUMDER_FileItem>> {
     return docSnapshots(
       doc(this.afs, id) as DocumentReference<THUMDER_FileItem>
     );
   }
 
   // Collections
-  public FileItems_Collections_valueChanges() {
+  public FileItems_Collections_valueChanges(): Observable<THUMDER_FileItem[]> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     return collectionData<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
@@ -176,7 +175,7 @@ export class FileSystemStorageService {
     );
   }
 
-  public FileItems_Collections_snapShotChanges() {
+  public FileItems_Collections_snapShotChanges(): Observable<DocumentChange<THUMDER_FileItem>[]> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     return collectionChanges<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
@@ -194,7 +193,7 @@ export class FileSystemStorageService {
     };
   }
 
-  public async getAllFilesFromFirestore() {
+  public async getAllFilesFromFirestore(): Promise<QuerySnapshot<THUMDER_FileItem>> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     return getDocs<THUMDER_FileItem>(
       query<THUMDER_FileItem>(

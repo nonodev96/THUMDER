@@ -6,7 +6,7 @@ import { AppConfig } from "../../../../environments/_environment";
 import { ElectronService } from "../../../__core/services";
 
 @Component({
-  selector:    "app-aside-left",
+  selector:    "THUMDER-aside-left",
   templateUrl: "./aside-left.component.html",
   styleUrls:   [ "./aside-left.component.scss" ]
 })

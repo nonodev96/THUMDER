@@ -3,12 +3,6 @@ import "../polyfills";
 
 import { NgModule, SecurityContext } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { AngularFireModule } from "@angular/fire/compat";
-import { AngularFireAnalyticsModule } from "@angular/fire/compat/analytics";
-import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
-import { AngularFireStorageModule } from "@angular/fire/compat/storage";
-import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
-import { AngularFireAuthModule } from "@angular/fire/compat/auth";
 import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth, initializeAuth } from "@angular/fire/auth";
 import { provideStorage, getStorage } from "@angular/fire/storage";
@@ -244,7 +238,6 @@ export function markedOptionsFactory(): MarkedOptions {
     GridViewComponent
   ],
   imports:      [
-
     CoreModule,
     SharedModule,
     ComponentsModule,

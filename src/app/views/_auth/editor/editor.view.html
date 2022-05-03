@@ -29,7 +29,10 @@
 
   <div class="card-body">
 
-    <thumder-monaco-editor #editorComponent></thumder-monaco-editor>
+    <thumder-monaco-editor #editorComponent
+                           [inputLanguage]="'thumderLanguage'"
+                           [inputTheme]="'thumderTheme'"
+    ></thumder-monaco-editor>
 
   </div>
 

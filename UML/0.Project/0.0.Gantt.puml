@@ -15,7 +15,7 @@
 ' 50 % de los días para planteamiento
 ' 50 % de los días para la implementación
 '2+2+2+4+4+6
-
+ganttscale daily zoom 1
 
 Project starts the 1st of September 2021
 
@@ -60,7 +60,7 @@ then [Proyecto plantilla - Tests] lasts 4 days
 
 'L+L+L                => 3+3+3          = 9 días      and starts 0 days before [Servicio Manager accounts]'s end
 [UML - Manager files] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
-[Component-view Manager files] lasts 13 days and starts 0 days after [UML - Manager accounts]'s end
+[Component-view Manager files] lasts 13 days and starts 0 days after [UML - Manager files]'s end
 [Tests - Manager files] lasts 4 days and starts 0 days after [Component-view Manager files]'s end
 
 [Pre release v1.1.0] happens at [Tests - Manager accounts]'s end
@@ -76,8 +76,8 @@ then [Tests - Config] lasts 2 days
 
 'M+M+M+L+L+XL         => 2+2+2+3+3+4    = 16 días
 [UML - Editor of files] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
-[Component-view Editor of files] lasts 5 days and starts 0 days after [UML - Config]'s end
-[Tests - Editor of files] lasts 2 days and starts 0 days after [Component-view Config]'s end
+[Component-view Editor of files] lasts 5 days and starts 0 days after [UML - Editor of files]'s end
+[Tests - Editor of files] lasts 2 days and starts 1 days after [Component-view Editor of files]'s end
 
 [Pre release v1.2.0] happens at 0 day after [Tests - Config]'s end
 [Pre release v1.2.0] happens at 0 day after [Tests - Editor of files]'s end
@@ -91,7 +91,7 @@ then [Tests - Config] lasts 2 days
 'S+S+M+L+M+M+L+XL     => 1+1+2+3+2+2+3+4  = 18 días
 [UML - Manager Registers] lasts 5 days and starts 0 days after [Pre release v1.2.0]'s end
 [Component-view Registers] lasts 10 days and starts 17 days after [UML - Manager Registers]'s end
-[Tests - Manager Registers] lasts 5 days and starts 0 days after [Component-view Registers]'s end
+[Tests - Manager Registers] lasts 5 days and starts 3 days after [Component-view Registers]'s end
 
 'M+XXL                 => 2+6            = 8 días
 [UML - Manager Memory] lasts 5 days and starts 0 days after [Pre release v1.2.0]'s end
@@ -114,8 +114,8 @@ then [Tests - Component Cycle Clock] lasts 3 days
 
 'XL                   => 4              = 4 días
 [UML - Component Pipeline] lasts 2 days and starts 0 days after [Pre release v1.3.0]'s end
-[Component-view Pipeline] lasts 10 days and starts 0 days before [UML - Component Cycle Clock]'s end
-[Tests - Component Pipeline] lasts 3 days and starts 0 days after [Component-view Cycle Clock]'s end
+[Component-view Pipeline] lasts 10 days and starts 2 days after [UML - Component Pipeline]'s end
+[Tests - Component Pipeline] lasts 3 days and starts 5 days after [Component-view Pipeline]'s end
 
 [Pre release v1.4.0] happens at 0 days after [Tests - Component Cycle Clock]'s end
 [Pre release v1.4.0] happens at 0 days after [Tests - Component Pipeline]'s end
@@ -128,14 +128,14 @@ then [Tests - Component Cycle Clock] lasts 3 days
 
 
 ' Statistics TODO
-[UML - Component Statistics] lasts 1 days and starts 1 days after [Pre release v1.4.0]'s end
-then [Component-view Statistics] lasts 6 days
+[UML - Component Statistics] lasts 1 days and starts 0 days after [Pre release v1.4.0]'s end
+then [Component-view Statistics] lasts 6 days and starts 1 days after [UML - Component Statistics]'s end
 then [Tests - Component Statistics] lasts 2 days
 
 'L                    => 4              = 4 días
 [UML - Component Código] lasts 2 days and starts 0 days before [Pre release v1.4.0]'s end
-[Component-view Código] lasts 5 days and starts 0 days after [UML - Component Statistics]'s end
-[Tests - Component Código] lasts 2 days and starts 0 days after [Component-view Statistics]'s end
+[Component-view Código] lasts 5 days and starts 0 days after [UML - Component Código]'s end
+[Tests - Component Código] lasts 2 days and starts 1 days after [Component-view Código]'s end
 
 
 [Pre release v1.5.0] happens at 0 days after [Tests - Component Código]'s end
@@ -151,9 +151,9 @@ then [Tests - Component Statistics] lasts 2 days
 [Tests - Component Multiview] lasts 3 days and starts 0 days after [Component-view Multiview]'s end
 
 'M                    => 2              = 2 días
-[UML - Component Calculator] lasts 1 days and starts 0 days before [Pre release v1.5.0]'s end
-[Component-view Calculator] lasts 3 days and starts 0 days after [UML - Component Multiview]'s end
-[Tests - Component Calculator] lasts 1 days and starts 0 days after [Component-view Multiview]'s end
+[UML - Component Calculator] lasts 1 days and starts 0 days after [Pre release v1.5.0]'s end
+[Component-view Calculator] lasts 3 days and starts 1 days after [UML - Component Calculator]'s end
+[Tests - Component Calculator] lasts 1 days and starts 7 days after [Component-view Calculator]'s end
 
 
 [Pre release v1.6.0] happens at 0 days after [Tests - Component Multiview]'s end
@@ -171,8 +171,8 @@ then [Tests - Component Documentation] lasts 1 days
 
 ' Documentation   TODO
 [UML - Component About] lasts 2 days and starts 0 days before [Pre release v1.6.0]'s end
-[Component-view About] lasts 5 days and starts 0 days after [UML - Component Documentation]'s end
-[Tests - Component About] lasts 1 days and starts 0 days after [Component-view Documentation]'s end
+[Component-view About] lasts 5 days and starts 1 days after [UML - Component About]'s end
+[Tests - Component About] lasts 1 days and starts 1 days after [Component-view About]'s end
 
 
 [Pre release v1.7.0] happens at 0 days after [Tests - Component Documentation]'s end

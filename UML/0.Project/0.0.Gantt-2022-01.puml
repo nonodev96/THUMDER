@@ -11,7 +11,7 @@ Project starts the 14 of December 2021
 'S+S+M+L+M+M+L+XL     => 1+1+2+3+2+2+3+4  = 18 días
 [UML - Manager Registers] lasts 5 days and starts 0 days after [Pre release v1.2.0]'s end
 [Component-view Registers] lasts 10 days and starts 17 days after [UML - Manager Registers]'s end
-[Tests - Manager Registers] lasts 5 days and starts 0 days after [Component-view Registers]'s end
+[Tests - Manager Registers] lasts 5 days and starts 3 days after [Component-view Registers]'s end
 
 'M+XXL                 => 2+6            = 8 días
 [UML - Manager Memory] lasts 5 days and starts 0 days after [Pre release v1.2.0]'s end
@@ -29,6 +29,7 @@ Project starts the 14 of December 2021
 
 2021/12/15 to 2021/12/31 are closed
 2021/12/15 to 2021/12/31 are named [Holidays]
+2021/12/15 to 2021/12/31 are colored in salmon
 2022/01/01 to 2022/01/14 are colored in lightblue and are named [Sprint 4]
 2022/01/15 to 2022/01/31 are colored in lightgreen and are named [Sprint 5]
 
