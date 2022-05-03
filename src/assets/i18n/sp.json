@@ -196,11 +196,14 @@
     "MESSAGE_BREAKPOINT_SIMULATION": "Pausa la simulación"
   },
   "TABLE": {
+    "DEPENDENCIES": "Dependencias",
+    "DEV_DEPENDENCIES": "Dependencies de desarrollo",
     "NAME": "Nombre",
     "VERSION": "Versión",
     "LICENSE": "Licencia",
     "AUTHOR": "Autor",
-    "DESCRIPTION": "Descripción"
+    "DESCRIPTION": "Descripción",
+    "HOMEPAGE": "Enlace al proyecto"
   },
   "MODAL": {
     "TEXT": "Texto",

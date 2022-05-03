@@ -1,4 +1,4 @@
-import {InterfaceRegisters} from "./__core/DLX/interfaces";
+import { InterfaceRegisters } from "./__core/DLX/interfaces";
 
 declare global {
   interface Window {
@@ -660,6 +660,17 @@ export type TypePipeline = {
   fmultEX: TypeCycleCellUnit[];
   fdivEX: TypeCycleCellUnit[];
   arrows: TypeArrowCycle[];
+};
+
+export type TypePipelineInstructions = {
+  IF: { text: string; draw: boolean | TypeStall; };
+  ID: { text: string; draw: boolean | TypeStall; };
+  intEX: { text: string; draw: boolean | TypeStall; };
+  MEM: { text: string; draw: boolean | TypeStall; };
+  WB: { text: string; draw: boolean | TypeStall; };
+  faddEX: { unit: number; text: string; draw: boolean | TypeStall; }[]
+  fmultEX: { unit: number; text: string; draw: boolean | TypeStall; }[]
+  fdivEX: { unit: number; text: string; draw: boolean | TypeStall; }[]
 };
 
 export type TypeErrorInCode = {

@@ -7,7 +7,6 @@ import CustomFileSystemProvider from "devextreme/file_management/custom_provider
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import FileManager from "devextreme/ui/file_manager";
 import { Subscription } from "rxjs";
-import { getDoc } from "@angular/fire/firestore";
 
 export type FileMenuOptions = {
   items: {
@@ -88,10 +87,10 @@ export class FileManagerView implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fileSystemService.init().then(() => {
       this.customFileProvider = new CustomFileSystemProvider({
-        getItems:        async (parentDirectory) => {
+        getItems:        async (parentDirectory: FileSystemItem) => {
           return await this.fileSystemService.getItems(parentDirectory);
         },
-        createDirectory: async (parentDirectory, name) => {
+        createDirectory: async (parentDirectory: FileSystemItem, name: string) => {
           return await this.fileSystemService.createDirectory(parentDirectory, name);
         },
         renameItem:      async (item: FileSystemItem, name: string) => {
@@ -100,13 +99,13 @@ export class FileManagerView implements OnInit, OnDestroy {
         deleteItem:      async (item: FileSystemItem) => {
           return await this.fileSystemService.deleteItem(item);
         },
-        moveItem:        async (item, destinationDirectory) => {
+        moveItem:        async (item: FileSystemItem, destinationDirectory: FileSystemItem) => {
           return await this.fileSystemService.moveItem(item, destinationDirectory);
         },
-        uploadFileChunk: async (fileData, uploadInfo, destinationDirectory) => {
+        uploadFileChunk: async (fileData, uploadInfo, destinationDirectory: FileSystemItem) => {
           return await this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
         },
-        downloadItems:   async (items) => {
+        downloadItems:   async (items: FileSystemItem[]) => {
           return await this.fileSystemService.downloadItem(items);
         }
       });

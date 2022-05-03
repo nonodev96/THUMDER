@@ -6,7 +6,7 @@ import { StorageService } from "../../../__core/storage/storage.service";
 import { ElectronService } from "../../../__core/services";
 
 @Component({
-  selector:    "app-footer",
+  selector:    "THUMDER-footer",
   templateUrl: "./footer.component.html"
 })
 export class FooterComponent implements OnInit {
@@ -30,6 +30,6 @@ export class FooterComponent implements OnInit {
   }
 
   public async notification() {
-    this.electronService.ipcRenderer.send("thumder-notification");
+    this.electronService.send("thumder-notification");
   }
 }

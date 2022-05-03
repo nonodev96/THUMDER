@@ -15,7 +15,7 @@ Project starts the 29 of October 2021
 
 'L+L+L                => 3+3+3          = 9 días
 [UML - Manager files] lasts 5 days and starts 0 days before [Pre release v1.0.0]'s end
-[Component-view Manager files] lasts 13 days and starts 0 days after [UML - Manager accounts]'s end
+[Component-view Manager files] lasts 13 days and starts 0 days after [UML - Manager files]'s end
 [Tests - Manager files] lasts 4 days and starts 0 days after [Component-view Manager files]'s end
 
 [Pre release v1.1.0] happens at [Tests - Manager accounts]'s end

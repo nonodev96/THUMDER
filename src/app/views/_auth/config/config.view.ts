@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, OnInit} from "@angular/core";
-import {SocketProviderConnectService} from "../../../__core/services/socket/socket-provider-connect.service";
-import {StorageService} from "../../../__core/storage/storage.service";
-import {MachineService} from "../../../__core/machine/machine.service";
-import {AppConfig} from "../../../../environments/_environment";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
+import { StorageService } from "../../../__core/storage/storage.service";
+import { MachineService } from "../../../__core/machine/machine.service";
+import { AppConfig } from "../../../../environments/_environment";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION, DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
@@ -17,17 +17,17 @@ import {
   TypeMultiviewConfiguration,
   TypeWebSocketConfiguration
 } from "../../../Types";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
-import {Globals} from "../../../__core/services/globals/globals.service";
+
+import { Globals } from "../../../__core/services/globals/globals.service";
 
 interface EventTargetInput extends EventTarget {
   value: string | number | boolean;
 }
 
 @Component({
-  selector: "view-config",
+  selector:    "view-config",
   templateUrl: "./config.view.html",
-  styleUrls: []
+  styleUrls:   []
 })
 export class ConfigView implements OnInit, AfterViewInit {
 

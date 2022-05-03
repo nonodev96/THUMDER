@@ -1,7 +1,15 @@
 import { AfterViewInit, OnInit, Component, ChangeDetectorRef } from "@angular/core";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeRegister, TypeRegisterToEdit } from "../../../Types";
-import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R, MACHINE_TYPE_REGISTERS, DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "../../../CONSTANTS";
+import {
+  MACHINE_REGISTERS_C,
+  MACHINE_REGISTERS_D,
+  MACHINE_REGISTERS_F,
+  MACHINE_REGISTERS_R,
+  MACHINE_TYPE_REGISTERS,
+  DEFAULT_BINARY_32_BITS,
+  DEFAULT_BINARY_64_BITS
+} from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
@@ -9,23 +17,23 @@ import { ToastrService } from "ngx-toastr";
 @Component({
   selector:    "THUMDER-edit-register-binary32",
   templateUrl: "./edit-register-binary32.component.html",
-  styleUrls:   [ "./edit-register-binary32.component.scss" ]
+  styleUrls:   ["./edit-register-binary32.component.scss"]
 })
 export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
 
   readonly MACHINE_TYPE_REGISTERS = MACHINE_TYPE_REGISTERS;
 
-  typeRegisterSelected: TypeRegister = "Control";
-  registerToEdit: TypeRegisterToEdit = "PC";
-  listRegisters: TypeRegisterToEdit[] = MACHINE_REGISTERS_C;
-  aliasTypeRegister: string = "";
+  public aliasTypeRegister: string = "";
+  public typeRegisterSelected: TypeRegister = "Control";
+  public listRegisters: TypeRegisterToEdit[] = MACHINE_REGISTERS_C;
+  private registerToEdit: TypeRegisterToEdit = "PC";
 
-  maxLengthHexadecimal: number = 8;
-  registerToEditHexadecimalValueIsValid: boolean = true;
-  regExp_32bits_hex = new RegExp("\\b[0-9A-F]{8}\\b");
-  regExp_64bits_hex = new RegExp("\\b[0-9A-F]{16}\\b");
-  _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
-  lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
+  public maxLengthHexadecimal: number = 8;
+  public registerToEditHexadecimalValueIsValid: boolean = true;
+  public lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
+  private regExp_32bits_hex = new RegExp("\\b[0-9A-F]{8}\\b");
+  private regExp_64bits_hex = new RegExp("\\b[0-9A-F]{16}\\b");
+  private _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
 
   get registerToEdit_Binary() {
     return this._registerToEdit_binary;
@@ -169,11 +177,11 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
         }
       }
 
-      await this.machine.updateRegisterInServer([ {
+      await this.machine.updateRegisterInServer([{
         register:         this.registerToEdit,
         typeRegister:     this.typeRegisterSelected,
         hexadecimalValue: Utils.binaryToHexadecimal(this.registerToEdit_Binary)
-      } ]);
+      }]);
 
       return Promise.resolve();
     } catch (e) {

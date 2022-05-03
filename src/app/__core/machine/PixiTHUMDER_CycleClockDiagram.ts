@@ -38,7 +38,9 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   public realStep: number;
 
-  public instructions: number;
+  public num_instructions: number;
+
+  public num_arrows: number;
 
   private table: PixiTHUMDER_Table;
 
@@ -58,8 +60,6 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   private stepToStart: number;
 
-  private last: number;
-
   // K => { Row = instruction, Column = step}
   // private timerVoid: PixiUtils.THUMDER_Map<TypeCellPosition, PIXI.Graphics>;
   // private timer: PixiUtils.THUMDER_Map<TypeCellPosition, PIXI.Graphics>;
@@ -71,10 +71,10 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.tableSteps = new PixiTHUMDER_Table();
     this.tableInstructions = new PixiTHUMDER_Table();
 
-    this.instructions = 0;
+    this.num_instructions = 0;
+    this.num_arrows = 0;
     this.realStep = 0;
     this.stepToStart = 0;
-    this.last = 0;
 
     this.borderTitle = new PIXI.Graphics();
     this.borderLeft = new PIXI.Graphics();
@@ -111,10 +111,10 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
       this.tableSteps.deleteCell(position.row, position.col);
     }
 
-    this.instructions = 0;
+    this.num_instructions = 0;
+    this.num_arrows = 0;
     this.realStep = 0;
     this.stepToStart = 0;
-    this.last = 1;
 
     // this.timerVoid = new PixiUtils.THUMDER_Map();
     // this.timer = new PixiUtils.THUMDER_Map();
@@ -230,12 +230,12 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   public addInstruction(text: string) {
     this.drawInstruction(text);
-    this.instructions++;
+    this.num_instructions++;
   }
-
 
   public addArrow(instructionArrow: TypeArrowDirection, color: number) {
     this.drawArrow(instructionArrow, color);
+    this.num_arrows++;
   }
 
   /**
@@ -267,8 +267,8 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     text.position.x += (rectangle.width / 2) - (text.width / 2);
     text.position.y += ((rectangle.height - text.height) / 2) - 2.5;
     rectangle.addChild(text);
-    this.tableInstructions.setCell(this.instructions, 0, rectangle);
-    this.tableInstructions.drawCell(this.instructions, 0);
+    this.tableInstructions.setCell(this.num_instructions, 0, rectangle);
+    this.tableInstructions.drawCell(this.num_instructions, 0);
   }
 
   private drawSteps(displayStep: number = this.realStep) {

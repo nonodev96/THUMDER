@@ -29,7 +29,6 @@ export class ElectronService {
     }
   }
 
-
   public async openInExternal(url: string): Promise<void> {
     await this.shell.openExternal(url);
   }
@@ -94,6 +93,10 @@ export class ElectronService {
 
   public get shell(): Electron.Shell {
     return this.electron ? this.electron.shell : null;
+  }
+
+  public send(channel: string, ...args: any[]): void {
+    this.ipcRenderer.send(channel, args);
   }
 
   public static get debug(): any {

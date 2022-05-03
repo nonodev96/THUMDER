@@ -15,8 +15,8 @@ then [Tests - Component Statistics] lasts 2 days
 
 'L                    => 4              = 4 días
 [UML - Component Código] lasts 2 days and starts 0 days before [Pre release v1.4.0]'s end
-[Component-view Código] lasts 5 days and starts 0 days after [UML - Component Statistics]'s end
-[Tests - Component Código] lasts 2 days and starts 0 days after [Component-view Statistics]'s end
+[Component-view Código] lasts 5 days and starts 0 days after [UML - Component Código]'s end
+[Tests - Component Código] lasts 2 days and starts 1 days after [Component-view Código]'s end
 
 
 [Pre release v1.5.0] happens at 0 days after [Tests - Component Código]'s end
@@ -30,8 +30,8 @@ then [Tests - Component Statistics] lasts 2 days
 
 'M                    => 2              = 2 días
 [UML - Component Calculator] lasts 1 days and starts 0 days before [Pre release v1.5.0]'s end
-[Component-view Calculator] lasts 3 days and starts 0 days after [UML - Component Multiview]'s end
-[Tests - Component Calculator] lasts 1 days and starts 0 days after [Component-view Multiview]'s end
+[Component-view Calculator] lasts 3 days and starts 1 days after [UML - Component Calculator]'s end
+[Tests - Component Calculator] lasts 1 days and starts 7 days after [Component-view Calculator]'s end
 
 
 [Pre release v1.6.0] happens at 0 days after [Tests - Component Multiview]'s end

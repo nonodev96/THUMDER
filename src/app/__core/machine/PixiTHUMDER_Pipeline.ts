@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { TypePipelineInstructions } from "../../Types";
 
 export type ColorType = number;
 
@@ -292,5 +293,50 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
       fmultEX_array: fmultEX_array,
       fdivEX_array:  fdivEX_array
     });
+  }
+
+  public processStep(instructions: TypePipelineInstructions) {
+    this.update_IF_text("");
+    this.update_ID_text("");
+    this.update_intEX_text("");
+    this.update_MEM_text("");
+    this.update_WB_text("");
+    if (instructions.IF.draw !== false) {
+      this.update_IF_text(instructions.IF.text);
+    }
+    if (instructions.ID.draw !== false) {
+      this.update_ID_text(instructions.ID.text);
+    }
+    if (instructions.intEX.draw !== false) {
+      this.update_intEX_text(instructions.intEX.text);
+    }
+    if (instructions.MEM.draw !== false) {
+      this.update_MEM_text(instructions.MEM.text);
+    }
+    if (instructions.WB.draw !== false) {
+      this.update_WB_text(instructions.WB.text);
+    }
+
+    for (const faddEX of instructions.faddEX) {
+      this.update_faddEX_text(faddEX.unit, "");
+      if (faddEX.draw !== false) {
+        this.update_faddEX_text(faddEX.unit, faddEX.text);
+      }
+    }
+
+    for (const fmultEX of instructions.fmultEX) {
+      this.update_fmultEX_text(fmultEX.unit, "");
+      if (fmultEX.draw !== false) {
+        this.update_fmultEX_text(fmultEX.unit, fmultEX.text);
+      }
+    }
+
+    for (const fdivEX of instructions.fdivEX) {
+      this.update_fdivEX_text(fdivEX.unit, "");
+      if (fdivEX.draw !== false) {
+        this.update_fdivEX_text(fdivEX.unit, fdivEX.text);
+      }
+    }
+
   }
 }

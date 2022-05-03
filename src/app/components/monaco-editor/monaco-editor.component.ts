@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import * as monaco from "monaco-editor";
 import { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "../../Types";
@@ -14,6 +14,9 @@ import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.
   styleUrls:   ["./monaco-editor.component.scss"]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  @Input() inputTheme = 'thumderTheme';
+  @Input() inputLanguage = 'thumderLanguage';
 
   public readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions = MonacoConfig.defaultOptions;
   public _height = 70;

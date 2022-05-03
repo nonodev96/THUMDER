@@ -11,12 +11,12 @@ Project starts 30 29 of November 2021
 'M+S+S+S+S+S+S+S+L+XL => 2+1+1+1+1+1+1+1+3+4  = 16 días
 [UML - Config] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
 then [Component-view Config] lasts 6 days
-then [Tests - Config] lasts 2 days
+then [Tests - Config] lasts 2 days and starts 0 days after [Component-view Config]'s end
 
 'M+M+M+L+L+XL         => 2+2+2+3+3+4    = 16 días
 [UML - Editor of files] lasts 2 days and starts 0 days before [Pre release v1.1.0]'s end
-[Component-view Editor of files] lasts 5 days and starts 0 days after [UML - Config]'s end
-[Tests - Editor of files] lasts 2 days and starts 0 days after [Component-view Config]'s end
+[Component-view Editor of files] lasts 6 days and starts 0 days after [UML - Editor of files]'s end
+[Tests - Editor of files] lasts 2 days and starts 0 days after [Component-view Editor of files]'s end
 
 [Pre release v1.2.0] happens at 0 day after [Tests - Config]'s end
 [Pre release v1.2.0] happens at 0 day after [Tests - Editor of files]'s end
@@ -33,6 +33,6 @@ then [Tests - Config] lasts 2 days
 2021/12/15 to 2021/12/31 are closed
 2021/12/15 to 2021/12/31 are named [Holidays]
 2021/12/15 to 2022/01/01 are colored salmon
-'2021/12/15 to 2022/01/14 are colored in lightgreen and are named [Sprint 3]
+2022/01/01 to 2022/01/16 are colored in lightgreen and are named [Sprint 4]
 
 @endgantt

@@ -1,11 +1,12 @@
 import { AfterViewInit, Component, OnInit, Renderer2, ViewChild } from "@angular/core";
-import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
-import { MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { ViewportScroller } from "@angular/common";
 import { Router } from "@angular/router";
-import npm from "../../../../../package.json";
 import { HttpClient } from "@angular/common/http";
+import { MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { IPackageJson } from 'package-json-type';
+import { ElectronService } from "../../../__core/services";
+import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
+import npm from "../../../../../package.json";
 
 @Component({
   selector:    "app-about",
@@ -38,7 +39,8 @@ export class AboutView implements OnInit, AfterViewInit {
 
   private listenObj: any;
 
-  constructor(private markdownService: MarkdownService,
+  constructor(public electronService: ElectronService,
+              private markdownService: MarkdownService,
               private scroller: ViewportScroller,
               private router: Router,
               private renderer: Renderer2,
@@ -49,7 +51,7 @@ export class AboutView implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.prepareData().then((r) => {
+    this.prepareData().then(() => {
       console.log("End");
     })
   }
@@ -63,12 +65,12 @@ export class AboutView implements OnInit, AfterViewInit {
     for (const dependency of this.devDependencies) {
       devDependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
     }
-    this.dependenciesData = await Promise.all(dependenciesData_Promises)
-    this.devDependenciesData = await Promise.all(devDependenciesData_Promises)
+    this.dependenciesData = await Promise.all(dependenciesData_Promises);
+    this.devDependenciesData = await Promise.all(devDependenciesData_Promises);
   }
 
   private async queryNPMPackage(package_name: string, version: string): Promise<IPackageJson> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const QUERY = this.SERVER_API + package_name + "@" + version + "/package.json";
       this.httpClient.get<IPackageJson>(QUERY).toPromise().then((response) => {
         resolve(JSON.parse(JSON.stringify(response)));
@@ -114,5 +116,13 @@ export class AboutView implements OnInit, AfterViewInit {
 
   scrollToAnchor(scrollToAnchor: string) {
     this.scroller.scrollToAnchor(scrollToAnchor);
+  }
+
+  public async openInExternal(url: string) {
+    if (this.electronService.isElectronApp) {
+      await this.electronService.openInExternal(url);
+    } else {
+      window.open(url, "_blank");
+    }
   }
 }

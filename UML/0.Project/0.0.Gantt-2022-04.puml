@@ -12,12 +12,12 @@ Project starts the 31st of March 2022
 ' About           TODO
 [UML - Component Documentation] lasts 3 days and starts 0 days before [Pre release v1.6.0]'s end
 then [Component-view Documentation] lasts 6 days
-then [Tests - Component Documentation] lasts 1 days
+then [Tests - Component Documentation] lasts 1 days and starts 0 days after [Component-view Documentation]'s end
 
 ' Documentation   TODO
 [UML - Component About] lasts 2 days and starts 0 days before [Pre release v1.6.0]'s end
-[Component-view About] lasts 5 days and starts 0 days after [UML - Component Documentation]'s end
-[Tests - Component About] lasts 1 days and starts 0 days after [Component-view Documentation]'s end
+[Component-view About] lasts 5 days and starts 1 days after [UML - Component About]'s end
+[Tests - Component About] lasts 1 days and starts 1 days after [Component-view About]'s end
 
 
 [Pre release v1.7.0] happens at 0 days after [Tests - Component Documentation]'s end

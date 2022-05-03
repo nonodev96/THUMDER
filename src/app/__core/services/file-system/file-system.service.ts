@@ -33,8 +33,6 @@ export class FileSystemService {
   private subscription: Subscription = new Subscription();
 
   constructor(public fileSystemStorageService: FileSystemStorageService) {
-
-
   }
 
   public async init(): Promise<void> {

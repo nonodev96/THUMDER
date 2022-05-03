@@ -15,8 +15,8 @@ then [Tests - Component Cycle Clock] lasts 3 days
 
 'XL                   => 4              = 4 días
 [UML - Component Pipeline] lasts 2 days and starts 0 days after [Pre release v1.3.0]'s end
-[Component-view Pipeline] lasts 10 days and starts 0 days before [UML - Component Cycle Clock]'s end
-[Tests - Component Pipeline] lasts 3 days and starts 0 days after [Component-view Cycle Clock]'s end
+[Component-view Pipeline] lasts 10 days and starts 3 days after [UML - Component Pipeline]'s end
+[Tests - Component Pipeline] lasts 3 days and starts 5 days after [Component-view Pipeline]'s end
 
 [Pre release v1.4.0] happens at 0 days after [Tests - Component Cycle Clock]'s end
 [Pre release v1.4.0] happens at 0 days after [Tests - Component Pipeline]'s end
@@ -29,5 +29,6 @@ then [Tests - Component Cycle Clock] lasts 3 days
 
 2022/02/01 to 2022/02/14 are colored in lightblue and are named [Sprint 6]
 2022/02/15 to 2022/02/28 are colored in lightgreen and are named [Sprint 7]
+2022/03/01 to 2022/03/14 are colored in lightblue and are named [Sprint 8]
 
 @endgantt

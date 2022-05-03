@@ -1,5 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08, } from "../../../CONSTANTS";
+import {
+  DEFAULT_BINARY_32_BITS,
+  DEFAULT_HEXADECIMAL_08_DIGITS,
+  MAX_VALUE_TYPE_DATA,
+  REGEX_HEXADECIMAL_08,
+} from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -8,9 +13,9 @@ import { TypeData } from "../../../Types";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
-  selector:    "THUMDER-edit-memory-binary32",
+  selector: "THUMDER-edit-memory-binary32",
   templateUrl: "./edit-memory-binary32.component.html",
-  styleUrls:   [ "./edit-memory-binary32.component.scss" ]
+  styleUrls: ["./edit-memory-binary32.component.scss"]
 })
 export class EditMemoryBinary32Component implements OnInit {
 
@@ -35,13 +40,6 @@ export class EditMemoryBinary32Component implements OnInit {
   private _binaryValue: string = DEFAULT_BINARY_32_BITS;
   // Hexadecimal 8 digits
   private _hexadecimalAddressMemory: string = DEFAULT_HEXADECIMAL_08_DIGITS;
-
-  constructor(public machine: MachineService,
-              private translate: TranslateService,
-              private ref: ChangeDetectorRef,
-              private toastService: ToastrService,
-              private sanitized: DomSanitizer) {
-  }
 
   // =================================================================================================================
   get displayAddressMemory() {
@@ -150,8 +148,14 @@ export class EditMemoryBinary32Component implements OnInit {
     return this._binaryValue.padStart(64, "0");
   }
 
-
   // =================================================================================================================
+
+  constructor(public machine: MachineService,
+              private translate: TranslateService,
+              private ref: ChangeDetectorRef,
+              private toastService: ToastrService,
+              private sanitized: DomSanitizer) {
+  }
 
   ngOnInit(): void {
   }
@@ -279,11 +283,11 @@ export class EditMemoryBinary32Component implements OnInit {
         }
       }
 
-      await this.machine.updateMemoryInServer([ {
+      await this.machine.updateMemoryInServer([{
         typeData: this.typeDataSelected,
-        address:  `0x${ this.addressMemory }`,
+        address:  `0x${this.addressMemory}`,
         value:    Utils.binaryToHexadecimal(this._binaryValue)
-      } ]);
+      }]);
 
       return Promise.resolve();
     } catch (e) {
@@ -293,7 +297,7 @@ export class EditMemoryBinary32Component implements OnInit {
     }
   }
 
-  changeTypeData(typeData: TypeData) {
+  public changeTypeData(typeData: TypeData) {
     this.typeDataSelected = typeData;
     this.addressIsValid = true;
     this.addressMemoryModule = 0;
