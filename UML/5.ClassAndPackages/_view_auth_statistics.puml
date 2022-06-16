@@ -1,0 +1,16 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!OnDestroy
+
+class StatisticsView implements OnInit, OnDestroy {
+
++data: TypeDataStatistics
+-dataStatisticsSubscription: Subscription
+
++ngOnInit(): void
++ngOnDestroy(): void
+
+}
+
+@enduml

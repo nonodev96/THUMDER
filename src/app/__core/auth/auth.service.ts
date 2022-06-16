@@ -13,12 +13,13 @@ import { ToastrService } from "ngx-toastr";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
 import { InterfaceUser } from "../../Types";
 import { ElectronService } from "../services";
-import { doc, Firestore, setDoc } from "@angular/fire/firestore";
+import { Firestore, doc, setDoc } from "@angular/fire/firestore";
 import {
   Auth,
   GithubAuthProvider,
   GoogleAuthProvider,
-  getRedirectResult, sendEmailVerification, sendPasswordResetEmail,
+  getRedirectResult,
+  sendEmailVerification, sendPasswordResetEmail,
   createUserWithEmailAndPassword,
   signInAnonymously, signInWithEmailAndPassword, signInWithPopup,
 } from "@angular/fire/auth";
@@ -179,7 +180,7 @@ export class AuthService {
       for (const key of Object.keys(localStorage)) {
         localStorage.removeItem(key);
       }
-      await this.router.navigate(["/login"]);
+      await this.router.navigate(["/account/login"]);
     } catch (error) {
       console.error(error);
       this.displayError(error);

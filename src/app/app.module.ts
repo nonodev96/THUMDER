@@ -15,10 +15,10 @@ import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 
+import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
 
 // devextreme
 import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
@@ -74,6 +74,7 @@ import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.compon
 // _admin views
 
 // _auth views
+import { GridViewComponent } from './views/_auth/_grid_view/grid-view.component';
 import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
 import { CalculatorView } from "./views/_auth/calculator/calculator.view";
 import { CodeView } from "./views/_auth/code/code.view";
@@ -110,7 +111,6 @@ PIXI.settings.SORTABLE_CHILDREN = true;
 
 import { ElectronService } from "./__core/services";
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { GridViewComponent } from './views/_auth/_grid_view/grid-view.component';
 
 const isServer = ElectronService.isServer;
 const domain = "localhost";
@@ -215,12 +215,10 @@ export function markedOptionsFactory(): MarkedOptions {
     LayoutAuthComponent,
     LayoutLandingComponent,
 
-    LoginView,
-    RegisterView,
-    ForgotPasswordView,
+
     IndexView,
-    LandingView,
-    AboutView,
+    // LandingView,
+    // AboutView,
 
     CalculatorView,
     CodeView,
@@ -243,9 +241,10 @@ export function markedOptionsFactory(): MarkedOptions {
     ComponentsModule,
 
     BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule,
     RouterModule,
 
     AppRoutingModule,
@@ -280,7 +279,6 @@ export function markedOptionsFactory(): MarkedOptions {
     DxFileManagerModule,
     // use forRoot() in main app module only.
 
-    BrowserAnimationsModule,
     // AngularFireModule,
     // AngularFireModule.initializeApp(AppConfig.firebase),
     // AngularFireAnalyticsModule,

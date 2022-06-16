@@ -17,7 +17,7 @@ describe('Auth access', () => {
   });
 
   it('should actually not be accessible', () => {
-    cy.location('pathname').should('not.eq', '/login');
+    cy.location('pathname').should('not.eq', '/account/login');
   });
 
 });

@@ -1,0 +1,7 @@
+@startuml
+help skinparams
+@enduml
+
+@startuml
+skinparameters
+@enduml

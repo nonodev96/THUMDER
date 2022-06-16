@@ -1,0 +1,42 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+
+class EditRegisterBinary32Component implements OnInit {
+
++aliasTypeRegister: string
++typeRegisterSelected: TypeRegister
++listRegisters: TypeRegisterToEdit
++maxLengthHexadecimal: number
++registerToEditHexadecimalValueIsValid: boolean
++lang_SELECT_REGISTER: string
+-regExp_32bits_hex: RegExp
+-regExp_64bits_hex: RegExp
+-registerToEdit: TypeRegisterToEdit
+-_registerToEdit_binary: string
+
++ngOnInit(): void
+
++getRegisterToEdit_Binary(): string
++getRegisterToEdit_Word(): number
++getRegisterToEdit_Hexadecimal(): string
++getRegisterToEdit_Float(): number
++getRegisterToEdit_Double(): number
++setRegisterToEdit_Binary(binary32: string): void
++setRegisterToEdit_Word(word: number): void
++setRegisterToEdit_Hexadecimal(hexadecimal: string): void
++setRegisterToEdit_Float(float32: number): void
++setRegisterToEdit_Double(double: number): void
+
++onRegisterToEditChangeHexadecimal(hexadecimal: string): Promise<void>
++onRegisterToEditChange_WordFloatDouble(value: number): Promise<void>
+
++changeRegisterToEdit(registerToEdit: TypeRegisterToEdit): void
++changeTypeRegister(typeRegister: TypeRegister): Promise<void>
+-changeRegisterToEditValue(hexadecimal: string): Promise<void>
+
+-TOAST_ErrorRegister(): Promise<void>
+
+}
+
+@enduml

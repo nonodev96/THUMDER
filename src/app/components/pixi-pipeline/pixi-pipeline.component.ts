@@ -1,21 +1,32 @@
 import * as PIXI from "pixi.js";
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Subscription } from "rxjs";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
+import {
+  TypeCycleCell,
+  TypeCycleCellUnit,
+  TypeInstructionPipelineFloatingRepresentation,
+  TypeInstructionPipelineRepresentation,
+  TypePipelineInstructions
+} from "../../Types";
 import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
-import { Subscription } from "rxjs";
-import { TypeCycleCell, TypeCycleCellUnit, TypePipelineInstructions } from "../../Types";
 
 @Component({
-  selector:    "thumder-pixi-pipeline",
+  selector:    "THUMDER-pixi-pipeline",
   templateUrl: "./pixi-pipeline.component.html",
   styleUrls:   ["./pixi-pipeline.component.scss"]
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild("pixiContainer") public pixiContainer;
+  @ViewChild("pixiPipelineContainer")
+  public pixiContainer: ElementRef<HTMLDivElement>;
+
   public pApp: PIXI.Application;
+
   private pipeline: PixiTHUMDER_Pipeline;
   private stepSimulationSubscription: Subscription = new Subscription();
+  private readonly idCanvas: string = "pixi-pipeline";
 
   constructor(private machine: MachineService) {
     this.pipeline = this.machine.pipeline;
@@ -24,32 +35,15 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
-      // const {IF, ID, intEX, MEM, WB} = stepSimulation.pipeline;
-      // const {faddEX, fmultEX, fdivEX} = stepSimulation.pipeline;
-      // this.pipeline.update_IF_text(this.machine.getCode(IF.address).instruction ?? '');
-      // this.pipeline.update_ID_text(this.machine.getCode(ID.address).instruction ?? '');
-      // this.pipeline.update_intEX_text(this.machine.getCode(intEX.address).instruction ?? '');
-      // this.pipeline.update_WB_text(this.machine.getCode(MEM.address).instruction ?? '');
-      // this.pipeline.update_MEM_text(this.machine.getCode(WB.address).instruction ?? '');
-      // for (const faddEX_unit of faddEX) {
-      //   this.pipeline.update_faddEX_text(faddEX_unit.unit, this.machine.getCode(faddEX_unit.address).instruction ?? '');
-      // }
-      // for (const fmultEX_unit of fmultEX) {
-      //   this.pipeline.update_fmultEX_text(fmultEX_unit.unit, this.machine.getCode(fmultEX_unit.address).instruction ?? '');
-      // }
-      // for (const fdivEX_unit of fdivEX) {
-      //   this.pipeline.update_fdivEX_text(fdivEX_unit.unit, this.machine.getCode(fdivEX_unit.address).instruction ?? '');
-      // }
-
       const instructions: TypePipelineInstructions = {
-        IF:      this.getInstructionItem(stepSimulation.pipeline.IF),
-        ID:      this.getInstructionItem(stepSimulation.pipeline.ID),
-        intEX:   this.getInstructionItem(stepSimulation.pipeline.intEX),
-        MEM:     this.getInstructionItem(stepSimulation.pipeline.MEM),
-        WB:      this.getInstructionItem(stepSimulation.pipeline.WB),
-        faddEX:  this.getInstruction(stepSimulation.pipeline.faddEX),
-        fmultEX: this.getInstruction(stepSimulation.pipeline.fmultEX),
-        fdivEX:  this.getInstruction(stepSimulation.pipeline.fdivEX),
+        IF:      this.getInstructionDataPipelineItem(stepSimulation.pipeline.IF),
+        ID:      this.getInstructionDataPipelineItem(stepSimulation.pipeline.ID),
+        intEX:   this.getInstructionDataPipelineItem(stepSimulation.pipeline.intEX),
+        MEM:     this.getInstructionDataPipelineItem(stepSimulation.pipeline.MEM),
+        WB:      this.getInstructionDataPipelineItem(stepSimulation.pipeline.WB),
+        faddEX:  this.getInstructionDataPipeline(stepSimulation.pipeline.faddEX),
+        fmultEX: this.getInstructionDataPipeline(stepSimulation.pipeline.fmultEX),
+        fdivEX:  this.getInstructionDataPipeline(stepSimulation.pipeline.fdivEX),
       };
 
       this.pipeline.processStep(instructions);
@@ -57,17 +51,19 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const width = 1600;
-    const height = 975;
+    const canvas = document.createElement("canvas");
+    canvas.id = this.idCanvas;
     this.pApp = new PIXI.Application({
-      width:           width,
-      height:          height,
+      width:           DEFAULT_CANVAS_WIDTH,
+      height:          DEFAULT_CANVAS_HEIGHT,
       backgroundColor: 0xEEEEEE,
-      resolution:      1
+      resolution:      1,
+      view:            canvas
     });
     this.pApp.stage.addChild(<any>this.pipeline.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
-    this.resize();
+
+    this.resizeCanvas();
   }
 
   ngOnDestroy(): void {
@@ -77,32 +73,34 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   @HostListener("window:resize", ["$event"])
-  onResize(event) {
+  public onResize(event): void {
     event.preventDefault();
     event.stopPropagation();
-    this.resize();
+    this.resizeCanvas();
   }
 
-  private resize() {
+  private resizeCanvas(): void {
     const width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
-    height = height === 0 ? 900 : height;
+    height = height === 0 ? DEFAULT_CANVAS_HEIGHT : height;
     this.pApp.renderer.resize(width, height);
   }
 
-  private getInstructionItem(item: TypeCycleCell) {
+  private getInstructionDataPipelineItem(item: TypeCycleCell): TypeInstructionPipelineRepresentation {
+    const machineInstruction = this.machine.getCode(item.address);
     return {
-      text: this.machine.getCode(item.address).instruction,
+      text: machineInstruction.instruction,
       draw: item.draw
     };
   }
 
-  private getInstruction(item: TypeCycleCellUnit[]) {
-    return item.map((v) => {
+  private getInstructionDataPipeline(items: TypeCycleCellUnit[]): TypeInstructionPipelineFloatingRepresentation[] {
+    return items.map((item) => {
+      const machineInstruction = this.machine.getCode(item.address);
       return {
-        unit: v.unit,
-        text: this.machine.getCode(v.address).instruction,
-        draw: v.draw
+        unit: item.unit,
+        text: machineInstruction.instruction,
+        draw: item.draw
       };
     });
   }

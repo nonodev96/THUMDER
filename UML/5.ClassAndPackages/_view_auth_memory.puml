@@ -1,0 +1,25 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+
+class MemoryView implements OnInit, AfterViewInit {
+
++sort: MatSort
++editBinary32Component: EditMemoryBinary32Component
++displayedColumnsMemory: string[]
++dataSourceMemory: TableVirtualScrollDataSource<number>
++typeDataSelected: TypeDataDisplayColumn
++maxHeightCard: string
+
++ngOnInit(): void
++ngAfterViewInit(): void
+
++getInstructionDLXFromIndex(index: number): string
++changeTypeDataInTable(typeData: TypeDataDisplayColumn): void
++refresh(): void
+-resizeCard(height: string): void
+
+}
+
+@enduml

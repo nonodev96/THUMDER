@@ -3,6 +3,7 @@
                    currentPath="Widescreen"
                    [fileSystemProvider]="customFileProvider"
                    [height]="height()"
+                   (onContentReady)="onContentReady($event)"
                    (onContextMenuItemClick)="onContextMenuItemClick($event)"
                    (onSelectionChanged)="onSelectionChanged($event)"
                    (onSelectedFileOpened)="onSelectedFileOpened($event)">

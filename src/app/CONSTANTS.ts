@@ -20,6 +20,7 @@ import {
 import npm from "../../package.json";
 
 export const NPM_VERSION = npm.version.toString();
+
 export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
   $key:              "",
   content:           "",
@@ -145,6 +146,9 @@ export const DEFAULT_CYCLE_CELL_UNIT: TypeCycleCellUnit = {
   addressRow: 0,
   draw:       false
 };
+
+export const DEFAULT_CANVAS_WIDTH = 1600;
+export const DEFAULT_CANVAS_HEIGHT = 975;
 
 export const DEFAULT_PIPELINE: TypePipeline = {
   IF:      DEFAULT_CYCLE_CELL,
@@ -555,19 +559,19 @@ export const PUBLIC_ROUTES: PublicRoutes = {
     {
       lang:        "LOGIN",
       path:        "login",
-      routerLink:  "/login",
+      routerLink:  "/account/login",
       displayName: "Login"
     },
     {
       lang:        "FORGOT-PASSWORD",
       path:        "forgot-password",
-      routerLink:  "/forgot-password",
+      routerLink:  "/account/forgot-password",
       displayName: "Forgot password"
     },
     {
       lang:        "REGISTER",
       path:        "register",
-      routerLink:  "/register",
+      routerLink:  "/account/register",
       displayName: "Register"
     },
     // no layout views

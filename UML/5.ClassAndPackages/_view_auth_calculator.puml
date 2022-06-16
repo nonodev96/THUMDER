@@ -1,0 +1,60 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+
+class CalculatorView implements OnInit  {
+
+  -_valueByte: Uint8Array
+  -_valueHalfWord: Uint16Array
+  -_valueWord: Uint32Array
+  -_valueIntWord: Int32Array
+  -_value32Float: string
+  -_value64Double: string
+
+  +ngOnInit(): void
+
+  +getBinary08_Value(): number
+  +getBinary08_Hexadecimal(): string
+  +getBinary08_Binary(): string
+  +setBinary08_Value(value: number): void
+  +setBinary08_Hexadecimal(hexValue: string): void
+  +setBinary08_Binary(binary: string): void
+
+  +getBinary16_Value(): number
+  +getBinary16_Hexadecimal(): string
+  +getBinary16_Binary(): string
+  +setBinary16_Value(value: number): void
+  +setBinary16_Hexadecimal(hexValue: string): void
+  +setBinary16_Binary(binary: string): void
+
+  +getBinary32_Value(): number
+  +getBinary32_Hexadecimal(): string
+  +getBinary32_Binary(): string
+  +setBinary32_Value(value: number): void
+  +setBinary32_Hexadecimal(hexValue: string): void
+  +setBinary32_Binary(binary: string): void
+
+  +getBinary32Int_Value(): number
+  +getBinary32Int_Hexadecimal(): string
+  +getBinary32Int_Binary(): string
+  +setBinary32Int_Value(value: number): void
+  +setBinary32Int_Hexadecimal(hexValue: string): void
+  +setBinary32Int_Binary(binary: string): void
+
+  +getBinary32_IEEE754_Value(): number
+  +getBinary32_IEEE754_Hexadecimal(): string
+  +getBinary32_IEEE754_Binary(): string
+  +setBinary32_IEEE754_Value(value: number): void
+  +setBinary32_IEEE754_Hexadecimal(hexValue: string): void
+  +setBinary32_IEEE754_Binary(binary: string): void
+
+  +getBinary64_IEEE754_Value(): number
+  +getBinary64_IEEE754_Hexadecimal(): string
+  +getBinary64_IEEE754_Binary(): string
+  +setBinary64_IEEE754_Value(value: number): void
+  +setBinary64_IEEE754_Hexadecimal(hexValue: string): void
+  +setBinary64_IEEE754_Binary(binary: string): void
+
+}
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+
+class RegistersView implements OnInit, AfterViewInit {
+
+  +sort: MatSort;
+
+  +maxHeightCard: string
+  +typeDataSelected: TypeData
+  +typeDataSelectedFloat: TypeDataRepresentation
+  +typeDataSelectedDouble: TypeDataRepresentation
+  +dataSource: TableVirtualScrollDataSource<string>
+  +dataSourceR: TableVirtualScrollDataSource<number>
+  +dataSourceF: TableVirtualScrollDataSource<number>
+  +dataSourceD: TableVirtualScrollDataSource<number>
+  +displayedColumns: string[]
+  +displayedColumnsR: string[]
+  +displayedColumnsF: string[]
+  +displayedColumnsD: string[]
+
+  +ngOnInit(): void
+  +ngAfterViewInit(): void
+
+  +changeTypeDataInTableRegisters(typeData: TypeData): void
+  +changeTypeDataInTableFloatRegisters(typeData: TypeDataRepresentation): void
+  +changeTypeDataInTableDoubleRegisters(typeData: TypeDataRepresentation): void
+  +refresh(): void
+  -resizeCards(height: string): void
+
+}
+
+@enduml

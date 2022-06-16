@@ -9,17 +9,20 @@ import EditorOption = monaco.editor.EditorOption;
 import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
 
 @Component({
-  selector:    "thumder-monaco-editor",
+  selector:    "THUMDER-monaco-editor",
   templateUrl: "./monaco-editor.component.html",
   styleUrls:   ["./monaco-editor.component.scss"]
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @Input() inputTheme = 'thumderTheme';
-  @Input() inputLanguage = 'thumderLanguage';
+  @Input()
+  public inputTheme: string = 'thumderTheme';
+
+  @Input()
+  public inputLanguage: string = 'thumderLanguage';
 
   public readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions = MonacoConfig.defaultOptions;
-  public _height = 70;
+  public _height: number = 70;
   // public content: string = "";
 
   public editorFile: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
@@ -34,9 +37,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public componentStatus$: Subject<TypeComponentStatus> = new Subject<TypeComponentStatus>();
   public editorFileSave$: Subject<THUMDER_FileItem> = new Subject<THUMDER_FileItem>();
 
-  constructor() {
-  }
-
   set height(value: number) {
     this._height = value;
     this.editor.layout();
@@ -44,6 +44,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get height(): number {
     return this._height;
+  }
+
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -58,7 +61,27 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.componentStatus$.next("OnDestroy");
   }
 
-  editorInitialized($event: IStandaloneCodeEditor): void {
+  public getInitializedObservable(): Observable<boolean> {
+    return this.initialized$.asObservable();
+  }
+
+  public getBreakpointsObservable(): Observable<TypeBreakpoints> {
+    return this.breakpoints$.asObservable();
+  }
+
+  public getComponentStatusObservable(): Observable<TypeComponentStatus> {
+    return this.componentStatus$.asObservable();
+  }
+
+  public getFileSaveStorageObservable(): Observable<THUMDER_FileItem> {
+    return this.editorFileSave$.asObservable();
+  }
+
+  public callBackFunc(_$event_text: any): void {
+    // console.log('callBackFunc', $event_text)
+  }
+
+  public editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
     this.editor.layout();
     this.editor.updateOptions({ readOnly: this.editorFile.$key == "" });
@@ -78,64 +101,21 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initialized$.next(true);
   }
 
-  getInitializedObservable(): Observable<boolean> {
-    return this.initialized$.asObservable();
-  }
-
-  getBreakpointsObservable(): Observable<TypeBreakpoints> {
-    return this.breakpoints$.asObservable();
-  }
-
-  getComponentStatusObservable(): Observable<TypeComponentStatus> {
-    return this.componentStatus$.asObservable();
-  }
-
-  getFileSaveStorageObservable(): Observable<THUMDER_FileItem> {
-    return this.editorFileSave$.asObservable();
-  }
-
-  async setEditorContent(content: string): Promise<void> {
-    this.editorFile.content = content;
-    this.editor.setValue(this.editorFile.content);
-    return Promise.resolve();
-  }
-
-  editorLanguageChanged(): void {
-    // console.log('editorLanguageChanged');
-  }
-
-  editorConfigurationChanged(): void {
+  public editorConfigurationChanged(): void {
     // console.log('editorConfigurationChanged');
   }
 
-  editorValueChange(): void {
+  public editorLanguageChanged(): void {
+    // console.log('editorLanguageChanged');
+  }
+
+  public editorValueChange(): void {
     // console.log('editorValueChange');
-  }
-
-  callBackFunc(_$event_text: any): void {
-    // console.log('callBackFunc', $event_text)
-  }
-
-  isReadOnly(): boolean {
-    return this.editor?.getOption(EditorOption.readOnly) ?? true;
   }
 
   /*
    * Controllers
    */
-
-  public debug(): void {
-    const line = this.editor.getPosition().lineNumber ?? 1;
-    const decorations = this.editor.getModel().getLineDecorations(line);
-    const decorations_target_id = decorations.map(v => v.id);
-
-    console.log("line", line);
-    console.log("decorations", decorations);
-    console.log("decorations_target_id", decorations_target_id);
-    console.log("getAllDecorations", this.editor.getModel().getAllDecorations());
-    console.log("oldDecorationDebugTag_targetId", this.oldDecorationDebugTag_targetId);
-    console.log("decorations.some( fas fa-circle color-red )", decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red"));
-  }
 
   public toggleDebuggerTag(line: number = null): void {
     line = line ?? this.editor.getPosition().lineNumber ?? 1;
@@ -176,19 +156,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return vectorOfInstructions;
   }
 
-  public debugNextLine(): void {
-    const lineCount = this.editor.getModel().getLineCount();
-    this.iteratorLine = this.iteratorLine % lineCount === 0 ? 1 : this.iteratorLine + 1;
-    this.printLine(this.iteratorLine);
-  }
-
-  public debugNextLineWithTag(): void {
-    const listOfTags = this.getListOfTags();
-    const listOfTags_filter = listOfTags.filter(value => value.line > this.iteratorLine);
-    this.iteratorLine = listOfTags_filter.length > 0 ? listOfTags_filter.shift().line : 1;
-    this.printLine(this.iteratorLine);
-  }
-
   public getAllBreakpoints(): TypeBreakpoints {
     const allDecorations = this.editor.getModel().getAllDecorations();
     const tags: { [line: number]: boolean } = {};
@@ -200,7 +167,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return tags;
   }
 
-  public clearLines(): void {
+  public clearDecorationAllLines(): void {
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, []);
   }
 
@@ -215,7 +182,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
   }
 
-  public printErrorsInEditor(errors: TypeErrorInCode[]) {
+  public printErrorsInEditor(errors: TypeErrorInCode[]): void {
     const markers = errors.map(error => {
       return {
         startColumn:     1,
@@ -227,13 +194,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       } as monaco.editor.IMarkerData
     })
     monaco.editor.setModelMarkers(this.editor.getModel(), "IDK", markers)
-  }
-
-  private updatedEditorFile() {
-    if (this.editorFile.$key === "") {
-      throw new Error("Debes crear un fichero antes de guardarlo");
-    }
-    this.editorFile.content = this.editor?.getModel()?.getLinesContent()?.join("\n") ?? "";
   }
 
   public async setBreakpoints(breakpoints: TypeBreakpoints): Promise<void> {
@@ -270,12 +230,29 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return Promise.resolve();
   }
 
-  public getEditorFile():THUMDER_FileItem {
+  public async setEditorContent(content: string): Promise<void> {
+    this.editorFile.content = content;
+    this.editor.setValue(this.editorFile.content);
+    return Promise.resolve();
+  }
+
+  public isReadOnly(): boolean {
+    return this.editor?.getOption(EditorOption.readOnly) ?? true;
+  }
+
+  public getEditorFile(): THUMDER_FileItem {
     return this.editorFile;
   }
 
-  public save() {
+  public save(): void {
     this.updatedEditorFile();
     this.editorFileSave$.next(this.editorFile);
+  }
+
+  private updatedEditorFile(): void {
+    if (this.editorFile.$key === "") {
+      throw new Error("Debes crear un fichero antes de guardarlo");
+    }
+    this.editorFile.content = this.editor?.getModel()?.getLinesContent()?.join("\n") ?? "";
   }
 }

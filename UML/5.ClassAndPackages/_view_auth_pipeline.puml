@@ -1,0 +1,13 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+
+class PipelineView implements OnInit {
+
++pixi_PipelineComponent: PixiPipelineComponent;
+
++ngOnInit(): void
+
+}
+
+@enduml

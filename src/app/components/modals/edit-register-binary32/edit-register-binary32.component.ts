@@ -1,4 +1,4 @@
-import { AfterViewInit, OnInit, Component, ChangeDetectorRef } from "@angular/core";
+import { OnInit, Component, ChangeDetectorRef } from "@angular/core";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeRegister, TypeRegisterToEdit } from "../../../Types";
 import {
@@ -19,23 +19,22 @@ import { ToastrService } from "ngx-toastr";
   templateUrl: "./edit-register-binary32.component.html",
   styleUrls:   ["./edit-register-binary32.component.scss"]
 })
-export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
+export class EditRegisterBinary32Component implements OnInit {
 
   readonly MACHINE_TYPE_REGISTERS = MACHINE_TYPE_REGISTERS;
 
   public aliasTypeRegister: string = "";
   public typeRegisterSelected: TypeRegister = "Control";
   public listRegisters: TypeRegisterToEdit[] = MACHINE_REGISTERS_C;
-  private registerToEdit: TypeRegisterToEdit = "PC";
-
   public maxLengthHexadecimal: number = 8;
   public registerToEditHexadecimalValueIsValid: boolean = true;
   public lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
-  private regExp_32bits_hex = new RegExp("\\b[0-9A-F]{8}\\b");
-  private regExp_64bits_hex = new RegExp("\\b[0-9A-F]{16}\\b");
+  private regExp_32bits_hex: RegExp = new RegExp("\\b[0-9A-F]{8}\\b");
+  private regExp_64bits_hex: RegExp = new RegExp("\\b[0-9A-F]{16}\\b");
   private _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
+  private registerToEdit: TypeRegisterToEdit = "PC";
 
-  get registerToEdit_Binary() {
+  get registerToEdit_Binary(): string {
     return this._registerToEdit_binary;
   }
 
@@ -43,7 +42,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     this._registerToEdit_binary = binary32;
   }
 
-  get registerToEdit_Word() {
+  get registerToEdit_Word(): number {
     return parseInt(this._registerToEdit_binary, 2);
   }
 
@@ -51,7 +50,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     this._registerToEdit_binary = word.toString(2).padStart(32, "0");
   }
 
-  get registerToEdit_Hexadecimal() {
+  get registerToEdit_Hexadecimal(): string {
     const maxLengthHexadecimal = this.typeRegisterSelected === "Double" ? 16 : 8;
     return parseInt(this._registerToEdit_binary, 2).toString(16).toUpperCase().padStart(maxLengthHexadecimal, "0");
   }
@@ -60,7 +59,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     this._registerToEdit_binary = parseInt(hexadecimal, 16).toString(2).padStart(32, "0");
   }
 
-  get registerToEdit_Float() {
+  get registerToEdit_Float(): number {
     const binary32 = this.registerToEdit_Binary;
     return Utils.convertIEEE754_Binary32Bits_To_Number(binary32);
   }
@@ -69,7 +68,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     this._registerToEdit_binary = Utils.convertIEEE754_Number_To_Binary32Bits(float32);
   }
 
-  get registerToEdit_Double() {
+  get registerToEdit_Double(): number {
     const binary64 = this.registerToEdit_Binary;
     return Utils.convertIEEE754_Binary64Bits_To_Number(binary64);
   }
@@ -80,18 +79,15 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
-              private toastService: ToastrService,
-              private cdref: ChangeDetectorRef) {
+              private toastService: ToastrService) {
   }
 
   ngOnInit(): void {
   }
 
-  ngAfterViewInit(): void {
-  }
 
-  ngAfterContentChecked() {
-    this.cdref.detectChanges();
+  public changeRegisterToEdit(registerToEdit: TypeRegisterToEdit): void {
+    this.registerToEdit = registerToEdit;
   }
 
   public async changeTypeRegister(typeRegister: TypeRegister): Promise<void> {
@@ -131,10 +127,6 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
         break;
     }
     return Promise.resolve();
-  }
-
-  public changeRegisterToEdit(registerToEdit: TypeRegisterToEdit) {
-    this.registerToEdit = registerToEdit;
   }
 
   private async changeRegisterToEditValue(hexadecimal: string): Promise<void> {
@@ -190,12 +182,12 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     }
   }
 
-  public async onRegisterToEditChangeHexadecimal(hexadecimal: string) {
+  public async onRegisterToEditChangeHexadecimal(hexadecimal: string): Promise<void> {
     this.registerToEdit_Hexadecimal = hexadecimal;
     await this.changeRegisterToEditValue(hexadecimal);
   }
 
-  public async onRegisterToEditChange_WordFloatDouble(value: number) {
+  public async onRegisterToEditChange_WordFloatDouble(value: number): Promise<void> {
     switch (this.typeRegisterSelected) {
       case "Control":
         this.registerToEdit_Word = value;
@@ -213,7 +205,7 @@ export class EditRegisterBinary32Component implements OnInit, AfterViewInit {
     await this.changeRegisterToEditValue(this.registerToEdit_Hexadecimal);
   }
 
-  private async TOAST_ErrorRegister() {
+  private async TOAST_ErrorRegister(): Promise<void> {
     const title_error_address = await this.translate.get("TOAST.TITLE_ERROR_IN_REGISTER").toPromise();
     const message_error_address = await this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_REGISTER").toPromise();
     this.toastService.info(message_error_address, title_error_address);

@@ -3,7 +3,7 @@ import { DOCUMENT } from "@angular/common";
 import { Globals } from "../../__core/services/globals/globals.service";
 
 @Component({
-  selector:    "THUMDER-auth",
+  selector:    "THUMDER-layout-auth",
   templateUrl: "./layout-auth.component.html"
 })
 export class LayoutAuthComponent implements OnInit, AfterViewInit, OnDestroy {

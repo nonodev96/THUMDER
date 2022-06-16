@@ -1,0 +1,39 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+!include ./5.0.Config.puml!OnDestroy
+
+class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
+
++pixiContainer: ElementRef<HTMLDivElement>;
++inCanvasEventEmitter: EventEmitter<boolean>
+
++pApp: PIXI.Application
+-inCanvas: boolean
+-loader: PIXI.Loader
+-ticker: PIXI.Ticker
+-keyboard: Keyboard
+-stepSimulationSubscription: Subscription
+-readonly idCanvas: string
+
++ngOnInit(): void
++ngAfterViewInit(): void
++ngOnDestroy(): void
+
++onResize(event: any): void
++handleKeyboardEvent(event: KeyboardEvent): void
++handleOnClick(event: MouseEvent, targetElement: HTMLElement): void
+
+-gameLoop(delta: number): void
+-play(_delta: number): void
++moveBottom(): void
++moveTop(): void
++moveRight(): void
++moveLeft(): void
++reset(): void
+-resizeCanvas(): void
+
+}
+
+@enduml

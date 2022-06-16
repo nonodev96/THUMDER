@@ -1,0 +1,16 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+
+class CycleClockDiagramView implements OnInit {
+
++pixi_CycleClockDiagramComponent: PixiCycleClockDiagramComponent;
++inCanvas: boolean
+
++ngOnInit(): void
+
++handleInCanvas($event): void
+
+}
+
+@enduml

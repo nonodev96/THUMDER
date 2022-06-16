@@ -1,0 +1,29 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!OnDestroy
+
+class FileManagerView implements OnInit, OnDestroy {
+
++fileManager: DxFileManagerComponent
++customFileProvider: CustomFileSystemProvider
++changeCategoryMenuOptions: FileMenuOptions
++show: boolean
++showUID: boolean
+-_filesSelected: any[]
+-updateUISubscription: Subscription
+
++ngOnInit(): void
++ngOnDestroy(): void
+
++onContentReady($event: TypeOnContentReady): void
++onSelectedFileOpened($event: TypeEventSelectedFileOpened): void
++onContextMenuItemClick($event: TypeOnContextMenuItemClick): Promise<void>
++onSelectionChanged(_$event: any): void
++updateUI(): Promise<void>
++generateDefaultFiles(): Promise<void>
++height(): number
+
+}
+
+@enduml

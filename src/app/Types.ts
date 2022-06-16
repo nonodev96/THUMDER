@@ -140,6 +140,11 @@ export type TypeLine = number;
 
 export type TypeAddress = `0x${string}`;
 
+export type TypeAddressStage = {
+  address: TypeAddress,
+  stage: TypeStage
+}
+
 export type TypeData = "Byte" | "HalfWord" | "Word" | "Float" | "Double" | "ASCII";
 
 export type TypeRegister = "Control" | "Integer" | "Float" | "Double";
@@ -147,6 +152,10 @@ export type TypeRegister = "Control" | "Integer" | "Float" | "Double";
 export type TypePipelineStage = "IF" | "ID" | "intEX" | "MEM" | "WB" | "faddEX" | "fmultEX" | "fdivEX";
 
 export type TypeStall = "Aborted" | "R-Stall" | "T-Stall" | "W-Stall" | "S-Stall" | "Stall";
+
+export type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-2-3" | "HalfWord-0-1"
+
+export type TypeDataRepresentation = "Binary" | "Uint8Array";
 
 export type TypeDirective =
   "GLOBAL"
@@ -160,6 +169,12 @@ export type TypeDirective =
   | "FLOAT"
   | "DOUBLE"
   | "WORD";
+
+export type TypeIdTitleFile = {
+  id: string,
+  title: string,
+  file: string
+}
 
 export type TypeDataRegister = {
   Control: {
@@ -640,6 +655,15 @@ export type TypeCycleCellUnit = TypeCycleCell & {
 export type TypePipelineToProcess = TypeCycleCellUnit & {
   stage?: TypeStage;
 };
+
+export type TypeInstructionPipelineRepresentation = {
+  text: string;
+  draw: boolean | TypeStall;
+}
+
+export type TypeInstructionPipelineFloatingRepresentation = TypeInstructionPipelineRepresentation & {
+  unit: number
+}
 
 export type TypeArrowCycle = {
   fromAddressRow: number;

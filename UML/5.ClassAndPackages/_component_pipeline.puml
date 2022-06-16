@@ -1,0 +1,28 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+!include ./5.0.Config.puml!OnDestroy
+
+class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
+
++pixiContainer: ElementRef<HTMLDivElement>;
+
++pApp: PIXI.Application
+-pipeline: PixiTHUMDER_Pipeline
+-stepSimulationSubscription: Subscription
+-idCanvas: string
+
++ngOnInit(): void
++ngAfterViewInit(): void
++ngOnDestroy(): void
+
++onResize(event): void
+
+-resizeCanvas(): void
+-getInstructionDataPipelineItem(item: TypeCycleCell): TypeInstructionPipelineRepresentation
+-getInstructionDataPipeline(items: TypeCycleCellUnit[]): TypeInstructionPipelineFloatingRepresentation[]
+
+}
+
+@enduml

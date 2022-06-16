@@ -1,0 +1,61 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+!include ./5.0.Config.puml!OnDestroy
+
+class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
+
++inputTheme: string
++inputLanguage: string
++readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions
+
++_height: number
++content: string
++editorFile: THUMDER_FileItem
+-breakpoints: TypeBreakpoints
+-editor: IStandaloneCodeEditor
+-oldDecorationDebugTag_targetId: string[]
+-oldDecorationDebugLine: string[]
+-iteratorLine: number
++initialized$: Subject<boolean>
++breakpoints$: Subject<TypeBreakpoints>
++componentStatus$: Subject<TypeComponentStatus>
++editorFileSave$: Subject<THUMDER_FileItem>
+
++ngOnInit(): void
++ngAfterViewInit(): void
++ngOnDestroy(): void
+
++callBackFunc(_$event_text: any): void
++editorInitialized($event: IStandaloneCodeEditor): void
++editorConfigurationChanged(): void
++editorLanguageChanged(): void
++editorValueChange(): void
+
++getInitializedObservable(): Observable<boolean>
++getBreakpointsObservable(): Observable<TypeBreakpoints>
++getComponentStatusObservable(): Observable<TypeComponentStatus>
++getFileSaveStorageObservable(): Observable<THUMDER_FileItem>
+
++getListOfTags(): TypeTags
++toggleDebuggerTag(line: number = null): void
++printLine(line: number): void
++printErrorsInEditor(errors: TypeErrorInCode[]): void
++clearDecorationAllLines(): void
+
++getEditorFile(): THUMDER_FileItem
++setEditorFile(fileItem: InterfaceFileItem): Promise<void>
++setEditorContent(content: string): Promise<void>
++isReadOnly(): boolean
+
++getAllBreakpoints(): TypeBreakpoints
++getBreakpoints(): TypeBreakpoints
++setBreakpoints(breakpoints: TypeBreakpoints): Promise<void>
++save(): void
+
+-updatedEditorFile(): void
+
+}
+
+@enduml

@@ -9,6 +9,7 @@ import { EnumLogLevel, InterfaceFileItem, TypeBreakpoints, TypeExtrasIDE } from 
 import { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
+import * as env  from "../../../../environments/_environment";
 
 @Component({
   selector:    "view-editor",
@@ -17,8 +18,10 @@ import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
 })
 export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild(MonacoEditorComponent) monacoEditorComponent: MonacoEditorComponent;
-  isMaximize = false;
+  public env = env.AppConfig;
+
+  @ViewChild(MonacoEditorComponent)
+  public monacoEditorComponent: MonacoEditorComponent;
 
   public interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
   private initializedSubscription: Subscription = new Subscription();
@@ -29,8 +32,10 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly extrasIDE: TypeExtrasIDE;
   public date: Date = new Date();
+  public isMaximize = false;
 
-  constructor(@Inject(DOCUMENT) private document: Document,
+  constructor(@Inject(DOCUMENT)
+              private document: Document,
               private router: Router,
               private machine: MachineService,
               private fileSystem: FileSystemService,
@@ -81,13 +86,13 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     });
     this.lineSubscription = this.machine.getLineObservable().subscribe((line) => {
       if (line === -1) {
-        this.monacoEditorComponent.clearLines();
+        this.monacoEditorComponent.clearDecorationAllLines();
       } else {
         this.monacoEditorComponent.printLine(line);
       }
     });
     this.fileSaveSubscription = this.monacoEditorComponent.getFileSaveStorageObservable().subscribe(async (editorFile) => {
-      await this.saveFileInLocalStorage(editorFile);
+      await EditorView.saveFileInLocalStorage(editorFile);
       await this.saveFileInCloudStorage(editorFile);
     });
   }
@@ -123,19 +128,18 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.monacoEditorComponent.height = 1000;
   }
 
-
-  public async closeAndSave() {
+  public async closeAndSave(): Promise<void> {
     const editorFile = await this.monacoEditorComponent.getEditorFile();
 
-    await this.saveFileInLocalStorage(editorFile);
+    await EditorView.saveFileInLocalStorage(editorFile);
     await this.saveFileInCloudStorage(editorFile);
   }
 
-  private async saveFileInLocalStorage(editorFile: THUMDER_FileItem) {
+  private static async saveFileInLocalStorage(editorFile: THUMDER_FileItem): Promise<void> {
     localStorage.setItem("interfaceFileItem", JSON.stringify(editorFile));
   }
 
-  private async saveFileInCloudStorage(editorFile: THUMDER_FileItem) {
+  private async saveFileInCloudStorage(editorFile: THUMDER_FileItem): Promise<void> {
     try {
       await this.fileSystem.editFileItem(editorFile, editorFile.$key);
 
