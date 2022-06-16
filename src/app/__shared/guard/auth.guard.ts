@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
         const lang_login_false = await this.translate.get("TOAST.LOGIN_FALSE").toPromise();
         this.toast.warning(lang_login_false, lang_access_denied, config);
       }
-      await this.router.navigateByUrl("/login");
+      await this.router.navigateByUrl("/account/login");
     }
     return Promise.resolve(this.authService.isLoggedIn);
   }

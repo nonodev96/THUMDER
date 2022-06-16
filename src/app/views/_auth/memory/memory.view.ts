@@ -6,10 +6,8 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   EditMemoryBinary32Component
 } from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
-import { TypeAddress, TypeData } from "../../../Types";
+import { TypeAddress, TypeDataDisplayColumn } from "../../../Types";
 import { StorageService } from "../../../__core/storage/storage.service";
-
-type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-2-3" | "HalfWord-0-1"
 
 @Component({
   selector:    "view-memory",
@@ -18,14 +16,17 @@ type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-2-3" | 
 })
 export class MemoryView implements OnInit, AfterViewInit {
 
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-  @ViewChild(EditMemoryBinary32Component) editBinary32Component: EditMemoryBinary32Component;
+  @ViewChild(MatSort, { static: true })
+  public sort: MatSort;
+
+  @ViewChild(EditMemoryBinary32Component)
+  public editBinary32Component: EditMemoryBinary32Component;
 
   // "Address-0", "Address-1", "Address-2", "Address-3"
   public displayedColumnsMemory: string[] = [ "Address", "Hexadecimal", "Binary", "Word" ];
-  public dataSourceMemory = new TableVirtualScrollDataSource<number>();
+  public dataSourceMemory: TableVirtualScrollDataSource<number> = new TableVirtualScrollDataSource<number>();
   public typeDataSelected: TypeDataDisplayColumn = "Word";
-  public maxHeightCard = "75vh";
+  public maxHeightCard: string = "75vh";
 
   constructor(public machine: MachineService,
               private translate: TranslateService,
@@ -98,14 +99,14 @@ export class MemoryView implements OnInit, AfterViewInit {
     window.dispatchEvent(new Event("resize"));
   }
 
-  private resizeCard(height: string) {
+  private resizeCard(height: string): void {
     this.maxHeightCard = height;
     setTimeout(() => {
       window.dispatchEvent(new Event("resize"));
     }, 500);
   }
 
-  public getInstructionDLXFromIndex(index: number) {
+  public getInstructionDLXFromIndex(index: number): string {
     const address: TypeAddress = `0x${ index.toString(16).padStart(8, "0") }`;
     return this.machine.code.has(address) ? this.machine.code.get(address).instruction : "";
   }

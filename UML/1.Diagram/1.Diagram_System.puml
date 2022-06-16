@@ -1,0 +1,10 @@
+ @startuml
+!theme plain
+node "THUMDER/app" {
+  [Core]
+  [Shared]
+  [Layout]
+  [Components]
+  [Views]
+}
+@enduml

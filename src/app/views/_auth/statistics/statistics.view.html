@@ -19,104 +19,53 @@
 
   <div class="card-body">
     <div class="row">
-      <!-- @formatter:off -->
+      <div class="col-12">
+        <!-- @formatter:off -->
 <pre>
 {{ 'ST.TOTAL.TITLE' | translate }}:
-  {{ ('ST.TOTAL.CYCLES_EXECUTED' | translate: {cycles: _data.TOTAL.CYCLES_EXECUTED.cycles}) }}
-  {{ ('ST.TOTAL.ID_EXECUTED' | translate: {instructions: _data.TOTAL.ID_EXECUTED.instructions}) }}
-  {{ ('ST.TOTAL.INSTRUCTIONS_IN_PIPELINE' | translate: {instructions_in_pipeline: _data.TOTAL.INSTRUCTIONS_IN_PIPELINE.instructions_in_pipeline}) }}
+  {{ ('ST.TOTAL.CYCLES_EXECUTED' | translate: {cycles: data.TOTAL.CYCLES_EXECUTED.cycles}) }}
+  {{ ('ST.TOTAL.ID_EXECUTED' | translate: {instructions: data.TOTAL.ID_EXECUTED.instructions}) }}
+  {{ ('ST.TOTAL.INSTRUCTIONS_IN_PIPELINE' | translate: {instructions_in_pipeline: data.TOTAL.INSTRUCTIONS_IN_PIPELINE.instructions_in_pipeline}) }}
 
 {{ ('ST.HARDWARE.TITLE' | translate) }}:
-  {{ ('ST.HARDWARE.MEMORY_SIZE' | translate: {size: _data.HARDWARE.MEMORY_SIZE.size}) }}
-  {{ ('ST.HARDWARE.FADD_EX_STAGES' | translate: {num: _data.HARDWARE.FADD_EX_STAGES.num, cycles: _data.HARDWARE.FADD_EX_STAGES.cycles}) }}
-  {{ ('ST.HARDWARE.FMULT_EX_STAGES' | translate: {num: _data.HARDWARE.FMULT_EX_STAGES.num, cycles: _data.HARDWARE.FMULT_EX_STAGES.cycles}) }}
-  {{ ('ST.HARDWARE.FDIV_EX_STAGES' | translate: {num: _data.HARDWARE.FDIV_EX_STAGES.num, cycles: _data.HARDWARE.FDIV_EX_STAGES.cycles}) }}
+  {{ ('ST.HARDWARE.MEMORY_SIZE' | translate: {size: data.HARDWARE.MEMORY_SIZE.size}) }}
+  {{ ('ST.HARDWARE.FADD_EX_STAGES' | translate: {num: data.HARDWARE.FADD_EX_STAGES.num, cycles: data.HARDWARE.FADD_EX_STAGES.cycles}) }}
+  {{ ('ST.HARDWARE.FMULT_EX_STAGES' | translate: {num: data.HARDWARE.FMULT_EX_STAGES.num, cycles: data.HARDWARE.FMULT_EX_STAGES.cycles}) }}
+  {{ ('ST.HARDWARE.FDIV_EX_STAGES' | translate: {num: data.HARDWARE.FDIV_EX_STAGES.num, cycles: data.HARDWARE.FDIV_EX_STAGES.cycles}) }}
   {{ ('ST.HARDWARE.FORWARDING' | translate) }}
 
 {{ ('ST.STALLS.TITLE' | translate) }}:
-  {{ ('ST.STALLS.RAW_STALLS' | translate: {num: _data.STALLS.RAW_STALLS.num, per: _data.STALLS.RAW_STALLS.per}) }}
-    {{ ('ST.STALLS.LD_STALLS' | translate: {num: _data.STALLS.LD_STALLS.num, per: _data.STALLS.LD_STALLS.per}) }}
-    {{ ('ST.STALLS.BRANCH_STALLS' | translate: {num: _data.STALLS.BRANCH_STALLS.num, per: _data.STALLS.BRANCH_STALLS.per}) }}
-    {{ ('ST.STALLS.FLOATING_POINT_STALLS' | translate: {num: _data.STALLS.FLOATING_POINT_STALLS.num, per: _data.STALLS.FLOATING_POINT_STALLS.per}) }}
-  {{ ('ST.STALLS.WAW_STALLS' | translate: {num: _data.STALLS.WAW_STALLS.num, per: _data.STALLS.WAW_STALLS.per}) }}
-  {{ ('ST.STALLS.STRUCTURAL_STALLS' | translate: {num: _data.STALLS.STRUCTURAL_STALLS.num, per: _data.STALLS.STRUCTURAL_STALLS.per}) }}
-  {{ ('ST.STALLS.CONTROL_STALLS' | translate: {num: _data.STALLS.CONTROL_STALLS.num, per: _data.STALLS.CONTROL_STALLS.per}) }}
-  {{ ('ST.STALLS.TRAP_STALLS' | translate: {num: _data.STALLS.TRAP_STALLS.num, per: _data.STALLS.TRAP_STALLS.per}) }}
-  {{ ('ST.STALLS.TOTAL' | translate: {num: _data.STALLS.TOTAL.num, per: _data.STALLS.TOTAL.per}) }}
+  {{ ('ST.STALLS.RAW_STALLS' | translate: {num: data.STALLS.RAW_STALLS.num, per: data.STALLS.RAW_STALLS.per}) }}
+    {{ ('ST.STALLS.LD_STALLS' | translate: {num: data.STALLS.LD_STALLS.num, per: data.STALLS.LD_STALLS.per}) }}
+    {{ ('ST.STALLS.BRANCH_STALLS' | translate: {num: data.STALLS.BRANCH_STALLS.num, per: data.STALLS.BRANCH_STALLS.per}) }}
+    {{ ('ST.STALLS.FLOATING_POINT_STALLS' | translate: {num: data.STALLS.FLOATING_POINT_STALLS.num, per: data.STALLS.FLOATING_POINT_STALLS.per}) }}
+  {{ ('ST.STALLS.WAW_STALLS' | translate: {num: data.STALLS.WAW_STALLS.num, per: data.STALLS.WAW_STALLS.per}) }}
+  {{ ('ST.STALLS.STRUCTURAL_STALLS' | translate: {num: data.STALLS.STRUCTURAL_STALLS.num, per: data.STALLS.STRUCTURAL_STALLS.per}) }}
+  {{ ('ST.STALLS.CONTROL_STALLS' | translate: {num: data.STALLS.CONTROL_STALLS.num, per: data.STALLS.CONTROL_STALLS.per}) }}
+  {{ ('ST.STALLS.TRAP_STALLS' | translate: {num: data.STALLS.TRAP_STALLS.num, per: data.STALLS.TRAP_STALLS.per}) }}
+  {{ ('ST.STALLS.TOTAL' | translate: {num: data.STALLS.TOTAL.num, per: data.STALLS.TOTAL.per}) }}
 
 {{ ('ST.CONDITIONAL.TITLE' | translate) }}:
-  {{ ('ST.CONDITIONAL.TOTAL' | translate: {num: _data.CONDITIONAL.TOTAL.num, per: _data.CONDITIONAL.TOTAL.per}) }}
-    {{ ('ST.CONDITIONAL.TAKEN' | translate: {num: _data.CONDITIONAL.TAKEN.num, per: _data.CONDITIONAL.TAKEN.per}) }}
-    {{ ('ST.CONDITIONAL.NOT_TAKEN' | translate: {num: _data.CONDITIONAL.NOT_TAKEN.num, per: _data.CONDITIONAL.NOT_TAKEN.per}) }}
+  {{ ('ST.CONDITIONAL.TOTAL' | translate: {num: data.CONDITIONAL.TOTAL.num, per: data.CONDITIONAL.TOTAL.per}) }}
+    {{ ('ST.CONDITIONAL.TAKEN' | translate: {num: data.CONDITIONAL.TAKEN.num, per: data.CONDITIONAL.TAKEN.per}) }}
+    {{ ('ST.CONDITIONAL.NOT_TAKEN' | translate: {num: data.CONDITIONAL.NOT_TAKEN.num, per: data.CONDITIONAL.NOT_TAKEN.per}) }}
 
 {{ ('ST.LOAD_STORE.TITLE' | translate) }}:
-  {{ ('ST.LOAD_STORE.TOTAL' | translate: {num: _data.LOAD_STORE.TOTAL.num, per: _data.LOAD_STORE.TOTAL.per}) }}
-    {{ ('ST.LOAD_STORE.LOADS' | translate: {num: _data.LOAD_STORE.LOADS.num, per: _data.LOAD_STORE.LOADS.per}) }}
-    {{ ('ST.LOAD_STORE.STORES' | translate: {num: _data.LOAD_STORE.STORES.num, per: _data.LOAD_STORE.STORES.per}) }}
+  {{ ('ST.LOAD_STORE.TOTAL' | translate: {num: data.LOAD_STORE.TOTAL.num, per: data.LOAD_STORE.TOTAL.per}) }}
+    {{ ('ST.LOAD_STORE.LOADS' | translate: {num: data.LOAD_STORE.LOADS.num, per: data.LOAD_STORE.LOADS.per}) }}
+    {{ ('ST.LOAD_STORE.STORES' | translate: {num: data.LOAD_STORE.STORES.num, per: data.LOAD_STORE.STORES.per}) }}
 
 {{ ('ST.FLOATING.TITLE' | translate) }}:
-  {{ ('ST.FLOATING.TOTAL' | translate: {num: _data.FLOATING.TOTAL.num, per: _data.FLOATING.TOTAL.per}) }}
-    {{ ('ST.FLOATING.ADDITIONS' | translate: {num: _data.FLOATING.ADDITIONS.num, per: _data.FLOATING.ADDITIONS.per}) }}
-    {{ ('ST.FLOATING.MULTIPLICATIONS' | translate: {num: _data.FLOATING.MULTIPLICATIONS.num, per: _data.FLOATING.MULTIPLICATIONS.per}) }}
-    {{ ('ST.FLOATING.DIVISIONS' | translate: {num: _data.FLOATING.DIVISIONS.num, per: _data.FLOATING.DIVISIONS.per}) }}
+  {{ ('ST.FLOATING.TOTAL' | translate: {num: data.FLOATING.TOTAL.num, per: data.FLOATING.TOTAL.per}) }}
+    {{ ('ST.FLOATING.ADDITIONS' | translate: {num: data.FLOATING.ADDITIONS.num, per: data.FLOATING.ADDITIONS.per}) }}
+    {{ ('ST.FLOATING.MULTIPLICATIONS' | translate: {num: data.FLOATING.MULTIPLICATIONS.num, per: data.FLOATING.MULTIPLICATIONS.per}) }}
+    {{ ('ST.FLOATING.DIVISIONS' | translate: {num: data.FLOATING.DIVISIONS.num, per: data.FLOATING.DIVISIONS.per}) }}
 
 {{ ('ST.TRAPS.TITLE' | translate) }}:
-  {{ ('ST.TRAPS.TOTAL' | translate: {num: _data.TRAPS.TOTAL.num, per: _data.TRAPS.TOTAL.per}) }}
+  {{ ('ST.TRAPS.TOTAL' | translate: {num: data.TRAPS.TOTAL.num, per: data.TRAPS.TOTAL.per}) }}
 </pre>
-    <!-- @formatter:on -->
-      <!-- Force next columns to break to new line -->
-<!--      <div class="w-100"></div>-->
-
-      <!--
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
-        <h2>Text</h2>
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-        </canvas>
+        <!-- @formatter:on -->
       </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
-        <h2>Text</h2>
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-        </canvas>
-      </div>
-
-      &lt;!&ndash; Force next columns to break to new line &ndash;&gt;
-      <div class="w-100"></div>
-
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
-        <h2>Text</h2>
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-        </canvas>
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6 mb-4 py-3 px-lg-5 border bg-light">
-        <h2>Text</h2>
-        <canvas baseChart
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-        </canvas>
-      </div>
-      -->
     </div>
   </div>
   <div class="card-footer">

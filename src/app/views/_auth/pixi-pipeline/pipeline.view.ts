@@ -9,9 +9,11 @@ import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pi
 })
 export class PipelineView implements OnInit {
 
-  @ViewChild(PixiPipelineComponent) pixi_PipelineComponent: PixiPipelineComponent;
+  @ViewChild(PixiPipelineComponent)
+  public pixi_PipelineComponent: PixiPipelineComponent;
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
+  constructor(@Inject(DOCUMENT)
+              private document: Document) {
   }
 
   ngOnInit(): void {

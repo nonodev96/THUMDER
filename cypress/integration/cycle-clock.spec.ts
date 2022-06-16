@@ -18,11 +18,12 @@ describe('Cycle Clock Diagram', () => {
     // Define variables with @name
     cy.get('#pixiCardCycleClockDiagram')
       .as('pixiCardCycleClockDiagram');
+
     cy.get('#pixiCardCycleClockDiagram button[data-card-widget="collapse"]')
       .as('pixiCardCycleClockDiagramButtonMinimize');
   });
 
-  it('Open and close card', () => {
+  it('Open and close card CycleClockDiagram', () => {
     cy.contains('Cycle clock diagram');
 
     // Check card

@@ -1,20 +1,35 @@
-import { Component, Input, Output, EventEmitter, OnInit, AfterViewInit, ElementRef, ViewChild, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnInit,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+  SimpleChanges
+} from "@angular/core";
 import { Terminal } from "xterm";
 import { SearchAddon } from "xterm-addon-search";
 import { WebglAddon } from "xterm-addon-webgl";
 import { TypeOnKeyEvent } from "../../Types";
 
 @Component({
-  selector:    "thumder-xterm",
+  selector:    "THUMDER-xterm",
   templateUrl: "./xterm.component.html",
-  styleUrls:   [ "./xterm.component.scss" ]
+  styleUrls:   ["./xterm.component.scss"]
 })
 export class XtermComponent implements OnInit, AfterViewInit {
-  @ViewChild("myTerminal") terminalDiv: ElementRef;
-  @Input() data = "";
-  @Output() onKey = new EventEmitter<TypeOnKeyEvent>();
+  @ViewChild("myTerminal")
+  public terminalDiv: ElementRef;
 
-  terminal: Terminal;
+  @Input()
+  public data = "";
+
+  @Output()
+  public onKey = new EventEmitter<TypeOnKeyEvent>();
+
+  public terminal: Terminal;
 
   constructor() {
     this.terminal = new Terminal({

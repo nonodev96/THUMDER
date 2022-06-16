@@ -61,7 +61,7 @@ const routes: Routes = [
     path:      "admin",
     component: LayoutAdminComponent,
     children:  [
-      { path: "", redirectTo: "dashboard", pathMatch: "full" }
+      { path: "", redirectTo: "/", pathMatch: "full" }
     ]
   },
   // _auth views
@@ -71,7 +71,7 @@ const routes: Routes = [
     canActivate: [ AuthGuard ],
     data:        { breadcrumb: "Home" },
     children:    [
-      { path: "", redirectTo: "login", pathMatch: "full" },
+      { path: "", redirectTo: "account", pathMatch: "full" },
       { path: "calculator", component: CalculatorView, data: { breadcrumb: "Calculator" } },
       { path: "code", component: CodeView, data: { breadcrumb: "Code" } },
       { path: "config", component: ConfigView, data: { breadcrumb: "Config" } },
@@ -93,28 +93,13 @@ const routes: Routes = [
   },
   // _landing views
   {
-    path:      "landing",
-    component: LayoutLandingComponent,
-    children:  [
-      { path: "", redirectTo: "dashboard", pathMatch: "full" },
-      { path: "landing", component: LandingView, data: { breadcrumb: "Landing" } },
-      { path: "about", component: AboutView, data: { breadcrumb: "About" } }
-    ]
+    path:         "landing",
+    loadChildren: () => import('./views/_landing/landing.module').then(m => m.LandingModule)
   },
+  // _account views
   {
-    path:        "login",
-    component:   LoginView,
-    canActivate: [ NoAuthGuard ]
-  },
-  {
-    path:        "register",
-    component:   RegisterView,
-    canActivate: [ NoAuthGuard ]
-  },
-  {
-    path:        "forgot-password",
-    component:   ForgotPasswordView,
-    canActivate: [ NoAuthGuard ]
+    path:         "account",
+    loadChildren: () => import('./views/_account/account.module').then(m => m.AccountModule)
   },
   {
     path:      "monaco",
@@ -127,9 +112,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes)
-  ],
+  imports: [ RouterModule.forRoot(routes) ],
   exports: [ RouterModule ]
 })
 export class AppRoutingModule {

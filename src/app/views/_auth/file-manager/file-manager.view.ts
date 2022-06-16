@@ -56,7 +56,8 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   public CreateNewFile_lang = "Create new file";
 
-  @ViewChild(DxFileManagerComponent, { static: false }) fileManager: DxFileManagerComponent;
+  @ViewChild(DxFileManagerComponent, { static: false })
+  public fileManager: DxFileManagerComponent;
 
   public customFileProvider: CustomFileSystemProvider;
   public newFileMenuOptions: FileMenuOptions = {
@@ -76,7 +77,8 @@ export class FileManagerView implements OnInit, OnDestroy {
   private _filesSelected: any[] = [];
   private updateUISubscription: Subscription = new Subscription();
 
-  constructor(@Inject(DOCUMENT) private document: Document,
+  constructor(@Inject(DOCUMENT)
+              private document: Document,
               public fileSystemService: FileSystemService,
               private router: Router) {
     this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(async () => {
@@ -181,7 +183,7 @@ export class FileManagerView implements OnInit, OnDestroy {
     this._filesSelected = this.fileManager.instance.getSelectedItems();
   }
 
-  public height(): number | string {
+  public height(): number {
     return window.innerHeight / 1.25;
   }
 }

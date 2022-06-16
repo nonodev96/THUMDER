@@ -1,0 +1,31 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+
+class ConfigView implements OnInit, AfterViewInit {
+
+  +enabledForwardingConfiguration: TypeEnabledForwardingConfiguration
+  +floatingPointStageConfiguration: TypeFloatingPointStageConfiguration
+  +memorySizeConfiguration: number
+  +timeSimulationConfiguration: number
+  +autoSaveConfiguration: boolean
+  +multiviewConfiguration: TypeMultiviewConfiguration
+  +webSocketConfiguration: TypeWebSocketConfiguration
+
+  +ngOnInit(): void
+  +ngAfterViewInit(): void
+
+  +async updateConfiguration(): Promise<void>
+  +async resetConfiguration(): Promise<void>
+  +checkIfHttpUrlIsValid(url: EventTargetInput): boolean
+  +checkCount(target: EventTargetInput): void
+  +checkDelay(target: EventTargetInput): void
+  +checkMemorySize(target: EventTargetInput): void
+  +updateEnableForwarding(target: EventTargetInput): void
+  +updateAutoSave(target: EventTargetInput): void
+  +updateTimeSimulation(target: EventTargetInput): void
+
+}
+
+@enduml

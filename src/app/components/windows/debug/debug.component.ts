@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import { Globals } from "../../../__core/services/globals/globals.service";
 
 @Component({
-  selector:    "thumder-windows-debug",
+  selector:    "THUMDER-windows-debug",
   templateUrl: "./debug.component.html",
   styleUrls:   [ "./debug.component.scss" ]
 })

@@ -1,0 +1,51 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+
+class EditMemoryBinary32Component implements OnInit {
+
++addressMemoryModule: number
++addressIsValid: boolean
++typeDataSelected: TypeData
+
++getDisplayAddressMemory(): string
++getDisplayAddressMemoryNext(): string
++getAddressMemoryIndex(): number
++getAddressMemory(): string
++getValueInSection_Hexadecimal(): string
++getValueInSection_Byte(): number
++getValueInSection_HalfWord(): number
++getValueInSection_Word(): number
++getValueInSection_Float_Binary32_IEEE754(): number
++getValueInSection_Double_Binary64_IEEE754(): number
++getMemoryValueBinary32Display(): string
++getMemoryValueBinary64Display(): string
+
++setAddressMemory(hexadecimalAddress: string): void
++setValueInSection_Hexadecimal(hexadecimal: string): void
++setValueInSection_Byte(byte: number): void
++setValueInSection_HalfWord(halfword_number: number): void
++setValueInSection_Word(word: number): void
++setValueInSection_Float_Binary32_IEEE754(float32: number): void
++setValueInSection_Double_Binary64_IEEE754(double: number): void
++setBinaryValue(binary: string): void
+
++ngOnInit(): void
+
++ngModelChange_ValueInSection_Hexadecimal(hexadecimal: string): Promise<void>
++ngModelChange_ValueInSection_Decimal(value: number): Promise<void>
+
++changeAddressMemoryToEdit(target: EventTarget | any): Promise<void>
++changeTypeData(typeData: TypeData): void
+-changeMemory(value: number): Promise<void>
+
++drawDigitsToChangeByTypeData(): SafeHtml
+
+-TOAST_ErrorAddress(args: string): Promise<void>
+-TOAST_ErrorRegex(): Promise<void>
+-TOAST_ErrorInValueMemory(): Promise<void>
+-TOAST_ErrorInAddressMemory(): Promise<void>
+
+}
+
+@enduml

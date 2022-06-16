@@ -1,0 +1,32 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+!include ./5.0.Config.puml!OnDestroy
+
+class CodeView implements OnInit, AfterViewInit, OnDestroy {
+
++sort: MatSort;
++displayedColumnsMemory: string[]
++dataSourceCode: TableVirtualScrollDataSource<TypeInstructionsData_Table>
++listRowActives: TypeStageAddress[]
++maxHeightCard: string
+-stepSimulation: number
+-stepSubscription: Subscription
+-stepSimulationSubscription: Subscription
+-codeSimulationSubscription: Subscription
+-resetSimulationSubscription: Subscription
+
++ngOnInit(): void
++ngAfterViewInit(): void
++ngOnDestroy(): void
+
++refresh(): void
++checkElementStage(address: TypeAddress): TypeStage
++checkIfContains(address: TypeAddress, stages: TypeStage[]): boolean
+-setRow(index: number, tableCode: TypeInstructionsData, stage: TypeStage): void
+
+}
+
+
+@enduml

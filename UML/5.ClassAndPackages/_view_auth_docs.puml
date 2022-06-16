@@ -1,0 +1,20 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+
+class DocsView implements OnInit {
+
++main_list: TypeIdTitleFile[]
++draggable_list: QueryList<CdkDrag>
+-markdownComponentID: MarkdownComponent
+
++ngOnInit(): void
+
++onMarkdownLoad(): void
+-scrollToAnchor(scrollToAnchor: string): void
+
++myDrop($event: CdkDragDrop<any[]>): void
+
+}
+
+@enduml

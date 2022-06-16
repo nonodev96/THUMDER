@@ -36,7 +36,7 @@
 
     <div id="collapse_{{item.id}}" class="collapse " data-parent="#accordion">
       <div class="card-body">
-        <markdown [src]="item.file" (load)="onMarkdownLoad()"></markdown>
+        <markdown [src]="item.file" (load)="onMarkdownLoad()" #markdownComponentID></markdown>
       </div>
     </div>
 

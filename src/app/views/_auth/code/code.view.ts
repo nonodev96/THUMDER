@@ -2,10 +2,15 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MatSort } from "@angular/material/sort";
 import { MachineService } from "../../../__core/machine/machine.service";
-import { TypeInstructionsData, TypeStage, TypeInstructionsData_Table, TypeAddress } from "../../../Types";
+import {
+  TypeInstructionsData,
+  TypeStage,
+  TypeInstructionsData_Table,
+  TypeAddress,
+  TypeAddressStage
+} from "../../../Types";
 import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
-
 
 @Component({
   selector:    "view-code",
@@ -14,13 +19,14 @@ import { Subscription } from "rxjs";
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild(MatSort, { static: true }) public sort: MatSort;
+  @ViewChild(MatSort, { static: true })
+  public sort: MatSort;
 
   public displayedColumnsMemory: string[] = [ "Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction" ];
-  public dataSourceCode = new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
-  public listRowActives: { address: TypeAddress, stage: TypeStage }[] = [];
-  public maxHeightCard = "75vh";
-  private privateStep = 0;
+  public dataSourceCode: TableVirtualScrollDataSource<TypeInstructionsData_Table> = new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
+  public listRowActives: TypeAddressStage[] = [];
+  public maxHeightCard: string = "75vh";
+  private stepSimulation: number = 0;
   private stepSubscription: Subscription = new Subscription();
   private stepSimulationSubscription: Subscription = new Subscription();
   private codeSimulationSubscription: Subscription = new Subscription();
@@ -41,7 +47,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
         index:       index,
         instruction: "",//instructionGeneratedByHexCode,
         address:     address,
-        code:        `0x${ hexCode }`,
+        code:        `0x${hexCode}`,
         text:        "",
         stage:       ""
       } as TypeInstructionsData_Table;
@@ -63,7 +69,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       this.listRowActives = [];
     });
     this.stepSubscription = this.machine.getStepObservable().subscribe((step) => {
-      this.privateStep = step;
+      this.stepSimulation = step;
     });
   }
 
@@ -98,7 +104,6 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     this.stepSimulationSubscription.unsubscribe();
     this.resetSimulationSubscription.unsubscribe();
   }
-
 
   public refresh(): void {
     this.dataSourceCode.filter = null;

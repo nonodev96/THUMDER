@@ -1,0 +1,30 @@
+@startuml
+!theme MyThemePlain from ../themes
+!include ./5.0.Config.puml!OnInit
+!include ./5.0.Config.puml!AfterViewInit
+!include ./5.0.Config.puml!OnDestroy
+
+class EditorView implements OnInit, AfterViewInit, OnDestroy {
+
++interfaceFileItem: InterfaceFileItem
+-initializedSubscription: Subscription
+-breakpointSubscription: Subscription
+-debuggerSubscription: Subscription
+-fileSaveSubscription: Subscription
+-lineSubscription: Subscription
+
++ngOnInit(): void
++ngAfterViewInit(): void
++ngOnDestroy(): void
+
++toggleDebuggerTag(): void
++getListOfTags(): void
++changeHeight(): void
++closeAndSave(): Promise<void>
+
+-saveFileInLocalStorage(editorFile: THUMDER_FileItem): Promise<void>
+-saveFileInCloudStorage(editorFile: THUMDER_FileItem): Promise<void>
+
+}
+
+@enduml

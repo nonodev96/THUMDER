@@ -2,7 +2,7 @@ import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 
 @Component({
-  selector:    "app-landing",
+  selector:    "THUMDER-layout-landing",
   templateUrl: "./layout-landing.component.html"
 })
 export class LayoutLandingComponent implements OnInit, AfterViewInit {

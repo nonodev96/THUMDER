@@ -13,13 +13,13 @@ import { TypeData } from "../../../Types";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
-  selector: "THUMDER-edit-memory-binary32",
+  selector:    "THUMDER-edit-memory-binary32",
   templateUrl: "./edit-memory-binary32.component.html",
-  styleUrls: ["./edit-memory-binary32.component.scss"]
+  styleUrls:   ["./edit-memory-binary32.component.scss"]
 })
 export class EditMemoryBinary32Component implements OnInit {
 
-  readonly MAX_VALUE_TYPE_DATA = MAX_VALUE_TYPE_DATA;
+  public readonly MAX_VALUE_TYPE_DATA = MAX_VALUE_TYPE_DATA;
 
   /**
    * addressMemoryModule === 0 ==> "00000000"
@@ -30,31 +30,30 @@ export class EditMemoryBinary32Component implements OnInit {
    * addressMemoryModule === 0 ==> "0000000000000001"
    * addressMemoryModule === 2 ==> "0000001000000011"
    */
-  public addressMemoryModule = 0;
+  public addressMemoryModule: number = 0;
   // index in decimal value --> memory[addressMemoryToEdit] = new Int32
   // addressMemoryToEdit = addressMemoryDisplay % 4
-  public addressIsValid = true;
+  public addressIsValid: boolean = true;
   public typeDataSelected: TypeData = "Word";
-
   // Binary 8 16 32 64
   private _binaryValue: string = DEFAULT_BINARY_32_BITS;
   // Hexadecimal 8 digits
   private _hexadecimalAddressMemory: string = DEFAULT_HEXADECIMAL_08_DIGITS;
 
   // =================================================================================================================
-  get displayAddressMemory() {
+  get displayAddressMemory(): string {
     return Utils.numberToHexadecimalString(Utils.hexadecimalToDecimal(this._hexadecimalAddressMemory));
   }
 
-  get displayAddressMemoryNext() {
+  get displayAddressMemoryNext(): string {
     return Utils.numberToHexadecimalString(Utils.hexadecimalToDecimal(this._hexadecimalAddressMemory) + 4);
   }
 
-  get addressMemoryIndex() {
+  get addressMemoryIndex(): number {
     return Utils.hexadecimalToDecimal(this._hexadecimalAddressMemory);
   }
 
-  get addressMemory() {
+  get addressMemory(): string {
     return this._hexadecimalAddressMemory.toUpperCase().padStart(8, "0");
   }
 
@@ -66,7 +65,7 @@ export class EditMemoryBinary32Component implements OnInit {
     }
   }
 
-  get valueInSection_Hexadecimal() {
+  get valueInSection_Hexadecimal(): string {
     const maxLength = this.typeDataSelected === "Double" ? 16 : 8;
     const binary_32_64 = this.typeDataSelected === "Double" ? this.memoryValueBinary64Display : this.memoryValueBinary32Display;
     return Utils.binaryToHexadecimal(binary_32_64, { maxLength: maxLength, fillString: "0" });
@@ -130,7 +129,7 @@ export class EditMemoryBinary32Component implements OnInit {
     this.binaryValue = Utils.convertIEEE754_Number_To_Binary64Bits(double);
   }
 
-  private set binaryValue(binary: string) {
+  set binaryValue(binary: string) {
     if (binary.length === 32) {
       this._binaryValue = binary;
     } else if (binary.length === 64) {
@@ -140,11 +139,11 @@ export class EditMemoryBinary32Component implements OnInit {
     }
   }
 
-  get memoryValueBinary32Display() {
+  get memoryValueBinary32Display(): string {
     return this._binaryValue.padStart(32, "0");
   }
 
-  get memoryValueBinary64Display() {
+  get memoryValueBinary64Display(): string {
     return this._binaryValue.padStart(64, "0");
   }
 
@@ -297,7 +296,7 @@ export class EditMemoryBinary32Component implements OnInit {
     }
   }
 
-  public changeTypeData(typeData: TypeData) {
+  public changeTypeData(typeData: TypeData): void {
     this.typeDataSelected = typeData;
     this.addressIsValid = true;
     this.addressMemoryModule = 0;
@@ -428,25 +427,25 @@ export class EditMemoryBinary32Component implements OnInit {
 
   // =================================================================================================================
 
-  private async TOAST_ErrorAddress(args: string) {
+  private async TOAST_ErrorAddress(args: string): Promise<void> {
     const title_error_address = await this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS").toPromise();
     const message_error_address = await this.translate.get("TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE", { text: args }).toPromise();
     this.toastService.info(message_error_address, title_error_address);
   }
 
-  private async TOAST_ErrorRegex() {
+  private async TOAST_ErrorRegex(): Promise<void> {
     const title_error_regex = await this.translate.get("TOAST.TITLE_ERROR_REGEX").toPromise();
     const message_error_regex_memory = await this.translate.get("TOAST.MESSAGE_ERROR_REGEX_MEMORY").toPromise();
     this.toastService.info(message_error_regex_memory, title_error_regex);
   }
 
-  private async TOAST_ErrorInValueMemory() {
+  private async TOAST_ErrorInValueMemory(): Promise<void> {
     const title = await this.translate.get("TOAST.TITLE_ERROR_IN_VALUE_MEMORY").toPromise();
     const message = await this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_MEMORY").toPromise();
     this.toastService.info(message, title);
   }
 
-  private async TOAST_ErrorInAddressMemory() {
+  private async TOAST_ErrorInAddressMemory(): Promise<void> {
     const title = await this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS_MEMORY").toPromise();
     const message = await this.translate.get("TOAST.MESSAGE_ERROR_IN_ADDRESS_MEMORY").toPromise();
     this.toastService.info(message, title);

@@ -1,0 +1,71 @@
+@startjson
+{
+  "id": "ID",
+  "filename": "string",
+  "date": "Date",
+  "canSimulate": "boolean",
+  "lines": "number",
+  "errors": [],
+  "machineDirectives": [],
+  "machineInstructions": [],
+  "runner": []
+}
+@endjson
+
+@startjson
+{
+  "step": 0,
+  "line": 24,
+  "isNewInstruction": true,
+  "pipeline": {
+    "IF": {
+      "address": "0x00000100",
+      "addressRow": 0,
+      "draw": true
+    },
+    "ID": {
+      "address": "",
+      "addressRow": 0,
+      "draw": false
+    },
+    "intEX": {
+      "address": "",
+      "addressRow": 0,
+      "draw": false
+    },
+    "MEM": {
+      "address": "",
+      "addressRow": 0,
+      "draw": false
+    },
+    "WB": {
+      "address": "",
+      "addressRow": 0,
+      "draw": false
+    },
+    "faddEX": [],
+    "fmultEX": [],
+    "fdivEX": [],
+    "arrows": []
+  },
+  "registers": [
+    {
+      "typeRegister": "Control",
+      "register": "PC",
+      "hexadecimalValue": "0x00000104"
+    },
+    {
+      "typeRegister": "Control",
+      "register": "IMAR",
+      "hexadecimalValue": "0x00000100"
+    },
+    {
+      "typeRegister": "Control",
+      "register": "IR",
+      "hexadecimalValue": "0x20010000"
+    }
+  ],
+  "memory": []
+}
+
+@endjson

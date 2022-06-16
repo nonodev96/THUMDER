@@ -66,23 +66,24 @@ describe('Visit pages auth', () => {
   });
 
 });
+
 describe('Visit pages no auth', () => {
 
   beforeEach(() => {
   });
 
   it('go to login', () => {
-    cy.visit('/login');
+    cy.visit('/account/login');
     cy.url().should('contain', '/login');
   });
 
   it('go to forgot my password', () => {
-    cy.visit('/forgot-password');
+    cy.visit('/account/forgot-password');
     cy.url().should('contain', '/forgot-password');
   });
 
   it('go to register a new membership', () => {
-    cy.visit('/register');
+    cy.visit('/account/register');
     cy.url().should('contain', '/register');
     cy.contains('Register a new membership');
   });

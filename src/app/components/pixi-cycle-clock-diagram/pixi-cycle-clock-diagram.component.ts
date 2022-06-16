@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import * as Keyboard from "pixi.js-keyboard";
 import {
   Component,
   HostListener,
@@ -7,22 +8,25 @@ import {
   ViewChild,
   OnDestroy,
   Output,
-  EventEmitter
+  EventEmitter,
+  ElementRef
 } from "@angular/core";
-import {MachineService} from "../../__core/machine/machine.service";
-import {TypeArrowDirection} from "../../__core/machine/PixiTHUMDER_CycleClockDiagram";
-import {Subscription} from "rxjs";
-import * as Keyboard from "pixi.js-keyboard";
+import { Subscription } from "rxjs";
+import { MachineService } from "../../__core/machine/machine.service";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
 
 @Component({
-  selector: "thumder-pixi-cycle-clock-diagram",
+  selector:    "THUMDER-pixi-cycle-clock-diagram",
   templateUrl: "./pixi-cycle-clock-diagram.component.html",
-  styleUrls: ["./pixi-cycle-clock-diagram.component.scss"]
+  styleUrls:   ["./pixi-cycle-clock-diagram.component.scss"]
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild("pixiContainer")
-  public pixiContainer;
+  @ViewChild("pixiCycleContainer")
+  public pixiContainer: ElementRef<HTMLDivElement>;
+
+  @Output()
+  public inCanvasEventEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public pApp: PIXI.Application;
   private inCanvas: boolean = false;
@@ -30,10 +34,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   private ticker: PIXI.Ticker;
   private keyboard;
   private stepSimulationSubscription: Subscription = new Subscription();
-  private readonly idCanvas = "pixi-cycle-clock-diagram-id";
-
-  @Output()
-  public inCanvasEventEmitter = new EventEmitter<boolean>();
+  private readonly idCanvas: string = "pixi-cycle-clock-diagram-id";
 
   constructor(public machine: MachineService) {
     this.keyboard = Keyboard;
@@ -48,11 +49,11 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
         const arrowDraw = {
           start: {
             instruction: arrow.fromAddressRow,
-            step: arrow.fromStep
+            step:        arrow.fromStep
           },
-          to: {
+          to:    {
             instruction: arrow.toAddressRow,
-            step: arrow.toStep
+            step:        arrow.toStep
           }
         };
         const color = parseInt(String(arrow.color), 16);
@@ -63,24 +64,22 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   ngAfterViewInit(): void {
-    const width = 1600;
-    const height = 975;
     const canvas = document.createElement("canvas");
     canvas.id = this.idCanvas;
     this.pApp = new PIXI.Application({
-      width: width,
-      height: height,
+      width:           DEFAULT_CANVAS_WIDTH,
+      height:          DEFAULT_CANVAS_HEIGHT,
       backgroundColor: 0xEEEEEE,
-      resolution: 1,
-      view: canvas
+      resolution:      1,
+      view:            canvas
     });
     this.pApp.stage.addChild(<any>this.machine.cycleClockDiagram.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view);
+
     this.loader = PIXI.Loader.shared;
     this.ticker = PIXI.Ticker.shared;
     this.loader.load((/*loader, resources*/) => {
-      this.resize();
-      const fps = new PIXI.Text("FPS: 0", {fill: 0xFFFFFF, fontSize: 12});
+      const fps = new PIXI.Text("FPS: 0", { fill: 0xFFFFFF, fontSize: 12 });
       fps.position.x = 0 /*this.pApp.view.width - 200*/;
       fps.position.y = 0 /*25*/;
       fps.zIndex = 100;
@@ -89,6 +88,8 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
       });
       this.pApp.ticker.add((delta) => this.gameLoop(delta));
     });
+
+    this.resizeCanvas();
   }
 
   ngOnDestroy(): void {
@@ -121,14 +122,14 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   @HostListener("window:resize", ["$event"])
-  onResize(event: any): void {
+  public onResize(event: any): void {
     event.preventDefault();
     event.stopPropagation();
-    this.resize();
+    this.resizeCanvas();
   }
 
   @HostListener("document:keydown", ["$event"])
-  handleKeyboardEvent(event: KeyboardEvent): void {
+  public handleKeyboardEvent(event: KeyboardEvent): void {
     if (this.inCanvas && event.key === "ArrowDown") {
       event.preventDefault();
     }
@@ -138,7 +139,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   @HostListener("document:click", ["$event", "$event.target"])
-  handleOnClick(event: MouseEvent, targetElement: HTMLElement): void {
+  public handleOnClick(event: MouseEvent, targetElement: HTMLElement): void {
     if (!targetElement) {
       return;
     }
@@ -146,31 +147,27 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     this.inCanvasEventEmitter.emit(this.inCanvas);
   }
 
-  moveBottom(): void {
+  public moveBottom(): void {
     this.machine.cycleClockDiagram.moveBottom();
   }
 
-  moveTop(): void {
+  public moveTop(): void {
     this.machine.cycleClockDiagram.moveTop();
   }
 
-  moveRight(): void {
+  public moveRight(): void {
     this.machine.cycleClockDiagram.moveRight();
   }
 
-  moveLeft(): void {
+  public moveLeft(): void {
     this.machine.cycleClockDiagram.moveLeft();
   }
 
-  addArrow(instructionArrow: TypeArrowDirection, color: number = 0xFF0000): void {
-    this.machine.cycleClockDiagram.addArrow(instructionArrow, color);
-  }
-
-  reset(): void {
+  public reset(): void {
     this.machine.cycleClockDiagram.reset();
   }
 
-  private resize(): void {
+  private resizeCanvas(): void {
     const width = this.pixiContainer.nativeElement.offsetWidth;
     let height = this.pixiContainer.nativeElement.offsetHeight;
     height = height === 0 ? 900 : height;

@@ -158,19 +158,19 @@ export class ConfigView implements OnInit, AfterViewInit {
     }
   }
 
-  public updateEnableForwarding(target: EventTargetInput | any) {
+  public updateEnableForwarding(target: EventTargetInput | any): void {
     this.enabledForwardingConfiguration = target.checked ?? false;
   }
 
-  public updateAutoSave(target: EventTargetInput | any) {
+  public updateAutoSave(target: EventTargetInput | any): void {
     this.autoSaveConfiguration = target.checked ?? false;
   }
 
-  public updateTimeSimulation(target: EventTargetInput | any) {
+  public updateTimeSimulation(target: EventTargetInput | any): void {
     this.timeSimulationConfiguration = parseInt(target.value.toString());
   }
 
-  public updateMultiviewConfig(_target: EventTarget | any) {
+  public updateMultiviewConfig(_target: EventTarget | any): void {
 
   }
 }

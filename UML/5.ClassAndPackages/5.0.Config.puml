@@ -1,0 +1,17 @@
+@startdef(id=OnInit)
+interface OnInit {
+  ngOnInit(): void
+}
+@endef
+
+@startdef(id=AfterViewInit)
+interface AfterViewInit {
+  ngAfterViewInit(): void
+}
+@endef
+
+@startdef(id=OnDestroy)
+interface OnDestroy {
+  ngOnDestroy(): void
+}
+@endef
