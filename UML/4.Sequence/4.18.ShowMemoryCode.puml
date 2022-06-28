@@ -8,7 +8,7 @@ actor User
 boundary InterfaceUI
 participant System
 participant Server
-participant Firebase
+participant "Provider" as Firebase
 
 activate User
 group#Gold User login

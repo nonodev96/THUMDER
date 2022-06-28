@@ -427,7 +427,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/pipeline",
     displayName: "Pipeline",
     data:        { breadcrumb: "Pipeline" },
-    icon:        "fas fa-desktop"
+    icon:        "fas fa-desktop",
+    show:        true
   },
   CYCLE_CLOCK_DIAGRAM: {
     lang:        "CYCLE_CLOCK_DIAGRAM",
@@ -435,7 +436,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/cycle-clock-diagram",
     displayName: "Cycle clock diagram",
     data:        { breadcrumb: "Cycle-clock-diagram" },
-    icon:        "fas fa-desktop"
+    icon:        "fas fa-desktop",
+    show:        true
   },
   REGISTERS:           {
     lang:        "REGISTERS",
@@ -443,7 +445,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/registers",
     displayName: "Registers",
     data:        { breadcrumb: "Registers" },
-    icon:        "fas fa-microchip"
+    icon:        "fas fa-microchip",
+    show:        true
   },
   MEMORY:              {
     lang:        "MEMORY",
@@ -451,7 +454,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/memory",
     displayName: "Memory",
     data:        { breadcrumb: "Memory" },
-    icon:        "fas fa-memory"
+    icon:        "fas fa-memory",
+    show:        true
   },
   CODE:                {
     lang:        "CODE",
@@ -459,7 +463,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/code",
     displayName: "Code",
     data:        { breadcrumb: "Code" },
-    icon:        "fas fa-calculator"
+    icon:        "fas fa-calculator",
+    show:        true
   },
   STATISTICS:          {
     lang:        "STATISTICS",
@@ -467,7 +472,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/statistics",
     displayName: "Statistics",
     data:        { breadcrumb: "Statistics" },
-    icon:        "fas fa-chart-bar"
+    icon:        "fas fa-chart-bar",
+    show:        true
   },
   FILE_MANAGER:        {
     lang:        "FILE_MANAGER",
@@ -475,7 +481,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/file-manager",
     displayName: "File Manager",
     data:        { breadcrumb: "File Manager" },
-    icon:        "far fa-folder-open"
+    icon:        "far fa-folder-open",
+    show:        true
   },
   EDITOR:              {
     lang:        "EDITOR",
@@ -483,7 +490,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/editor",
     displayName: "Editor",
     data:        { breadcrumb: "Editor" },
-    icon:        "far fa-file"
+    icon:        "far fa-file",
+    show:        true
   },
   MULTIVIEW:           {
     lang:        "MULTIVIEW",
@@ -491,7 +499,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/multiview",
     displayName: "Multiview",
     data:        { breadcrumb: "Multiview" },
-    icon:        "fas fa-table"
+    icon:        "fas fa-table",
+    show:        true
   },
   CALCULATOR:          {
     lang:        "CALCULATOR",
@@ -499,7 +508,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/calculator",
     displayName: "Calculator",
     data:        { breadcrumb: "calculator" },
-    icon:        "fas fa-calculator"
+    icon:        "fas fa-calculator",
+    show:        true
   },
   DOCUMENTATION:       {
     lang:        "DOCUMENTATION",
@@ -507,7 +517,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/documentation",
     displayName: "Documentation",
     data:        { breadcrumb: "Documentation" },
-    icon:        "fas fa-book"
+    icon:        "fas fa-book",
+    show:        true
   },
   CONFIG:              {
     lang:        "CONFIG",
@@ -515,7 +526,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/config",
     displayName: "Config",
     data:        { breadcrumb: "config" },
-    icon:        "fas fa-wrench"
+    icon:        "fas fa-wrench",
+    show:        true
   },
   DEBUG:               {
     lang:        "DEBUG",
@@ -523,7 +535,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/debug",
     displayName: "Debug",
     data:        { breadcrumb: "Debug" },
-    icon:        "fas fa-bug"
+    icon:        "fas fa-bug",
+    show:        AppConfig.environment === "DEV"
   },
   LOGGER:              {
     lang:        "LOGGER",
@@ -531,7 +544,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/logger",
     displayName: "Logger",
     data:        { breadcrumb: "Logger" },
-    icon:        "fas fa-file-code"
+    icon:        "fas fa-file-code",
+    show:        AppConfig.environment === "DEV"
   },
   PROFILE:             {
     lang:        "PROFILE",
@@ -539,7 +553,8 @@ export const AUTH_ROUTES: PublicRoutesList = {
     routerLink:  "/auth/profile",
     displayName: "Profile",
     data:        { breadcrumb: "Profile" },
-    icon:        "fas fa-user"
+    icon:        "fas fa-user",
+    show:        AppConfig.environment === "DEV"
   }
 };
 

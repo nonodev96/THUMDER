@@ -6,9 +6,10 @@ autonumber
 
 actor User
 boundary InterfaceUI
-participant System
+participant "System\nEditor" as System
+participant "System\nMachineService" as MachineService
 participant Server
-participant Firebase
+participant "Provider" as Firebase
 
 activate User
 group#Gold User login
@@ -20,17 +21,22 @@ User <- InterfaceUI: Show Editor
 
 InterfaceUI -> System: Analyze code
   activate System
-  System -> Server: Analyze code
+  System -> MachineService: Analyze code
+  MachineService -> Server: Analyze code
   activate Server
-  System <-- Server: Analyze code response
+  MachineService <-- Server: Analyze code response
   deactivate Server
-  InterfaceUI <- System: Analyze code response
+  System <-- MachineService: Analyze code response
+  System -> System: Process code response
+  InterfaceUI <- System: Data
   deactivate System
 
   alt #LightGreen Have error
     User <- InterfaceUI: Show error in code
   else #LightBlue No error in code
     User <- InterfaceUI: Show code
+  else #Pink Error in response
+    User <- InterfaceUI: Show notification
   end
 
 deactivate InterfaceUI

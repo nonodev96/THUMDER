@@ -6,9 +6,9 @@ autonumber
 
 actor User
 boundary InterfaceUI
-participant System
+participant "System\nAuthService" as system
 participant Server
-participant Firebase
+participant "Provider" as Firebase
 
 activate User
 User -> InterfaceUI: Open login
@@ -28,25 +28,25 @@ loop Form
   User -> InterfaceUI: User data
 
   alt #LightGreen User data successful
-    InterfaceUI -> System: Authentication request
-    activate System
+    InterfaceUI -> system: Authentication request
+    activate system
 
-    System -> Firebase: Authentication request
+    system -> Firebase: Authentication request
 
     activate Firebase
     alt #LightGreen successful case
-      System <- Firebase: Authentication successful
-      InterfaceUI <- System: Authentication accepted
+      system <- Firebase: Authentication successful
+      InterfaceUI <- system: Authentication accepted
       User <- InterfaceUI: Authentication accepted
     else #Pink Account error
-      System <- Firebase: Authentication error
+      system <- Firebase: Authentication error
       deactivate Firebase
-      InterfaceUI <- System: Authentication error
-      deactivate System
+      InterfaceUI <- system: Authentication error
+      deactivate system
       User x<- InterfaceUI: Notification error
     end
   else #Pink Error in User data
-    InterfaceUI <- System: Error in user data
+    InterfaceUI <- system: Error in user data
     User x<- InterfaceUI: Notification error in user data
     deactivate InterfaceUI
   end

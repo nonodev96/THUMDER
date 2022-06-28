@@ -10,8 +10,9 @@ import { MachineService } from "../../../__core/machine/machine.service";
 })
 export class LoggerView implements OnInit {
 
-  @ViewChild(XtermComponent) xtermComponent: XtermComponent;
-  public text: string = "Hello";
+  @ViewChild(XtermComponent)
+  public xtermComponent: XtermComponent;
+  public text: string = "";
 
   constructor(public machine: MachineService) {
   }

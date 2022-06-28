@@ -1,4 +1,5 @@
 {
+  "HOME": "Home",
   "ERROR": {
     "TITLE": "Error: {{title}}",
     "MESSAGE": "Message: {{message}}"
@@ -118,6 +119,7 @@
     "SET_MEMORY_VALUE": "Set memory value",
     "INTEGER": "Integer",
     "REGISTER": "Register",
+    "UINT8ARRAY": "Uint8",
     "MEMORY": "Memory",
     "DECIMAL": "Decimal",
     "HEXADECIMAL": "Hexadecimal",
@@ -214,6 +216,11 @@
   },
   "PAGES": {
     "INDEX": {
+      "MACHINE": "Machine",
+      "IDE": "IDE",
+      "UTILS": "Utils",
+      "CONFIG": "Config",
+      "DEBUG": "Debug",
       "PAGES": "Pages",
       "MORE_INFO": "More info"
     },

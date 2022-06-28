@@ -6,9 +6,9 @@ autonumber
 
 actor User
 boundary InterfaceUI
-participant System
+participant "System\nFileSystemService" as system
 participant Server
-participant Firebase
+participant "Provider" as Firebase
 
 activate User
 group#Gold User login
@@ -21,16 +21,16 @@ User <- InterfaceUI: Show file manager
 deactivate InterfaceUI
 
 User -> InterfaceUI: Create file
-InterfaceUI -> System: Create file
-System -> Firebase: Create file
+InterfaceUI -> system: Create file
+system -> Firebase: Create file
 
 alt #LightGreen Ok
-  System <-- Firebase: Create file successful
-  InterfaceUI <- System: Create file successful
+  system <-- Firebase: Create file successful
+  InterfaceUI <- system: Create file successful
   User <- InterfaceUI: Create file successful
 else #Pink Error
-  System <-- Firebase: Create file error
-  InterfaceUI <- System: Create file error
+  system <-- Firebase: Create file error
+  InterfaceUI <- system: Create file error
   User x<- InterfaceUI: Create file error
 end
 

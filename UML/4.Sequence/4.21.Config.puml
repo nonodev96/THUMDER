@@ -6,9 +6,10 @@ autonumber
 
 actor User
 boundary InterfaceUI
-participant System
+participant "System\nMachineService" as System
+participant "System\nTHUMDER-App-Service" as THUMDER
 participant Server
-participant Firebase
+participant "Provider" as Firebase
 
 activate User
 group#Gold User login
@@ -48,34 +49,34 @@ end
 deactivate System
 
 User -> InterfaceUI: Set auto save
-InterfaceUI -> System: Set auto save
-activate System
+InterfaceUI -> THUMDER: Set auto save
+activate THUMDER
 alt #LightGreen Ok
-  InterfaceUI <- System: Set auto save
+  InterfaceUI <- THUMDER: Set auto save
 else #Pink Error
-  InterfaceUI <- System: Set auto save to default
+  InterfaceUI <- THUMDER: Set auto save to default
 end
-deactivate System
+deactivate THUMDER
 
 User -> InterfaceUI: Set time simulation step
-InterfaceUI -> System: Set time simulation step
-activate System
+InterfaceUI -> THUMDER: Set time simulation step
+activate THUMDER
 alt #LightGreen Ok
-  InterfaceUI <- System: Set time simulation step
+  InterfaceUI <- THUMDER: Set time simulation step
 else #Pink Error
-  InterfaceUI <- System: Set time simulation step to default
+  InterfaceUI <- THUMDER: Set time simulation step to default
 end
-deactivate System
+deactivate THUMDER
 
 User -> InterfaceUI: Set config multiview
-InterfaceUI -> System: Set config multiview
-activate System
+InterfaceUI -> THUMDER: Set config multiview
+activate THUMDER
 alt #LightGreen Ok
-  InterfaceUI <- System: Set config multiview
+  InterfaceUI <- THUMDER: Set config multiview
 else #Pink Error
-  InterfaceUI <- System: Set config multiview to default
+  InterfaceUI <- THUMDER: Set config multiview to default
 end
-deactivate System
+deactivate THUMDER
 
 User -> InterfaceUI: Select save or reset
 group #SkyBlue Select save

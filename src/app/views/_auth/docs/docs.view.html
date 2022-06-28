@@ -9,36 +9,14 @@
 
         <div *ngFor="let document of main_list" cdkDrag>
           <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-          <ng-container [ngTemplateOutlet]="AccordionCard"
-                        [ngTemplateOutletContext]="{item: document}"></ng-container>
+          <THUMDER-docs-item [item]="document">
+            <button type="button" class="btn btn-tool" cdkDragHandle>
+              <i class="fas fa-arrows-alt"></i>
+            </button>
+          </THUMDER-docs-item>
         </div>
 
       </div>
     </div>
   </div>
 </ng-container>
-
-<ng-template #AccordionCard let-item='item'>
-  <div class="card card-primary card-outline">
-
-    <div class="card-header">
-      <h4 class="card-title">
-        <a class="d-block w-100" data-toggle="collapse" href="#collapse_{{item.id}}">
-          {{ item.title }}
-        </a>
-      </h4>
-      <div class="card-tools">
-        <button type="button" class="btn btn-tool" cdkDragHandle>
-          <i class="fas fa-arrows-alt"></i>
-        </button>
-      </div>
-    </div>
-
-    <div id="collapse_{{item.id}}" class="collapse " data-parent="#accordion">
-      <div class="card-body">
-        <markdown [src]="item.file" (load)="onMarkdownLoad()" #markdownComponentID></markdown>
-      </div>
-    </div>
-
-  </div>
-</ng-template>

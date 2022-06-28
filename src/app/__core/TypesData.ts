@@ -1,7 +1,7 @@
 import { Utils } from "../Utils";
 
 export class Int32 {
-  // Se almacena en cadena de texto binaria, siempra
+  // Se almacena en cadena de texto binaria
   private _value: number = 0;
 
   get binary(): string {

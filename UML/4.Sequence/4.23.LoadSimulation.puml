@@ -7,9 +7,9 @@ autonumber
 
 actor User
 boundary InterfaceUI
-participant System
+participant "System\nMachineService" as System
 participant Server
-participant Firebase
+participant "Provider" as Firebase
 
 activate User
 group#Gold User login
