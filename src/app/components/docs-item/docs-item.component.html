@@ -1,0 +1,19 @@
+<div class="card card-primary card-outline">
+  <div class="card-header">
+    <h4 class="card-title">
+      <a class="d-block w-100" data-toggle="collapse" href="#collapse_{{item.id}}">
+        {{ item.title }}
+      </a>
+    </h4>
+    <div class="card-tools">
+      <ng-content></ng-content>
+    </div>
+  </div>
+
+  <div id="collapse_{{item.id}}" class="collapse " data-parent="#accordion">
+    <div class="card-body">
+      <markdown [src]="item.file" (load)="onMarkdownLoad()" #markdownComponentID></markdown>
+    </div>
+  </div>
+
+</div>

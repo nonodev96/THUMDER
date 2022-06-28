@@ -11,7 +11,7 @@
     </li>
 
     <li class="nav-item d-none d-sm-inline-block">
-      <a [routerLink]="['/']" class="nav-link" title="HomePage">Home</a>
+      <a [routerLink]="['/']" class="nav-link" title="HomePage">{{ 'HOME' | translate }}</a>
     </li>
 
 
@@ -21,9 +21,11 @@
            class="nav-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</a>
         <ul aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow">
           <li *ngFor="let menu of PRIVATE_AUTH_ROUTES;">
-            <a class="dropdown-item" title="{{menu.path}}" (click)="goToPage($event, menu)">
-              {{ 'NAVIGATION.' + menu.lang | translate }}
-            </a>
+            <ng-container *ngIf="menu.show">
+              <a class="dropdown-item" title="{{menu.path}}" (click)="goToPage($event, menu)">
+                {{ 'NAVIGATION.' + menu.lang | translate }}
+              </a>
+            </ng-container>
           </li>
         </ul>
       </li>
@@ -138,41 +140,41 @@
     </li>
 
     <ng-container *ngIf="authService.isLoggedIn">
-    <!--
-     <li class="nav-item d-none d-sm-inline-block">
-       <a class="nav-link" (click)="debug()">
-         <i class="fas fa-bug"></i>
-       </a>
-     </li>
-    -->
-
-    <!--
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="reset()"
-           [style.color]="colorWebsocketStatus">
-          <i class="fas fa-sync"></i>
-        </a>
-      </li>
-
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="togglePlayPause()"
-           [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-          <ng-container *ngIf="isRunning === true">
-            <i class="fas fa-pause"></i>
-          </ng-container>
-          <ng-container *ngIf="isRunning === false">
-            <i class="fas fa-play"></i>
-          </ng-container>
-        </a>
-      </li>
-
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="nextStep()"
-           [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-          <i class="fas fa-angle-right"></i>
-        </a>
-      </li>
+      <!--
+       <li class="nav-item d-none d-sm-inline-block">
+         <a class="nav-link" (click)="debug()">
+           <i class="fas fa-bug"></i>
+         </a>
+       </li>
       -->
+
+      <!--
+        <li class="nav-item d-none d-sm-inline-block">
+          <a class="nav-link" (click)="reset()"
+             [style.color]="colorWebsocketStatus">
+            <i class="fas fa-sync"></i>
+          </a>
+        </li>
+
+        <li class="nav-item d-none d-sm-inline-block">
+          <a class="nav-link" (click)="togglePlayPause()"
+             [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+            <ng-container *ngIf="isRunning === true">
+              <i class="fas fa-pause"></i>
+            </ng-container>
+            <ng-container *ngIf="isRunning === false">
+              <i class="fas fa-play"></i>
+            </ng-container>
+          </a>
+        </li>
+
+        <li class="nav-item d-none d-sm-inline-block">
+          <a class="nav-link" (click)="nextStep()"
+             [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+            <i class="fas fa-angle-right"></i>
+          </a>
+        </li>
+        -->
       <!--
       <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="end()">

@@ -113,6 +113,7 @@ export type PublicRoutes_SET = {
     path: string;
     routerLink: string;
     displayName: string;
+    show: boolean;
     data?: any;
     icon?: string;
     children?: PublicRoutes[];

@@ -1,11 +1,11 @@
 {
   "name": "thumder",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "private": true,
   "description": "TFG - THUMDER (THe UltiMate Dlx EmulatoR): emulador multiplataforma DLX con fines didácticos",
   "keywords": [
     "angular",
-    "angular 10",
+    "angular 12",
     "electron",
     "nodejs",
     "typescript",
@@ -17,7 +17,7 @@
     "linux",
     "dlx",
     "windlx",
-    "DLX-simulator",
+    "DLX-emulator",
     "simulator"
   ],
   "homepage": "https://github.com/nonodev96/THUMDER",
@@ -133,7 +133,7 @@
     "core-js": "3.6.5",
     "cross-env": "7.0.2",
     "cypress": "9.1.0",
-    "electron": "16.2.0",
+    "electron": ">=16.2.6",
     "electron-builder": "23.0.3",
     "electron-chromedriver": "14.0.0",
     "electron-reload": "1.5.0",

@@ -13,7 +13,7 @@ import { TypeIdTitleFile } from "../../../Types";
   styleUrls:   []
 })
 export class DocsView implements OnInit {
-  public main_list: TypeIdTitleFile[] = [{
+  public main_list: TypeIdTitleFile[] = [ {
     id:    "README",
     title: "README",
     file:  "assets/docs.md"
@@ -77,20 +77,12 @@ export class DocsView implements OnInit {
     id:    "Multiview",
     title: "Multiview",
     file:  "assets/wiki/11.Multiview.md"
-  }];
+  } ];
 
   @ViewChildren(CdkDrag)
   public draggable_list: QueryList<CdkDrag>;
 
-  @ViewChild("markdownComponentID", { static: false })
-  private markdownComponentID: MarkdownComponent;
-  private listenObj: any;
-
-  constructor(private markdownService: MarkdownService,
-              private scroller: ViewportScroller,
-              private router: Router,
-              private renderer: Renderer2,
-              public globals: Globals) {
+  constructor(public globals: Globals) {
   }
 
   ngOnInit(): void {
@@ -98,28 +90,7 @@ export class DocsView implements OnInit {
 
   public MyDrop($event: CdkDragDrop<any[]>): void {
     if ($event.previousContainer === $event.container) {
-      console.log($event);
       moveItemInArray($event.container.data, $event.previousIndex, $event.currentIndex);
     }
-  }
-
-  public onMarkdownLoad(): void {
-    if (this.markdownComponentID) {
-      this.listenObj = this.renderer.listen(this.markdownComponentID.element.nativeElement, "click", (e: Event) => {
-        if (e.target && (e.target as any).tagName === "A") {
-          const el = (e.target as HTMLElement);
-          const linkURL = el.getAttribute && el.getAttribute("href");
-          if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
-            e.preventDefault();
-            const id = linkURL.replace("#", "");
-            this.scrollToAnchor(id);
-          }
-        }
-      });
-    }
-  }
-
-  private scrollToAnchor(scrollToAnchor: string): void {
-    this.scroller.scrollToAnchor(scrollToAnchor);
   }
 }

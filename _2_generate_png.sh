@@ -1,19 +1,34 @@
 #!/bin/bash
 echo 'Running Script'
 
-PATH_UML_INPUT="/Users/nonodev96/WebstormProjects/THUMDER/UML/0.Project/"
+PATH_UML_INPUT="/Users/nonodev96/WebstormProjects/THUMDER/UML/4.Sequence/"
 PATH_UML_OUTPUT="/Users/nonodev96/PNG/"
 
 FILES="
-0.0.Gantt-2021-08
-0.0.Gantt-2021-09
-0.0.Gantt-2021-10
-0.0.Gantt-2021-11
-0.0.Gantt-2021-12
-0.0.Gantt-2022-01
-0.0.Gantt-2022-02
-0.0.Gantt-2022-03
-0.0.Gantt-2022-04
+4.1.SignIn
+4.2.LogIn
+4.3.CreateFile
+4.4.ModifyAccount
+4.5.ShowInfoApp
+4.7.DeleteFile
+4.8.RenameFile
+4.9.EditFile
+4.10.AutocompleteCode
+4.11.ShowDocumentationCode
+4.12.ShowErrorsInCode
+4.13.ShowLogs
+4.14.ModifyMemory
+4.15.ModifyRegisters
+4.16.ShowPipeline
+4.17.ShowDiagram
+4.18.ShowMemoryCode
+4.19.ShowMemory
+4.20.ShowRegisters
+4.21.Config
+4.22.Calculator
+4.23.LoadSimulation
+4.24.NextStepInSimulation
+4.25.Simulation
 "
 for filename in $FILES ; do
   echo $filename

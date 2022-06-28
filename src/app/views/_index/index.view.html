@@ -33,7 +33,7 @@
 
 <!--<div class="card">-->
 <!--  <div class="card-body">-->
-<h4 class="mb-2 mt-4">{{ 'Machine' | translate }}</h4>
+<h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.MACHINE' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PIPELINE}"></ng-container>
@@ -50,7 +50,7 @@
 </div>
 <hr>
 
-<h4 class="mb-2 mt-4">{{ 'IDE' | translate }}</h4>
+<h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.IDE' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.FILE_MANAGER}"></ng-container>
@@ -61,7 +61,7 @@
 </div>
 <hr>
 
-<h4 class="mb-2 mt-4">{{ 'Utils' | translate }}</h4>
+<h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.UTILS' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CALCULATOR}"></ng-container>
@@ -70,14 +70,14 @@
 </div>
 
 
-<h4 class="mb-2 mt-4">{{ 'Config' | translate }}</h4>
+<h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.CONFIG' | translate }}</h4>
 <div class="row">
   <ng-container [ngTemplateOutlet]="card"
                 [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CONFIG}"></ng-container>
 </div>
 
 <ng-container *ngIf="AppConfig.environment === 'DEV'">
-  <h4 class="mb-2 mt-4">{{ 'Debug' | translate }}</h4>
+  <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.DEBUG' | translate }}</h4>
   <div class="row">
     <ng-container [ngTemplateOutlet]="card"
                   [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DEBUG}"></ng-container>

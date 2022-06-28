@@ -47,6 +47,11 @@
                 "output": "./wiki-assets/"
               },
               {
+                "glob": "*.png",
+                "input": "./assets/",
+                "output": "./assets/"
+              },
+              {
                 "glob": "LICENSE.md",
                 "input": "./",
                 "output": "./assets/md/"

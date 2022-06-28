@@ -30,6 +30,8 @@ import { CovalentCodeEditorModule } from "@covalent/code-editor";
 import { ModalComponent } from './modals/modal/modal.component';
 import { DebugComponent } from './windows/debug/debug.component';
 import { DragDropModule } from "@angular/cdk/drag-drop";
+import { DocsItemComponent } from "./docs-item/docs-item.component";
+import { MarkdownModule } from "ngx-markdown";
 
 
 @NgModule({
@@ -49,7 +51,8 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
 
     SharedModule,
     CovalentCodeEditorModule,
-    DragDropModule
+    DragDropModule,
+    MarkdownModule
   ],
   declarations: [
     // Aside
@@ -72,6 +75,7 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
     // xTerm
     XtermComponent,
     BreadcrumbComponent,
+    DocsItemComponent,
     // MemoryComponent,
 
     EditMemoryBinary32Component,
@@ -99,6 +103,7 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
     // xTerm
     XtermComponent,
     BreadcrumbComponent,
+    DocsItemComponent,
     PixiPipelineComponent,
 
     EditMemoryBinary32Component,
