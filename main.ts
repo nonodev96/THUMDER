@@ -23,18 +23,18 @@ function createWindow(): BrowserWindow {
   // Create the browser window.
   win = new BrowserWindow({
     // titleBarStyle: 'hiddenInset',
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
-    minWidth: 400,
-    minHeight: 400,
+    x:              0,
+    y:              0,
+    width:          size.width,
+    height:         size.height,
+    minWidth:       400,
+    minHeight:      400,
     webPreferences: {
-      nodeIntegration: true,
-      nativeWindowOpen: true,
-      allowRunningInsecureContent: (isServe),
-      contextIsolation: false,  // false if you want to run 2e2 test with Spectron
+      // nativeWindowOpen: true,
       // enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
+      nodeIntegration:             true,
+      allowRunningInsecureContent: isServe,
+      contextIsolation:            false,  // false if you want to run 2e2 test with Spectron
     },
   });
 
@@ -48,7 +48,7 @@ function createWindow(): BrowserWindow {
     win.loadURL(url.format({
       pathname: path.join(__dirname, "dist/index.html"),
       protocol: "file:",
-      slashes: true
+      slashes:  true
     }));
   }
 
@@ -74,18 +74,18 @@ try {
   let alwaysOnTop = false;
   app.whenReady().then(() => {
     const image = nativeImage.createFromPath(path.join(__dirname, "dist/assets/icons/faviconWhite.512x512.png"));
-    tray = new Tray(image.resize({width: 20, height: 20}));
+    tray = new Tray(image.resize({ width: 20, height: 20 }));
     const contextMenu = Menu.buildFromTemplate([
       {
-        label: "Always on top",
-        type: "checkbox",
+        label:   "Always on top",
+        type:    "checkbox",
         checked: alwaysOnTop,
-        click: () => {
+        click:   () => {
           alwaysOnTop = !alwaysOnTop;
           if (win != null) win.setAlwaysOnTop(alwaysOnTop);
         }
       },
-      {type: 'separator'},
+      { type: 'separator' },
       {
         label: "Reload app",
         click: async () => {
@@ -95,7 +95,7 @@ try {
             await win.loadURL(url.format({
               pathname: path.join(__dirname, "dist/index.html"),
               protocol: "file:",
-              slashes: true
+              slashes:  true
             }));
           }
           // await shell.openExternal("https://electronjs.org");
@@ -125,21 +125,21 @@ try {
 
   ipcMain.on("thumder-notification", (_$event, _args) => {
     const options: NotificationConstructorOptions = {
-      title: "Custom Notification",
+      title:    "Custom Notification",
       subtitle: "Subtitle of the Notification",
-      body: "Body of Custom Notification",
-      silent: false,
+      body:     "Body of Custom Notification",
+      silent:   false,
       // icon:             path.join(__dirname, "./src/assets/image.png"),
       // sound:            path.join(__dirname, "./src/assets/sound.mp3"),
-      hasReply: true,
-      timeoutType: "never",
+      hasReply:         true,
+      timeoutType:      "never",
       replyPlaceholder: "Reply Here",
-      urgency: "critical",
-      closeButtonText: "Close Button",
-      actions: [{
+      urgency:          "critical",
+      closeButtonText:  "Close Button",
+      actions:          [ {
         type: "button",
         text: "Show Button"
-      }]
+      } ]
     };
     const customNotification = new Notification(options);
     customNotification.show();
