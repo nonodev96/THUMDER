@@ -1,5 +1,5 @@
-<div class="card" >
-  <div class="card-header" >
+<div class="card">
+  <div class="card-header">
     <h3 class="card-title">
       <!-- Drag button -->
       <ng-content></ng-content>
@@ -36,8 +36,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">0x</span>
             </div>
-            <input type="text" id="byte_hex"
-                   class="form-control"
+            <input type="text" id="byte_hex" class="form-control"
                    [ngModelOptions]="{standalone: true}"
                    [ngModel]="binary08_Hexadecimal"
                    (ngModelChange)="binary08_Hexadecimal=$event">
@@ -51,10 +50,18 @@
       <div class="col-5">
         <div class="form-group">
           <label for="byte_binary">{{ 'TYPE_DATA.BYTE' | translate }}</label>
-          <input type="text" class="form-control" id="byte_binary"
-                 [ngModelOptions]="{standalone: true}"
-                 [(ngModel)]="binary08_Binary"
-                 (ngModelChange)="binary08_Binary=$event">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0b</span>
+            </div>
+            <input type="text" id="byte_binary" class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="binary08_Binary"
+                   (ngModelChange)="binary08_Binary=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in binary</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -76,8 +83,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">0x</span>
             </div>
-            <input type="text" id="halfword_hex"
-                   class="form-control"
+            <input type="text" id="halfword_hex" class="form-control"
                    [ngModelOptions]="{standalone: true}"
                    [ngModel]="binary16_Hexadecimal"
                    (ngModelChange)="binary16_Hexadecimal=$event">
@@ -91,10 +97,18 @@
       <div class="col-5">
         <div class="form-group">
           <label for="halfword_binary">{{ 'TYPE_DATA.HALF_WORD' | translate }}</label>
-          <input type="text" class="form-control" id="halfword_binary"
-                 [ngModelOptions]="{standalone: true}"
-                 [(ngModel)]="binary16_Binary"
-                 (ngModelChange)="binary16_Binary=$event">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0b</span>
+            </div>
+            <input type="text" class="form-control" id="halfword_binary"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="binary16_Binary"
+                   (ngModelChange)="binary16_Binary=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in binary</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -102,8 +116,7 @@
       <div class="col-3">
         <div class="form-group">
           <label for="word_value">{{ 'TYPE_DATA.WORD' | translate }} Uint</label>
-          <input type="number" class="form-control" id="word_value"
-                 step="1"
+          <input type="number" class="form-control" id="word_value" step="1"
                  [ngModelOptions]="{standalone: true}"
                  [(ngModel)]="binary32_Value">
         </div>
@@ -116,8 +129,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">0x</span>
             </div>
-            <input type="text" id="word_hex"
-                   class="form-control"
+            <input type="text" id="word_hex" class="form-control"
                    [ngModelOptions]="{standalone: true}"
                    [ngModel]="binary32_Hexadecimal"
                    (ngModelChange)="binary32_Hexadecimal=$event">
@@ -131,10 +143,18 @@
       <div class="col-5">
         <div class="form-group">
           <label for="word_binary">{{ 'TYPE_DATA.WORD' | translate }}</label>
-          <input type="text" class="form-control" id="word_binary"
-                 [ngModelOptions]="{standalone: true}"
-                 [(ngModel)]="binary32_Binary"
-                 (ngModelChange)="binary32_Binary=$event">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0b</span>
+            </div>
+            <input type="text" id="word_binary" class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="binary32_Binary"
+                   (ngModelChange)="binary32_Binary=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in binary</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -142,7 +162,7 @@
       <div class="col-3">
         <div class="form-group">
           <label for="word_value_int">{{ 'TYPE_DATA.WORD' | translate }} Int</label>
-          <input type="number" class="form-control" id="word_value_int"
+          <input type="number" id="word_value_int" class="form-control"
                  step="1"
                  [ngModelOptions]="{standalone: true}"
                  [(ngModel)]="binary32Int_Value">
@@ -156,8 +176,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text">0x</span>
             </div>
-            <input type="text" id="word_hex_int"
-                   class="form-control"
+            <input type="text" id="word_hex_int" class="form-control"
                    [ngModelOptions]="{standalone: true}"
                    [ngModel]="binary32Int_Hexadecimal"
                    (ngModelChange)="binary32Int_Hexadecimal=$event">
@@ -171,10 +190,18 @@
       <div class="col-5">
         <div class="form-group">
           <label for="word_binary_int">{{ 'TYPE_DATA.WORD' | translate }}</label>
-          <input type="text" class="form-control" id="word_binary_int"
-                 [ngModelOptions]="{standalone: true}"
-                 [(ngModel)]="binary32Int_Binary"
-                 (ngModelChange)="binary32Int_Binary=$event">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0b</span>
+            </div>
+            <input type="text" id="word_binary_int" class="form-control"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="binary32Int_Binary"
+                   (ngModelChange)="binary32Int_Binary=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in binary</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -213,10 +240,20 @@
       <div class="col-5">
         <div class="form-group">
           <label for="ieee754_binary">{{ 'TYPE_DATA.IEEE754' | translate }}</label>
-          <input type="text" class="form-control" id="ieee754_binary"
-                 [ngModelOptions]="{standalone: true}"
-                 [(ngModel)]="binary32_IEEE754_Binary"
-                 (ngModelChange)="binary32_IEEE754_Binary=$event">
+          <div class="input-group mb-3">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">0b</span>
+              </div>
+              <input type="text" class="form-control" id="ieee754_binary"
+                     [ngModelOptions]="{standalone: true}"
+                     [(ngModel)]="binary32_IEEE754_Binary"
+                     (ngModelChange)="binary32_IEEE754_Binary=$event">
+              <div class="input-group-append">
+                <span class="input-group-text">in binary</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -225,8 +262,7 @@
       <div class="col-3">
         <div class="form-group">
           <label for="ieee754_number_64">{{ 'TYPE_DATA.IEEE754_64' | translate }}</label>
-          <input type="number" class="form-control" id="ieee754_number_64"
-                 step="0.1"
+          <input type="number" id="ieee754_number_64" class="form-control" step="0.1"
                  [ngModelOptions]="{standalone: true}"
                  [(ngModel)]="binary64_IEEE754_Value">
         </div>
@@ -254,10 +290,18 @@
       <div class="col-5">
         <div class="form-group">
           <label for="ieee754_binary_64">{{ 'TYPE_DATA.IEEE754_64' | translate }}</label>
-          <input type="text" class="form-control" id="ieee754_binary_64"
-                 [ngModelOptions]="{standalone: true}"
-                 [(ngModel)]="binary64_IEEE754_Binary"
-                 (ngModelChange)="binary64_IEEE754_Binary=$event">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">0b</span>
+            </div>
+            <input type="text" class="form-control" id="ieee754_binary_64"
+                   [ngModelOptions]="{standalone: true}"
+                   [(ngModel)]="binary64_IEEE754_Binary"
+                   (ngModelChange)="binary64_IEEE754_Binary=$event">
+            <div class="input-group-append">
+              <span class="input-group-text">in binary</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
