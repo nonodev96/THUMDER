@@ -150,7 +150,7 @@ export class FileSystemStorageService {
     await updateDoc(doc(this.afs, this.dbFileItemsPath, $key), JSON.parse(JSON.stringify(fileItem)));
     return Promise.resolve(true)
   }
-
+/*
   //  Documents
   public FileItem_Documents_valueChanges(id): Observable<THUMDER_FileItem> {
     return docData(
@@ -163,7 +163,7 @@ export class FileSystemStorageService {
       doc(this.afs, id) as DocumentReference<THUMDER_FileItem>
     );
   }
-
+*/
   // Collections
   public FileItems_Collections_valueChanges(): Observable<THUMDER_FileItem[]> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
