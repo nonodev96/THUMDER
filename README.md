@@ -21,81 +21,72 @@ THUMDER
 </center>
 
 <center>
-  <a href="https://thumder.netlify.com">THUMDER page</a>
+  Página del proyecto en producción <a href="https://thumder.netlify.com">THUMDER</a><br>
 </center>
 
-## Installation
+<center>
+  Repositorio del servidor del proyecto <a href="https://github.com/nonodev96/THUMDER-server">THUMDER server</a>
+</center>
+
+## Instalación de las dependencias
 
 ```bash
-sudo npm install -g  @angular/cli@12.2.10
-npm install 
-# npm install --only=prod
+sudo npm install -g  @angular/cli@12.5.0  # Instala la herramienta de desarrollo
+npm install                               # Instala las dependencias
 ```
 
-## Included Commands
+Tu necesitas aumenta la memoria de node, para ello se debe modificar la variable de entorno de node (`NODE_OPTIONS`),
+para ello debemos asignar al menos 4Gb de memoria `--max_old_space_size=<size>`.
 
-### Develop
+## Desarrollo
 
-| Command                        | Description                    |
-|:-------------------------------|:-------------------------------|
-| `npm run ng:serve-angular:dev` | Develop the app in the browser |
 
-### Deploy
+| **Commandos**                  | **Descripción**                                         |
+|:-------------------------------|:--------------------------------------------------------|
+| `npm run ng:serve-angular:dev` | Enciende el servidor de angular en modo de desarrollo   |
+| `npm run ws:server`            | Enciende el servidor websocket, requiere THUMDER Server |
 
-| Command                               | Description                                                                          |
-|:--------------------------------------|:-------------------------------------------------------------------------------------|
-| `npm run ng:build-angular:production` | Deploy Angular app for browser version                                               |
-| `npm run electron:build`              | Builds your application and creates an app consumable based on your operating system |
+## Despliegue
 
-### Others command
 
-| Command                                 | Description   |
-|:----------------------------------------|:--------------|
-| `npm run ng:build:dev`                  |               |
-| `npm run ng:build:web`                  |               |
-| `npm run ng:build:production`           |               |
-| `npm run ng:build-angular:dev`          |               |
-| `npm run ng:build-angular:web`          |               |
-| `npm run ng:build-angular:production`   |               |
-| `npm run ng:serve:dev`                  |               |
-| `npm run ng:serve:web`                  |               |
-| `npm run ng:serve:production`           |               |
-| `npm run ng:serve-angular:dev`          |               |
-| `npm run ng:serve-angular:web`          |               |
-| `npm run ng:serve-angular:production`   |               |
+| **Commandos**                         | **Descripción**                                                                                   |
+|:--------------------------------------|:--------------------------------------------------------------------------------------------------|
+| `npm run ng:build-angular:production` | Construye la aplicación angular de navegador con las variables de producción                      |
+| `npm run electron:build`              | Construye la aplicación angular y encapsula la aplicación dentro electron generando un ejecutable |
 
-You need to change de space of node with `NODE_OPTIONS` `--max_old_space_size=<size>`
+El despliegue genera las carpetas `/dist`, `/dist-angular` y `/release`.
 
-**Your application is optimised. Only /dist folder and node dependencies are included in the executable.**
+La carpeta `/dist-angular` es la indicada para el despliegue en servidores.
 
-## You want to use a specific lib (like rxjs) in electron main thread ?
+La carpeta `/release` contiene los ficheros ejecutables con la aplicación.
 
-YES! You can do it! Just by importing your library in npm dependencies section (not **devDependencies**)
-with `npm install --save`. It will be loaded by electron during build phase and added to your final package. Then use
-your library by importing it in `main.ts` file. Quite simple, isn't it ?
+## Otros comandos
 
-## Unit Tests
 
-| Command  | Description                                                  |
-|:---------|:-------------------------------------------------------------|
-| ng test  | Run unit tests with karma, for components, views and modules |
-
-## E2E Testing
-
-E2E Test scripts can be found in `e2e` and `cypress` folder.
+| **Commandos**                         | **Descripción** |
+|:--------------------------------------|:----------------|
+| `npm run ng:build:dev`                |                 |
+| `npm run ng:build:web`                |                 |
+| `npm run ng:build:production`         |                 |
+| `npm run ng:build-angular:dev`        |                 |
+| `npm run ng:build-angular:web`        |                 |
+| `npm run ng:build-angular:production` |                 |
+| `npm run ng:serve:dev`                |                 |
+| `npm run ng:serve:web`                |                 |
+| `npm run ng:serve:production`         |                 |
+| `npm run ng:serve-angular:dev`        |                 |
+| `npm run ng:serve-angular:web`        |                 |
+| `npm run ng:serve-angular:production` |                 |
 
 ## Server e2e
 
-| Command                 | Description                                 |
-|:------------------------|:--------------------------------------------|
-| `npm run ng:server`     | Start the server                            |
-| `npm run cypress:open`  | Open cypress app and configure the commands |
-| `npm run cypress:run`   | Run tests of cypress (BUG)                  |
 
-Note: To make it work behind a proxy, you can add this proxy exception in your terminal
-`export {no_proxy,NO_PROXY}="127.0.0.1,localhost"`
+| **Commandos**          | **Descripción**                                                                 |
+|:-----------------------|:--------------------------------------------------------------------------------|
+| `npm run cypress:open` | Abre la aplicación con cypress app y configura los comandos y pruebas           |
+| `npm run cypress:run`  | Ejecuta las pruebas sobre el servidor (solo son visibles por linea de comandos) |
 
-### Coverage
+### Cobertura de navegadores
 
 ```bash
 npx browserslist
@@ -104,10 +95,8 @@ npx browserslist --coverage
 
 These browsers account for 86.79% of all users globally
 
-## Currently, runs with:
+## Versión actual de las dependencias
 
-- Angular v12.2.10
-- Electron v12.2.2
-- Electron Builder v22.10.5
-
-[//]: #
+- Angular v12.5.0
+- Electron v16.2.6
+- Electron Builder v23.0.3

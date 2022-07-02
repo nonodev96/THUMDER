@@ -196,16 +196,32 @@
     <table class="table">
       <tr>
         <th>{{ 'ADDRESS' | translate }}</th>
+        <th>{{ 'CODE' | translate }}</th>
         <th>{{ 'TEXT' | translate }}</th>
         <th>{{ 'INSTRUCTION' | translate }}</th>
-        <th>{{ 'CODE' | translate }}</th>
       </tr>
 
-      <tr *ngFor="let item of testCodeResponse">
+      <tr *ngFor="let item of testCodeResponse_instructions">
         <td>{{item.address}}</td>
+        <td>{{item.code}}</td>
         <td>{{item.text}}</td>
         <td>{{item.instruction}}</td>
-        <td>{{item.code}}</td>
+      </tr>
+    </table>
+
+    <table class="table">
+      <tr>
+        <th>{{ 'ADDRESS' | translate }}</th>
+        <th>{{ 'HEX VALUE' | translate }}</th>
+        <th>{{ 'TEXT' | translate }}</th>
+        <th>{{ 'DIRECTIVE' | translate }}</th>
+      </tr>
+
+      <tr *ngFor="let item of testCodeResponse_directives">
+        <td>{{item.address}}</td>
+        <td>{{item.hexValue}}</td>
+        <td>{{item.text}}</td>
+        <td>{{item.directive}}</td>
       </tr>
     </table>
 

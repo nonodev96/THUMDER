@@ -551,17 +551,22 @@ export type TypeStage =
   | "faddEX_7" | "fmultEX_7" | "fdivEX_7";
 
 export type TypeDirectiveData = {
-  address: TypeAddress;      // 0x00000000
-  directive: TypeDirective;
+  address: TypeAddress;     // 0x00000000
+  hexValue: string;         // 0x00000000
   text: string;
-  hexValue: string;     // 0x00000000
+  directive: TypeDirective;
 };
 
 export type TypeInstructionsData = {
-  address: TypeAddress;      // 0x00000000
+  address: TypeAddress; // 0x00000000
+  code: string;         // 0x00000000
   text: string;
   instruction: string;
-  code: string;         // 0x00000000
+};
+
+export type TypeCodeResponse = {
+  machineDirectives: TypeDirectiveData[],
+  machineInstructions: TypeInstructionsData[],
 };
 
 export type TypeInstructionsData_Table = TypeInstructionsData & {
