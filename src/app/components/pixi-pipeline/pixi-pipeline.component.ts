@@ -15,7 +15,7 @@ import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline"
 @Component({
   selector:    "THUMDER-pixi-pipeline",
   templateUrl: "./pixi-pipeline.component.html",
-  styleUrls:   ["./pixi-pipeline.component.scss"]
+  styleUrls:   [ "./pixi-pipeline.component.scss" ]
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -72,7 +72,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepSimulationSubscription.unsubscribe();
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener("window:resize", [ "$event" ])
   public onResize(event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -87,6 +87,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getInstructionDataPipelineItem(item: TypeCycleCell): TypeInstructionPipelineRepresentation {
+    if (item.address === undefined || item.address === "") return { text: "", draw: item.draw };
     const machineInstruction = this.machine.getCode(item.address);
     return {
       text: machineInstruction.instruction,
@@ -96,6 +97,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private getInstructionDataPipeline(items: TypeCycleCellUnit[]): TypeInstructionPipelineFloatingRepresentation[] {
     return items.map((item) => {
+      if (item.address === undefined || item.address === "") return { unit: item.unit, text: "", draw: item.draw };
       const machineInstruction = this.machine.getCode(item.address);
       return {
         unit: item.unit,

@@ -11,14 +11,14 @@ import {
   TypeMemoryToUpdate,
   TypeRegister,
   TypeRegisterToUpdate,
-  TypeSimulationInitRequest, TypeAddress
+  TypeSimulationInitRequest, TypeAddress, TypeCodeResponse, TypeDirectiveData
 } from "../../Types";
 import { ElectronService } from "../../__core/services";
 
 @Component({
   selector:    "app-debug",
   templateUrl: "./debug-view.html",
-  styleUrls:   ["./debug-view.scss"]
+  styleUrls:   [ "./debug-view.scss" ]
 })
 export class DebugView implements OnInit, AfterViewInit {
 
@@ -56,7 +56,8 @@ export class DebugView implements OnInit, AfterViewInit {
     "TRAP   #0"
   ].join("\n");
 
-  public testCodeResponse: TypeInstructionsData[] = [];
+  public testCodeResponse_instructions: TypeInstructionsData[] = [];
+  public testCodeResponse_directives: TypeDirectiveData[] = [];
   i = 0;
 
   constructor(private toast: ToastrService,
@@ -67,13 +68,21 @@ export class DebugView implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.socketProviderConnect.socketIO.on("CodeResponse", (response) => {
-      const code = JSON.parse(response) as TypeInstructionsData[];
-      this.testCodeResponse = code.map((v) => {
+      const code = JSON.parse(response) as TypeCodeResponse;
+      this.testCodeResponse_instructions = code.machineInstructions.map((v) => {
         return {
           address:     v.address,
           code:        v.code,
           text:        v.text,
           instruction: v.instruction,
+        };
+      });
+      this.testCodeResponse_directives = code.machineDirectives.map((v) => {
+        return {
+          address:   v.address,
+          hexValue:  v.hexValue,
+          text:      v.text,
+          directive: v.directive,
         };
       });
     });
@@ -142,7 +151,7 @@ export class DebugView implements OnInit, AfterViewInit {
     pepe.key = Utils.uuidv4();
 
     const value = JSON.stringify({
-      items: [documents, pepe]
+      items: [ documents, pepe ]
     });
     localStorage.setItem("FileSystem", value);
   }
@@ -160,11 +169,11 @@ export class DebugView implements OnInit, AfterViewInit {
 
   async updateRegisterServer(typeRegister: TypeRegister, register: string, value: string): Promise<boolean> {
     try {
-      const payload = JSON.stringify([{
+      const payload = JSON.stringify([ {
         typeRegister:     typeRegister,
         register:         register,
         hexadecimalValue: value
-      }] as TypeRegisterToUpdate[]);
+      } ] as TypeRegisterToUpdate[]);
       this.socketProviderConnect.emitMessage("UpdateRegisterRequest", payload);
     } catch (error) {
       console.error(error);
@@ -175,11 +184,11 @@ export class DebugView implements OnInit, AfterViewInit {
 
   async updateMemoryServer(memoryTypeData: TypeData, memoryAddress: TypeAddress, memoryValue: string): Promise<boolean> {
     try {
-      const payload = JSON.stringify([{
+      const payload = JSON.stringify([ {
         typeData: memoryTypeData,
         address:  memoryAddress,
         value:    memoryValue
-      }] as TypeMemoryToUpdate[]);
+      } ] as TypeMemoryToUpdate[]);
       this.socketProviderConnect.emitMessage("UpdateMemoryRequest", payload);
     } catch (error) {
       console.error(error);

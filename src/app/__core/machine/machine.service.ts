@@ -230,7 +230,7 @@ export class MachineService {
         }
       };
       this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", JSON.stringify(payload), (response) => {
-        console.log(response);
+        // console.log(response);
         this.writeToLog(JSON.stringify(response))
       });
 
