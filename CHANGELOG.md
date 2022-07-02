@@ -1,3 +1,30 @@
+## <small>1.6.3 (2022-07-02)</small>
+
+* Update readme, wiki and fix code request test ([5dd294a](https://github.com/nonodev96/THUMDER/commit/5dd294a))
+
+
+
+## <small>1.6.2 (2022-06-28)</small>
+
+* Fix GitHub Actions with firebase ([7f6699f](https://github.com/nonodev96/THUMDER/commit/7f6699f))
+
+
+
+## <small>1.6.1 (2022-06-28)</small>
+
+* Fix electron BrowserWindow and modify calculator view ([3d3b639](https://github.com/nonodev96/THUMDER/commit/3d3b639))
+
+
+
+## 1.6.0 (2022-06-28)
+
+* Fix with drag and drop, new component card with docs and names in UML sequences changes ([a11d21a](https://github.com/nonodev96/THUMDER/commit/a11d21a))
+* Lazy loading with angular routing ([9208302](https://github.com/nonodev96/THUMDER/commit/9208302))
+* Minor refactor in MachineService, ElectronService, PixiTHUMDER_CycleClockDiagram and PixiTHUMDER_Pip ([03534a5](https://github.com/nonodev96/THUMDER/commit/03534a5))
+* PlantUML Gantt with all project with svg and pdf generator. ([df914a1](https://github.com/nonodev96/THUMDER/commit/df914a1))
+
+
+
 ## <small>1.3.9 (2022-03-31)</small>
 
 * fix files in file system storage (delete item) ([86b65fa](https://github.com/nonodev96/THUMDER/commit/86b65fa))
