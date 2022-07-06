@@ -18,9 +18,8 @@ export class SocketProviderConnectService {
 
   public socketIO: Socket;
 
-  constructor(
-    private translate: TranslateService,
-    private toast: ToastrService) {
+  constructor(private translate: TranslateService,
+              private toast: ToastrService) {
 
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
     const config: SocketIoConfig = CONFIG_WEBSOCKET;
@@ -28,7 +27,7 @@ export class SocketProviderConnectService {
     this.socketIO = new Socket(config);
 
     // When the client successfully connects.
-    this.socketIO.ioSocket.on("connect", () => {
+    this.socketIO.ioSocket.on("connect", async () => {
       this.connect$.next("Connect");
       const connect = this.socketIO.connect();
       this.socketID = this.socketIO.ioSocket.id;
@@ -39,42 +38,42 @@ export class SocketProviderConnectService {
       }
     });
     // When the client is in the process of connecting.
-    this.socketIO.ioSocket.on("connecting", () => {
+    this.socketIO.ioSocket.on("connecting", async () => {
       console.debug("WebSocket-connecting");
     });
     // When the client is disconnected.
-    this.socketIO.ioSocket.on("disconnect", () => {
+    this.socketIO.ioSocket.on("disconnect", async () => {
       this.connect$.next("Disconnect");
       console.debug("WebSocket-disconnect");
     });
     // When the connection to the server fails.
-    this.socketIO.ioSocket.on("connect_failed", (err) => {
+    this.socketIO.ioSocket.on("connect_failed", async (err) => {
       console.debug("WebSocket-connect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
     // An error event is sent from the server.
-    this.socketIO.ioSocket.on("error", (err) => {
+    this.socketIO.ioSocket.on("error", async (err) => {
       console.debug("WebSocket-error");
       SocketProviderConnectService.handleErrors(err);
     });
     // When the server sends a message using the send function.
     // When reconnection to the server is successful.
-    this.socketIO.ioSocket.on("reconnect", () => {
+    this.socketIO.ioSocket.on("reconnect", async () => {
       this.connect$.next("Connect");
       console.debug("WebSocket-reconnect");
     });
     // When the client is in the process of connecting.
-    this.socketIO.ioSocket.on("reconnecting", () => {
+    this.socketIO.ioSocket.on("reconnecting", async () => {
       console.debug("WebSocket-reconnecting");
     });
     // When the reconnection attempt fails.
-    this.socketIO.ioSocket.on("reconnect_failed", (err) => {
+    this.socketIO.ioSocket.on("reconnect_failed", async (err) => {
       console.debug("WebSocket-reconnect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
     this.socketIO.ioSocket.on("connect_error", async (err) => {
       console.debug("WebSocket-connect_error");
-      SocketProviderConnectService.handleErrors(err);
+      // SocketProviderConnectService.handleErrors(err);
       const title = await this.translate.get("TOAST.TITLE_SERVER_DOWN").toPromise();
       const message = await this.translate.get("TOAST.MESSAGE_SERVER_DOWN").toPromise();
       this.toast.warning(message, title, DEFAULT_CONFIG_TOAST);
@@ -92,14 +91,6 @@ export class SocketProviderConnectService {
     return this.connect$.asObservable();
   }
 
-  public publicMessageObservable() {
-    return this.publicMessage$.asObservable();
-  }
-
-  public privateMessageObservable() {
-    return this.privateMessage$.asObservable();
-  }
-
   public updateSocketURl() {
     this.socketIO.disconnect();
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
@@ -112,7 +103,7 @@ export class SocketProviderConnectService {
     this.socketIO.ioSocket.emit(event, payload, callback);
   }
 
-  private static handleErrors(err) {
-    // console.error(err);
+  private static handleErrors(err: any) {
+    console.error(err);
   }
 }

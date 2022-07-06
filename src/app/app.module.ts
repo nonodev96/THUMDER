@@ -3,17 +3,23 @@ import "../polyfills";
 
 import { NgModule, SecurityContext } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth, initializeAuth } from "@angular/fire/auth";
+import { initializeApp, provideFirebaseApp, /*getApp*/ } from '@angular/fire/app';
+import {
+  provideAuth, getAuth, /* initializeAuth, browserLocalPersistence, browserPopupRedirectResolver*/
+} from "@angular/fire/auth";
 import { provideStorage, getStorage } from "@angular/fire/storage";
-import { provideFirestore, getFirestore, initializeFirestore } from '@angular/fire/firestore';
-import { provideAnalytics, getAnalytics, initializeAnalytics } from '@angular/fire/analytics';
+import { provideFirestore, getFirestore, /*initializeFirestore*/ } from '@angular/fire/firestore';
+import { provideAnalytics, getAnalytics, /*initializeAnalytics*/ } from '@angular/fire/analytics';
 import { provideDatabase, getDatabase } from "@angular/fire/database";
 import { provideFunctions, getFunctions } from "@angular/fire/functions";
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
+import { providePerformance, getPerformance } from '@angular/fire/performance';
+import { provideRemoteConfig, getRemoteConfig } from '@angular/fire/remote-config';
 
 import { MatTableModule } from "@angular/material/table";
 import { MatSortModule } from "@angular/material/sort";
 import { ScrollingModule } from "@angular/cdk/scrolling";
+import { DragDropModule } from "@angular/cdk/drag-drop";
 
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
@@ -45,6 +51,7 @@ import { GridsterModule } from 'angular-gridster2';
 
 // Services
 import { UtilityService } from "./__core/services/utility/utility.service";
+import { ElectronService } from "./__core/services";
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
@@ -53,6 +60,7 @@ import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 // MODULES
 import { ComponentsModule } from "./components/components.module";
 import { AppRoutingModule } from "./app-routing.module";
+
 import { CoreModule } from "./__core/core.module";
 
 // APP
@@ -91,26 +99,25 @@ import { RegistersView } from "./views/_auth/registers/registers.view";
 import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 
 // no _layouts views
-import { AboutView } from "./views/_landing/about/about.view";
-import { LandingView } from "./views/_landing/landing/landing.view";
 import { DebugView } from "./views/debug/debug-view";
+// import { AboutView } from "./views/_landing/about/about.view";
+// import { LandingView } from "./views/_landing/landing/landing.view";
 
 // account views
-import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
-import { LoginView } from "./views/_account/login/login.view";
-import { RegisterView } from "./views/_account/register/register.view";
+// import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
+// import { LoginView } from "./views/_account/login/login.view";
+// import { RegisterView } from "./views/_account/register/register.view";
+
 
 // Index
 import { IndexView } from "./views/_index/index.view";
 // AoT requires an exported function for factories
 
+// PIXI
 import * as PIXI from "pixi.js";
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.SORTABLE_CHILDREN = true;
-
-import { ElectronService } from "./__core/services";
-import { DragDropModule } from "@angular/cdk/drag-drop";
 
 const isServer = ElectronService.isServer;
 const domain = "localhost";
@@ -266,7 +273,7 @@ export function markedOptionsFactory(): MarkedOptions {
       loader: {
         provide:    TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps:       [HttpClient]
+        deps:       [ HttpClient ]
       }
     }),
     // MonacoEditorModule,
@@ -293,13 +300,9 @@ export function markedOptionsFactory(): MarkedOptions {
     provideStorage(() => getStorage()),
     provideDatabase(() => getDatabase()),
     provideFunctions(() => getFunctions()),
-    // provideFirebaseApp(() => app),
-    // provideAuth(() => auth),
-    // provideAnalytics(() => analytics),
-    // provideFirestore(() => firebase_firestore),
-    // provideStorage(() => firebase_storage),
-    // provideDatabase(() => firebase_database),
-    // provideFunctions(() => firebase_functions),
+    provideMessaging(() => getMessaging()),
+    providePerformance(() => getPerformance()),
+    provideRemoteConfig(() => getRemoteConfig()),
     MatSortModule,
     MatTableModule,
     ScrollingModule,
@@ -315,7 +318,7 @@ export function markedOptionsFactory(): MarkedOptions {
     AuthGuard,
     NoAuthGuard,
     UtilityService,
-    CookieService
+    CookieService,
     /*
         MachineService,
         {

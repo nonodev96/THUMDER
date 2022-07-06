@@ -1,18 +1,15 @@
-import { Component, OnInit, QueryList, Renderer2, ViewChild, ViewChildren } from "@angular/core";
-import { Router } from "@angular/router";
-import { MarkdownComponent, MarkdownService } from "ngx-markdown";
-import { ViewportScroller } from "@angular/common";
-import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
+import { Component, OnInit, AfterViewInit, QueryList, ViewChildren } from "@angular/core";
 import { Globals } from "../../../__core/services/globals/globals.service";
 import { CdkDrag, CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { TypeIdTitleFile } from "../../../Types";
+// import { fetchAndActivate, getRemoteConfig, getValue } from "@angular/fire/remote-config";
 
 @Component({
   selector:    "view-docs",
   templateUrl: "./docs.view.html",
   styleUrls:   []
 })
-export class DocsView implements OnInit {
+export class DocsView implements OnInit, AfterViewInit {
   public main_list: TypeIdTitleFile[] = [ {
     id:    "README",
     title: "README",
@@ -78,6 +75,7 @@ export class DocsView implements OnInit {
     title: "Multiview",
     file:  "assets/wiki/11.Multiview.md"
   } ];
+  // public docsEnabled: string = "";
 
   @ViewChildren(CdkDrag)
   public draggable_list: QueryList<CdkDrag>;
@@ -86,6 +84,19 @@ export class DocsView implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
+    // const analytics = getAnalytics();
+    // const remoteConfig = getRemoteConfig();
+    // fetchAndActivate(remoteConfig)
+    //   .then((s) => {
+    //     this.docsEnabled = JSON.parse(getValue(remoteConfig, "docs").asString()) as string;
+    //     console.log("activar?", this.docsEnabled)
+    //   })
+    //   .catch((err) => {
+    //     // ...
+    //   });
   }
 
   public MyDrop($event: CdkDragDrop<any[]>): void {

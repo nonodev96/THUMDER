@@ -86,10 +86,14 @@ export class ElectronService {
   // public get nativeImage(): Electron.nativeImage {
   //   return this.electron ? this.electron.nativeImage : null;
   // }
-
-  public get screen(): Electron.Screen {
-    return this.electron ? this.electron.screen : null;
-  }
+  //
+  // public get screen(): Electron.Screen {
+  //   return this.electron.screen ? this.electron.screen : null;
+  // }
+  //
+  // public getAllDisplays(): Electron.Display[] {
+  //   return this.electron.screen.getAllDisplays();
+  // }
 
   public get shell(): Electron.Shell {
     return this.electron ? this.electron.shell : null;
@@ -107,7 +111,7 @@ export class ElectronService {
       "isWindows":     ElectronService.isWindows,
       "isLinux":       ElectronService.isLinux,
       "isX86":         ElectronService.isX86,
-      "isX64":         ElectronService.isX64
+      "isX64":         ElectronService.isX64,
     };
   }
 }

@@ -123,7 +123,7 @@ export class DebugView implements OnInit, AfterViewInit {
   }
 
   public async wait_resolve() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       setTimeout(resolve, 2000);
     });
   }
@@ -292,7 +292,4 @@ export class DebugView implements OnInit, AfterViewInit {
     return Promise.resolve();
   }
 
-  tr(value: string): TypeRegister {
-    return value as TypeRegister;
-  }
 }

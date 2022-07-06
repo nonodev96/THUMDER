@@ -4,26 +4,28 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import {
   Firestore,
-  query, where,
+  query,
+  where,
   doc,
-  getDoc,
+  // getDoc,
   getDocs,
   updateDoc,
   setDoc,
   deleteDoc,
   collection,
-  onSnapshot,
+  // onSnapshot,
+  // onSnapshotsInSync,
   // for valueChanges and snapShotChanges
-  docSnapshots,
+  // docSnapshots,
   collectionChanges,
   collectionData,
-  docData,
+  // docData,
   Query,
   DocumentData,
   DocumentChange,
-  DocumentSnapshot,
+  // DocumentSnapshot,
   CollectionReference,
-  DocumentReference,
+  // DocumentReference,
   QuerySnapshot
 } from "@angular/fire/firestore";
 

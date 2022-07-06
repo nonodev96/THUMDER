@@ -22,6 +22,8 @@ import {
   sendEmailVerification, sendPasswordResetEmail,
   createUserWithEmailAndPassword,
   signInAnonymously, signInWithEmailAndPassword, signInWithPopup,
+  // getAuth, setPersistence,
+  // browserLocalPersistence, browserSessionPersistence, inMemoryPersistence
 } from "@angular/fire/auth";
 import { UserCredential } from "@angular/fire/auth";
 import { FirebaseError } from "@angular/fire/app"
@@ -30,7 +32,6 @@ import { FirebaseError } from "@angular/fire/app"
 @Injectable({
   providedIn: "root"
 })
-
 export class AuthService {
   public isLogging$: Subject<boolean> = new Subject<boolean>();
 
@@ -59,6 +60,10 @@ export class AuthService {
           localStorage.setItem("user", null);
           // JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(false);
+          this.ngZone.run(() => {
+            this.router.navigate([ "/account/login" ]).then(() => {
+            });
+          });
         }
       })
     );
@@ -107,7 +112,7 @@ export class AuthService {
   public async SendVerificationMail(userCredential: UserCredential): Promise<void> {
     try {
       await sendEmailVerification(userCredential.user)
-      await this.router.navigate(["/"]);
+      await this.router.navigate([ "/" ]);
     } catch (error) {
       console.error(error);
       this.displayError(error);
@@ -134,22 +139,22 @@ export class AuthService {
   }
 
   // Sign in with Google
-  async GoogleAuth(): Promise<void> {
+  public async GoogleAuth(): Promise<void> {
     return this.AuthLogin(new GoogleAuthProvider());
   }
 
   // Sign in with Google
-  async GithubAuth(): Promise<void> {
+  public async GithubAuth(): Promise<void> {
     return this.AuthLogin(new GithubAuthProvider());
   }
 
   // Auth logic to run auth providers
-  async AuthLoginAnonymously(): Promise<void> {
+  public async AuthLoginAnonymously(): Promise<void> {
     try {
       const userCredential = await signInAnonymously(this.afAuth);
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate(["/"]);
+        this.router.navigate([ "/" ]);
       });
     } catch (error) {
       console.error(error);
@@ -158,13 +163,12 @@ export class AuthService {
     return Promise.resolve();
   }
 
-  // Auth logic to run auth providers
   private async AuthLogin(provider): Promise<void> {
     try {
       const userCredential = await signInWithPopup(this.afAuth, provider);
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate(["/"]);
+        this.router.navigate([ "/" ]);
       });
     } catch (error) {
       console.error(error);
@@ -177,10 +181,11 @@ export class AuthService {
     try {
       await this.afAuth.signOut();
       localStorage.removeItem("user");
+      localStorage.removeItem("UserCredential");
       for (const key of Object.keys(localStorage)) {
         localStorage.removeItem(key);
       }
-      await this.router.navigate(["/account/login"]);
+      await this.router.navigate([ "/account/login" ]);
     } catch (error) {
       console.error(error);
       this.displayError(error);
@@ -197,7 +202,7 @@ export class AuthService {
         // console.debug("getRedirectResult", userCredential);
         await this.SetUserData(userCredential);
         this.ngZone.run(() => {
-          this.router.navigate(["/"]);
+          this.router.navigate([ "/" ]);
         });
       }
       return Promise.resolve(true);
@@ -206,11 +211,7 @@ export class AuthService {
     }
   }
 
-  /* Setting up user data when sign in with username/password,
-  sign up with username/password and sign in with social auth
-  provider in Firestore database using AngularFirestore + AngularFirestoreDocument service */
-
-  SetUserData(userCredential: UserCredential) {
+  private SetUserData(userCredential: UserCredential) {
     const userRef = doc(this.afs, `users/${userCredential.user.uid}`);
     const userData: InterfaceUser = {
       uid:           userCredential.user.uid,
@@ -232,8 +233,4 @@ export class AuthService {
     this.toast.error(error_message, error_title, DEFAULT_CONFIG_TOAST);
   }
 
-  public async setPersistence(persistence: boolean): Promise<void> {
-    // const type: Persistence = persistence ? browserSessionPersistence : inMemoryPersistence;
-    // await setPersistence(this.auth, type);
-  }
 }

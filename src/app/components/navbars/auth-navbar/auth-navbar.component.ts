@@ -16,7 +16,7 @@ import { AppConfig } from "../../../../environments/_environment";
 export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);
   public readonly isDEV = AppConfig.environment === "DEV";
-  public navbarOpen = false;
+
   public isRunning = false;
   public colorWebsocketStatus: string = "orange";
   public isWebsocketStatusConnect: boolean = false;
@@ -52,11 +52,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isRunningSubscription.unsubscribe();
   }
 
-  setNavbarOpen(): void {
-    this.navbarOpen = !this.navbarOpen;
-  }
-
-  async togglePlayPause(): Promise<void> {
+  public async togglePlayPause(): Promise<void> {
     if (this.machine.isRunning === false) {
       await this.machine.resume();
     } else {
@@ -64,43 +60,35 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  async resetConnection(): Promise<void> {
+  public async resetConnection(): Promise<void> {
     window.dispatchEvent(new Event("resize"));
     this.machine.resetConnection();
     return Promise.resolve();
   }
 
-  async reset(): Promise<void> {
+  public async reset(): Promise<void> {
     await this.machine.reset();
     return Promise.resolve();
   }
 
-  async play(): Promise<void> {
-    await this.machine.play();
-    return Promise.resolve();
-  }
-
-  async nextStep(): Promise<void> {
+  public async nextStep(): Promise<void> {
     await this.machine.nextStep();
     return Promise.resolve();
   }
 
-  async end(): Promise<void> {
+  public async end(): Promise<void> {
     await this.machine.end();
     return Promise.resolve();
   }
 
-  async debug(): Promise<void> {
+  public async debug(): Promise<void> {
     console.log(this.machine.getAllStatusMachine());
     return Promise.resolve();
   }
 
-  async goToPage($event: MouseEvent, menu: PublicRoutes): Promise<boolean> {
+  public async goToPage($event: MouseEvent, menu: PublicRoutes): Promise<boolean> {
     const data = await this.router.navigateByUrl(menu.routerLink);
     return Promise.resolve(data);
   }
 
-  toggleCollapsed(): void {
-
-  }
 }

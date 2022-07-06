@@ -4,7 +4,7 @@ import { GridsterConfig, GridsterItem } from "angular-gridster2";
 @Component({
   selector:    'app-grid-view',
   templateUrl: './grid-view.component.html',
-  styleUrls:   ['./grid-view.component.scss']
+  styleUrls:   [ './grid-view.component.scss' ]
 })
 export class GridViewComponent implements OnInit {
   options: GridsterConfig;
@@ -39,19 +39,7 @@ export class GridViewComponent implements OnInit {
     ];
   }
 
-  static itemChange(item, itemComponent) {
-    console.info('itemChanged', item, itemComponent);
-  }
-
-  static itemResize(item, itemComponent) {
-    console.info('itemResized', item, itemComponent);
-  }
-
-  changedOptions() {
-    this.options.api.optionsChanged();
-  }
-
-  addItem() {
+  public addItem() {
     this.dashboard.push({
         dragEnabled:   true,
         resizeEnabled: true,
@@ -64,9 +52,18 @@ export class GridViewComponent implements OnInit {
     );
   }
 
-  removeItem($event: MouseEvent | TouchEvent, item): void {
+  public removeItem($event: MouseEvent | TouchEvent, item): void {
     $event.preventDefault();
     $event.stopPropagation();
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
   }
+
+  static itemChange(item, itemComponent) {
+    console.info('itemChanged', item, itemComponent);
+  }
+
+  static itemResize(item, itemComponent) {
+    console.info('itemResized', item, itemComponent);
+  }
+
 }

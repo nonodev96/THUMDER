@@ -30,29 +30,6 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" data-accordion="false" role="menu">
 
-        <!--
-                <ng-container *ngIf="authService.isLoggedIn">
-                  <li role="menuitem" class="nav-header">Auth</li>
-                  <li role="menuitem" class="nav-item has-treeview">
-                    <a class="nav-link">
-                      <i class="nav-icon fas fa-book"></i>
-                      <p id="ComponentsID">
-                        Components
-                        <i class="fas fa-angle-left right"></i>
-                      </p>
-                    </a>
-                    <ul class="nav nav-treeview" role="menu">
-                      <li *ngFor="let menu of AUTH_ROUTES_ASIDE;" class="nav-item" role="menuitem">
-                        <a class="nav-link" (click)="goToPage($event, menu)">
-                          <i class="far fa-circle nav-icon"></i>
-                          <p>{{ 'NAVIGATION.' + menu.lang | translate }}</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                </ng-container>
-        -->
-
         <ng-container *ngIf="authService.isLoggedIn">
           <li role="menuitem" class="nav-header">Machine</li>
           <li class="nav-item">
@@ -170,52 +147,8 @@
 
         </ng-container>
 
-
-        <!--
-                <ng-container *ngIf="!authService.isLoggedIn">
-                  <li role="menuitem" class="nav-header">Externs</li>
-                  <li role="menuitem" class="nav-item has-treeview">
-                    <a class="nav-link">
-                      <i class="nav-icon fas fa-book"></i>
-                      <p>Pages
-                        <i class="fas fa-angle-left right"></i>
-                      </p>
-                    </a>
-                    <ul class="nav nav-treeview" role="menu">
-                      <li role="menuitem" class="nav-item">
-                        <a class="nav-link" [routerLink]="['/account/login']">
-                          <i class="far fa-circle nav-icon"></i>
-                          <p>Login</p>
-                        </a>
-                      </li>
-                      <li role="menuitem" class="nav-item">
-                        <a class="nav-link" [routerLink]="['/register']">
-                          <i class="far fa-circle nav-icon"></i>
-                          <p>Register</p>
-                        </a>
-                      </li>
-                      <li role="menuitem" class="nav-item">
-                        <a class="nav-link" [routerLink]="['/forgot-password']">
-                          <i class="far fa-circle nav-icon"></i>
-                          <p>Forgot password</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                </ng-container>
-        -->
-
         <ng-container *ngIf="authService.isLoggedIn">
           <li class="nav-header">{{ 'ACCOUNT.ACCOUNT' | translate }}</li>
-
-          <!--
-                    <li class="nav-item">
-                      <a class="nav-link" [routerLink]="'/auth/profile'">
-                        <i class="nav-icon fas fa-user"></i>
-                        <p>{{ 'ACCOUNT.PROFILE' | translate }}</p>
-                      </a>
-                    </li>
-          -->
 
           <li class="nav-item">
             <a class="nav-link" (click)="authService.SignOut()">

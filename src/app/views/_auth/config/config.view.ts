@@ -169,8 +169,4 @@ export class ConfigView implements OnInit, AfterViewInit {
   public updateTimeSimulation(target: EventTargetInput | any): void {
     this.timeSimulationConfiguration = parseInt(target.value.toString());
   }
-
-  public updateMultiviewConfig(_target: EventTarget | any): void {
-
-  }
 }

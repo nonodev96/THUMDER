@@ -3,10 +3,14 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { PageNotFoundComponent } from "./__shared/components";
 
+import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
+import { GridViewComponent } from "./views/_auth/_grid_view/grid-view.component";
+import { LoggerView } from "./views/_auth/logger/logger.view";
+
 // _layouts
 import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
 import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
-import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
+// import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
 
 // components
 import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
@@ -31,20 +35,17 @@ import { StatisticsView } from "./views/_auth/statistics/statistics.view";
 import { DebugView } from "./views/debug/debug-view";
 
 import { IndexView } from "./views/_index/index.view";
-import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
-import { LoginView } from "./views/_account/login/login.view";
-import { RegisterView } from "./views/_account/register/register.view";
+// import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
+// import { LoginView } from "./views/_account/login/login.view";
+// import { RegisterView } from "./views/_account/register/register.view";
 
 // _landing views
-import { LandingView } from "./views/_landing/landing/landing.view";
-import { AboutView } from "./views/_landing/about/about.view";
+// import { LandingView } from "./views/_landing/landing/landing.view";
+// import { AboutView } from "./views/_landing/about/about.view";
 
 // Guards
 import { AuthGuard } from "./__shared/guard/auth.guard";
-import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
-import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
-import { LoggerView } from "./views/_auth/logger/logger.view";
-import { GridViewComponent } from "./views/_auth/_grid_view/grid-view.component";
+// import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
 
 
 const routes: Routes = [
