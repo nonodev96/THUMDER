@@ -156,7 +156,7 @@ export class FileSystemService {
   private async setList_FileItems(items: THUMDER_FileItem[]): Promise<void> {
     // console.log({items: items})
     for (const item of items) {
-      const { pathKeys, path, isDirectory, $key }: THUMDER_FileItem = item;
+      const { pathKeys, path, isDirectory }: THUMDER_FileItem = item;
       const thumderFileItem = new THUMDER_FileItem(path, isDirectory, pathKeys);
       const newItem = Object.assign({}, thumderFileItem, { ...item });
       // newItem.$key = $key;

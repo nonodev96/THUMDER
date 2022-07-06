@@ -124,10 +124,6 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     ]);
   }
 
-  public changeHeight(): void {
-    this.monacoEditorComponent.height = 1000;
-  }
-
   public async closeAndSave(): Promise<void> {
     const editorFile = await this.monacoEditorComponent.getEditorFile();
 

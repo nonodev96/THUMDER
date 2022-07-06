@@ -96,16 +96,6 @@ export class MachineService {
   isComplete: boolean = false;
   isBreakpoint: boolean = false;
 
-
-  // 20 de septiembre: Me quiero morir, este código es una locura y no sé hacerlo bonito y entendible por que no
-  // hay forma con js suerte Nono del futuro, que te sea leve 👍
-  // 28 de septiembre: Nono del pasado eres un cabron
-  // 05 de octubre: Nono del pasado sigues siendo un cabron
-  // 15 de octubre: Nono, lo has mejorado un poquito, pero sigues siendo un cabron
-  // 22 de octubre: Nono tienes que poner ahora las tags del debugger 😂
-  // 07 de noviembre: Nono haz lo que puedas cuando puedas :3
-  // 21 de noviembre: Nono haz las tags y el guardar ficheros pls
-  // https://stackblitz.com/edit/angular-play-pause-timer
   constructor(private store: StorageService,
               private socketProviderConnect: SocketProviderConnectService,
               private translate: TranslateService,
@@ -331,11 +321,6 @@ export class MachineService {
   }
 
   // Navbar
-
-  public async play(): Promise<void> {
-    return Promise.resolve();
-  }
-
   public async reset(): Promise<void> {
     await this.resetMachineStatus();
     return Promise.resolve();

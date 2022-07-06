@@ -29,10 +29,10 @@ export type TypeArrowDirection = {
   }
 };
 
-export type TypeCellPosition = {
-  instructionPosition: number,
-  stepPosition: number
-};
+// export type TypeCellPosition = {
+//   instructionPosition: number,
+//   stepPosition: number
+// };
 
 export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 

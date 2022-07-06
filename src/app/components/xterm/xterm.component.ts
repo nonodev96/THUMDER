@@ -44,17 +44,17 @@ export class XtermComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const currentValue = changes.data.currentValue;
-    if (currentValue) {
-      for (let i = 1; i < this.terminal.rows; i++) {
-        this.terminal.scrollToLine(i);
-        this.terminal.selectLines(i - 1, i);
-        this.terminal.clearSelection();
-      }
-      this.terminal.write(currentValue);
-    }
-  }
+  // ngOnChanges(changes: SimpleChanges): void {
+  //   const currentValue = changes.data.currentValue;
+  //   if (currentValue) {
+  //     for (let i = 1; i < this.terminal.rows; i++) {
+  //       this.terminal.scrollToLine(i);
+  //       this.terminal.selectLines(i - 1, i);
+  //       this.terminal.clearSelection();
+  //     }
+  //     this.terminal.write(currentValue);
+  //   }
+  // }
 
   ngAfterViewInit(): void {
     this.terminal.open(this.terminalDiv.nativeElement);

@@ -64,30 +64,6 @@ export namespace Utils {
     });
   }
 
-  export function initSynchronousFactory() {
-    return () => {
-
-    };
-  }
-
-
-  export function initLongRunningFactory() {
-    return async () => {
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, 5000);
-      });
-    };
-  }
-
-  export function initWithDependencyFactory(service: any) {
-    return () => {
-
-      return service;
-    };
-  }
-
   export function isNullOrUndefined(object: any): boolean {
     return object == null || false;
   }

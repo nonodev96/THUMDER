@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
@@ -24,7 +24,7 @@ declare const AppAdminLTE: {
 
 import enMessages from 'devextreme/localization/messages/en.json';
 import esMessages from 'devextreme/localization/messages/es.json';
-import { locale, loadMessages, formatMessage } from 'devextreme/localization';
+import { locale, loadMessages } from 'devextreme/localization';
 
 @Component({
   selector:    "app-root",
@@ -61,7 +61,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         window.jQuery("body").Layout();
         const cards: any = window.jQuery(".card");
         cards.on("expanded.lte.cardwidget", () => {
-          const resize = window.dispatchEvent(new Event("resize"));
+          // const resize = window.dispatchEvent(new Event("resize"));
         });
       }
     });
@@ -115,11 +115,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.noCookieLawSubscription.unsubscribe();
   }
 
-  public getLang() {
-    this.lang = this.storageService.getItem("lang");
-    return this.lang;
-  }
-
   public setLang(lang: TypeLang) {
     this.storageService.setItem("lang", lang);
     this.lang = lang;
@@ -147,25 +142,25 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  private updateDevExpressLocation(lang: TypeLang) {
-    if (lang === "en") {
-      loadMessages(enMessages);
-      locale("en")
-    } else if (lang === "sp") {
-      const esMessagesDefault = {
-        es: {
-          "dxFileManager-commandDelete":                        "Borrar",
-          "dxFileManager-rootDirectoryName":                    "Archivos",
-          "dxFileManager-commandRename":                        "Rename",
-          "dxFileManager-listDetailsColumnCaptionName":         "Nombre",
-          "dxFileManager-listDetailsColumnCaptionDateModified": "Fecha modificada",
-        }
-      };
-      const op1 = { ...esMessages.es };
-      const op2 = { ...esMessagesDefault.es }
-      const copy = { ...op1, ...op2 };
-      loadMessages(copy);
-      locale("es");
-    }
-  }
+  // private updateDevExpressLocation(lang: TypeLang) {
+  //   if (lang === "en") {
+  //     loadMessages(enMessages);
+  //     locale("en")
+  //   } else if (lang === "sp") {
+  //     const esMessagesDefault = {
+  //       es: {
+  //         "dxFileManager-commandDelete":                        "Borrar",
+  //         "dxFileManager-rootDirectoryName":                    "Archivos",
+  //         "dxFileManager-commandRename":                        "Rename",
+  //         "dxFileManager-listDetailsColumnCaptionName":         "Nombre",
+  //         "dxFileManager-listDetailsColumnCaptionDateModified": "Fecha modificada",
+  //       }
+  //     };
+  //     const op1 = { ...esMessages.es };
+  //     const op2 = { ...esMessagesDefault.es }
+  //     const copy = { ...op1, ...op2 };
+  //     loadMessages(copy);
+  //     locale("es");
+  //   }
+  // }
 }

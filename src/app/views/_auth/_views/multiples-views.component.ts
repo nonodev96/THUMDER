@@ -1,11 +1,6 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { Component, OnInit, AfterViewInit, OnDestroy, QueryList, ViewChildren } from "@angular/core";
 import { TypeMultiviewConfiguration } from "../../../Types";
-import {
-  CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
-  CdkDrag
-} from "@angular/cdk/drag-drop";
+import { CdkDrag } from "@angular/cdk/drag-drop";
 import { Utils } from "../../../Utils";
 import { Globals } from "../../../__core/services/globals/globals.service";
 import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";

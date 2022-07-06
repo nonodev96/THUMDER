@@ -18,7 +18,7 @@
             <input type="text" class="form-control"
                    [class.is-valid]="registerForm.get('first_name').valid"
                    [class.is-invalid]="!registerForm.get('first_name').valid"
-                   placeholder="Full name" formControlName="first_name" #userName>
+                   placeholder="Full name" formControlName="first_name">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-user"></span>
@@ -73,8 +73,7 @@
             <input type="password" class="form-control"
                    [class.is-valid]="registerForm.get('confirm_password').valid"
                    [class.is-invalid]="!registerForm.get('confirm_password').valid"
-                   placeholder="Retype password" formControlName="confirm_password"
-                   #userConfirmPassword>
+                   placeholder="Retype password" formControlName="confirm_password">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>

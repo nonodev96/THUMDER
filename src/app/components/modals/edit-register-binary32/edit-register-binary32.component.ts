@@ -1,4 +1,4 @@
-import { OnInit, Component, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeRegister, TypeRegisterToEdit } from "../../../Types";
 import {

@@ -9,7 +9,6 @@ import { AppConfig } from "../../../environments/_environment";
   templateUrl: "./index.view.html"
 })
 export class IndexView implements OnInit, AfterViewInit {
-  public readonly PRIVATE_ROUTES = PUBLIC_ROUTES;
   public readonly PRIVATE_AUTH_ROUTES = AUTH_ROUTES;
   public readonly AppConfig = AppConfig;
 
@@ -26,8 +25,4 @@ export class IndexView implements OnInit, AfterViewInit {
     trees.Treeview("toggleRow");
   }
 
-  async onItemSelected($event: MouseEvent, menu: any) {
-    $event.preventDefault();
-    await this.router.navigateByUrl(menu.routerLink);
-  }
 }

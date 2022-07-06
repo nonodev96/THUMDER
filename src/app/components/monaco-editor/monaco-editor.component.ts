@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import * as monaco from "monaco-editor";
 import { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "../../Types";
+import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
 import MonacoConfig from "../../../monaco-config";
+import * as monaco from "monaco-editor";
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import EditorOption = monaco.editor.EditorOption;
-import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
 
 @Component({
   selector:    "THUMDER-monaco-editor",
@@ -30,7 +30,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private editor: IStandaloneCodeEditor;
   private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
-  private iteratorLine: number = 1;
 
   public initialized$: Subject<boolean> = new Subject<boolean>();
   public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();
@@ -122,11 +121,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     const decorations = this.editor.getModel().getLineDecorations(line);
     const decorations_target_id = decorations.map(v => v.id);
     if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
-      // remove the tag
       this.breakpoints[line] = false;
       this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
     } else {
-      // add the tag
       this.breakpoints[line] = true;
       const newDecoration = {
         range:   new monaco.Range(line, 0, line, 0),

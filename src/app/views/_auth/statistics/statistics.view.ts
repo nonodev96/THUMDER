@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { TypeDataStatistics } from "../../../Types";
 import { MachineService } from "../../../__core/machine/machine.service";

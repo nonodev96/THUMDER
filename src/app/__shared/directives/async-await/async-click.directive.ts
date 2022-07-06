@@ -41,7 +41,7 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(/*changes: SimpleChanges*/) {
     const vector = this.defaultButtonClass.split(" ")
     this._elementRef.nativeElement.classList.add(
       ...vector
