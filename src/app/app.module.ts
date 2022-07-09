@@ -9,7 +9,13 @@ import {
 } from "@angular/fire/auth";
 import { provideStorage, getStorage } from "@angular/fire/storage";
 import { provideFirestore, getFirestore, /*initializeFirestore*/ } from '@angular/fire/firestore';
-import { provideAnalytics, getAnalytics, /*initializeAnalytics*/ } from '@angular/fire/analytics';
+import {
+  provideAnalytics,
+  getAnalytics,
+  UserTrackingService,
+  ScreenTrackingService,
+  /*initializeAnalytics*/
+} from '@angular/fire/analytics';
 import { provideDatabase, getDatabase } from "@angular/fire/database";
 import { provideFunctions, getFunctions } from "@angular/fire/functions";
 import { provideMessaging, getMessaging } from '@angular/fire/messaging';
@@ -328,6 +334,8 @@ export function markedOptionsFactory(): MarkedOptions {
           multi: true
         }
      */
+    UserTrackingService,
+    ScreenTrackingService
   ],
   exports:      [],
   bootstrap:    [

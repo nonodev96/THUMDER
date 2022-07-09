@@ -16,7 +16,7 @@ import { TranslateModule } from "@ngx-translate/core";
     LoginView,
     RegisterView
   ],
-  imports: [
+  imports:      [
     CommonModule,
     AccountRoutingModule,
     ReactiveFormsModule,

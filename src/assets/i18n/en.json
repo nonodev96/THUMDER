@@ -1,4 +1,5 @@
 {
+  "TITLE": "THUMDER",
   "HOME": "Home",
   "ERROR": {
     "TITLE": "Error: {{title}}",
@@ -18,6 +19,17 @@
     "MESSAGE_NEW_MESSAGE": "New message {{type}}"
   },
   "ACCOUNT": {
+    "YOU_FORGOT_YOUR_PASSWORD?_HERE_YOU_CAN_EASILY_RETRIEVE_A_NEW_PASSWORD": "You forgot your password? Here you can easily retrieve a new password.",
+    "REQUEST_NEW_PASSWORD": "Request new password",
+    "LOG_IN": "Log in",
+    "REGISTER_A_NEW_MEMBERSHIP": "Register a new membership",
+    "SIGN_IN_TO_START_YOUR_SESSION": "Sign in to start your session",
+    "SIGN_IN_USING_GOOGLE": "Sign in using Google+",
+    "SIGN_IN_USING_GITHUB": "Sign in using Github",
+    "I_FORGOT_MY_PASSWORD": "I forgot my password",
+    "I_ALREADY_HAVE_A_MEMBERSHIP": "I already have a membership",
+    "REGISTER": "Register",
+    "SIGN_IN": "Sign in",
     "ACCOUNT": "Account",
     "PROFILE": "Profile",
     "SIGN_OUT": "Sign out"
