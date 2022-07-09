@@ -6,18 +6,21 @@
     <div class="login-box">
       <div class="login-logo">
         <img src="assets/icons/favicon.256x256.png" alt="Logo" class="img-fluid mb-4">
-        <h2>{{ 'PAGES.HOME.TITLE' | translate }}</h2>
+        <h2>{{ 'TITLE' | translate }}</h2>
       </div>
-      <!-- /.login-logo -->
+
       <div class="card">
         <div class="card-body login-card-body">
-          <p class="login-box-msg">Sign in to start your session</p>
+          <p class="login-box-msg">{{ 'ACCOUNT.SIGN_IN_TO_START_YOUR_SESSION' | translate }}</p>
+
           <form [formGroup]="loginForm">
+
             <div class="input-group mb-3">
-              <input type="email" class="form-control" placeholder="Email"
+              <input type="email" class="form-control" placeholder="Email" id="userEmail"
+                     autocomplete="email" name="email"
                      [class.is-valid]="loginForm.get('email').valid"
                      [class.is-invalid]="!loginForm.get('email').valid"
-                     formControlName="email" id="userEmail" #userEmail>
+                     formControlName="email" #userEmail>
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-envelope"></span>
@@ -33,11 +36,11 @@
             </ng-container>
 
             <div class="input-group mb-3">
-              <input type="password" class="form-control"
+              <input type="password" class="form-control" placeholder="Password" id="userPassword"
+                     autocomplete="current-password" name="current-password"
                      [class.is-valid]="loginForm.get('password').valid"
                      [class.is-invalid]="!loginForm.get('password').valid"
-                     placeholder="Password" formControlName="password"
-                     id="userPassword" #userPassword>
+                     formControlName="password" #userPassword>
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-lock"></span>
@@ -51,49 +54,66 @@
                 <p>{{ error.message }}</p>
               </div>
             </ng-container>
-          </form>
 
-          <div class="row">
-            <div class="col-8">
-              <!--<div class="icheck-primary">
-                <input type="checkbox" id="remember">
-                <label for="remember">
-                  Remember Me
-                </label>
-              </div>-->
+            <div class="row">
+              <div class="col-6">
+
+              </div>
+              <div class="col-6">
+                <button type="submit" class="btn btn-primary btn-block"
+                        id="buttonSignInID"
+                        [disabled]="!loginForm.valid"
+                        (click)="SignIn(userEmail.value, userPassword.value)">
+                  {{ 'ACCOUNT.SIGN_IN' | translate }}
+                </button>
+              </div>
             </div>
-            <!-- /.col -->
-            <div class="col-4">
-              <button type="submit" class="btn btn-primary btn-block"
-                      id="buttonSignInID"
-                      [disabled]="!loginForm.valid"
-                      (click)="SignIn(userEmail.value, userPassword.value)">Sign In
-              </button>
-            </div>
-            <!-- /.col -->
-          </div>
+
+          </form>
 
           <ng-container *ngIf="!electronService.isElectronApp">
             <div class="social-auth-links text-center mb-3">
-              <p>- OR -</p>
+              <p>-</p>
               <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
-                <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+                <i class="fab fa-google-plus mr-2"></i> {{ 'ACCOUNT.SIGN_IN_USING_GOOGLE' | translate }}
               </a>
               <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
-                <i class="fab fa-github mr-2"></i> Sign in using Github
+                <i class="fab fa-github mr-2"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
               </a>
             </div>
           </ng-container>
-          <!-- /.social-_auth-links -->
 
-          <p class="mb-1">
-            <a [routerLink]="['/account/forgot-password']">I forgot my password</a>
+          <p class="mt-3 mb-1">
+            <a [routerLink]="['/account/forgot-password']">{{ 'ACCOUNT.I_FORGOT_MY_PASSWORD' | translate }}</a>
           </p>
           <p class="mb-0">
-            <a [routerLink]="['/account/register']" class="text-center">Register a new membership</a>
+            <a [routerLink]="['/account/register']"
+               class="text-center">{{ 'ACCOUNT.REGISTER_A_NEW_MEMBERSHIP' | translate }}</a>
           </p>
+
+          <div class="row mt-3 mb-1" *ngIf="app.translationEnabled">
+            <div class="col-12">
+              <div class="dropdown">
+                <button class="btn btn-info btn-block dropdown-toggle" type="button"
+                        id="dropdownMenuButton_lang" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                  {{ 'CONFIG.LANG' | translate }}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_lang">
+                  <a class="dropdown-item" (click)="app.setLang('sp')">
+                    <span class="flag-icon flag-icon-esp"></span>
+                    Spanish
+                  </a>
+                  <a class="dropdown-item" (click)="app.setLang('en')">
+                    <span class="flag-icon flag-icon-gbr"></span>
+                    English
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <!-- /.login-card-body -->
 
         <ng-container *ngIf="showSpinner">
           <div class="overlay">

@@ -5,20 +5,21 @@
 <div class="register-page">
   <div class="register-box">
     <div class="register-logo">
-      <h2>THUMDER</h2>
+      <h2>{{ 'TITLE' | translate }}</h2>
     </div>
 
     <div class="card">
       <div class="card-body register-card-body">
-        <p class="login-box-msg">Register a new membership</p>
+        <p class="login-box-msg">{{ 'ACCOUNT.REGISTER_A_NEW_MEMBERSHIP' | translate }}</p>
 
         <form [formGroup]="registerForm">
 
           <div class="input-group mb-3">
-            <input type="text" class="form-control"
+            <input type="text" class="form-control" placeholder="Full name" id="userName"
+                   autocomplete="name" name="name"
                    [class.is-valid]="registerForm.get('first_name').valid"
                    [class.is-invalid]="!registerForm.get('first_name').valid"
-                   placeholder="Full name" formControlName="first_name">
+                   formControlName="first_name">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-user"></span>
@@ -32,10 +33,11 @@
           </ng-container>
 
           <div class="input-group mb-3">
-            <input type="email" class="form-control"
+            <input type="email" class="form-control" placeholder="Email" id="userEmail"
+                   autocomplete="email" name="email"
                    [class.is-valid]="registerForm.get('email').valid"
                    [class.is-invalid]="!registerForm.get('email').valid"
-                   placeholder="Email" formControlName="email" #userEmail>
+                   formControlName="email" #userEmail>
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -50,10 +52,11 @@
             </ng-container>
           </div>
           <div class="input-group mb-3">
-            <input type="password" class="form-control"
+            <input type="password" class="form-control" placeholder="Password" id="newPassword"
+                   autocomplete="new-password" name="new-password"
                    [class.is-valid]="registerForm.get('password').valid"
                    [class.is-invalid]="!registerForm.get('password').valid"
-                   placeholder="Password" formControlName="password" #userPwd>
+                   formControlName="password" #userPwd>
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -70,10 +73,11 @@
           </div>
 
           <div class="input-group mb-3">
-            <input type="password" class="form-control"
+            <input type="password" class="form-control" placeholder="Retype password" id="confirmNewPassword"
+                   autocomplete="new-password" name="confirm-new-password"
                    [class.is-valid]="registerForm.get('confirm_password').valid"
                    [class.is-invalid]="!registerForm.get('confirm_password').valid"
-                   placeholder="Retype password" formControlName="confirm_password">
+                   formControlName="confirm_password">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -88,43 +92,62 @@
               </div>
             </ng-container>
           </div>
+
           <div class="row">
-            <div class="col-8">
-              <!--<div class="icheck-primary">
-                <input type="checkbox" id="agreeTerms" name="terms" value="agree" required>
-                <label for="agreeTerms">
-                  I agree to the <b>terms</b>
-                </label>
-              </div>-->
+            <div class="col-6">
+
             </div>
-            <!-- /.col -->
-            <div class="col-4">
+            <div class="col-6">
               <button type="submit" class="btn btn-primary btn-block" [disabled]="!registerForm.valid"
-                      (click)="authService.SignUp(userEmail.value, userPwd.value)">Register
+                      (click)="authService.SignUp(userEmail.value, userPwd.value)">{{ 'ACCOUNT.REGISTER' | translate }}
               </button>
             </div>
-            <!-- /.col -->
           </div>
         </form>
 
 
         <ng-container *ngIf="!electronService.isElectronApp">
           <div class="social-auth-links text-center">
-            <p>- OR -</p>
+            <p>-</p>
             <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
-              <i class="fab fa-google-plus mr-2"></i>
-              Sign up using Google+
+              <i class="fab fa-google-plus mr-2"></i> {{ 'ACCOUNT.SIGN_IN_USING_GOOGLE' | translate }}
             </a>
             <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
-              <i class="fab fa-github mr-2"></i>
-              Sign up using Github
+              <i class="fab fa-github mr-2"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
             </a>
           </div>
         </ng-container>
 
-        <a [routerLink]="['/account/login']" class="text-center">I already have a membership</a>
+        <p class="mt-3 mb-1">
+          <a [routerLink]="['/account/login']" class="text-center">
+            {{ 'ACCOUNT.I_ALREADY_HAVE_A_MEMBERSHIP' | translate }}
+          </a>
+        </p>
+
+        <div class="row mt-3 mb-1" *ngIf="app.translationEnabled">
+          <div class="col-12">
+            <div class="dropdown">
+              <button class="btn btn-info btn-block dropdown-toggle" type="button"
+                      id="dropdownMenuButton_lang" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                {{ 'CONFIG.LANG' | translate }}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_lang">
+                <a class="dropdown-item" (click)="app.setLang('sp')">
+                  <span class="flag-icon flag-icon-esp"></span>
+                  Spanish
+                </a>
+                <a class="dropdown-item" (click)="app.setLang('en')">
+                  <span class="flag-icon flag-icon-gbr"></span>
+                  English
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <!-- /.form-box -->
+
 
       <ng-container *ngIf="showSpinner">
         <div class="overlay">
@@ -132,7 +155,7 @@
         </div>
       </ng-container>
 
-    </div><!-- /.card -->
+    </div>
   </div>
 </div>
-<!-- /.register-box -->
+

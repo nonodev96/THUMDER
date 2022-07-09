@@ -25,15 +25,25 @@ declare const AppAdminLTE: {
 import enMessages from 'devextreme/localization/messages/en.json';
 import esMessages from 'devextreme/localization/messages/es.json';
 import { locale, loadMessages } from 'devextreme/localization';
+import { getAnalytics, logEvent, setAnalyticsCollectionEnabled, setUserProperties } from "@angular/fire/analytics";
+import {
+  fetchAndActivate,
+  fetchConfig,
+  getAll,
+  getBoolean,
+  getRemoteConfig,
+  getValue,
+} from "@angular/fire/remote-config";
 
 @Component({
   selector:    "app-root",
   templateUrl: "./app.component.html",
-  styleUrls:   ["./app.component.scss"]
+  styleUrls:   [ "./app.component.scss" ]
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public lang: string = DEFAULT_LANG;
+  public translationEnabled: boolean = false;
   private popupOpenSubscription: Subscription;
   private popupCloseSubscription: Subscription;
   private initializeSubscription: Subscription;
@@ -49,6 +59,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
               private electronService: ElectronService,
               private translate: TranslateService,
               private router: Router) {
+    // setAnalyticsCollectionEnabled(getAnalytics(), true);
+    logEvent(getAnalytics(), 'start_app_THUMDER', { status: 'ok' })
+
     this.auth.getIsLoggingObservable().subscribe((isLogging) => {
       if (isLogging) this.storageService.defaultDataInStorage();
     });
@@ -72,7 +85,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     AppAdminLTE.initMainPage();
     this.lang = this.storageService.getItem("lang");
     this.document.documentElement.lang = this.lang;
-    this.translate.addLangs(["en", "sp"]);
+    this.translate.addLangs([ "en", "sp" ]);
     this.translate.setDefaultLang(this.lang);
 
     this.popupOpenSubscription = this.ccService.popupOpen$.subscribe(() => {
@@ -101,6 +114,18 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       // you can use this.ccService.getConfig() to do stuff...
     });
     this.updateCookiesConsentLang();
+
+    let remoteConfig = getRemoteConfig();
+    fetchAndActivate(remoteConfig)
+      .then((s) => {
+        this.translationEnabled = getBoolean(remoteConfig, "translationEnabled");
+        // console.debug({ getAll: Object.entries(getAll(remoteConfig)) });
+        // console.debug("activar?", this.translationEnabled);
+      })
+      .catch((err) => {
+        this.translationEnabled = false;
+        console.error(err);
+      });
   }
 
   ngAfterViewInit(): void {
@@ -125,7 +150,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private updateCookiesConsentLang() {
     this.translate
-      .get(["cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy"])
+      .get([ "cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy" ])
       .subscribe((data) => {
         this.ccService.getConfig().content = this.ccService.getConfig().content || {};
         // Override default messages with the translated ones

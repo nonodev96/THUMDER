@@ -3,16 +3,17 @@ import { DOCUMENT } from "@angular/common";
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { ElectronService } from "../../../__core/services";
+import { AppComponent } from "../../../app.component";
 
 @Component({
   selector:    "app-register",
   templateUrl: "./register.view.html",
 })
 export class RegisterView implements OnInit {
-  registerForm: FormGroup;
-  showSpinner: boolean;
+  public registerForm: FormGroup;
+  public showSpinner: boolean;
 
-  error_messages = {
+  public error_messages = {
     first_name:       [
       { type: "required", message: "First Name is required." },
       { type: "minlength", message: "First Name min length is 6." },
@@ -35,8 +36,11 @@ export class RegisterView implements OnInit {
     ],
   };
 
+  public translationEnabled: boolean = false;
+
   constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService,
+              public app: AppComponent,
               public electronService: ElectronService,
               public formBuilder: FormBuilder) {
     this.registerForm = this.formBuilder.group({

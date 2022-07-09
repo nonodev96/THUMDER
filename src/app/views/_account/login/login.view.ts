@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { ElectronService } from "../../../__core/services";
+import { AppComponent } from "../../../app.component";
 
 
 @Component({
@@ -11,10 +12,10 @@ import { ElectronService } from "../../../__core/services";
   templateUrl: "./login.view.html",
 })
 export class LoginView implements OnInit {
-  loginForm: FormGroup;
-  showSpinner: boolean = false;
+  public loginForm: FormGroup;
+  public showSpinner: boolean = false;
 
-  error_messages = {
+  public error_messages = {
     email:    [
       { type: "required", message: "Email is required." },
       { type: "email", message: "Please enter a valid email address." }
@@ -25,11 +26,13 @@ export class LoginView implements OnInit {
       { type: "maxlength", message: "Password max length." }
     ],
   };
+  private translationEnabled: boolean = false;
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public electronService: ElectronService,
               public authService: AuthService,
               public router: Router,
+              public app: AppComponent,
               public formBuilder: FormBuilder) {
     this.loginForm = this.formBuilder.group({
       email:    new FormControl("", Validators.compose([
@@ -53,7 +56,7 @@ export class LoginView implements OnInit {
   ngOnInit(): void {
   }
 
-  async SignIn(email: string, password: string): Promise<void> {
+  public async SignIn(email: string, password: string): Promise<void> {
     this.showSpinner = true;
     try {
       // =====
@@ -70,7 +73,7 @@ export class LoginView implements OnInit {
     return Promise.resolve();
   }
 
-  async GoogleAuth(): Promise<void> {
+  public async GoogleAuth(): Promise<void> {
     this.showSpinner = true;
     try {
       // =====
@@ -84,7 +87,7 @@ export class LoginView implements OnInit {
     return Promise.resolve();
   }
 
-  async GithubAuth(): Promise<void> {
+  public async GithubAuth(): Promise<void> {
     this.showSpinner = true;
     try {
       // =====
