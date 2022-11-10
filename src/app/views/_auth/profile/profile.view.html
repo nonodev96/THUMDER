@@ -20,17 +20,17 @@
 
             <ul class="list-group list-group-unbordered mb-3">
               <li class="list-group-item">
-                <b>Followers</b> <a class="float-right">1,322</a>
+                <strong>Followers</strong> <a class="float-right">1,322</a>
               </li>
               <li class="list-group-item">
-                <b>Following</b> <a class="float-right">543</a>
+                <strong>Following</strong> <a class="float-right">543</a>
               </li>
               <li class="list-group-item">
-                <b>Friends</b> <a class="float-right">13,287</a>
+                <strong>Friends</strong> <a class="float-right">13,287</a>
               </li>
             </ul>
 
-            <a (click)="log('TODO')" class="btn btn-primary btn-block"><b>Follow</b></a>
+            <a (click)="log('TODO')" class="btn btn-primary btn-block"><strong>Follow</strong></a>
           </div>
           <!-- /.card-body -->
         </div>
@@ -43,7 +43,7 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <strong><i class="fas fa-book mr-1"></i> Education</strong>
+            <strong><i class="fas fa-book mr-1" aria-hidden="true"></i> Education</strong>
 
             <p class="text-muted">
               B.S. in Computer Science from the University of Tennessee at Knoxville
@@ -51,13 +51,13 @@
 
             <hr>
 
-            <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+            <strong><i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i> Location</strong>
 
             <p class="text-muted">Malibu, California</p>
 
             <hr>
 
-            <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
+            <strong><i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i> Skills</strong>
 
             <p class="text-muted">
               <span class="tag tag-danger">UI Design</span>
@@ -69,7 +69,7 @@
 
             <hr>
 
-            <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+            <strong><i class="far fa-file-alt mr-1" aria-hidden="true"></i> Notes</strong>
 
             <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam fermentum enim
               neque.</p>
@@ -98,7 +98,7 @@
                          alt="user image">
                     <span class="username">
                           <a (click)="log('TODO')">Jonathan Burke Jr.</a>
-                          <a (click)="log('TODO')" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                          <a (click)="log('TODO')" class="float-right btn-tool"><i class="fas fa-times" aria-hidden="true"></i></a>
                         </span>
                     <span class="description">Shared publicly - 7:30 PM today</span>
                   </div>
@@ -112,11 +112,11 @@
                   </p>
 
                   <p>
-                    <a (click)="log('TODO')" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                    <a (click)="log('TODO')" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
+                    <a (click)="log('TODO')" class="link-black text-sm mr-2"><i class="fas fa-share mr-1" aria-hidden="true"></i> Share</a>
+                    <a (click)="log('TODO')" class="link-black text-sm"><i class="far fa-thumbs-up mr-1" aria-hidden="true"></i> Like</a>
                     <span class="float-right">
                           <a (click)="log('TODO')" class="link-black text-sm">
-                            <i class="far fa-comments mr-1"></i> Comments (5)
+                            <i class="far fa-comments mr-1" aria-hidden="true"></i> Comments (5)
                           </a>
                         </span>
                   </p>
@@ -132,7 +132,7 @@
                          alt="User Image">
                     <span class="username">
                           <a (click)="log('TODO')">Sarah Ross</a>
-                          <a (click)="log('TODO')" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                          <a (click)="log('TODO')" class="float-right btn-tool"><i class="fas fa-times" aria-hidden="true"></i></a>
                         </span>
                     <span class="description">Sent you a message - 3 days ago</span>
                   </div>
@@ -163,7 +163,7 @@
                          alt="User Image">
                     <span class="username">
                           <a (click)="log('TODO')">Adam Jones</a>
-                          <a (click)="log('TODO')" class="float-right btn-tool"><i class="fas fa-times"></i></a>
+                          <a (click)="log('TODO')" class="float-right btn-tool"><i class="fas fa-times" aria-hidden="true"></i></a>
                         </span>
                     <span class="description">Posted 5 photos - 5 days ago</span>
                   </div>
@@ -193,11 +193,11 @@
                   <!-- /.row -->
 
                   <p>
-                    <a (click)="log('TODO')" class="link-black text-sm mr-2"><i class="fas fa-share mr-1"></i> Share</a>
-                    <a (click)="log('TODO')" class="link-black text-sm"><i class="far fa-thumbs-up mr-1"></i> Like</a>
+                    <a (click)="log('TODO')" class="link-black text-sm mr-2"><i class="fas fa-share mr-1" aria-hidden="true"></i> Share</a>
+                    <a (click)="log('TODO')" class="link-black text-sm"><i class="far fa-thumbs-up mr-1" aria-hidden="true"></i> Like</a>
                     <span class="float-right">
                           <a (click)="log('TODO')" class="link-black text-sm">
-                            <i class="far fa-comments mr-1"></i> Comments (5)
+                            <i class="far fa-comments mr-1" aria-hidden="true"></i> Comments (5)
                           </a>
                         </span>
                   </p>
@@ -219,10 +219,10 @@
                   <!-- /.timeline-label -->
                   <!-- timeline item -->
                   <div>
-                    <i class="fas fa-envelope bg-primary"></i>
+                    <i class="fas fa-envelope bg-primary" aria-hidden="true"></i>
 
                     <div class="timeline-item">
-                      <span class="time"><i class="far fa-clock"></i> 12:05</span>
+                      <span class="time"><i class="far fa-clock" aria-hidden="true"></i> 12:05</span>
 
                       <h3 class="timeline-header"><a (click)="log('TODO')">Support Team</a> sent you an email</h3>
 
@@ -241,10 +241,10 @@
                   <!-- END timeline item -->
                   <!-- timeline item -->
                   <div>
-                    <i class="fas fa-user bg-info"></i>
+                    <i class="fas fa-user bg-info" aria-hidden="true"></i>
 
                     <div class="timeline-item">
-                      <span class="time"><i class="far fa-clock"></i> 5 mins ago</span>
+                      <span class="time"><i class="far fa-clock" aria-hidden="true"></i> 5 mins ago</span>
 
                       <h3 class="timeline-header border-0"><a (click)="log('TODO')">Sarah Young</a> accepted your friend request
                       </h3>
@@ -253,10 +253,10 @@
                   <!-- END timeline item -->
                   <!-- timeline item -->
                   <div>
-                    <i class="fas fa-comments bg-warning"></i>
+                    <i class="fas fa-comments bg-warning" aria-hidden="true"></i>
 
                     <div class="timeline-item">
-                      <span class="time"><i class="far fa-clock"></i> 27 mins ago</span>
+                      <span class="time"><i class="far fa-clock" aria-hidden="true"></i> 27 mins ago</span>
 
                       <h3 class="timeline-header"><a (click)="log('TODO')">Jay White</a> commented on your post</h3>
 
@@ -280,24 +280,24 @@
                   <!-- /.timeline-label -->
                   <!-- timeline item -->
                   <div>
-                    <i class="fas fa-camera bg-purple"></i>
+                    <i class="fas fa-camera bg-purple" aria-hidden="true"></i>
 
                     <div class="timeline-item">
-                      <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+                      <span class="time"><i class="far fa-clock" aria-hidden="true"></i> 2 days ago</span>
 
                       <h3 class="timeline-header"><a (click)="log('TODO')">Mina Lee</a> uploaded new photos</h3>
 
                       <div class="timeline-body">
-                        <img src="http://placehold.it/150x100" alt="...">
-                        <img src="http://placehold.it/150x100" alt="...">
-                        <img src="http://placehold.it/150x100" alt="...">
-                        <img src="http://placehold.it/150x100" alt="...">
+                        <img src="https://via.placeholder.com/150x100" alt="...">
+                        <img src="https://via.placeholder.com/150x100" alt="...">
+                        <img src="https://via.placeholder.com/150x100" alt="...">
+                        <img src="https://via.placeholder.com/150x100" alt="...">
                       </div>
                     </div>
                   </div>
                   <!-- END timeline item -->
                   <div>
-                    <i class="far fa-clock bg-gray"></i>
+                    <i class="far fa-clock bg-gray" aria-hidden="true"></i>
                   </div>
                 </div>
               </div>
