@@ -8,14 +8,14 @@
     </h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" (click)="refresh()">
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -25,7 +25,7 @@
                                  headerHeight="56"
                                  [style.height]="maxHeightCard"
                                  class="wrapper-table mat-elevation-z2">
-      <table mat-table matSort [dataSource]="dataSourceCode" [ngClass]="'table-layout font-family-monospace'">
+      <table mat-table matSort [dataSource]="dataSourceCode" [ngClass]="'table-layout font-family-monospace'" aria-describedby="Table with code">
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMemory; sticky: true"></tr>
 
         <tr mat-row *matRowDef="let row; columns: displayedColumnsMemory;"

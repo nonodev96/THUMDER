@@ -40,7 +40,7 @@ export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
 };
 
 export const REGEX_IS_ABSOLUTE_HREF = new RegExp("(?<TAG>^:[a-z][a-z0-9+.-]*:|\/\/)", "i");
-export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{08})$", "i");
+export const REGEX_HEXADECIMAL_08 = new RegExp("^(0x|0X)?([a-fA-F0-9]{08})$", "i");
 // export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
 
 export const DEFAULT_BREAKPOINTS: [] = [];
