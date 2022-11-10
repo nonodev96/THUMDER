@@ -7,9 +7,6 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag
 export class Globals {
   public showDebug: boolean = false;
 
-  constructor() {
-  }
-
   public drop(event: CdkDragDrop<any[]>) {
     const nodeToMove = event.item.element.nativeElement;
     const { previousContainer, container, previousIndex, currentIndex } = event;

@@ -4,7 +4,6 @@ import {
   Input,
   OnChanges,
   OnDestroy,
-  SimpleChanges,
   Renderer2,
   ElementRef,
 } from "@angular/core";
@@ -69,8 +68,8 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
     );
   }
 
-  noop() {
-
+  next(data: any) {
+    console.log(data)
   }
 
   complete() {
@@ -108,12 +107,12 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
   subscribe(r) {
     this.pending = true;
     this.disable();
-    const noop = () => this.noop();
+    const next = (data) => this.next(data);
     const complete = () => this.complete();
     const error = () => this.error();
     if (typeof r.subscribe === "function") {
       this.subscription = (r as Observable<any>).subscribe({
-        next:     noop,
+        next:     next,
         complete: complete,
         error:    error,
       });
