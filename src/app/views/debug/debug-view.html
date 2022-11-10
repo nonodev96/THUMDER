@@ -3,10 +3,10 @@
     <h3 class="card-title">Debug </h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -32,10 +32,10 @@
     <h3 class="card-title">{{'DEBUG' | translate}} 1</h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -66,10 +66,10 @@
         Debug - Get all registers
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -121,10 +121,10 @@
         Debug - Get all memory
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -173,10 +173,10 @@
       </button>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -186,14 +186,8 @@
                     name="message"
                     rows="8"
                     [(ngModel)]="testCodeRequest"></textarea>
-    <!--
-    <textarea class="form-control"
-              style="font-family: monospace;"
-              name="message"
-              rows="8"
-              [(ngModel)]="testResponse"></textarea>
-    -->
-    <table class="table">
+
+    <table class="table" aria-describedby="debug table with address, code, text and instruction">
       <tr>
         <th>{{ 'ADDRESS' | translate }}</th>
         <th>{{ 'CODE' | translate }}</th>
@@ -209,7 +203,7 @@
       </tr>
     </table>
 
-    <table class="table">
+    <table class="table" aria-describedby="debug table with address, hex value, text and directive">
       <tr>
         <th>{{ 'ADDRESS' | translate }}</th>
         <th>{{ 'HEX VALUE' | translate }}</th>
@@ -241,10 +235,10 @@
       </button>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
