@@ -6,10 +6,10 @@
         <p>{{ item.displayName }}</p>
       </div>
       <div class="icon">
-        <i class="{{item.icon}}"></i>
+        <i class="{{item.icon}}" aria-hidden="true"></i>
       </div>
       <a class="small-box-footer" [routerLink]="item.routerLink">
-        {{ 'PAGES.INDEX.MORE_INFO' | translate }} <i class="fas fa-arrow-circle-right"></i>
+        {{ 'PAGES.INDEX.MORE_INFO' | translate }} <i class="fas fa-arrow-circle-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

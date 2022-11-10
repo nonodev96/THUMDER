@@ -7,31 +7,10 @@
   </ng-container>
   All rights reserved. |
   <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" (click)="globals.showDebug=!globals.showDebug">Debug</button>
-  <!--
-  <ng-container *ngIf="electronService.isElectronApp">
-    <button type="button" class="btn btn-xs btn-outline-primary" (click)="notification()">Debug notification</button>
-  </ng-container>
-  -->
+
   <div class="float-right d-none d-sm-block">
-    <b>{{ 'CONFIG.ENVIRONMENT' | translate }}</b> {{environment}} |
-    <b>{{ 'CONFIG.LANG' | translate }}</b> {{lang}} |
-    <b>{{ 'CONFIG.VERSION' | translate }}</b> {{version}}
+    <strong>{{ 'CONFIG.ENVIRONMENT' | translate }}</strong> {{environment}} |
+    <strong>{{ 'CONFIG.LANG' | translate }}</strong> {{lang}} |
+    <strong>{{ 'CONFIG.VERSION' | translate }}</strong> {{version}}
   </div>
 </footer>
-
-<!--
-<div class="modal fade modal-p-bottom" id="modal-p-bottom">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <p *ngFor="let line of logger">{{line}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">
-          {{ 'FORMS.CLOSE' | translate }}
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
--->

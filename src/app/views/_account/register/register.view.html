@@ -110,10 +110,10 @@
           <div class="social-auth-links text-center">
             <p>-</p>
             <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
-              <i class="fab fa-google-plus mr-2"></i> {{ 'ACCOUNT.SIGN_IN_USING_GOOGLE' | translate }}
+              <i class="fab fa-google-plus mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GOOGLE' | translate }}
             </a>
             <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
-              <i class="fab fa-github mr-2"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
+              <i class="fab fa-github mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
             </a>
           </div>
         </ng-container>
@@ -151,7 +151,7 @@
 
       <ng-container *ngIf="showSpinner">
         <div class="overlay">
-          <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+          <i class="fas fa-2x fa-sync-alt fa-spin" aria-hidden="true"></i>
         </div>
       </ng-container>
 

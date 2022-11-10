@@ -13,7 +13,7 @@
           <div class="gridster-item-content" *ngIf="item.calculator">
             <view-calculator>
               <button type="button" class="btn btn-tool drag-handler">
-                <i class="fas fa-arrows-alt"></i>
+                <i class="fas fa-arrows-alt" aria-hidden="true"></i>
               </button>
             </view-calculator>
           </div>
@@ -21,7 +21,7 @@
           <div class="gridster-item-content" *ngIf="item.pipeline">
             <view-pipeline>
               <button type="button" class="btn btn-tool drag-handler">
-                <i class="fas fa-arrows-alt"></i>
+                <i class="fas fa-arrows-alt" aria-hidden="true"></i>
               </button>
             </view-pipeline>
           </div>
@@ -29,7 +29,7 @@
           <button type="button" class="btn btn-outline-primary btn-lg" *ngIf="item.itemVoid"
                   (mousedown)="removeItem($event, item)"
                   (touchstart)="removeItem($event, item)">
-            <i class="fas fa-trash-alt"></i>
+            <i class="fas fa-trash-alt" aria-hidden="true"></i>
           </button>
 
         </gridster-item>
