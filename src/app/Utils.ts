@@ -17,7 +17,7 @@ export namespace Utils {
 
   export function stringToAddress(str: string): TypeAddress {
     const value = parseInt(str, 16);
-    return `0x${ value.toString(16).padStart(8, "0").toUpperCase() }`;
+    return `0x${value.toString(16).padStart(8, "0").toUpperCase()}`;
   }
 
   export async function wait(timeMs: number = 1000): Promise<void> {
@@ -78,6 +78,10 @@ export namespace Utils {
     });
   }
 
+  export function voidF(): void {
+
+  }
+
   export function isSubsetV2(a, b): boolean {
     return new Set(b).size === new Set(b.concat(a)).size;
   }
@@ -116,7 +120,7 @@ export namespace Utils {
     return "0x" + ("00000000" + n.toString(16).toUpperCase()).substr(-8);
   }
 
-  export function indexToAddress(number: number, args = { maxLength: 8, fillString: "0" }) {
+  export function indexToAddress(number: number, args = {maxLength: 8, fillString: "0"}) {
     if (number < 0) {
       number = 0xFFFFFFFF + number + 1;
     }
@@ -129,12 +133,12 @@ export namespace Utils {
     return element[0].ascii;
   }
 
-  export function hexadecimalToBinary(hexadecimal: string, args = { maxLength: 32, fillString: "0" }): string {
+  export function hexadecimalToBinary(hexadecimal: string, args = {maxLength: 32, fillString: "0"}): string {
     const decimal = hexadecimalToDecimal(hexadecimal);
     return (decimal).toString(2).padStart(args.maxLength, args.fillString);
   }
 
-  export function binaryToHexadecimal(binary: string, args = { maxLength: 8, fillString: "0" }): string {
+  export function binaryToHexadecimal(binary: string, args = {maxLength: 8, fillString: "0"}): string {
     return parseInt(binary, 2).toString(16).toUpperCase().padStart(args.maxLength, args.fillString);
   }
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, Inject, AfterViewInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { Globals } from "../../__core/services/globals/globals.service";
 
@@ -6,14 +6,11 @@ import { Globals } from "../../__core/services/globals/globals.service";
   selector:    "THUMDER-layout-auth",
   templateUrl: "./layout-auth.component.html"
 })
-export class LayoutAuthComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LayoutAuthComponent implements AfterViewInit {
 
   constructor(@Inject(DOCUMENT)
               private document: Document,
               public globals: Globals) {
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
@@ -22,6 +19,4 @@ export class LayoutAuthComponent implements OnInit, AfterViewInit, OnDestroy {
     trees.Treeview("toggleRow");
   }
 
-  ngOnDestroy(): void {
-  }
 }
