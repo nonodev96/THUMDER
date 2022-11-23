@@ -9,34 +9,34 @@
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Byte"
               (click)="changeTypeDataInTableRegisters('Byte')">
-        <i class="fas fa-table"></i> Bytes
+        <i class="fas fa-table" aria-hidden="true"></i> Bytes
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="HalfWord"
               (click)="changeTypeDataInTableRegisters('HalfWord')">
-        <i class="fas fa-table"></i> HalfWord
+        <i class="fas fa-table" aria-hidden="true"></i> HalfWord
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="Word"
               (click)="changeTypeDataInTableRegisters('Word')">
-        <i class="fas fa-table"></i> Word
+        <i class="fas fa-table" aria-hidden="true"></i> Word
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="ASCII"
               (click)="changeTypeDataInTableRegisters('ASCII')">
-        <i class="fas fa-table"></i> ASCII
+        <i class="fas fa-table" aria-hidden="true"></i> ASCII
       </button>
 
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister" id="modal-EditRegister-Button">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="refresh()">
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
 
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -106,16 +106,16 @@
     <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_INTEGER' | translate}}</span></h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="refresh()">
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -163,23 +163,23 @@
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelectedFloat === 'Binary' ? 'btn--active' : '' }}" title="Binary"
               (click)="changeTypeDataInTableFloatRegisters('Binary')">
-        <i class="fas fa-table"></i> Binary
+        <i class="fas fa-table" aria-hidden="true"></i> Binary
       </button>
       <button class="btn btn-tool {{ typeDataSelectedFloat === 'Uint8Array' ? 'btn--active' : '' }}" title="Uint8Array"
               (click)="changeTypeDataInTableFloatRegisters('Uint8Array')">
-        <i class="fas fa-table"></i> Uint8Array
+        <i class="fas fa-table" aria-hidden="true"></i> Uint8Array
       </button>
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="refresh()">
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -237,23 +237,23 @@
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelectedDouble === 'Binary' ? 'btn--active' : '' }}" title="Binary"
               (click)="changeTypeDataInTableDoubleRegisters('Binary')">
-        <i class="fas fa-table"></i> Binary
+        <i class="fas fa-table" aria-hidden="true"></i> Binary
       </button>
       <button class="btn btn-tool {{ typeDataSelectedDouble === 'Uint8Array' ? 'btn--active' : '' }}" title="Uint8Array"
               (click)="changeTypeDataInTableDoubleRegisters('Uint8Array')">
-        <i class="fas fa-table"></i> Uint8Array
+        <i class="fas fa-table" aria-hidden="true"></i> Uint8Array
       </button>
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="refresh()">
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
