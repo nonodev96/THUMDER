@@ -9,54 +9,54 @@
     <div class="card-tools">
       <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Bytes"
               (click)="changeTypeDataInTable('Byte')">
-        <i class="fas fa-table"></i> <span> Bytes </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span> Bytes </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="Half Word"
               (click)="changeTypeDataInTable('HalfWord')">
-        <i class="fas fa-table"></i> <span> Half Word </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span> Half Word </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="Word"
               (click)="changeTypeDataInTable('Word')">
-        <i class="fas fa-table"></i> <span> Word </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span> Word </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="ASCII"
               (click)="changeTypeDataInTable('ASCII')">
-        <i class="fas fa-table"></i> <span> ASCII </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span> ASCII </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Float' ? 'btn--active' : '' }}" title="Float"
               (click)="changeTypeDataInTable('Float')">
-        <i class="fas fa-table"></i> <span> Float </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span> Float </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Double' ? 'btn--active' : '' }}" title="Double"
               (click)="changeTypeDataInTable('Double')">
-        <i class="fas fa-table"></i> <span> Double </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span> Double </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'InstructionCode' ? 'btn--active' : '' }}" title="Instruction code"
               (click)="changeTypeDataInTable('InstructionCode')">
-        <i class="fas fa-table"></i> <span class="d-xxl-none"> Instruction Code </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span class="d-xxl-none"> Instruction Code </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'Address-0-1-2-3' ? 'btn--active' : '' }}" title="Address-0-1-2-3"
               (click)="changeTypeDataInTable('Address-0-1-2-3')">
-        <i class="fas fa-table"></i> <span class="d-xxl-none"> Address-0-1-2-3 </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span class="d-xxl-none"> Address-0-1-2-3 </span>
       </button>
       <button class="btn btn-tool {{ typeDataSelected === 'HalfWord-0-1' ? 'btn--active' : '' }}" title="HalfWord-0-1"
               (click)="changeTypeDataInTable('HalfWord-0-1')">
-        <i class="fas fa-table"></i> <span class="d-xxl-none"> HalfWord-0-1 </span>
+        <i class="fas fa-table" aria-hidden="true"></i> <span class="d-xxl-none"> HalfWord-0-1 </span>
       </button>
 
       <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#editMemoryModal"
               id="editMemoryModalButton">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="refresh()">
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
 
       <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
