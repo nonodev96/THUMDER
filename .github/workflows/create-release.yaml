@@ -55,10 +55,10 @@ jobs:
             artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
             asset_content_type: application/exe
-          - os: macos-latest-large
-            artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-            asset_content_type: application/x-apple-diskimage
+          # - os: macos-latest-large
+          #   artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+          #   asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
+          #   asset_content_type: application/x-apple-diskimage
 
     steps:
       - uses: actions/checkout@v2
