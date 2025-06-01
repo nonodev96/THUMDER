@@ -136,7 +136,7 @@ jobs:
           echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
 
       - run: npm install
-      # - run: npm run postinstall
+      - run: npm run postinstall
       - run: npm run ng:build-angular:production
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
