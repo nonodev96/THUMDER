@@ -51,6 +51,8 @@ para ello debemos asignar al menos 4Gb de memoria `--max_old_space_size=<size>`.
 
 | **Commandos**                         | **Descripción**                                                                                   |
 |:--------------------------------------|:--------------------------------------------------------------------------------------------------|
+| `npm install`                         | Instala las dependencias del proyecto                                                             |
+| `npm run postinstall`                 | Inicializa la configuración del proyecto para electro                                             |
 | `npm run ng:build-angular:production` | Construye la aplicación angular de navegador con las variables de producción                      |
 | `npm run electron:build`              | Construye la aplicación angular y encapsula la aplicación dentro electron generando un ejecutable |
 

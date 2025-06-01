@@ -102,3 +102,49 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: |
           gh release upload "v${{ steps.package_version.outputs.version }}" "${{ env.FILES }}"
+
+  deploy:
+    name: 'Deploy to Netlify'
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+
+      - name: Read package.json
+        uses: tyankatsu0105/read-package-version-actions@v1
+        id: package_version
+
+      - name: Secrets And Envirotment
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: 'environment.production.ts'
+          fileDir: './src/environments/'
+          encodedString: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
+
+      - name: Context
+        env:
+          RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
+        run: |
+          echo "$RUNNER_CONTEXT"
+          echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
+
+      - run: npm install
+      # - run: npm run postinstall
+      - run: npm run ng:build-angular:production
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: jsmrcaga/action-netlify-deploy@v2.4.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_MESSAGE: "Deploy ${{ github.ref_name }}"
+          NETLIFY_DEPLOY_TO_PROD: true
+          BUILD_DIRECTORY: 'dist-angular'
