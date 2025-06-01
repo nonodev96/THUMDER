@@ -32,6 +32,11 @@
             "assets": [
               "src/assets",
               {
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
+              },
+              {
                 "glob": "*.md",
                 "input": "./wiki",
                 "output": "./assets/wiki/"
