@@ -456,17 +456,17 @@
         "serve-angular": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "thumder-angular-electron:build-angular"
+            "buildTarget": "thumder-angular-electron:build-angular"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "thumder-angular-electron:build-angular:dev"
+              "buildTarget": "thumder-angular-electron:build-angular:dev"
             },
             "web": {
-              "browserTarget": "thumder-angular-electron:build-angular:web"
+              "buildTarget": "thumder-angular-electron:build-angular:web"
             },
             "production": {
-              "browserTarget": "thumder-angular-electron:build-angular:production"
+              "buildTarget": "thumder-angular-electron:build-angular:production"
             }
           }
         },
