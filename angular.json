@@ -514,7 +514,6 @@
       }
     }
   },
-  "defaultProject": "thumder-angular-electron",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

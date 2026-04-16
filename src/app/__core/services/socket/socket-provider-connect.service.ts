@@ -4,7 +4,7 @@ import { Socket, SocketIoConfig } from "ngx-socket-io";
 import { ToastrService } from "ngx-toastr";
 
 import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "../../../CONSTANTS";
-import { Subject } from "rxjs";
+import { firstValueFrom, Subject } from "rxjs";
 import { TypeWebSocketConfiguration } from "../../../Types";
 
 @Injectable({
@@ -74,8 +74,8 @@ export class SocketProviderConnectService {
     this.socketIO.ioSocket.on("connect_error", async (err) => {
       console.debug("WebSocket-connect_error");
       // SocketProviderConnectService.handleErrors(err);
-      const title = await this.translate.get("TOAST.TITLE_SERVER_DOWN").toPromise();
-      const message = await this.translate.get("TOAST.MESSAGE_SERVER_DOWN").toPromise();
+      const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SERVER_DOWN"));
+      const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SERVER_DOWN"));
       this.toast.warning(message, title, DEFAULT_CONFIG_TOAST);
     });
     this.socketIO.ioSocket.on("message", (data) => {

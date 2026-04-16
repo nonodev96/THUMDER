@@ -7,6 +7,7 @@ import { IPackageJson } from 'package-json-type';
 import { ElectronService } from "../../../__core/services";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
 import npm from "../../../../../package.json";
+import { firstValueFrom } from "rxjs";
 
 @Component({
   selector:    "app-about",
@@ -72,7 +73,7 @@ export class AboutView implements OnInit, AfterViewInit {
   private async queryNPMPackage(package_name: string, version: string): Promise<IPackageJson> {
     return new Promise((resolve) => {
       const QUERY = this.SERVER_API + package_name + "@" + version + "/package.json";
-      this.httpClient.get<IPackageJson>(QUERY).toPromise().then((response) => {
+      firstValueFrom(this.httpClient.get<IPackageJson>(QUERY)).then((response) => {
         resolve(JSON.parse(JSON.stringify(response)));
       })
     })

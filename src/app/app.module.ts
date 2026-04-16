@@ -51,7 +51,7 @@ import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
 // ngx-cookieconsent
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from "ngx-cookieconsent";
 // ng2-charts
-import { ChartsModule } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 // angular-gridster2
 import { GridsterModule } from 'angular-gridster2';
 
@@ -261,7 +261,7 @@ export function markedOptionsFactory(): MarkedOptions {
     RouterModule,
 
     AppRoutingModule,
-    ChartsModule,
+    NgChartsModule,
     GridsterModule,
     NgcCookieConsentModule.forRoot(cookieConfig),
 

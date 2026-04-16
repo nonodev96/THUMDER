@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { interval, Observable, PartialObserver, Subject } from "rxjs";
+import { firstValueFrom, interval, Observable, PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
@@ -568,8 +568,8 @@ export class MachineService {
       timeOut:       500,
       positionClass: "toast-bottom-left"
     };
-    const message = await this.translate.get(key_message).toPromise();
-    const title = await this.translate.get(key_title).toPromise();
+    const message = await firstValueFrom(this.translate.get(key_message));
+    const title = await firstValueFrom(this.translate.get(key_title));
     this.toast.info(message, title, config);
     return Promise.resolve();
   }
