@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { Router } from "@angular/router";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { ElectronService } from "../../../__core/services";
 import { AppComponent } from "../../../app.component";
@@ -12,7 +12,7 @@ import { AppComponent } from "../../../app.component";
   templateUrl: "./login.view.html",
 })
 export class LoginView implements OnInit {
-  public loginForm: FormGroup;
+  public loginForm: UntypedFormGroup;
   public showSpinner: boolean = false;
 
   public error_messages = {
@@ -33,13 +33,13 @@ export class LoginView implements OnInit {
               public authService: AuthService,
               public router: Router,
               public app: AppComponent,
-              public formBuilder: FormBuilder) {
+              public formBuilder: UntypedFormBuilder) {
     this.loginForm = this.formBuilder.group({
-      email:    new FormControl("", Validators.compose([
+      email:    new UntypedFormControl("", Validators.compose([
         Validators.required,
         Validators.email
       ])),
-      password: new FormControl("", Validators.compose([
+      password: new UntypedFormControl("", Validators.compose([
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(30)

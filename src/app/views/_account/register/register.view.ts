@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
+import { AbstractControl, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, ValidationErrors, Validators } from "@angular/forms";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { ElectronService } from "../../../__core/services";
 import { AppComponent } from "../../../app.component";
@@ -10,7 +10,7 @@ import { AppComponent } from "../../../app.component";
   templateUrl: "./register.view.html",
 })
 export class RegisterView implements OnInit {
-  public registerForm: FormGroup;
+  public registerForm: UntypedFormGroup;
   public showSpinner: boolean;
 
   public error_messages = {
@@ -42,23 +42,23 @@ export class RegisterView implements OnInit {
               public authService: AuthService,
               public app: AppComponent,
               public electronService: ElectronService,
-              public formBuilder: FormBuilder) {
+              public formBuilder: UntypedFormBuilder) {
     this.registerForm = this.formBuilder.group({
-      first_name:       new FormControl("", Validators.compose([
+      first_name:       new UntypedFormControl("", Validators.compose([
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(30)
       ])),
-      email:            new FormControl("", Validators.compose([
+      email:            new UntypedFormControl("", Validators.compose([
         Validators.required,
         Validators.email
       ])),
-      password:         new FormControl("", Validators.compose([
+      password:         new UntypedFormControl("", Validators.compose([
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(30)
       ])),
-      confirm_password: new FormControl("", Validators.compose([
+      confirm_password: new UntypedFormControl("", Validators.compose([
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(30),
@@ -83,7 +83,7 @@ export class RegisterView implements OnInit {
   }
 
 
-  public checkPassword(formGroup: FormGroup) {
+  public checkPassword(formGroup: UntypedFormGroup) {
     const { value: password } = formGroup.get("password");
     const { value: confirmPassword } = formGroup.get("confirm_password");
     return password === confirmPassword ? null : { password_not_match: true };

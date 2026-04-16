@@ -14,6 +14,9 @@ src/**/*.js
 !src/assets/initMainPage.js
 !src/karma.conf.js
 *.js.map
+.angular/
+
+.pnpm-*.log
 
 # dependencies
 /node_modules
@@ -70,3 +73,7 @@ src/environments/environment.web.ts
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+build-out.txt
+build-output.txt
+pnpm-install.log
