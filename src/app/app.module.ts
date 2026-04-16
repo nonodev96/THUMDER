@@ -47,7 +47,7 @@ import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 // Cookies
 import { CookieService } from "ngx-cookie-service";
 // ngx-markdown
-import { MarkdownModule, MarkedOptions, MarkedRenderer } from "ngx-markdown";
+import { MarkdownModule, MARKED_OPTIONS, MarkedRenderer } from "ngx-markdown";
 // ngx-cookieconsent
 import { NgcCookieConsentModule, NgcCookieConsentConfig } from "ngx-cookieconsent";
 // ng2-charts
@@ -161,7 +161,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
-export function markedOptionsFactory(): MarkedOptions {
+export function markedOptionsFactory(): object {
   const defaultMarkedRenderer = new MarkedRenderer();
   const markedRenderer = new MarkedRenderer();
 
@@ -269,7 +269,7 @@ export function markedOptionsFactory(): MarkedOptions {
       sanitize:      SecurityContext.NONE,
       loader:        HttpClient,
       markedOptions: {
-        provide:    MarkedOptions,
+        provide:    MARKED_OPTIONS,
         useFactory: markedOptionsFactory
       }
     }),
