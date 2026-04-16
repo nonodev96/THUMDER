@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { AppComponent } from "../../../app.component";
 
@@ -9,7 +9,7 @@ import { AppComponent } from "../../../app.component";
   templateUrl: "./forgot-password.view.html",
 })
 export class ForgotPasswordView implements OnInit {
-  public forgotPasswordForm: FormGroup;
+  public forgotPasswordForm: UntypedFormGroup;
   public error_messages = {
     password_reset_email: [
       { type: "required", message: "Email is required." },
@@ -21,9 +21,9 @@ export class ForgotPasswordView implements OnInit {
               private document: Document,
               public app: AppComponent,
               public authService: AuthService,
-              public formBuilder: FormBuilder) {
+              public formBuilder: UntypedFormBuilder) {
     this.forgotPasswordForm = this.formBuilder.group({
-      password_reset_email: new FormControl("", Validators.compose([
+      password_reset_email: new UntypedFormControl("", Validators.compose([
           Validators.required,
           Validators.email
         ])
