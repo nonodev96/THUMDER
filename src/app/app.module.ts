@@ -172,12 +172,7 @@ export function markedOptionsFactory(): object {
 
   markedRenderer.heading = (({ text, depth }: any) => {
     const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
-    return `
-<h${depth}>
-    <a class="anchor" href="#${escapedText}" id="${escapedText}">
-        <span class="header-link"></span>
-    </a> ${text}
-</h${depth}>`;
+    return `<h${depth}><a class="anchor" href="#${escapedText}" id="${escapedText}"><span class="header-link"></span></a> ${text}</h${depth}>`;
   }) as any;
 
   markedRenderer.link = (({ href, title, text }: any) => {

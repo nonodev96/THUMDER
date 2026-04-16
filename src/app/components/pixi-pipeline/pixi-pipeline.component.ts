@@ -62,7 +62,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
       view:            canvas
     });
     this.pApp.stage.addChild(<any>this.pipeline.draw());
-    this.pixiContainer.nativeElement.appendChild(this.pApp.view);
+    this.pixiContainer.nativeElement.appendChild(this.pApp.view as unknown as Node);
 
     this.resizeCanvas();
   }
