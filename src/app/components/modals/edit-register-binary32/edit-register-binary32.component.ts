@@ -16,9 +16,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 
 @Component({
-  selector:    "THUMDER-edit-register-binary32",
-  templateUrl: "./edit-register-binary32.component.html",
-  styleUrls:   ["./edit-register-binary32.component.scss"]
+    selector: "THUMDER-edit-register-binary32",
+    templateUrl: "./edit-register-binary32.component.html",
+    styleUrls: ["./edit-register-binary32.component.scss"],
+    standalone: false
 })
 export class EditRegisterBinary32Component implements OnInit {
 

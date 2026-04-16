@@ -6,9 +6,10 @@ import { REGEX_IS_ABSOLUTE_HREF } from "../../CONSTANTS";
 import { TypeIdTitleFile } from "../../Types";
 
 @Component({
-  selector:    "THUMDER-docs-item",
-  templateUrl: "./docs-item.component.html",
-  styleUrls:   []
+    selector: "THUMDER-docs-item",
+    templateUrl: "./docs-item.component.html",
+    styleUrls: [],
+    standalone: false
 })
 export class DocsItemComponent implements OnInit {
 

@@ -5,9 +5,10 @@ import { Subscription } from "rxjs";
 import { Globals } from "../../../__core/services/globals/globals.service";
 
 @Component({
-  selector:    "THUMDER-windows-debug",
-  templateUrl: "./debug.component.html",
-  styleUrls:   [ "./debug.component.scss" ]
+    selector: "THUMDER-windows-debug",
+    templateUrl: "./debug.component.html",
+    styleUrls: ["./debug.component.scss"],
+    standalone: false
 })
 export class DebugComponent implements OnInit, OnDestroy {
 

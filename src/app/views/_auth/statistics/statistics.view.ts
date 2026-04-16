@@ -8,9 +8,10 @@ import { Subscription } from "rxjs";
 import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
 
 @Component({
-  selector:    "view-statistics",
-  templateUrl: "./statistics.view.html",
-  styleUrls:   []
+    selector: "view-statistics",
+    templateUrl: "./statistics.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class StatisticsView implements OnInit, OnDestroy {
 

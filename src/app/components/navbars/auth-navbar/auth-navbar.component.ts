@@ -10,8 +10,9 @@ import { AUTH_ROUTES } from "../../../CONSTANTS";
 import { AppConfig } from "../../../../environments/_environment";
 
 @Component({
-  selector:    "THUMDER-auth-navbar",
-  templateUrl: "./auth-navbar.component.html"
+    selector: "THUMDER-auth-navbar",
+    templateUrl: "./auth-navbar.component.html",
+    standalone: false
 })
 export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);

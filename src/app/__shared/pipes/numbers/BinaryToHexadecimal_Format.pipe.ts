@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: "binary_32_64_to_hexadecimal"
+    name: "binary_32_64_to_hexadecimal",
+    standalone: false
 })
 export class BinaryToHexadecimal_FormatPipe implements PipeTransform {
   transform(binary: string = "00000000000000000000000000000000"): string {

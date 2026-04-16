@@ -3,8 +3,9 @@ import { DOCUMENT } from "@angular/common";
 import { Globals } from "../../__core/services/globals/globals.service";
 
 @Component({
-  selector:    "THUMDER-layout-auth",
-  templateUrl: "./layout-auth.component.html"
+    selector: "THUMDER-layout-auth",
+    templateUrl: "./layout-auth.component.html",
+    standalone: false
 })
 export class LayoutAuthComponent implements AfterViewInit {
 

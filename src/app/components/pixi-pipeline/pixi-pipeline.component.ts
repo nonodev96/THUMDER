@@ -13,9 +13,10 @@ import { MachineService } from "../../__core/machine/machine.service";
 import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 
 @Component({
-  selector:    "THUMDER-pixi-pipeline",
-  templateUrl: "./pixi-pipeline.component.html",
-  styleUrls:   [ "./pixi-pipeline.component.scss" ]
+    selector: "THUMDER-pixi-pipeline",
+    templateUrl: "./pixi-pipeline.component.html",
+    styleUrls: ["./pixi-pipeline.component.scss"],
+    standalone: false
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 

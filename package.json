@@ -59,21 +59,21 @@
     "cypress:run": "cypress run"
   },
   "dependencies": {
-    "@angular-builders/custom-webpack": "18.0.0",
-    "@angular-devkit/build-angular": "18.2.21",
-    "@angular-eslint/builder": "18.4.3",
-    "@angular/animations": "18.2.14",
-    "@angular/cdk": "18.2.14",
-    "@angular/common": "18.2.14",
-    "@angular/compiler": "18.2.14",
-    "@angular/compiler-cli": "18.2.14",
-    "@angular/core": "18.2.14",
+    "@angular-builders/custom-webpack": "19.0.1",
+    "@angular-devkit/build-angular": "19.2.24",
+    "@angular-eslint/builder": "19.8.1",
+    "@angular/animations": "19.2.21",
+    "@angular/cdk": "19.2.19",
+    "@angular/common": "19.2.21",
+    "@angular/compiler": "19.2.21",
+    "@angular/compiler-cli": "19.2.21",
+    "@angular/core": "19.2.21",
     "@angular/fire": "7.6.1",
-    "@angular/forms": "18.2.14",
-    "@angular/material": "18.2.14",
-    "@angular/platform-browser": "18.2.14",
-    "@angular/platform-browser-dynamic": "18.2.14",
-    "@angular/router": "18.2.14",
+    "@angular/forms": "19.2.21",
+    "@angular/material": "19.2.19",
+    "@angular/platform-browser": "19.2.21",
+    "@angular/platform-browser-dynamic": "19.2.21",
+    "@angular/router": "19.2.21",
     "@covalent/code-editor": "3.1.2",
     "@babel/runtime": "7.26.0",
     "@fortawesome/fontawesome-free": "5.15.4",
@@ -81,7 +81,7 @@
     "@ngx-translate/http-loader": "7.0.0",
     "@popperjs/core": "2.9.1",
     "admin-lte": "3.1.0",
-    "angular-gridster2": "18.0.1",
+    "angular-gridster2": "19.0.0",
     "chart.js": "4.4.3",
     "cookieconsent": "3.1.1",
     "devextreme": "24.2.14",
@@ -91,9 +91,9 @@
     "jquery": "3.6.0",
     "ng-table-virtual-scroll": "1.3.7",
     "ng2-charts": "5.0.4",
-    "ngx-cookie-service": "18.0.0",
+    "ngx-cookie-service": "19.1.2",
     "ngx-cookieconsent": "2.2.3",
-    "ngx-markdown": "18.1.0",
+    "ngx-markdown": "19.1.1",
     "ngx-socket-io": "4.1.0",
     "ngx-toastr": "14.1.0",
     "package-json-type": "1.0.3",
@@ -111,14 +111,14 @@
     "xterm-addon-search": "0.8.0",
     "xterm-addon-web-links": "0.4.0",
     "xterm-addon-webgl": "0.11.1",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.15.1"
   },
   "devDependencies": {
-    "@angular-eslint/eslint-plugin": "18.4.3",
-    "@angular-eslint/eslint-plugin-template": "18.4.3",
-    "@angular-eslint/template-parser": "18.4.3",
-    "@angular/cli": "18.2.21",
-    "@angular/language-service": "18.2.14",
+    "@angular-eslint/eslint-plugin": "19.8.1",
+    "@angular-eslint/eslint-plugin-template": "19.8.1",
+    "@angular-eslint/template-parser": "19.8.1",
+    "@angular/cli": "19.2.24",
+    "@angular/language-service": "19.2.21",
     "@cypress/schematic": "1.5.1",
     "@pixi/canvas-renderer": "^6.1.0",
     "@types/chart.js": "2.9.29",
@@ -154,7 +154,7 @@
     "spectron": "15.0.0",
     "ts-node": "9.0.0",
     "tslib": "^2.0.0",
-    "typescript": "5.4.5",
+    "typescript": "5.8.3",
     "wait-on": "5.0.1",
     "webdriver-manager": "12.1.7"
   },
@@ -164,7 +164,7 @@
   "pnpm": {
     "overrides": {
       "@babel/runtime": "7.26.0",
-      "marked": "12.0.2"
+      "marked": "15.0.12"
     }
   }
 }

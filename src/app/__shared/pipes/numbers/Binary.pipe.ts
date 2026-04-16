@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: "binary"
+    name: "binary",
+    standalone: false
 })
 export class BinaryPipe implements PipeTransform {
   transform(value: number, ...args: unknown[]): string {

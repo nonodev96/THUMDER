@@ -165,26 +165,24 @@ export function markedOptionsFactory(): object {
   const defaultMarkedRenderer = new MarkedRenderer();
   const markedRenderer = new MarkedRenderer();
 
-  markedRenderer.table = (header, body) => {
-    // console.log(header, body);
-    // console.log(`<table class="table">${ header }${ body }</table>`);
-    // return defaultMarkedRenderer.table.call(this, header, body);
-    return `<table class="table table-striped">${header}${body}</table>`;
-  };
+  markedRenderer.table = ((token: any) => {
+    const defaultHtml = defaultMarkedRenderer.table(token);
+    return defaultHtml.replace('<table>', '<table class="table table-striped">');
+  }) as any;
 
-  markedRenderer.heading = (text: string, level: number) => {
-    const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
+  markedRenderer.heading = (({ text, depth }: any) => {
+    const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
     return `
-<h${level}>
+<h${depth}>
     <a class="anchor" href="#${escapedText}" id="${escapedText}">
         <span class="header-link"></span>
     </a> ${text}
-</h${level}>`;
-  };
+</h${depth}>`;
+  }) as any;
 
-  markedRenderer.link = (href: string, title: string, text: string) => {
+  markedRenderer.link = (({ href, title, text }: any) => {
     if (!href) {
-      return defaultMarkedRenderer.link.call(this, href, title, text);
+      return defaultMarkedRenderer.link({ href, title, text } as any);
     }
     const isElectron = window && window.process && window.process.type;
     if (isElectron) {
@@ -196,7 +194,7 @@ export function markedOptionsFactory(): object {
     } else {
       return `<a href="${href}" title="${title}">${text}</a>`;
     }
-  };
+  }) as any;
 
   return {
     renderer:    markedRenderer,

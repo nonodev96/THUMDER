@@ -5,8 +5,9 @@ import { AUTH_ROUTES, PUBLIC_ROUTES } from "../../CONSTANTS";
 import { AppConfig } from "../../../environments/_environment";
 
 @Component({
-  selector:    "app-index",
-  templateUrl: "./index.view.html"
+    selector: "app-index",
+    templateUrl: "./index.view.html",
+    standalone: false
 })
 export class IndexView implements OnInit, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = AUTH_ROUTES;

@@ -10,9 +10,10 @@ import npm from "../../../../../package.json";
 import { firstValueFrom } from "rxjs";
 
 @Component({
-  selector:    "app-about",
-  templateUrl: "./about.view.html",
-  styleUrls:   []
+    selector: "app-about",
+    templateUrl: "./about.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class AboutView implements OnInit, AfterViewInit {
 

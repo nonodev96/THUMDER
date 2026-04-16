@@ -25,9 +25,10 @@ interface EventTargetInput extends EventTarget {
 }
 
 @Component({
-  selector:    "view-config",
-  templateUrl: "./config.view.html",
-  styleUrls:   []
+    selector: "view-config",
+    templateUrl: "./config.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class ConfigView implements OnInit, AfterViewInit {
 

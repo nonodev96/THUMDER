@@ -16,9 +16,10 @@ import {
 import { ElectronService } from "../../__core/services";
 
 @Component({
-  selector:    "app-debug",
-  templateUrl: "./debug-view.html",
-  styleUrls:   [ "./debug-view.scss" ]
+    selector: "app-debug",
+    templateUrl: "./debug-view.html",
+    styleUrls: ["./debug-view.scss"],
+    standalone: false
 })
 export class DebugView implements OnInit, AfterViewInit {
 

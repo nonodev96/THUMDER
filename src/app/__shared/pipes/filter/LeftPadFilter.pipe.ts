@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: "pad_start"
+    name: "pad_start",
+    standalone: false
 })
 export class PadStartFilterPipe implements PipeTransform {
   transform(value: string, args = { maxLength: 32, fillString: "0" }): string {

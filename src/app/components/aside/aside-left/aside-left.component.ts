@@ -6,9 +6,10 @@ import { AppConfig } from "../../../../environments/_environment";
 import { ElectronService } from "../../../__core/services";
 
 @Component({
-  selector:    "THUMDER-aside-left",
-  templateUrl: "./aside-left.component.html",
-  styleUrls:   [ "./aside-left.component.scss" ]
+    selector: "THUMDER-aside-left",
+    templateUrl: "./aside-left.component.html",
+    styleUrls: ["./aside-left.component.scss"],
+    standalone: false
 })
 export class AsideLeftComponent implements OnInit {
 

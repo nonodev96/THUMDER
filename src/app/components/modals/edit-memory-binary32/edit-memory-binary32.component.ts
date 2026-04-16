@@ -14,9 +14,10 @@ import { TypeData } from "../../../Types";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
-  selector:    "THUMDER-edit-memory-binary32",
-  templateUrl: "./edit-memory-binary32.component.html",
-  styleUrls:   ["./edit-memory-binary32.component.scss"]
+    selector: "THUMDER-edit-memory-binary32",
+    templateUrl: "./edit-memory-binary32.component.html",
+    styleUrls: ["./edit-memory-binary32.component.scss"],
+    standalone: false
 })
 export class EditMemoryBinary32Component implements OnInit {
 

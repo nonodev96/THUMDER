@@ -9,9 +9,10 @@ type MenuItem = {
 };
 
 @Component({
-  selector:    "THUMDER-breadcrumb",
-  templateUrl: "./breadcrumb.component.html",
-  styleUrls:   [ "./breadcrumb.component.scss" ]
+    selector: "THUMDER-breadcrumb",
+    templateUrl: "./breadcrumb.component.html",
+    styleUrls: ["./breadcrumb.component.scss"],
+    standalone: false
 })
 export class BreadcrumbComponent {
   public menuItems: MenuItem[];

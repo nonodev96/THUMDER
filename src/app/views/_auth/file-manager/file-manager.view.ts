@@ -45,9 +45,10 @@ export type TypeOnContentReady = {
 };
 
 @Component({
-  selector:    "view-file-manager",
-  templateUrl: "./file-manager.view.html",
-  styleUrls:   []
+    selector: "view-file-manager",
+    templateUrl: "./file-manager.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class FileManagerView implements OnInit, OnDestroy {
   get filesSelected() {

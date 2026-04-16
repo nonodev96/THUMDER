@@ -8,8 +8,9 @@ import { AppComponent } from "../../../app.component";
 
 
 @Component({
-  selector:    "app-login",
-  templateUrl: "./login.view.html",
+    selector: "app-login",
+    templateUrl: "./login.view.html",
+    standalone: false
 })
 export class LoginView implements OnInit {
   public loginForm: UntypedFormGroup;

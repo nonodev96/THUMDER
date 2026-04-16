@@ -9,9 +9,10 @@ import {
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R, MACHINE_REGISTERS_D } from "../../../CONSTANTS";
 
 @Component({
-  selector:    "view-registers",
-  templateUrl: "./registers.view.html",
-  styleUrls:   []
+    selector: "view-registers",
+    templateUrl: "./registers.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class RegistersView implements OnInit, AfterViewInit {
 

@@ -16,9 +16,10 @@ import { MachineService } from "../../__core/machine/machine.service";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
 
 @Component({
-  selector:    "THUMDER-pixi-cycle-clock-diagram",
-  templateUrl: "./pixi-cycle-clock-diagram.component.html",
-  styleUrls:   ["./pixi-cycle-clock-diagram.component.scss"]
+    selector: "THUMDER-pixi-cycle-clock-diagram",
+    templateUrl: "./pixi-cycle-clock-diagram.component.html",
+    styleUrls: ["./pixi-cycle-clock-diagram.component.scss"],
+    standalone: false
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
 

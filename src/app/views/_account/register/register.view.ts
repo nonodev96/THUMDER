@@ -6,8 +6,9 @@ import { ElectronService } from "../../../__core/services";
 import { AppComponent } from "../../../app.component";
 
 @Component({
-  selector:    "app-register",
-  templateUrl: "./register.view.html",
+    selector: "app-register",
+    templateUrl: "./register.view.html",
+    standalone: false
 })
 export class RegisterView implements OnInit {
   public registerForm: UntypedFormGroup;

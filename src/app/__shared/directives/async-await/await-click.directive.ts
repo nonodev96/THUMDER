@@ -1,7 +1,8 @@
 import { Directive, Input } from "@angular/core";
 
 @Directive({
-  selector: "[asyncClick][awaitClick]"
+    selector: "[asyncClick][awaitClick]",
+    standalone: false
 })
 export class AwaitClickDirective {
 

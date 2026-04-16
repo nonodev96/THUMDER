@@ -96,9 +96,10 @@ const PIKACHU = `
 `.split("\n").join("\r\n");
 
 @Component({
-  selector:    "THUMDER-xterm",
-  templateUrl: "./xterm.component.html",
-  styleUrls:   [ "./xterm.component.scss" ]
+    selector: "THUMDER-xterm",
+    templateUrl: "./xterm.component.html",
+    styleUrls: ["./xterm.component.scss"],
+    standalone: false
 })
 export class XtermComponent implements OnInit, AfterViewInit {
   @ViewChild("myTerminal")
