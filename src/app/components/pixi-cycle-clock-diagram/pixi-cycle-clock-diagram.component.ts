@@ -31,7 +31,6 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   public pApp: PIXI.Application;
   private inCanvas: boolean = false;
-  private loader: PIXI.Loader;
   private ticker: PIXI.Ticker;
   private keyboard;
   private stepSimulationSubscription: Subscription = new Subscription();
@@ -75,20 +74,17 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
       view:            canvas
     });
     this.pApp.stage.addChild(<any>this.machine.cycleClockDiagram.draw());
-    this.pixiContainer.nativeElement.appendChild(this.pApp.view);
+    this.pixiContainer.nativeElement.appendChild(this.pApp.view as unknown as Node);
 
-    this.loader = PIXI.Loader.shared;
     this.ticker = PIXI.Ticker.shared;
-    this.loader.load((/*loader, resources*/) => {
-      const fps = new PIXI.Text("FPS: 0", { fill: 0xFFFFFF, fontSize: 12 });
-      fps.position.x = 0 /*this.pApp.view.width - 200*/;
-      fps.position.y = 0 /*25*/;
-      fps.zIndex = 100;
-      this.pApp.ticker.add((/*delta*/) => {
-        fps.text = `FPS: ${this.ticker.FPS.toFixed(2)}`;
-      });
-      this.pApp.ticker.add((delta) => this.gameLoop(delta));
+    const fps = new PIXI.Text("FPS: 0", { fill: 0xFFFFFF, fontSize: 12 });
+    fps.position.x = 0;
+    fps.position.y = 0;
+    fps.zIndex = 100;
+    this.pApp.ticker.add((/*delta*/) => {
+      fps.text = `FPS: ${this.ticker.FPS.toFixed(2)}`;
     });
+    this.pApp.ticker.add((delta) => this.gameLoop(delta));
 
     this.resizeCanvas();
   }

@@ -8,11 +8,11 @@ import {
   ElementRef,
   ViewChild
 } from "@angular/core";
-import { Terminal } from "xterm";
-// import { LigaturesAddon } from "xterm-addon-ligatures";
-import { SearchAddon } from "xterm-addon-search";
-import { WebglAddon } from "xterm-addon-webgl";
-import { WebLinksAddon } from "xterm-addon-web-links";
+import { Terminal } from "@xterm/xterm";
+// import { LigaturesAddon } from "@xterm/addon-ligatures";
+import { SearchAddon } from "@xterm/addon-search";
+import { WebglAddon } from "@xterm/addon-webgl";
+import { WebLinksAddon } from "@xterm/addon-web-links";
 import { TypeOnKeyEvent } from "../../Types";
 
 const PIKACHU = `
@@ -120,10 +120,8 @@ export class XtermComponent implements OnInit, AfterViewInit {
   public terminal: Terminal = new Terminal({
     fontFamily:          '"Cascadia Code", Menlo, monospace',
     theme:               { background: "#090c0f" },
-    bellStyle:           "sound",
     altClickMovesCursor: true,
     cols:                200,
-    rendererType:        "canvas",
     rows:                50,
   });
 
