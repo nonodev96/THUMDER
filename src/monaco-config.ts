@@ -118,7 +118,7 @@ const MonacoConfig: TypeMonacoConfig = {
 
         if (word != null) {
           const documentation = getDocumentationDLX(word.word);
-          if (documentation != []) {
+          if (documentation && documentation.length > 0) {
             return {
               contents: [ {
                 value: documentation.join("\n")
