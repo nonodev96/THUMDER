@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
 import { ToastrService } from "ngx-toastr";
-import { Subscription } from "rxjs";
+import { firstValueFrom, Subscription } from "rxjs";
 import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
 import { EnumLogLevel, InterfaceFileItem, TypeBreakpoints, TypeExtrasIDE } from "../../../Types";
 import { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
@@ -139,16 +139,16 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     try {
       await this.fileSystem.editFileItem(editorFile, editorFile.$key);
 
-      const title = await this.translate.get("TOAST.TITLE_SAVE_FILE").toPromise();
-      const message = await this.translate.get("TOAST.MESSAGE_SAVE_FILE").toPromise();
+      const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SAVE_FILE"));
+      const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SAVE_FILE"));
       this.toastService.success(message, title, {
         timeOut:       1500,
         positionClass: "toast-bottom-left"
       });
     } catch (error) {
       console.error(error);
-      const title = await this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE").toPromise();
-      const message = await this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE").toPromise();
+      const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE"));
+      const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE"));
       this.toastService.error(message, title, {
         timeOut:       2500,
         positionClass: "toast-bottom-left"

@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 import {
   DEFAULT_BINARY_32_BITS,
   DEFAULT_HEXADECIMAL_08_DIGITS,
@@ -428,26 +429,26 @@ export class EditMemoryBinary32Component implements OnInit {
   // =================================================================================================================
 
   private async TOAST_ErrorAddress(args: string): Promise<void> {
-    const title_error_address = await this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS").toPromise();
-    const message_error_address = await this.translate.get("TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE", { text: args }).toPromise();
+    const title_error_address = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS"));
+    const message_error_address = await firstValueFrom(this.translate.get("TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE", { text: args }));
     this.toastService.info(message_error_address, title_error_address);
   }
 
   private async TOAST_ErrorRegex(): Promise<void> {
-    const title_error_regex = await this.translate.get("TOAST.TITLE_ERROR_REGEX").toPromise();
-    const message_error_regex_memory = await this.translate.get("TOAST.MESSAGE_ERROR_REGEX_MEMORY").toPromise();
+    const title_error_regex = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_REGEX"));
+    const message_error_regex_memory = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_REGEX_MEMORY"));
     this.toastService.info(message_error_regex_memory, title_error_regex);
   }
 
   private async TOAST_ErrorInValueMemory(): Promise<void> {
-    const title = await this.translate.get("TOAST.TITLE_ERROR_IN_VALUE_MEMORY").toPromise();
-    const message = await this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_MEMORY").toPromise();
+    const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_IN_VALUE_MEMORY"));
+    const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_MEMORY"));
     this.toastService.info(message, title);
   }
 
   private async TOAST_ErrorInAddressMemory(): Promise<void> {
-    const title = await this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS_MEMORY").toPromise();
-    const message = await this.translate.get("TOAST.MESSAGE_ERROR_IN_ADDRESS_MEMORY").toPromise();
+    const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS_MEMORY"));
+    const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_IN_ADDRESS_MEMORY"));
     this.toastService.info(message, title);
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { firstValueFrom, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import {
   Firestore,
@@ -63,7 +63,7 @@ export class FileSystemStorageService {
       defaultFileItem.key = Utils.uuidv4();
       defaultFileItem.e1_uid = userData.uid;
       defaultFileItem.dateModified = new Date();
-      defaultFileItem.content = await this.httpClient.get("assets/examples-dlx/" + filename, { responseType: "text" }).toPromise();
+      defaultFileItem.content = await firstValueFrom(this.httpClient.get("assets/examples-dlx/" + filename, { responseType: "text" }));
       await this.createFileItem(defaultFileItem);
     }
     return Promise.resolve(0);

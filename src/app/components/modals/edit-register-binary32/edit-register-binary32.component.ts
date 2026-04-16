@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { TypeRegister, TypeRegisterToEdit } from "../../../Types";
 import {
@@ -206,8 +207,8 @@ export class EditRegisterBinary32Component implements OnInit {
   }
 
   private async TOAST_ErrorRegister(): Promise<void> {
-    const title_error_address = await this.translate.get("TOAST.TITLE_ERROR_IN_REGISTER").toPromise();
-    const message_error_address = await this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_REGISTER").toPromise();
+    const title_error_address = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_IN_REGISTER"));
+    const message_error_address = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_IN_VALUE_REGISTER"));
     this.toastService.info(message_error_address, title_error_address);
   }
 }
