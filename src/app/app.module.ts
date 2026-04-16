@@ -27,7 +27,7 @@ import { MatSortModule } from "@angular/material/sort";
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -217,130 +217,113 @@ export function markedOptionsFactory(): object {
 // const firebase_database = getDatabase(app);
 // const firebase_functions = getFunctions(app);
 
-@NgModule({
-  declarations: [
-    AppComponent,
-
-    DebugView,
-    MultiplesViewsComponent,
-
-    LayoutAdminComponent,
-    LayoutAuthComponent,
-    LayoutLandingComponent,
-
-
-    IndexView,
-    // LandingView,
-    // AboutView,
-
-    CalculatorView,
-    CodeView,
-    ConfigView,
-    DocsView,
-    FileManagerView,
-    EditorView,
-    LoggerView,
-    MemoryView,
-    CycleClockDiagramView,
-    PipelineView,
-    ProfileView,
-    RegistersView,
-    StatisticsView,
-    GridViewComponent
-  ],
-  imports:      [
-    CoreModule,
-    SharedModule,
-    ComponentsModule,
-
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule,
-
-    AppRoutingModule,
-    NgChartsModule,
-    GridsterModule,
-    NgcCookieConsentModule.forRoot(cookieConfig),
-
-    MarkdownModule.forRoot({
-      sanitize:      SecurityContext.NONE,
-      loader:        HttpClient,
-      markedOptions: {
-        provide:    MARKED_OPTIONS,
-        useFactory: markedOptionsFactory
-      }
-    }),
-    ToastrModule.forRoot(),
-    // SocketIoModule.forRoot(CONFIG_WEBSOCKET),
-    TranslateModule.forRoot({
-      loader: {
-        provide:    TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps:       [ HttpClient ]
-      }
-    }),
-    // MonacoEditorModule,
-    CovalentCodeEditorModule,
-
-
-    DxToolbarModule,
-    DxListModule,
-    DxPopupModule,
-    DxFileManagerModule,
-    // use forRoot() in main app module only.
-
-    // AngularFireModule,
-    // AngularFireModule.initializeApp(AppConfig.firebase),
-    // AngularFireAnalyticsModule,
-    // AngularFireDatabaseModule,
-    // AngularFireStorageModule,
-    // AngularFirestoreModule,
-    // AngularFireAuthModule,
-    provideFirebaseApp(() => initializeApp(AppConfig.firebase)),
-    provideAuth(() => getAuth()),
-    provideAnalytics(() => getAnalytics()),
-    provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()),
-    provideDatabase(() => getDatabase()),
-    provideFunctions(() => getFunctions()),
-    provideMessaging(() => getMessaging()),
-    providePerformance(() => getPerformance()),
-    provideRemoteConfig(() => getRemoteConfig()),
-    MatSortModule,
-    MatTableModule,
-    ScrollingModule,
-    TableVirtualScrollModule,
-    DragDropModule
-  ],
-  providers:    [
-    // {
-    //   provide: MONACO_PATH,
-    //   useValue: 'https://unpkg.com/browse/monaco-editor@0.26.1/min/vs/'
-    // },
-    AppComponent,
-    AuthGuard,
-    NoAuthGuard,
-    UtilityService,
-    CookieService,
-    /*
-        MachineService,
-        {
-          provide: APP_INITIALIZER,
-          useFactory: Utils.initServicesFactory,
-          deps: [MachineService],
-          multi: true
-        }
-     */
-    UserTrackingService,
-    ScreenTrackingService
-  ],
-  exports:      [],
-  bootstrap:    [
-    AppComponent
-  ]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        DebugView,
+        MultiplesViewsComponent,
+        LayoutAdminComponent,
+        LayoutAuthComponent,
+        LayoutLandingComponent,
+        IndexView,
+        // LandingView,
+        // AboutView,
+        CalculatorView,
+        CodeView,
+        ConfigView,
+        DocsView,
+        FileManagerView,
+        EditorView,
+        LoggerView,
+        MemoryView,
+        CycleClockDiagramView,
+        PipelineView,
+        ProfileView,
+        RegistersView,
+        StatisticsView,
+        GridViewComponent
+    ],
+    exports: [],
+    bootstrap: [
+        AppComponent
+    ], imports: [CoreModule,
+        SharedModule,
+        ComponentsModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        AppRoutingModule,
+        NgChartsModule,
+        GridsterModule,
+        NgcCookieConsentModule.forRoot(cookieConfig),
+        MarkdownModule.forRoot({
+            sanitize: SecurityContext.NONE,
+            loader: HttpClient,
+            markedOptions: {
+                provide: MARKED_OPTIONS,
+                useFactory: markedOptionsFactory
+            }
+        }),
+        ToastrModule.forRoot(),
+        // SocketIoModule.forRoot(CONFIG_WEBSOCKET),
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        // MonacoEditorModule,
+        CovalentCodeEditorModule,
+        DxToolbarModule,
+        DxListModule,
+        DxPopupModule,
+        DxFileManagerModule,
+        // use forRoot() in main app module only.
+        // AngularFireModule,
+        // AngularFireModule.initializeApp(AppConfig.firebase),
+        // AngularFireAnalyticsModule,
+        // AngularFireDatabaseModule,
+        // AngularFireStorageModule,
+        // AngularFirestoreModule,
+        // AngularFireAuthModule,
+        provideFirebaseApp(() => initializeApp(AppConfig.firebase)),
+        provideAuth(() => getAuth()),
+        provideAnalytics(() => getAnalytics()),
+        provideFirestore(() => getFirestore()),
+        provideStorage(() => getStorage()),
+        provideDatabase(() => getDatabase()),
+        provideFunctions(() => getFunctions()),
+        provideMessaging(() => getMessaging()),
+        providePerformance(() => getPerformance()),
+        provideRemoteConfig(() => getRemoteConfig()),
+        MatSortModule,
+        MatTableModule,
+        ScrollingModule,
+        TableVirtualScrollModule,
+        DragDropModule], providers: [
+        // {
+        //   provide: MONACO_PATH,
+        //   useValue: 'https://unpkg.com/browse/monaco-editor@0.26.1/min/vs/'
+        // },
+        AppComponent,
+        AuthGuard,
+        NoAuthGuard,
+        UtilityService,
+        CookieService,
+        /*
+            MachineService,
+            {
+              provide: APP_INITIALIZER,
+              useFactory: Utils.initServicesFactory,
+              deps: [MachineService],
+              multi: true
+            }
+         */
+        UserTrackingService,
+        ScreenTrackingService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
 }
