@@ -17,6 +17,8 @@ src/**/*.js
 .angular/
 
 .pnpm-*.log
+pnpm-lock.yaml
+ng-update-*.log
 
 # dependencies
 /node_modules

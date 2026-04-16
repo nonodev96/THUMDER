@@ -467,13 +467,13 @@ export class MachineService {
     if (this.statusMachineInStep.pipeline) {
       this.processResponsePipeline();
     }
-    if (this.statusMachineInStep.registers !== []) {
+    if (this.statusMachineInStep.registers && this.statusMachineInStep.registers.length > 0) {
       this.registers.processRegisterToUpdateArray(this.statusMachineInStep.registers);
     }
-    if (this.statusMachineInStep.memory !== []) {
+    if (this.statusMachineInStep.memory && this.statusMachineInStep.memory.length > 0) {
       this.memory.processMemoryToUpdateArray(this.statusMachineInStep.memory);
     }
-    if (this.statusMachineInStep.statistics !== {}) {
+    if (this.statusMachineInStep.statistics && Object.keys(this.statusMachineInStep.statistics).length > 0) {
       this.dataStatistics.processResponse(this.statusMachineInStep.statistics);
     }
     this.stepSimulation$.next(this.statusMachineInStep);
