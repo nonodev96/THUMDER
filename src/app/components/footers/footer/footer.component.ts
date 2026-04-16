@@ -6,8 +6,9 @@ import { StorageService } from "../../../__core/storage/storage.service";
 import { ElectronService } from "../../../__core/services";
 
 @Component({
-  selector:    "THUMDER-footer",
-  templateUrl: "./footer.component.html"
+    selector: "THUMDER-footer",
+    templateUrl: "./footer.component.html",
+    standalone: false
 })
 export class FooterComponent implements OnInit {
   public date: number = new Date().getFullYear();

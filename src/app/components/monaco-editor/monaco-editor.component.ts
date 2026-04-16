@@ -9,9 +9,10 @@ import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorCon
 import EditorOption = monaco.editor.EditorOption;
 
 @Component({
-  selector:    "THUMDER-monaco-editor",
-  templateUrl: "./monaco-editor.component.html",
-  styleUrls:   ["./monaco-editor.component.scss"]
+    selector: "THUMDER-monaco-editor",
+    templateUrl: "./monaco-editor.component.html",
+    styleUrls: ["./monaco-editor.component.scss"],
+    standalone: false
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 

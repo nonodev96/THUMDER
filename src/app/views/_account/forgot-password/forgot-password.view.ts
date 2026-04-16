@@ -5,8 +5,9 @@ import { AuthService } from "../../../__core/auth/auth.service";
 import { AppComponent } from "../../../app.component";
 
 @Component({
-  selector:    "app-forgot-password",
-  templateUrl: "./forgot-password.view.html",
+    selector: "app-forgot-password",
+    templateUrl: "./forgot-password.view.html",
+    standalone: false
 })
 export class ForgotPasswordView implements OnInit {
   public forgotPasswordForm: UntypedFormGroup;

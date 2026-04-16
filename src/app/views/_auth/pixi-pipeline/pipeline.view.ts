@@ -3,9 +3,10 @@ import { DOCUMENT } from "@angular/common";
 import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pipeline.component";
 
 @Component({
-  selector:    "view-pipeline",
-  templateUrl: "./pipeline.view.html",
-  styleUrls:   []
+    selector: "view-pipeline",
+    templateUrl: "./pipeline.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class PipelineView implements OnInit {
 

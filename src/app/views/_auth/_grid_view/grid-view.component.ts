@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { GridsterConfig, GridsterItem } from "angular-gridster2";
 
 @Component({
-  selector:    'app-grid-view',
-  templateUrl: './grid-view.component.html',
-  styleUrls:   [ './grid-view.component.scss' ]
+    selector: 'app-grid-view',
+    templateUrl: './grid-view.component.html',
+    styleUrls: ['./grid-view.component.scss'],
+    standalone: false
 })
 export class GridViewComponent implements OnInit {
   options: GridsterConfig;

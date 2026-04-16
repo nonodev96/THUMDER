@@ -10,9 +10,10 @@ import { TypeAddress, TypeDataDisplayColumn } from "../../../Types";
 import { StorageService } from "../../../__core/storage/storage.service";
 
 @Component({
-  selector:    "view-memory",
-  templateUrl: "./memory.view.html",
-  styleUrls:   []
+    selector: "view-memory",
+    templateUrl: "./memory.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class MemoryView implements OnInit, AfterViewInit {
 

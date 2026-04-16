@@ -13,9 +13,10 @@ import { Utils } from "../../../Utils";
 import { Subscription } from "rxjs";
 
 @Component({
-  selector:    "view-code",
-  templateUrl: "./code.view.html",
-  styleUrls:   []
+    selector: "view-code",
+    templateUrl: "./code.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 

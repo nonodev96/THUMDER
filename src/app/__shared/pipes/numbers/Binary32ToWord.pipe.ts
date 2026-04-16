@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from "@angular/core";
 import { DEFAULT_BINARY_32_BITS } from "../../../CONSTANTS";
 
 @Pipe({
-  name: "binary32_to_word"
+    name: "binary32_to_word",
+    standalone: false
 })
 export class Binary32ToWordPipe implements PipeTransform {
   transform(binary: string = DEFAULT_BINARY_32_BITS): string {

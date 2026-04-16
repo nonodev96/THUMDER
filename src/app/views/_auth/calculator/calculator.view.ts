@@ -3,9 +3,10 @@ import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "../../../CONSTAN
 import { Utils } from "../../../Utils";
 
 @Component({
-  selector:    "view-calculator",
-  templateUrl: "./calculator.view.html",
-  styleUrls:   []
+    selector: "view-calculator",
+    templateUrl: "./calculator.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class CalculatorView implements OnInit {
 

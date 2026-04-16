@@ -3,8 +3,9 @@ import { DOCUMENT } from "@angular/common";
 import { PixiCycleClockDiagramComponent } from "../../../components/pixi-cycle-clock-diagram/pixi-cycle-clock-diagram.component";
 
 @Component({
-  selector:    "view-cycle-clock-diagram",
-  templateUrl: "./cycle-clock-diagram.view.html"
+    selector: "view-cycle-clock-diagram",
+    templateUrl: "./cycle-clock-diagram.view.html",
+    standalone: false
 })
 export class CycleClockDiagramView implements OnInit {
   @ViewChild(PixiCycleClockDiagramComponent)

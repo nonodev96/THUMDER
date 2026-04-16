@@ -12,7 +12,8 @@ import { Subscription, Observable } from "rxjs";
 
 
 @Directive({
-  selector: "[asyncClick]",
+    selector: "[asyncClick]",
+    standalone: false
 })
 export class AsyncClickDirective implements OnChanges, OnDestroy {
   private pending = true;

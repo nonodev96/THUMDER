@@ -2,8 +2,9 @@ import { Component, Inject, AfterViewInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 
 @Component({
-  selector:    "THUMDER-layout-admin",
-  templateUrl: "./layout-admin.component.html",
+    selector: "THUMDER-layout-admin",
+    templateUrl: "./layout-admin.component.html",
+    standalone: false
 })
 export class LayoutAdminComponent implements AfterViewInit {
 

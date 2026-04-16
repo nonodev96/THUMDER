@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: "binary32_to_halfword"
+    name: "binary32_to_halfword",
+    standalone: false
 })
 export class Binary32ToHalfWordPipe implements PipeTransform {
   transform(binary: string = "00000000000000000000000000000000"): string {

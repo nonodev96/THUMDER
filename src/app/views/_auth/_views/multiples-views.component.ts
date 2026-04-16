@@ -6,9 +6,10 @@ import { Globals } from "../../../__core/services/globals/globals.service";
 import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";
 
 @Component({
-  selector:    "view-multiples-views",
-  templateUrl: "./multiples-views.component.html",
-  styleUrls:   []
+    selector: "view-multiples-views",
+    templateUrl: "./multiples-views.component.html",
+    styleUrls: [],
+    standalone: false
 })
 export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CdkDrag) draggable_list: QueryList<CdkDrag>;

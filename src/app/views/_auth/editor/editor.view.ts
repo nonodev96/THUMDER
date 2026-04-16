@@ -12,9 +12,10 @@ import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
 import * as env  from "../../../../environments/_environment";
 
 @Component({
-  selector:    "view-editor",
-  templateUrl: "./editor.view.html",
-  styleUrls:   []
+    selector: "view-editor",
+    templateUrl: "./editor.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 

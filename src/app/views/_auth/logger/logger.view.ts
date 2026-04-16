@@ -4,9 +4,10 @@ import { TypeOnKeyEvent } from "../../../Types";
 import { MachineService } from "../../../__core/machine/machine.service";
 
 @Component({
-  selector:    "view-logger",
-  templateUrl: "./logger.view.html",
-  styleUrls:   []
+    selector: "view-logger",
+    templateUrl: "./logger.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class LoggerView implements OnInit {
 

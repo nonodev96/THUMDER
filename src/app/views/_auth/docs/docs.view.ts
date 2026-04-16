@@ -5,9 +5,10 @@ import { TypeIdTitleFile } from "../../../Types";
 // import { fetchAndActivate, getRemoteConfig, getValue } from "@angular/fire/remote-config";
 
 @Component({
-  selector:    "view-docs",
-  templateUrl: "./docs.view.html",
-  styleUrls:   []
+    selector: "view-docs",
+    templateUrl: "./docs.view.html",
+    styleUrls: [],
+    standalone: false
 })
 export class DocsView implements OnInit, AfterViewInit {
   public main_list: TypeIdTitleFile[] = [ {

@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'objects_entries'
+    name: 'objects_entries',
+    standalone: false
 })
 export class ObjectsPipe implements PipeTransform {
   transform(value: unknown, ...args: unknown[]): unknown {
