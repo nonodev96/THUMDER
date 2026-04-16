@@ -1,8 +1,8 @@
 #!/bin/bash
 echo 'Running Script'
 
-PATH_UML_INPUT="/Users/nonodev96/WebstormProjects/THUMDER/UML/"
-PATH_UML_OUTPUT="/Users/nonodev96/"
+PATH_UML_INPUT="./UML/"
+PATH_UML_OUTPUT="./output/"
 
 FILES="
 THUMDER-core-Services

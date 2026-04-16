@@ -1,8 +1,8 @@
 #!/bin/bash
 echo 'Running Script'
 
-PATH_UML_INPUT="/Users/nonodev96/WebstormProjects/THUMDER/UML/4.Sequence/"
-PATH_UML_OUTPUT="/Users/nonodev96/PNG/"
+PATH_UML_INPUT="./UML/4.Sequence/"
+PATH_UML_OUTPUT="./output/PNG/"
 
 FILES="
 4.1.SignIn
