@@ -87,7 +87,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getInstructionDataPipelineItem(item: TypeCycleCell): TypeInstructionPipelineRepresentation {
-    if (item.address === undefined || item.address === "") return { text: "", draw: item.draw };
+    if (item.address === undefined || (item.address as string).length === 0) return { text: "", draw: item.draw };
     const machineInstruction = this.machine.getCode(item.address);
     return {
       text: machineInstruction.instruction,
@@ -97,7 +97,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private getInstructionDataPipeline(items: TypeCycleCellUnit[]): TypeInstructionPipelineFloatingRepresentation[] {
     return items.map((item) => {
-      if (item.address === undefined || item.address === "") return { unit: item.unit, text: "", draw: item.draw };
+      if (item.address === undefined || (item.address as string).length === 0) return { unit: item.unit, text: "", draw: item.draw };
       const machineInstruction = this.machine.getCode(item.address);
       return {
         unit: item.unit,
