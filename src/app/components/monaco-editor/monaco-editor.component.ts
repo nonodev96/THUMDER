@@ -83,12 +83,18 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
+    MonacoConfig.onMonacoLoad();
+    monaco.editor.setTheme(this.inputTheme);
+    const model = this.editor.getModel();
+    if (model) {
+      monaco.editor.setModelLanguage(model, this.inputLanguage);
+    }
     this.editor.layout();
     this.editor.updateOptions({ readOnly: this.editorFile.$key == "" });
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, async () => {
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, async () => {
       this.save();
     });
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_D, () => {
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD, () => {
       this.toggleDebuggerTag();
     });
     this.editor.onDidChangeCursorSelection((_$event) => {

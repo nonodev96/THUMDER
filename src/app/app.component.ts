@@ -5,12 +5,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
 import {
   NgcCookieConsentService,
-  NgcInitializeEvent,
+  NgcInitializingEvent,
   NgcStatusChangeEvent,
   NgcNoCookieLawEvent
 } from "ngx-cookieconsent";
 
-import MonacoConfig from "../monaco-config";
 import { DEFAULT_LANG } from "./CONSTANTS";
 import { TypeLang } from "./Types";
 import { ElectronService } from "./__core/services";
@@ -79,7 +78,6 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
     });
-    MonacoConfig.onMonacoLoad();
   }
 
   ngOnInit(): void {
@@ -101,7 +99,7 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.popupCloseSubscription = this.ccService.popupClose$.subscribe(() => {
       // you can use this.ccService.getConfig() to do stuff...
     });
-    this.initializeSubscription = this.ccService.initialize$.subscribe((_$event: NgcInitializeEvent) => {
+    this.initializeSubscription = this.ccService.initialized$.subscribe((_$event: void) => {
       // you can use this.ccService.getConfig() to do stuff...
     });
     this.statusChangeSubscription = this.ccService.statusChange$.subscribe(($event: NgcStatusChangeEvent) => {

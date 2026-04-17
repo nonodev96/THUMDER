@@ -3,7 +3,7 @@ import { firstValueFrom, interval, Observable, PartialObserver, Subject } from "
 import { takeUntil } from "rxjs/operators";
 import { ToastrService } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
-import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
+import { IndividualConfig } from "ngx-toastr";
 import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
 import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import {

@@ -1,4 +1,4 @@
-import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
+import { IndividualConfig } from "ngx-toastr";
 import { SocketIoConfig } from "ngx-socket-io";
 import { AppConfig } from "../environments/_environment";
 import {
