@@ -117,7 +117,7 @@
               "node_modules/admin-lte/dist/js/adminlte.js",
               "node_modules/jquery-mousewheel/jquery.mousewheel.js",
               "node_modules/raphael/raphael.js",
-              "node_modules/chart.js/dist/Chart.js",
+              "node_modules/chart.js/dist/chart.umd.js",
               "node_modules/prismjs/prism.js",
               "node_modules/prismjs/components/prism-typescript.min.js",
               "node_modules/prismjs/components/prism-javascript.min.js",
@@ -126,7 +126,13 @@
               "node_modules/emoji-toolkit/lib/js/joypixels.min.js",
               "node_modules/cookieconsent/build/cookieconsent.min.js",
               "src/assets/initMainPage.js"
-            ]
+            ],
+            "loader": {
+              ".ttf": "file",
+              ".woff": "file",
+              ".woff2": "file",
+              ".eot": "file"
+            }
           },
           "configurations": {
             "dev": {

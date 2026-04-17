@@ -7,11 +7,13 @@ import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorCon
 type TypeMonacoConfig = {
   baseUrl: string,
   defaultOptions: IStandaloneEditorConstructionOptions,
-  onMonacoLoad: () => void
+  onMonacoLoad: () => void,
+  _loaded: boolean
 }
 
 const MonacoConfig: TypeMonacoConfig = {
   baseUrl:        AppConfig.production ? './assets' : '',
+  _loaded:        false,
   defaultOptions: {
     theme:           'thumderTheme',
     language:        'thumderLanguage',
@@ -27,6 +29,8 @@ const MonacoConfig: TypeMonacoConfig = {
     // "semanticHighlighting.enabled": false,
   },
   onMonacoLoad:   function () {
+    if (this._loaded) return;
+    this._loaded = true;
 
     // Register a new language
     monaco.languages.register({ id: 'thumderLanguage' });
@@ -51,7 +55,7 @@ const MonacoConfig: TypeMonacoConfig = {
 
     // Define a new theme that contains only rules that match this language
     monaco.editor.defineTheme('thumderTheme', {
-      colors:              undefined,
+      colors:              {},
       encodedTokensColors: [],
       base:                'vs',
       inherit:             false,

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from "@angular/router";
 import { AuthService } from "../../__core/auth/auth.service";
 import { ToastrService } from "ngx-toastr";
-import { IndividualConfig } from "ngx-toastr/toastr/toastr-config";
+import { IndividualConfig } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
 import { firstValueFrom } from "rxjs";

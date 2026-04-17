@@ -1,6 +1,3 @@
-import "reflect-metadata";
-import "../polyfills";
-
 import { NgModule, SecurityContext } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { initializeApp, provideFirebaseApp, /*getApp*/ } from '@angular/fire/app';
@@ -57,8 +54,6 @@ import { GridsterModule } from 'angular-gridster2';
 
 // Services
 import { UtilityService } from "./__core/services/utility/utility.service";
-import { ElectronService } from "./__core/services";
-
 // NG Translate
 import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -119,17 +114,10 @@ import { DebugView } from "./views/debug/debug-view";
 import { IndexView } from "./views/_index/index.view";
 // AoT requires an exported function for factories
 
-// PIXI
-import * as PIXI from "pixi.js";
-
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-PIXI.settings.SORTABLE_CHILDREN = true;
-
-const isServer = ElectronService.isServer;
 const domain = "localhost";
 
 const cookieConfig: NgcCookieConsentConfig = {
-  enabled: isServer,
+  enabled: false,
   // autoOpen: isElectronApp,
   cookie:   {
     domain: domain
