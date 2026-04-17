@@ -11,7 +11,7 @@ module.exports = (config, options) => {
         continue;
       }
       let fileReplacementParts = fileReplacement['with'].split('.');
-      if (fileReplacementParts.length > 1 && ['web'].indexOf(fileReplacementParts[1]) >= 0) {
+      if (fileReplacementParts.length > 1 && ['web', 'dev'].indexOf(fileReplacementParts[1]) >= 0) {
         config.target = 'web';
       }
       break;

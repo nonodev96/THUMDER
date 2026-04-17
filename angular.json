@@ -439,17 +439,17 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "thumder-angular-electron:build"
+            "buildTarget": "thumder-angular-electron:build"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "thumder-angular-electron:build:dev"
+              "buildTarget": "thumder-angular-electron:build:dev"
             },
             "web": {
-              "browserTarget": "thumder-angular-electron:build:web"
+              "buildTarget": "thumder-angular-electron:build:web"
             },
             "production": {
-              "browserTarget": "thumder-angular-electron:build:production"
+              "buildTarget": "thumder-angular-electron:build:production"
             }
           }
         },
