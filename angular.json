@@ -9,13 +9,16 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist",
+            "outputPath": {
+              "base": "dist"
+            },
             "index": "src/index.html",
-            "main": "src/main.ts",
+            "browser": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["src/polyfills.ts"],
+            "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
               "@covalent/code-editor",
               "chart.js",
@@ -123,239 +126,14 @@
               "node_modules/emoji-toolkit/lib/js/joypixels.min.js",
               "node_modules/cookieconsent/build/cookieconsent.min.js",
               "src/assets/initMainPage.js"
-            ],
-            "customWebpackConfig": {
-              "path": "./angular.webpack.js",
-              "mergeStrategies": {
-                "module.rules": "prepend"
-              }
-            }
-          },
-          "configurations": {
-            "dev": {
-              "optimization": {
-                "scripts": false,
-                "styles": {
-                  "minify": false,
-                  "inlineCritical": false
-                },
-                "fonts": {
-                  "inline": false
-                }
-              },
-              "outputHashing": "all",
-              "sourceMap": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/_environment.ts",
-                  "with": "src/environments/environment.dev.ts"
-                }
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "80mb",
-                  "maximumError": "100mb"
-                }
-              ]
-            },
-            "web": {
-              "optimization": {
-                "scripts": false,
-                "styles": {
-                  "minify": false,
-                  "inlineCritical": false
-                },
-                "fonts": {
-                  "inline": false
-                }
-              },
-              "outputHashing": "all",
-              "sourceMap": true,
-              "namedChunks": false,
-              "aot": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/_environment.ts",
-                  "with": "src/environments/environment.web.ts"
-                }
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "80mb",
-                  "maximumError": "100mb"
-                }
-              ]
-            },
-            "production": {
-              "optimization": {
-                "scripts": false,
-                "styles": {
-                  "minify": false,
-                  "inlineCritical": false
-                },
-                "fonts": {
-                  "inline": false
-                }
-              },
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/_environment.ts",
-                  "with": "src/environments/environment.production.ts"
-                }
-              ],
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "80mb",
-                  "maximumError": "100mb"
-                }
-              ]
-            }
-          }
-        },
-        "build-angular": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist-angular",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
-            "allowedCommonJsDependencies": [
-              "@covalent/code-editor",
-              "chart.js",
-              "pixi.js-keyboard",
-              "pixi.js-mouse",
-              "mini-signals",
-              "@firebase/app-check",
-              "socket.io-client",
-              "datastructures-js",
-              "thumder-ontology",
-              "debug"
-            ],
-            "assets": [
-              "src/assets",
-              {
-                "glob": "*.md",
-                "input": "./wiki",
-                "output": "./assets/wiki/"
-              },
-              {
-                "glob": "*.png",
-                "input": "./wiki/wiki-assets",
-                "output": "./wiki-assets/"
-              },
-              {
-                "glob": "*.gif",
-                "input": "./wiki/wiki-assets",
-                "output": "./wiki-assets/"
-              },
-              {
-                "glob": "LICENSE.md",
-                "input": "./",
-                "output": "./assets/md/"
-              },
-              {
-                "glob": "COOKIES.md",
-                "input": "./",
-                "output": "./assets/md/"
-              },
-              {
-                "glob": "CHANGELOG.md",
-                "input": "./",
-                "output": "./assets/md/"
-              },
-              {
-                "glob": "README.md",
-                "input": "./",
-                "output": "./assets/md/"
-              },
-              {
-                "glob": "ABOUT.md",
-                "input": "./",
-                "output": "./assets/md/"
-              },
-              {
-                "glob": "Datapath_Schematic.svg",
-                "input": "./assets",
-                "output": "./assets/"
-              },
-              {
-                "glob": "DLX-TABLE-Instructions.md",
-                "input": "./",
-                "output": "./assets/md/"
-              }
-            ],
-            "styles": [
-              "src/styles.scss",
-              "src/monaco-editor.scss",
-              "src/assets/flag-icons-master/css/flag-icon.css",
-              "src/assets/styles/dx.generic.custom-scheme-thumder.css",
-              "src/assets/styles/bootstrap-4-xxl.css",
-              "node_modules/@xterm/xterm/css/xterm.css",
-              "node_modules/devextreme/dist/css/dx.light.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.css",
-              "node_modules/overlayscrollbars/css/OverlayScrollbars.css",
-              "node_modules/admin-lte/dist/css/adminlte.css",
-              "node_modules/ngx-toastr/toastr.css",
-              "node_modules/prismjs/themes/prism-okaidia.css",
-              "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css",
-              "node_modules/cookieconsent/build/cookieconsent.min.css"
-            ],
-            "scripts": [
-              "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/bootstrap/dist/js/bootstrap.bundle.js",
-              "node_modules/overlayscrollbars/js/jquery.overlayScrollbars.js",
-              "node_modules/admin-lte/dist/js/adminlte.js",
-              "node_modules/jquery-mousewheel/jquery.mousewheel.js",
-              "node_modules/raphael/raphael.js",
-              "node_modules/chart.js/dist/Chart.js",
-              "node_modules/prismjs/prism.js",
-              "node_modules/prismjs/components/prism-typescript.min.js",
-              "node_modules/prismjs/components/prism-javascript.min.js",
-              "node_modules/prismjs/components/prism-css.min.js",
-              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
-              "node_modules/emoji-toolkit/lib/js/joypixels.min.js",
-              "node_modules/cookieconsent/build/cookieconsent.min.js",
-              "src/assets/initMainPage.js"
             ]
           },
           "configurations": {
             "dev": {
-              "optimization": {
-                "scripts": false,
-                "styles": {
-                  "minify": false,
-                  "inlineCritical": false
-                },
-                "fonts": {
-                  "inline": false
-                }
-              },
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/_environment.ts",
@@ -371,23 +149,10 @@
               ]
             },
             "web": {
-              "optimization": {
-                "scripts": false,
-                "styles": {
-                  "minify": false,
-                  "inlineCritical": false
-                },
-                "fonts": {
-                  "inline": false
-                }
-              },
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
-              "namedChunks": false,
-              "aot": false,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/_environment.ts",
@@ -403,23 +168,10 @@
               ]
             },
             "production": {
-              "optimization": {
-                "scripts": true,
-                "styles": {
-                  "minify": false,
-                  "inlineCritical": false
-                },
-                "fonts": {
-                  "inline": true
-                }
-              },
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/_environment.ts",
@@ -437,7 +189,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular/build:dev-server",
           "options": {
             "buildTarget": "thumder-angular-electron:build"
           },
@@ -450,23 +202,6 @@
             },
             "production": {
               "buildTarget": "thumder-angular-electron:build:production"
-            }
-          }
-        },
-        "serve-angular": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "buildTarget": "thumder-angular-electron:build-angular"
-          },
-          "configurations": {
-            "dev": {
-              "buildTarget": "thumder-angular-electron:build-angular:dev"
-            },
-            "web": {
-              "buildTarget": "thumder-angular-electron:build-angular:web"
-            },
-            "production": {
-              "buildTarget": "thumder-angular-electron:build-angular:production"
             }
           }
         },

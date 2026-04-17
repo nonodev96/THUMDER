@@ -1,6 +1,7 @@
 {
   "productName": "THUMDER",
   "artifactName": "${productName}-v${version}.${ext}",
+  "asar": true,
   "directories": {
     "output": "release/"
   },
@@ -18,22 +19,26 @@
     "!_config.yml",
     "!karma.conf.js",
     "!tsconfig.json",
-    "!tslint.json"
+    "!tslint.json",
+    {
+      "from": "../dist",
+      "filter": ["**/*"]
+    }
   ],
   "win": {
-    "icon": "dist/assets/icons",
+    "icon": "dist/browser/assets/icons",
     "target": [
       "portable"
     ]
   },
   "mac": {
-    "icon": "dist/assets/icons",
+    "icon": "dist/browser/assets/icons",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist/assets/icons",
+    "icon": "dist/browser/assets/icons",
     "target": [
       "AppImage"
     ]
