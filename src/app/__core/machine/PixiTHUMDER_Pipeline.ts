@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { TypePipelineInstructions } from "../../Types";
+import type { TypePipelineInstructions } from "../../Types";
 
 export type ColorType = number;
 
@@ -10,9 +10,9 @@ export type CoordsType = {
 
 const styleFontTextPipe = new PIXI.TextStyle({
   fontFamily: "Arial",
-  fontSize:   16,
-  fill:       "black",
-  stroke:     "#000000"
+  fontSize: 16,
+  fill: "black",
+  stroke: "#000000",
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -23,9 +23,9 @@ const styleFontTextPipe = new PIXI.TextStyle({
 
 const styleFontTextBox = new PIXI.TextStyle({
   fontFamily: "Arial",
-  fontSize:   16,
-  fill:       "black",
-  stroke:     "#000000"
+  fontSize: 16,
+  fill: "black",
+  stroke: "#000000",
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -89,13 +89,13 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     this.drawText(this.MEM_text, { x: 100 + 5, y: 415 });
     this.drawText(this.WB_text, { x: 100 + 5, y: 515 });
     for (let i = 0; i < this.faddEX_count; i++) {
-      this.drawText(this.faddEX_array[i], { x: 400 + 5, y: (100 + i * 100) + 15 });
+      this.drawText(this.faddEX_array[i], { x: 400 + 5, y: 100 + i * 100 + 15 });
     }
     for (let i = 0; i < this.fmultEX_count; i++) {
-      this.drawText(this.fmultEX_array[i], { x: 650 + 5, y: (100 + i * 100) + 15 });
+      this.drawText(this.fmultEX_array[i], { x: 650 + 5, y: 100 + i * 100 + 15 });
     }
     for (let i = 0; i < this.fdivEX_count; i++) {
-      this.drawText(this.fdivEX_array[i], { x: 900 + 5, y: (100 + i * 100) + 15 });
+      this.drawText(this.fdivEX_array[i], { x: 900 + 5, y: 100 + i * 100 + 15 });
     }
   }
 
@@ -284,14 +284,14 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     const fmultEX_array = this.fmultEX_array.map((v) => v.text);
     const fdivEX_array = this.fdivEX_array.map((v) => v.text);
     return JSON.stringify({
-      IF_text:       this.IF_text.text,
-      ID_text:       this.ID_text.text,
-      intEX_text:    this.intEX_text.text,
-      MEM_text:      this.MEM_text.text,
-      WB_text:       this.WB_text.text,
-      faddEX_array:  faddEX_array,
+      IF_text: this.IF_text.text,
+      ID_text: this.ID_text.text,
+      intEX_text: this.intEX_text.text,
+      MEM_text: this.MEM_text.text,
+      WB_text: this.WB_text.text,
+      faddEX_array: faddEX_array,
       fmultEX_array: fmultEX_array,
-      fdivEX_array:  fdivEX_array
+      fdivEX_array: fdivEX_array,
     });
   }
 
@@ -337,6 +337,5 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
         this.update_fdivEX_text(fdivEX.unit, fdivEX.text);
       }
     }
-
   }
 }

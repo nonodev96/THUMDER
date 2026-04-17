@@ -1,4 +1,4 @@
-import { InterfaceRegisters } from "./__core/DLX/interfaces";
+import type { InterfaceRegisters } from "./__core/DLX/interfaces";
 
 declare global {
   interface Window {
@@ -16,14 +16,14 @@ export enum EnumLogLevel {
   Warn = 3,
   Error = 4,
   Fatal = 5,
-  Off = 6
+  Off = 6,
 }
 
 export enum EnumSeverity {
   Hint = 1,
   Info = 2,
   Warning = 4,
-  Error = 8
+  Error = 8,
 }
 
 export type TypeLogger = {
@@ -68,9 +68,8 @@ export interface InterfaceFileItem {
   dataItem: any;
 }
 
-
 export type StringOfLength<Min, Max> = string & {
-  readonly StringOfLength: unique symbol // this is the phantom type
+  readonly StringOfLength: unique symbol; // this is the phantom type
 };
 
 // This is a type guard function which can be used to assert that a string
@@ -95,16 +94,16 @@ export function stringOfLength<Min extends number, Max extends number>(input: un
 export type TypeTransformDecimalToBase = {
   base: number;
   maxLength?: number;
-  fillString?: string
+  fillString?: string;
 };
 
 export type TypeTags = {
   line: number;
-  content: string
+  content: string;
 }[];
 
 export type TypeBreakpoints = {
-  [line: number]: boolean
+  [line: number]: boolean;
 };
 
 export type PublicRoutes_SET = {
@@ -117,7 +116,7 @@ export type PublicRoutes_SET = {
     data?: any;
     icon?: string;
     children?: PublicRoutes[];
-  }
+  };
 };
 
 export type PublicRoutes = {
@@ -142,9 +141,9 @@ export type TypeLine = number;
 export type TypeAddress = `0x${string}`;
 
 export type TypeAddressStage = {
-  address: TypeAddress,
-  stage: TypeStage
-}
+  address: TypeAddress;
+  stage: TypeStage;
+};
 
 export type TypeData = "Byte" | "HalfWord" | "Word" | "Float" | "Double" | "ASCII";
 
@@ -154,28 +153,17 @@ export type TypePipelineStage = "IF" | "ID" | "intEX" | "MEM" | "WB" | "faddEX" 
 
 export type TypeStall = "Aborted" | "R-Stall" | "T-Stall" | "W-Stall" | "S-Stall" | "Stall";
 
-export type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-2-3" | "HalfWord-0-1"
+export type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-2-3" | "HalfWord-0-1";
 
 export type TypeDataRepresentation = "Binary" | "Uint8Array";
 
-export type TypeDirective =
-  "GLOBAL"
-  | "TEXT"
-  | "SPACE"
-  | "DATA"
-  | "ALIGN"
-  | "ASCII"
-  | "ASCIIZ"
-  | "BYTE"
-  | "FLOAT"
-  | "DOUBLE"
-  | "WORD";
+export type TypeDirective = "GLOBAL" | "TEXT" | "SPACE" | "DATA" | "ALIGN" | "ASCII" | "ASCIIZ" | "BYTE" | "FLOAT" | "DOUBLE" | "WORD";
 
 export type TypeIdTitleFile = {
-  id: string,
-  title: string,
-  file: string
-}
+  id: string;
+  title: string;
+  file: string;
+};
 
 export type TypeDataRegister = {
   Control: {
@@ -202,7 +190,7 @@ export type TypeDataRegister = {
     registers: number;
     size: number;
     maxLengthHexadecimal: number;
-  }
+  };
 };
 
 export type TypeRegisterControl =
@@ -491,19 +479,19 @@ export type TypeAllRegisters = {
   Control: {
     register: TypeRegisterControl;
     value: string; // 0x 00000000
-  }[],
+  }[];
   Integer: {
     register: number;
     value: string; // 0x 00000000
-  }[],
+  }[];
   Float: {
     register: number;
     value: string; // 0x 00000000
-  }[],
+  }[];
 };
 
 export type TypeRegisterToEdit =
-  "PC"
+  | "PC"
   | "IMAR"
   | "IR"
   | "A"
@@ -519,54 +507,93 @@ export type TypeRegisterToEdit =
   | "SDRHI"
   | "LDR"
   | "LDRHI"
-
-  | 0 | 10 | 20 | 30
-  | 1 | 11 | 21 | 31
-  | 2 | 12 | 22
-  | 3 | 13 | 23
-  | 4 | 14 | 24
-  | 5 | 15 | 25
-  | 6 | 16 | 26
-  | 7 | 17 | 27
-  | 8 | 18 | 28
-  | 9 | 19 | 29;
+  | 0
+  | 10
+  | 20
+  | 30
+  | 1
+  | 11
+  | 21
+  | 31
+  | 2
+  | 12
+  | 22
+  | 3
+  | 13
+  | 23
+  | 4
+  | 14
+  | 24
+  | 5
+  | 15
+  | 25
+  | 6
+  | 16
+  | 26
+  | 7
+  | 17
+  | 27
+  | 8
+  | 18
+  | 28
+  | 9
+  | 19
+  | 29;
 
 export type TypeStage =
-  ""
+  | ""
   | "IF"
   | "ID"
   | "intEX"
   | "MEM"
   | "WB"
-  | "faddEX" | "fmultEX" | "fdivEX"
+  | "faddEX"
+  | "fmultEX"
+  | "fdivEX"
   | "trap"
   | "other"
-  | "faddEX_0" | "fmultEX_0" | "fdivEX_0"
-  | "faddEX_1" | "fmultEX_1" | "fdivEX_1"
-  | "faddEX_2" | "fmultEX_2" | "fdivEX_2"
-  | "faddEX_3" | "fmultEX_3" | "fdivEX_3"
-  | "faddEX_4" | "fmultEX_4" | "fdivEX_4"
-  | "faddEX_5" | "fmultEX_5" | "fdivEX_5"
-  | "faddEX_6" | "fmultEX_6" | "fdivEX_6"
-  | "faddEX_7" | "fmultEX_7" | "fdivEX_7";
+  | "faddEX_0"
+  | "fmultEX_0"
+  | "fdivEX_0"
+  | "faddEX_1"
+  | "fmultEX_1"
+  | "fdivEX_1"
+  | "faddEX_2"
+  | "fmultEX_2"
+  | "fdivEX_2"
+  | "faddEX_3"
+  | "fmultEX_3"
+  | "fdivEX_3"
+  | "faddEX_4"
+  | "fmultEX_4"
+  | "fdivEX_4"
+  | "faddEX_5"
+  | "fmultEX_5"
+  | "fdivEX_5"
+  | "faddEX_6"
+  | "fmultEX_6"
+  | "fdivEX_6"
+  | "faddEX_7"
+  | "fmultEX_7"
+  | "fdivEX_7";
 
 export type TypeDirectiveData = {
-  address: TypeAddress;     // 0x00000000
-  hexValue: string;         // 0x00000000
+  address: TypeAddress; // 0x00000000
+  hexValue: string; // 0x00000000
   text: string;
   directive: TypeDirective;
 };
 
 export type TypeInstructionsData = {
   address: TypeAddress; // 0x00000000
-  code: string;         // 0x00000000
+  code: string; // 0x00000000
   text: string;
   instruction: string;
 };
 
 export type TypeCodeResponse = {
-  machineDirectives: TypeDirectiveData[],
-  machineInstructions: TypeInstructionsData[],
+  machineDirectives: TypeDirectiveData[];
+  machineInstructions: TypeInstructionsData[];
 };
 
 export type TypeInstructionsData_Table = TypeInstructionsData & {
@@ -601,7 +628,7 @@ export type TypeFloatingPointStageConfiguration = {
   division: {
     count: number;
     delay: number;
-  }
+  };
 };
 
 export type TypeWebSocketConfiguration = {
@@ -614,15 +641,15 @@ export type TypeConfigurationMachine = {
   addition: {
     count: number;
     delay: number;
-  },
+  };
   multiplication: {
     count: number;
     delay: number;
-  },
+  };
   division: {
     count: number;
     delay: number;
-  },
+  };
   memorySize: number;
   enabledForwarding: TypeEnabledForwardingConfiguration;
 };
@@ -655,7 +682,7 @@ export type TypeCycleCell = {
 };
 
 export type TypeCycleCellUnit = TypeCycleCell & {
-  unit?: number
+  unit?: number;
 };
 
 export type TypePipelineToProcess = TypeCycleCellUnit & {
@@ -665,11 +692,11 @@ export type TypePipelineToProcess = TypeCycleCellUnit & {
 export type TypeInstructionPipelineRepresentation = {
   text: string;
   draw: boolean | TypeStall;
-}
+};
 
 export type TypeInstructionPipelineFloatingRepresentation = TypeInstructionPipelineRepresentation & {
-  unit: number
-}
+  unit: number;
+};
 
 export type TypeArrowCycle = {
   fromAddressRow: number;
@@ -693,21 +720,21 @@ export type TypePipeline = {
 };
 
 export type TypePipelineInstructions = {
-  IF: { text: string; draw: boolean | TypeStall; };
-  ID: { text: string; draw: boolean | TypeStall; };
-  intEX: { text: string; draw: boolean | TypeStall; };
-  MEM: { text: string; draw: boolean | TypeStall; };
-  WB: { text: string; draw: boolean | TypeStall; };
-  faddEX: { unit: number; text: string; draw: boolean | TypeStall; }[]
-  fmultEX: { unit: number; text: string; draw: boolean | TypeStall; }[]
-  fdivEX: { unit: number; text: string; draw: boolean | TypeStall; }[]
+  IF: { text: string; draw: boolean | TypeStall };
+  ID: { text: string; draw: boolean | TypeStall };
+  intEX: { text: string; draw: boolean | TypeStall };
+  MEM: { text: string; draw: boolean | TypeStall };
+  WB: { text: string; draw: boolean | TypeStall };
+  faddEX: { unit: number; text: string; draw: boolean | TypeStall }[];
+  fmultEX: { unit: number; text: string; draw: boolean | TypeStall }[];
+  fdivEX: { unit: number; text: string; draw: boolean | TypeStall }[];
 };
 
 export type TypeErrorInCode = {
   line: number;
   message: string;
   severity: EnumSeverity;
-}
+};
 
 export type TypeSimulationStep = {
   isComplete?: boolean;
@@ -789,5 +816,5 @@ export type TypeDataStatistics = {
   };
   TRAPS: {
     TOTAL: { num: number; per: number };
-  }
+  };
 };

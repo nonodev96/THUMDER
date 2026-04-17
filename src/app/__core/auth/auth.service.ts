@@ -1,36 +1,38 @@
-import { Injectable, NgZone } from "@angular/core";
-import { Router } from "@angular/router";
+import { Injectable, type NgZone } from "@angular/core";
+import type { Router } from "@angular/router";
+
 //import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
 // import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 // import { Auth } from '@angular/fire/auth';
 // import { setPersistence, inMemoryPersistence, browserSessionPersistence, Persistence, } from '@firebase/auth';
 
-import { Observable, Subject, Subscription } from "rxjs";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
-import { InterfaceUser } from "../../Types";
-import { ElectronService } from "../services";
-import { Firestore, doc, setDoc } from "@angular/fire/firestore";
+import type { FirebaseError } from "@angular/fire/app";
 import {
-  Auth,
+  type Auth,
+  createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
   getRedirectResult,
-  sendEmailVerification, sendPasswordResetEmail,
-  createUserWithEmailAndPassword,
-  signInAnonymously, signInWithEmailAndPassword, signInWithPopup,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInAnonymously,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  type UserCredential,
   // getAuth, setPersistence,
   // browserLocalPersistence, browserSessionPersistence, inMemoryPersistence
 } from "@angular/fire/auth";
-import { UserCredential } from "@angular/fire/auth";
-import { FirebaseError } from "@angular/fire/app"
-
+import { doc, type Firestore, setDoc } from "@angular/fire/firestore";
+import type { TranslateService } from "@ngx-translate/core";
+import type { ToastrService } from "ngx-toastr";
+import { type Observable, Subject, Subscription } from "rxjs";
+import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
+import type { InterfaceUser } from "../../Types";
+import type { ElectronService } from "../services";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class AuthService {
   public isLogging$: Subject<boolean> = new Subject<boolean>();
@@ -38,14 +40,16 @@ export class AuthService {
   public userData: InterfaceUser; // Save logged in user data
   private subscriptions$ = new Subscription();
 
-  constructor(private afs: Firestore,   // Inject Firestore service
-              private afAuth: Auth, // Inject Firebase auth service
-              private ngZone: NgZone,          // NgZone service to remove outside scope warning
-              private router: Router,
-              private toast: ToastrService,
-              private translate: TranslateService,
-              // private auth: Auth,
-              private electronService: ElectronService) {
+  constructor(
+    private afs: Firestore, // Inject Firestore service
+    private afAuth: Auth, // Inject Firebase auth service
+    private ngZone: NgZone, // NgZone service to remove outside scope warning
+    private router: Router,
+    private toast: ToastrService,
+    private translate: TranslateService,
+    // private auth: Auth,
+    private electronService: ElectronService,
+  ) {
     this.subscriptions$.add(
       this.afAuth.onAuthStateChanged((user) => {
         if (user) {
@@ -61,11 +65,10 @@ export class AuthService {
           // JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(false);
           this.ngZone.run(() => {
-            this.router.navigate([ "/account/login" ]).then(() => {
-            });
+            this.router.navigate(["/account/login"]).then(() => {});
           });
         }
-      })
+      }),
     );
   }
 
@@ -111,8 +114,8 @@ export class AuthService {
   // Send email verification when new user sign up
   public async SendVerificationMail(userCredential: UserCredential): Promise<void> {
     try {
-      await sendEmailVerification(userCredential.user)
-      await this.router.navigate([ "/" ]);
+      await sendEmailVerification(userCredential.user);
+      await this.router.navigate(["/"]);
     } catch (error) {
       console.error(error);
       this.displayError(error);
@@ -135,7 +138,7 @@ export class AuthService {
   // Returns true when user is logged in and email is verified
   get isLoggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem("user"));
-    return (user !== null /*&& user.emailVerified !== false*/);
+    return user !== null /*&& user.emailVerified !== false*/;
   }
 
   // Sign in with Google
@@ -154,7 +157,7 @@ export class AuthService {
       const userCredential = await signInAnonymously(this.afAuth);
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate([ "/" ]);
+        this.router.navigate(["/"]);
       });
     } catch (error) {
       console.error(error);
@@ -168,7 +171,7 @@ export class AuthService {
       const userCredential = await signInWithPopup(this.afAuth, provider);
       await this.SetUserData(userCredential);
       this.ngZone.run(() => {
-        this.router.navigate([ "/" ]);
+        this.router.navigate(["/"]);
       });
     } catch (error) {
       console.error(error);
@@ -185,7 +188,7 @@ export class AuthService {
       for (const key of Object.keys(localStorage)) {
         localStorage.removeItem(key);
       }
-      await this.router.navigate([ "/account/login" ]);
+      await this.router.navigate(["/account/login"]);
     } catch (error) {
       console.error(error);
       this.displayError(error);
@@ -202,7 +205,7 @@ export class AuthService {
         // console.debug("getRedirectResult", userCredential);
         await this.SetUserData(userCredential);
         this.ngZone.run(() => {
-          this.router.navigate([ "/" ]);
+          this.router.navigate(["/"]);
         });
       }
       return Promise.resolve(true);
@@ -214,11 +217,11 @@ export class AuthService {
   private SetUserData(userCredential: UserCredential) {
     const userRef = doc(this.afs, `users/${userCredential.user.uid}`);
     const userData: InterfaceUser = {
-      uid:           userCredential.user.uid,
-      email:         userCredential.user.email,
-      displayName:   userCredential.user.displayName,
-      photoURL:      userCredential.user.photoURL,
-      emailVerified: userCredential.user.emailVerified
+      uid: userCredential.user.uid,
+      email: userCredential.user.email,
+      displayName: userCredential.user.displayName,
+      photoURL: userCredential.user.photoURL,
+      emailVerified: userCredential.user.emailVerified,
     };
     return setDoc(userRef, userData);
   }
@@ -232,5 +235,4 @@ export class AuthService {
     const error_message = this.translate.instant("ERROR.MESSAGE", { message: error?.message ?? "" });
     this.toast.error(error_message, error_title, DEFAULT_CONFIG_TOAST);
   }
-
 }

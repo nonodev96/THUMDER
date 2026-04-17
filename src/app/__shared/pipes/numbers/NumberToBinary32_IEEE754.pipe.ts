@@ -1,9 +1,9 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, type PipeTransform } from "@angular/core";
 import { Utils } from "../../../Utils";
 
 @Pipe({
-    name: "number_to_binary32_IEEE754",
-    standalone: false
+  name: "number_to_binary32_IEEE754",
+  standalone: false,
 })
 export class NumberToBinary32_IEEE754Pipe implements PipeTransform {
   transform(value: number, ...args: unknown[]): string {

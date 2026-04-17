@@ -170,10 +170,13 @@ export const DLX_DOCUMENTATION = [
   "ld",
   "Ex: ld f2,240(r1)",
   "D[dregb] <--64 M[imm16 + R[rega]]",
-  "Two words of data are read from the effective address computed by adding signed integer imm16 and unsigned integer R[rega] and stored in double register D[dregb]. This is equivalent to two lf instructions:" + "\n" +
-  "F[fregb] = M[imm16 + R[rega]]" + "\n" +
-  "F[freg(b+1)] = M[imm16 + R[rega] + 4]" + "\n" +
-  "where F[freg(b+1)] is the next fp register after F[fregb] in sequence, and all values are simply copied and not converted.)",
+  "Two words of data are read from the effective address computed by adding signed integer imm16 and unsigned integer R[rega] and stored in double register D[dregb]. This is equivalent to two lf instructions:" +
+    "\n" +
+    "F[fregb] = M[imm16 + R[rega]]" +
+    "\n" +
+    "F[freg(b+1)] = M[imm16 + R[rega] + 4]" +
+    "\n" +
+    "where F[freg(b+1)] is the next fp register after F[fregb] in sequence, and all values are simply copied and not converted.)",
 
   "led",
   "Ex: led f8,f6",
@@ -502,5 +505,5 @@ export const DLX_DOCUMENTATION = [
   "xori",
   "Ex: xori r3,r4,#5",
   "R[regb] = R[rega] XOR uimm16",
-  "All are unsigned integers. Logical 'xor' is performed on a bitwise basis."
+  "All are unsigned integers. Logical 'xor' is performed on a bitwise basis.",
 ];

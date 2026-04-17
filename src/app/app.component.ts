@@ -1,21 +1,16 @@
-import { Component, Inject, OnInit, OnDestroy } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { NavigationEnd, NavigationStart, Router } from "@angular/router";
-import { TranslateService } from "@ngx-translate/core";
+import { Component, Inject, type OnDestroy, type OnInit } from "@angular/core";
+import { NavigationEnd, NavigationStart, type Router } from "@angular/router";
+import type { TranslateService } from "@ngx-translate/core";
+import type { NgcCookieConsentService, NgcNoCookieLawEvent, NgcStatusChangeEvent } from "ngx-cookieconsent";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import {
-  NgcCookieConsentService,
-  NgcStatusChangeEvent,
-  NgcNoCookieLawEvent
-} from "ngx-cookieconsent";
-
+import type { AuthService } from "./__core/auth/auth.service";
+import type { MachineService } from "./__core/machine/machine.service";
+import type { ElectronService } from "./__core/services";
+import type { StorageService } from "./__core/storage/storage.service";
 import { DEFAULT_LANG } from "./CONSTANTS";
-import { TypeLang } from "./Types";
-import { ElectronService } from "./__core/services";
-import { StorageService } from "./__core/storage/storage.service";
-import { MachineService } from "./__core/machine/machine.service";
-import { AuthService } from "./__core/auth/auth.service";
+import type { TypeLang } from "./Types";
 
 declare const AppAdminLTE: {
   initMainPage();
@@ -25,13 +20,12 @@ import { getAnalytics, logEvent } from "@angular/fire/analytics";
 import { fetchAndActivate, getBoolean, getRemoteConfig } from "@angular/fire/remote-config";
 
 @Component({
-    selector: "app-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.scss"],
-    standalone: false
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
+  standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
-
   public lang: string = DEFAULT_LANG;
   public translationEnabled: boolean = false;
   private readonly destroy$ = new Subject<void>();
@@ -71,36 +65,30 @@ export class AppComponent implements OnInit, OnDestroy {
     AppAdminLTE.initMainPage();
     this.lang = this.storageService.getItem("lang");
     this.document.documentElement.lang = this.lang;
-    this.translate.addLangs([ "en", "sp" ]);
+    this.translate.addLangs(["en", "sp"]);
     this.translate.setDefaultLang(this.lang);
 
-    this.ccService.popupOpen$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        const link = document.getElementById("cookieconsent:link");
-        if (link) {
-          link.addEventListener("click", async () => {
-            await this.router.navigateByUrl("/landing/about");
-            await new Promise(resolve => setTimeout(resolve, 750));
-            document.getElementById("collapse-header-cookies")?.click();
-          });
-        }
-      });
+    this.ccService.popupOpen$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const link = document.getElementById("cookieconsent:link");
+      if (link) {
+        link.addEventListener("click", async () => {
+          await this.router.navigateByUrl("/landing/about");
+          await new Promise((resolve) => setTimeout(resolve, 750));
+          document.getElementById("collapse-header-cookies")?.click();
+        });
+      }
+    });
 
     this.ccService.popupClose$.pipe(takeUntil(this.destroy$)).subscribe();
     this.ccService.initialized$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    this.ccService.statusChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(($event: NgcStatusChangeEvent) => {
-        localStorage.setItem("cookieconsent", $event.status);
-      });
+    this.ccService.statusChange$.pipe(takeUntil(this.destroy$)).subscribe(($event: NgcStatusChangeEvent) => {
+      localStorage.setItem("cookieconsent", $event.status);
+    });
 
     this.ccService.revokeChoice$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    this.ccService.noCookieLaw$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((_$event: NgcNoCookieLawEvent) => {});
+    this.ccService.noCookieLaw$.pipe(takeUntil(this.destroy$)).subscribe((_$event: NgcNoCookieLawEvent) => {});
 
     this.updateCookiesConsentLang();
 
@@ -130,7 +118,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private updateCookiesConsentLang() {
     this.translate
-      .get([ "cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy" ])
+      .get(["cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy"])
       .subscribe((data) => {
         this.ccService.getConfig().content = this.ccService.getConfig().content || {};
         // Override default messages with the translated ones
@@ -142,8 +130,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.ccService.getConfig().content.link = data["cookie.link"];
         this.ccService.getConfig().content.policy = data["cookie.policy"];
 
-this.ccService.destroy();
-    this.ccService.init(this.ccService.getConfig());
-    });
+        this.ccService.destroy();
+        this.ccService.init(this.ccService.getConfig());
+      });
   }
 }

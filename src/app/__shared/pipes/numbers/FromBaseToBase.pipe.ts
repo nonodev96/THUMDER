@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, type PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: "from_base_to_base",
-    standalone: false
+  name: "from_base_to_base",
+  standalone: false,
 })
 export class FromBaseToBasePipe implements PipeTransform {
   transform(value: number | string, args = { from_base: 10, to_base: 10, maxLength: 0, fillString: "" }): string {

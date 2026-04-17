@@ -1,15 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, type OnInit } from "@angular/core";
 
 @Component({
-    selector: "THUMDER-sidebar",
-    templateUrl: "./sidebar.component.html",
-    standalone: false
+  selector: "THUMDER-sidebar",
+  templateUrl: "./sidebar.component.html",
+  standalone: false,
 })
 export class SidebarComponent implements OnInit {
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

@@ -1,26 +1,20 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { type ChangeDetectorRef, Component, type OnInit } from "@angular/core";
+import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import type { TranslateService } from "@ngx-translate/core";
+import type { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import {
-  DEFAULT_BINARY_32_BITS,
-  DEFAULT_HEXADECIMAL_08_DIGITS,
-  MAX_VALUE_TYPE_DATA,
-  REGEX_HEXADECIMAL_08,
-} from "../../../CONSTANTS";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "../../../CONSTANTS";
+import type { TypeData } from "../../../Types";
 import { Utils } from "../../../Utils";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-import { TypeData } from "../../../Types";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 @Component({
-    selector: "THUMDER-edit-memory-binary32",
-    templateUrl: "./edit-memory-binary32.component.html",
-    styleUrls: ["./edit-memory-binary32.component.scss"],
-    standalone: false
+  selector: "THUMDER-edit-memory-binary32",
+  templateUrl: "./edit-memory-binary32.component.html",
+  styleUrls: ["./edit-memory-binary32.component.scss"],
+  standalone: false,
 })
 export class EditMemoryBinary32Component implements OnInit {
-
   public readonly MAX_VALUE_TYPE_DATA = MAX_VALUE_TYPE_DATA;
 
   /**
@@ -151,15 +145,15 @@ export class EditMemoryBinary32Component implements OnInit {
 
   // =================================================================================================================
 
-  constructor(public machine: MachineService,
-              private translate: TranslateService,
-              private ref: ChangeDetectorRef,
-              private toastService: ToastrService,
-              private sanitized: DomSanitizer) {
-  }
+  constructor(
+    public machine: MachineService,
+    private translate: TranslateService,
+    private ref: ChangeDetectorRef,
+    private toastService: ToastrService,
+    private sanitized: DomSanitizer,
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public async changeAddressMemoryToEdit(target: EventTarget | any): Promise<void> {
     if (REGEX_HEXADECIMAL_08.test(target.value)) {
@@ -284,11 +278,13 @@ export class EditMemoryBinary32Component implements OnInit {
         }
       }
 
-      await this.machine.updateMemoryInServer([{
-        typeData: this.typeDataSelected,
-        address:  `0x${this.addressMemory}`,
-        value:    Utils.binaryToHexadecimal(this._binaryValue)
-      }]);
+      await this.machine.updateMemoryInServer([
+        {
+          typeData: this.typeDataSelected,
+          address: `0x${this.addressMemory}`,
+          value: Utils.binaryToHexadecimal(this._binaryValue),
+        },
+      ]);
 
       return Promise.resolve();
     } catch (e) {
@@ -422,8 +418,22 @@ export class EditMemoryBinary32Component implements OnInit {
     const text_mid_next_address = string32bits_next_address.slice(partToChange_next_address_init, partToChange_next_address_end);
     const text_end_next_address = string32bits_next_address.slice(partToChange_next_address_end, 32);
     let html = "";
-    html += "<p class=\"binValue\" data-id=\"binary-address+0\">" + text_init + "<span class=\"underline-text\" data-subscript-line=\"address\">" + text_mid + "</span>" + text_end + "</p>";
-    html += "<p class=\"binValue\" data-id=\"binary-address+4\">" + text_init_next_address + "<span class=\"underline-text\" data-subscript-line=\"address\">" + text_mid_next_address + "</span>" + text_end_next_address + "</p>";
+    html +=
+      '<p class="binValue" data-id="binary-address+0">' +
+      text_init +
+      '<span class="underline-text" data-subscript-line="address">' +
+      text_mid +
+      "</span>" +
+      text_end +
+      "</p>";
+    html +=
+      '<p class="binValue" data-id="binary-address+4">' +
+      text_init_next_address +
+      '<span class="underline-text" data-subscript-line="address">' +
+      text_mid_next_address +
+      "</span>" +
+      text_end_next_address +
+      "</p>";
     return this.sanitized.bypassSecurityTrustHtml(html);
   }
 
@@ -431,7 +441,9 @@ export class EditMemoryBinary32Component implements OnInit {
 
   private async TOAST_ErrorAddress(args: string): Promise<void> {
     const title_error_address = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_IN_ADDRESS"));
-    const message_error_address = await firstValueFrom(this.translate.get("TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE", { text: args }));
+    const message_error_address = await firstValueFrom(
+      this.translate.get("TOAST.MESSAGE_THE_ADDRESS_MUST_BE_A_MULTIPLE_OF_DATA_SIZE", { text: args }),
+    );
     this.toastService.info(message_error_address, title_error_address);
   }
 

@@ -1,15 +1,14 @@
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
+import { Component, Inject, type OnInit, ViewChild } from "@angular/core";
 import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pipeline.component";
 
 @Component({
-    selector: "view-pipeline",
-    templateUrl: "./pipeline.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-pipeline",
+  templateUrl: "./pipeline.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class PipelineView implements OnInit {
-
   @ViewChild(PixiPipelineComponent)
   public pixi_PipelineComponent: PixiPipelineComponent;
 
@@ -17,6 +16,5 @@ export class PipelineView implements OnInit {
               private document: Document) {
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

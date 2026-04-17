@@ -1,24 +1,23 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { Router } from "@angular/router";
 import { DOCUMENT } from "@angular/common";
-import { ToastrService } from "ngx-toastr";
+import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { TranslateService } from "@ngx-translate/core";
+import type { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subscription } from "rxjs";
-import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
-import { EnumLogLevel, InterfaceFileItem, TypeBreakpoints, TypeExtrasIDE } from "../../../Types";
-import { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
-import { MachineService } from "../../../__core/machine/machine.service";
+import * as env from "../../../../environments/_environment";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import type { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
-import * as env  from "../../../../environments/_environment";
+import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
+import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "../../../Types";
 
 @Component({
-    selector: "view-editor",
-    templateUrl: "./editor.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-editor",
+  templateUrl: "./editor.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class EditorView implements OnInit, AfterViewInit, OnDestroy {
-
   public env = env.AppConfig;
 
   @ViewChild(MonacoEditorComponent)
@@ -59,20 +58,17 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-
   ngAfterViewInit(): void {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        this.interfaceFileItem = (
-          this.extrasIDE?.interfaceFileItem ??
+        this.interfaceFileItem = (this.extrasIDE?.interfaceFileItem ??
           JSON.parse(localStorage.getItem("interfaceFileItem")) ??
-          DEFAULT_INTERFACE_FILE_ITEM
-        ) as InterfaceFileItem;
+          DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
 
         await this.monacoEditorComponent.setEditorFile(this.interfaceFileItem);
         await this.monacoEditorComponent.setEditorContent(this.interfaceFileItem.content);
 
-        const breakpoints = JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints ?? {};
+        const breakpoints = (JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints) ?? {};
         await this.monacoEditorComponent.setBreakpoints(breakpoints);
       }
     });
@@ -103,7 +99,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     if (auto_save) {
       const breakpoints = this.monacoEditorComponent.getBreakpoints();
       localStorage.setItem("breakpoints", JSON.stringify(breakpoints));
-      await this.closeAndSave()
+      await this.closeAndSave();
     } else {
       localStorage.setItem("breakpoints", JSON.stringify({}));
     }
@@ -120,9 +116,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public getListOfTags(): void {
-    this.machine.writeToLog("ListOfTags: {0}", EnumLogLevel.Debug, [
-      { index: 0, value: this.monacoEditorComponent.getListOfTags() }
-    ]);
+    this.machine.writeToLog("ListOfTags: {0}", EnumLogLevel.Debug, [{ index: 0, value: this.monacoEditorComponent.getListOfTags() }]);
   }
 
   public async closeAndSave(): Promise<void> {
@@ -143,16 +137,16 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SAVE_FILE"));
       const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SAVE_FILE"));
       this.toastService.success(message, title, {
-        timeOut:       1500,
-        positionClass: "toast-bottom-left"
+        timeOut: 1500,
+        positionClass: "toast-bottom-left",
       });
     } catch (error) {
       console.error(error);
       const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE"));
       const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE"));
       this.toastService.error(message, title, {
-        timeOut:       2500,
-        positionClass: "toast-bottom-left"
+        timeOut: 2500,
+        positionClass: "toast-bottom-left",
       });
     }
   }

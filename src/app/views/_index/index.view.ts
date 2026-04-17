@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { Router } from "@angular/router";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "../../CONSTANTS";
+import { type AfterViewInit, Component, Inject, type OnInit } from "@angular/core";
+import type { Router } from "@angular/router";
 import { AppConfig } from "../../../environments/_environment";
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "../../CONSTANTS";
 
 @Component({
-    selector: "app-index",
-    templateUrl: "./index.view.html",
-    standalone: false
+  selector: "app-index",
+  templateUrl: "./index.view.html",
+  standalone: false,
 })
 export class IndexView implements OnInit, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = AUTH_ROUTES;
@@ -25,5 +25,4 @@ export class IndexView implements OnInit, AfterViewInit {
     const trees: any = window.$("[data-widget='treeview']");
     trees.Treeview("toggleRow");
   }
-
 }

@@ -1,16 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, type OnInit } from "@angular/core";
 
 @Component({
-    selector: "THUMDER-footer-admin",
-    templateUrl: "./footer-admin.component.html",
-    standalone: false
+  selector: "THUMDER-footer-admin",
+  templateUrl: "./footer-admin.component.html",
+  standalone: false,
 })
 export class FooterAdminComponent implements OnInit {
   date = new Date().getFullYear();
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

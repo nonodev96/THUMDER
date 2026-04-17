@@ -1,10 +1,8 @@
-import { SpectronClient } from 'spectron';
-
-import commonSetup from '../_common-setup';
 import { expect } from "chai";
+import type { SpectronClient } from "spectron";
+import commonSetup from "../_common-setup";
 
-describe('THUMDER App Memory', function () {
-
+describe("THUMDER App Memory", function () {
   commonSetup.apply(this);
 
   let client: SpectronClient;
@@ -13,13 +11,11 @@ describe('THUMDER App Memory', function () {
     client = this.app.client;
   });
 
-  it('example', function () {
-
+  it("example", () => {
     // done();
   });
 
-  it('example async', async function () {
+  it("example async", async () => {
     expect(true).to.equal(true);
   });
-
 });

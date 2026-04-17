@@ -1,8 +1,8 @@
+import { type CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { Injectable } from "@angular/core";
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class Globals {
   public showDebug: boolean = false;
@@ -12,24 +12,11 @@ export class Globals {
     const { previousContainer, container, previousIndex, currentIndex } = event;
     if (previousContainer === container) {
       moveItemInArray(container.data, previousIndex, currentIndex);
-      this.moveWithinContainer(
-        container.element.nativeElement,
-        previousIndex,
-        currentIndex
-      );
+      this.moveWithinContainer(container.element.nativeElement, previousIndex, currentIndex);
       window.dispatchEvent(new Event("resize"));
     } else {
-      transferArrayItem(
-        previousContainer.data,
-        container.data,
-        previousIndex,
-        currentIndex
-      );
-      this.transferNodeToContainer(
-        nodeToMove,
-        container.element.nativeElement,
-        currentIndex
-      );
+      transferArrayItem(previousContainer.data, container.data, previousIndex, currentIndex);
+      this.transferNodeToContainer(nodeToMove, container.element.nativeElement, currentIndex);
       window.dispatchEvent(new Event("resize"));
       Promise.resolve().then(() => {
         previousContainer.removeItem(event.item);

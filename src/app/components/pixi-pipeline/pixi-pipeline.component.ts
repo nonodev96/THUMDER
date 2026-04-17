@@ -1,25 +1,24 @@
+import { type AfterViewInit, Component, type ElementRef, HostListener, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import * as PIXI from "pixi.js";
-import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { Subscription } from "rxjs";
+import type { MachineService } from "../../__core/machine/machine.service";
+import type { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
-import {
+import type {
   TypeCycleCell,
   TypeCycleCellUnit,
   TypeInstructionPipelineFloatingRepresentation,
   TypeInstructionPipelineRepresentation,
-  TypePipelineInstructions
+  TypePipelineInstructions,
 } from "../../Types";
-import { MachineService } from "../../__core/machine/machine.service";
-import { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 
 @Component({
-    selector: "THUMDER-pixi-pipeline",
-    templateUrl: "./pixi-pipeline.component.html",
-    styleUrls: ["./pixi-pipeline.component.scss"],
-    standalone: false
+  selector: "THUMDER-pixi-pipeline",
+  templateUrl: "./pixi-pipeline.component.html",
+  styleUrls: ["./pixi-pipeline.component.scss"],
+  standalone: false,
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @ViewChild("pixiPipelineContainer")
   public pixiContainer: ElementRef<HTMLDivElement>;
 
@@ -33,18 +32,17 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.pipeline = this.machine.pipeline;
   }
 
-
   ngOnInit(): void {
     this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       const instructions: TypePipelineInstructions = {
-        IF:      this.getInstructionDataPipelineItem(stepSimulation.pipeline.IF),
-        ID:      this.getInstructionDataPipelineItem(stepSimulation.pipeline.ID),
-        intEX:   this.getInstructionDataPipelineItem(stepSimulation.pipeline.intEX),
-        MEM:     this.getInstructionDataPipelineItem(stepSimulation.pipeline.MEM),
-        WB:      this.getInstructionDataPipelineItem(stepSimulation.pipeline.WB),
-        faddEX:  this.getInstructionDataPipeline(stepSimulation.pipeline.faddEX),
+        IF: this.getInstructionDataPipelineItem(stepSimulation.pipeline.IF),
+        ID: this.getInstructionDataPipelineItem(stepSimulation.pipeline.ID),
+        intEX: this.getInstructionDataPipelineItem(stepSimulation.pipeline.intEX),
+        MEM: this.getInstructionDataPipelineItem(stepSimulation.pipeline.MEM),
+        WB: this.getInstructionDataPipelineItem(stepSimulation.pipeline.WB),
+        faddEX: this.getInstructionDataPipeline(stepSimulation.pipeline.faddEX),
         fmultEX: this.getInstructionDataPipeline(stepSimulation.pipeline.fmultEX),
-        fdivEX:  this.getInstructionDataPipeline(stepSimulation.pipeline.fdivEX),
+        fdivEX: this.getInstructionDataPipeline(stepSimulation.pipeline.fdivEX),
       };
 
       this.pipeline.processStep(instructions);
@@ -55,11 +53,11 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     const canvas = document.createElement("canvas");
     canvas.id = this.idCanvas;
     this.pApp = new PIXI.Application({
-      width:           DEFAULT_CANVAS_WIDTH,
-      height:          DEFAULT_CANVAS_HEIGHT,
-      backgroundColor: 0xEEEEEE,
-      resolution:      1,
-      view:            canvas
+      width: DEFAULT_CANVAS_WIDTH,
+      height: DEFAULT_CANVAS_HEIGHT,
+      backgroundColor: 0xeeeeee,
+      resolution: 1,
+      view: canvas,
     });
     this.pApp.stage.addChild(<any>this.pipeline.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view as unknown as Node);
@@ -73,7 +71,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepSimulationSubscription.unsubscribe();
   }
 
-  @HostListener("window:resize", [ "$event" ])
+  @HostListener("window:resize", ["$event"])
   public onResize(event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -92,7 +90,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
     const machineInstruction = this.machine.getCode(item.address);
     return {
       text: machineInstruction.instruction,
-      draw: item.draw
+      draw: item.draw,
     };
   }
 
@@ -103,7 +101,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
       return {
         unit: item.unit,
         text: machineInstruction.instruction,
-        draw: item.draw
+        draw: item.draw,
       };
     });
   }

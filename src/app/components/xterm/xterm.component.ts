@@ -1,19 +1,10 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnInit,
-  AfterViewInit,
-  ElementRef,
-  ViewChild
-} from "@angular/core";
-import { Terminal } from "@xterm/xterm";
+import { type AfterViewInit, Component, type ElementRef, EventEmitter, Input, type OnInit, Output, ViewChild } from "@angular/core";
 // import { LigaturesAddon } from "@xterm/addon-ligatures";
 import { SearchAddon } from "@xterm/addon-search";
-import { WebglAddon } from "@xterm/addon-webgl";
 import { WebLinksAddon } from "@xterm/addon-web-links";
-import { TypeOnKeyEvent } from "../../Types";
+import { WebglAddon } from "@xterm/addon-webgl";
+import { Terminal } from "@xterm/xterm";
+import type { TypeOnKeyEvent } from "../../Types";
 
 const PIKACHU = `
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -93,13 +84,15 @@ const PIKACHU = `
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-`.split("\n").join("\r\n");
+`
+  .split("\n")
+  .join("\r\n");
 
 @Component({
-    selector: "THUMDER-xterm",
-    templateUrl: "./xterm.component.html",
-    styleUrls: ["./xterm.component.scss"],
-    standalone: false
+  selector: "THUMDER-xterm",
+  templateUrl: "./xterm.component.html",
+  styleUrls: ["./xterm.component.scss"],
+  standalone: false,
 })
 export class XtermComponent implements OnInit, AfterViewInit {
   @ViewChild("myTerminal")
@@ -111,99 +104,98 @@ export class XtermComponent implements OnInit, AfterViewInit {
   @Output()
   public onKey = new EventEmitter<TypeOnKeyEvent>();
 
-  private _command: string = '';
+  private _command: string = "";
   private _isWebglEnabled: boolean = false;
   private get isWebglEnabled() {
-    return this._isWebglEnabled ? 'webgl' : 'canvas';
+    return this._isWebglEnabled ? "webgl" : "canvas";
   }
 
   public terminal: Terminal = new Terminal({
-    fontFamily:          '"Cascadia Code", Menlo, monospace',
-    theme:               { background: "#090c0f" },
+    fontFamily: '"Cascadia Code", Menlo, monospace',
+    theme: { background: "#090c0f" },
     altClickMovesCursor: true,
-    cols:                200,
-    rows:                50,
+    cols: 200,
+    rows: 50,
   });
 
   private commands = {
-    promise:   {
-      description: 'Promise fetch pokeapi',
-      f:           async () => {
-        const res = await fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
+    promise: {
+      description: "Promise fetch pokeapi",
+      f: async () => {
+        const res = await fetch("https://pokeapi.co/api/v2/pokemon/pikachu");
         const data = await res.json();
         const { name } = data;
         this.terminal.writeln(`Promise: ${name}\r\n`);
-        this.prompt()
-      }
+        this.prompt();
+      },
     },
-    image:     {
-      description: 'Print image',
-      f:           async () => {
+    image: {
+      description: "Print image",
+      f: async () => {
         try {
           this.terminal.writeln(PIKACHU);
         } catch (err) {
           console.error(err);
         }
-        this.prompt()
-      }
-    },
-    help:      {
-      description: 'Prints this help message',
-      f:           () => {
-        this.terminal.writeln([
-          'Welcome to xterm.js! Try some of the commands below.',
-          '',
-          ...Object.keys(this.commands).map(e => `  ${e.padEnd(10)} ${this.commands[e].description}`)
-        ].join('\n\r'));
         this.prompt();
       },
     },
-    ls:        {
-      description: 'Prints a fake directory structure',
-      f:           () => {
-        this.terminal.writeln([ 'a', 'bunch', 'of', 'fake', 'files' ].join('\r\n'));
+    help: {
+      description: "Prints this help message",
+      f: () => {
+        this.terminal.writeln(
+          [
+            "Welcome to xterm.js! Try some of the commands below.",
+            "",
+            ...Object.keys(this.commands).map((e) => `  ${e.padEnd(10)} ${this.commands[e].description}`),
+          ].join("\n\r"),
+        );
+        this.prompt();
+      },
+    },
+    ls: {
+      description: "Prints a fake directory structure",
+      f: () => {
+        this.terminal.writeln(["a", "bunch", "of", "fake", "files"].join("\r\n"));
         this.prompt();
       },
     },
     load_test: {
-      description: 'Simulate a lot of data coming from a process',
-      f:           () => {
-        let testData = [];
+      description: "Simulate a lot of data coming from a process",
+      f: () => {
+        const testData = [];
         let byteCount = 0;
         for (let i = 0; i < 50; i++) {
-          let count = 1 + Math.floor(Math.random() * 79);
+          const count = 1 + Math.floor(Math.random() * 79);
           byteCount += count + 2;
-          let data = new Uint8Array(count + 2);
-          data[0] = 0x0A; // \n
+          const data = new Uint8Array(count + 2);
+          data[0] = 0x0a; // \n
           for (let i = 1; i < count + 1; i++) {
-            data[i] = 0x61 + Math.floor(Math.random() * (0x7A - 0x61));
+            data[i] = 0x61 + Math.floor(Math.random() * (0x7a - 0x61));
           }
-          data[data.length - 1] = 0x0D; // \r
+          data[data.length - 1] = 0x0d; // \r
           testData.push(data);
         }
-        let start = performance.now();
+        const start = performance.now();
         for (let i = 0; i < 1024; i++) {
           for (const d of testData) {
             this.terminal.write(d);
           }
         }
 
-        this.terminal.write('', () => {
-          let time = Math.round(performance.now() - start);
-          let mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
+        this.terminal.write("", () => {
+          const time = Math.round(performance.now() - start);
+          const mbs = ((byteCount / 1024) * (1 / (time / 1000))).toFixed(2);
           this.terminal.write(`\n\r\nWrote ${byteCount}kB in ${time}ms (${mbs}MB/s) using the ${this.isWebglEnabled} renderer`);
           this.prompt();
         });
       },
-    }
+    },
   };
 
-  constructor() {
+  constructor() {}
 
-  }
-
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this.terminal.open(this.terminalDiv.nativeElement);
@@ -211,9 +203,11 @@ export class XtermComponent implements OnInit, AfterViewInit {
     try {
       // this.terminal.loadAddon(new AttachAddon());
       // this.terminal.loadAddon(new LigaturesAddon());
-      this.terminal.loadAddon(new WebLinksAddon((event, url) => {
-        if (event.altKey) window.open(url, '_blank');
-      }));
+      this.terminal.loadAddon(
+        new WebLinksAddon((event, url) => {
+          if (event.altKey) window.open(url, "_blank");
+        }),
+      );
       this.terminal.loadAddon(new SearchAddon());
       this.terminal.loadAddon(new WebglAddon());
       this._isWebglEnabled = true;
@@ -229,7 +223,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
       switch (e.domEvent.key) {
         case "Enter":
           this.runCommand(this._command);
-          this._command = '';
+          this._command = "";
           break;
         case "Backspace":
           if (this.terminal.buffer.normal.cursorX > 2) {
@@ -240,7 +234,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
           }
           break;
         default: {
-          if (e.key >= String.fromCharCode(0x20) && e.key <= String.fromCharCode(0x7E) || e.key >= '\u00a0') {
+          if ((e.key >= String.fromCharCode(0x20) && e.key <= String.fromCharCode(0x7e)) || e.key >= "\u00a0") {
             this._command += e.domEvent.key;
             this.terminal.write(e.key);
           }
@@ -255,16 +249,16 @@ export class XtermComponent implements OnInit, AfterViewInit {
   }
 
   public prompt() {
-    this._command = '';
-    this.terminal.write('\r\n$ ');
+    this._command = "";
+    this.terminal.write("\r\n$ ");
   }
 
   public runCommand(text) {
-    const command = text.trim().split(' ')[0];
+    const command = text.trim().split(" ")[0];
     if (command.length > 0) {
-      this.terminal.writeln('');
+      this.terminal.writeln("");
       if (command in this.commands) {
-        this.commands[command].f()
+        this.commands[command].f();
         console.debug(this.commands[command].description);
         return;
       }
@@ -272,5 +266,4 @@ export class XtermComponent implements OnInit, AfterViewInit {
     }
     this.prompt();
   }
-
 }

@@ -1,32 +1,32 @@
 import * as PIXI from "pixi.js";
+import type { TypePipeline, TypePipelineStage, TypeStage, TypeStall } from "../../Types";
 import { PixiTHUMDER_Table } from "./PixiTHUMDER_Table";
 import { PixiUtils } from "./PixiUtils";
-import { TypePipelineStage, TypePipeline, TypeStall, TypeStage } from "../../Types";
 
 const styleFontTextInstruction = new PIXI.TextStyle({
   fontFamily: "Arial",
-  fontSize:   15,
-  fill:       "white",
-  stroke:     "#000000",
-  align:      "center"
+  fontSize: 15,
+  fill: "white",
+  stroke: "#000000",
+  align: "center",
 });
 
 const styleFontTextSteps = new PIXI.TextStyle({
   fontFamily: "Arial",
-  fontSize:   15,
-  fill:       "white",
-  stroke:     "#000000"
+  fontSize: 15,
+  fill: "white",
+  stroke: "#000000",
 });
 
 export type TypeArrowDirection = {
   start: {
-    instruction: number,
-    step: number
-  }
+    instruction: number;
+    step: number;
+  };
   to: {
-    instruction: number,
-    step: number
-  }
+    instruction: number;
+    step: number;
+  };
 };
 
 // export type TypeCellPosition = {
@@ -35,7 +35,6 @@ export type TypeArrowDirection = {
 // };
 
 export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
-
   public realStep: number;
 
   public num_instructions: number;
@@ -156,12 +155,12 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
     const text = new PIXI.Text("Cycle clock", {
       fontFamily: "Arial",
-      fontSize:   30,
-      fill:       "white",
-      stroke:     "#000000"
+      fontSize: 30,
+      fill: "white",
+      stroke: "#000000",
     });
-    text.position.x = (this.borderTitle.width / 2) - (text.width / 2);
-    text.position.y = (this.borderTitle.height / 2) - (text.height / 2);
+    text.position.x = this.borderTitle.width / 2 - text.width / 2;
+    text.position.y = this.borderTitle.height / 2 - text.height / 2;
     this.borderTitle.addChild(text);
 
     this.borderLeft = new PIXI.Graphics();
@@ -181,7 +180,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   public nextStep(pipeline: TypePipeline, step: number = this.realStep) {
     this.drawSteps();
-    const stages: TypePipelineStage[] = [ "IF", "ID", "intEX", "MEM", "WB" ];
+    const stages: TypePipelineStage[] = ["IF", "ID", "intEX", "MEM", "WB"];
     for (const iterStage of stages) {
       const stage = iterStage as TypeStage;
       if (pipeline[stage].draw === true) {
@@ -242,13 +241,13 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
    * https://didactalia.net/comunidad/materialeducativo/recurso/calculadoras-de-progresiones-aritmeticas/f0ee1413-0276-7915-8ec2-fe0b2b31f6fc
    * https://math.stackexchange.com/questions/1314006/drawing-an-arrow
    */
-  private drawArrow(arrowDirection: TypeArrowDirection, color = 0xFF0000) {
+  private drawArrow(arrowDirection: TypeArrowDirection, color = 0xff0000) {
     const initDistance_x = 210 + 37.5;
     const initDistance_y = 90 + 12.5;
-    const start_x = initDistance_x + (arrowDirection.start.step * 87.5) + 15;
-    const start_y = initDistance_y + (arrowDirection.start.instruction * 37.5) + 5;
-    const to_x = initDistance_x + (arrowDirection.to.step * 87.5) - 15;
-    const to_y = initDistance_y + (arrowDirection.to.instruction * 37.5) - 5;
+    const start_x = initDistance_x + arrowDirection.start.step * 87.5 + 15;
+    const start_y = initDistance_y + arrowDirection.start.instruction * 37.5 + 5;
+    const to_x = initDistance_x + arrowDirection.to.step * 87.5 - 15;
+    const to_y = initDistance_y + arrowDirection.to.instruction * 37.5 - 5;
     const bezierArrow = PixiUtils.drawArrow(start_x, start_y, to_x, to_y, color);
     bezierArrow.zIndex = 80;
     this.arrows.push(bezierArrow);
@@ -258,14 +257,14 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   private drawInstruction(textValue: string) {
     const rectangle = new PIXI.Graphics();
-    rectangle.lineStyle(2.5, 0x0033FF, 1);
-    rectangle.beginFill(0x66CCFF);
+    rectangle.lineStyle(2.5, 0x0033ff, 1);
+    rectangle.beginFill(0x66ccff);
     rectangle.drawRect(0, 0, 175, 25);
     rectangle.endFill();
     rectangle.zIndex = 11;
     const text = new PIXI.Text(textValue, styleFontTextInstruction);
-    text.position.x += (rectangle.width / 2) - (text.width / 2);
-    text.position.y += ((rectangle.height - text.height) / 2) - 2.5;
+    text.position.x += rectangle.width / 2 - text.width / 2;
+    text.position.y += (rectangle.height - text.height) / 2 - 2.5;
     rectangle.addChild(text);
     this.tableInstructions.setCell(this.num_instructions, 0, rectangle);
     this.tableInstructions.drawCell(this.num_instructions, 0);
@@ -273,13 +272,13 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
 
   private drawSteps(displayStep: number = this.realStep) {
     const rectangle = new PIXI.Graphics();
-    rectangle.lineStyle(2.5, 0x0033FF, 1);
-    rectangle.beginFill(0x66CCFF);
+    rectangle.lineStyle(2.5, 0x0033ff, 1);
+    rectangle.beginFill(0x66ccff);
     rectangle.drawRect(0, 0, 75, 25);
     rectangle.endFill();
-    const text = new PIXI.Text(`${ displayStep }`, styleFontTextInstruction);
+    const text = new PIXI.Text(`${displayStep}`, styleFontTextInstruction);
     text.position.x += (rectangle.width - text.width) / 2;
-    text.position.y += ((rectangle.height - text.height) / 2) - 2.5;
+    text.position.y += (rectangle.height - text.height) / 2 - 2.5;
     rectangle.addChild(text);
     this.tableSteps.setCell(0, displayStep, rectangle);
     this.tableSteps.drawCell(0, displayStep);
@@ -290,52 +289,52 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     let colorLineStyle: number; // 0xCCCCCC;
     switch (code) {
       case "Aborted": {
-        colorLineStyle = 0xCCCCCC;
+        colorLineStyle = 0xcccccc;
         break;
       }
       case "R-Stall": {
-        colorLineStyle = 0xFFAF00;
+        colorLineStyle = 0xffaf00;
         break;
       }
       case "T-Stall": {
-        colorLineStyle = 0xFFBF00;
+        colorLineStyle = 0xffbf00;
         break;
       }
       case "W-Stall": {
-        colorLineStyle = 0xFFCF00;
+        colorLineStyle = 0xffcf00;
         break;
       }
       case "Stall": {
-        colorLineStyle = 0xFFDF00;
+        colorLineStyle = 0xffdf00;
         break;
       }
       case "IF": {
-        colorLineStyle = 0xFFFF00;
+        colorLineStyle = 0xffff00;
         break;
       }
       case "ID": {
-        colorLineStyle = 0xFF9900;
+        colorLineStyle = 0xff9900;
         break;
       }
       case "intEX": {
-        colorLineStyle = 0xFF0000;
+        colorLineStyle = 0xff0000;
         break;
       }
       case "MEM": {
-        colorLineStyle = 0x00FF00;
+        colorLineStyle = 0x00ff00;
         break;
       }
       case "WB": {
-        colorLineStyle = 0xFF00FF;
+        colorLineStyle = 0xff00ff;
         break;
       }
       default: {
-        colorLineStyle = 0xCCCCCC;
+        colorLineStyle = 0xcccccc;
         break;
       }
     }
     rectangle.lineStyle(2.5, colorLineStyle, 1);
-    rectangle.beginFill(0xBBBBBB);
+    rectangle.beginFill(0xbbbbbb);
     rectangle.drawRect(0, 0, 75, 25);
     rectangle.endFill();
     rectangle.zIndex = 11;
@@ -347,7 +346,6 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     }
     return rectangle;
   }
-
 
   public moveLeft() {
     const max = this.tableSteps.width + this.tableSteps.x;
@@ -412,7 +410,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
   toString(): string {
     return JSON.stringify({
       stepToStart: this.stepToStart,
-      realStep:    this.realStep
+      realStep: this.realStep,
     });
   }
 }

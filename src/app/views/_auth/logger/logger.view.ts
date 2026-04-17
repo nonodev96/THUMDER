@@ -1,25 +1,22 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, type OnInit, ViewChild } from "@angular/core";
+import type { MachineService } from "../../../__core/machine/machine.service";
 import { XtermComponent } from "../../../components/xterm/xterm.component";
-import { TypeOnKeyEvent } from "../../../Types";
-import { MachineService } from "../../../__core/machine/machine.service";
+import type { TypeOnKeyEvent } from "../../../Types";
 
 @Component({
-    selector: "view-logger",
-    templateUrl: "./logger.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-logger",
+  templateUrl: "./logger.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class LoggerView implements OnInit {
-
   @ViewChild(XtermComponent)
   public xtermComponent: XtermComponent;
   public text: string = "";
 
-  constructor(public machine: MachineService) {
-  }
+  constructor(public machine: MachineService) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public onKey($event: TypeOnKeyEvent): void {
     console.log($event);

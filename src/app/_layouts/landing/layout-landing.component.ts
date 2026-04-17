@@ -1,13 +1,12 @@
-import { AfterViewInit, Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
+import { type AfterViewInit, Component, Inject, type OnInit } from "@angular/core";
 
 @Component({
-    selector: "THUMDER-layout-landing",
-    templateUrl: "./layout-landing.component.html",
-    standalone: false
+  selector: "THUMDER-layout-landing",
+  templateUrl: "./layout-landing.component.html",
+  standalone: false,
 })
 export class LayoutLandingComponent implements OnInit, AfterViewInit {
-
   constructor(@Inject(DOCUMENT) private document: Document) {
   }
 
@@ -16,6 +15,6 @@ export class LayoutLandingComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    window.jQuery("[data-widget=\"pushmenu\"]").PushMenu("collapse");
+    window.jQuery('[data-widget="pushmenu"]').PushMenu("collapse");
   }
 }

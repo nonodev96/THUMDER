@@ -1,28 +1,27 @@
-import { AfterViewInit, Component, OnInit, Renderer2, ViewChild } from "@angular/core";
-import { ViewportScroller } from "@angular/common";
-import { Router } from "@angular/router";
-import { HttpClient } from "@angular/common/http";
-import { MarkdownComponent, MarkdownService } from "ngx-markdown";
-import { IPackageJson } from 'package-json-type';
-import { ElectronService } from "../../../__core/services";
-import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
-import npm from "../../../../../package.json";
+import type { ViewportScroller } from "@angular/common";
+import type { HttpClient } from "@angular/common/http";
+import { type AfterViewInit, Component, type OnInit, type Renderer2, ViewChild } from "@angular/core";
+import type { Router } from "@angular/router";
+import type { MarkdownComponent, MarkdownService } from "ngx-markdown";
+import type { IPackageJson } from "package-json-type";
 import { firstValueFrom } from "rxjs";
+import npm from "../../../../../package.json";
+import type { ElectronService } from "../../../__core/services";
+import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
 
 @Component({
-    selector: "app-about",
-    templateUrl: "./about.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "app-about",
+  templateUrl: "./about.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class AboutView implements OnInit, AfterViewInit {
-
-  private readonly SERVER_API = "https://unpkg.com/"
+  private readonly SERVER_API = "https://unpkg.com/";
 
   public dependencies = Object.entries(npm.dependencies) as unknown as [string, string];
   public devDependencies = Object.entries(npm.devDependencies) as unknown as [string, string];
-  public dependenciesData: IPackageJson[] = []
-  public devDependenciesData: IPackageJson[] = []
+  public dependenciesData: IPackageJson[] = [];
+  public devDependenciesData: IPackageJson[] = [];
 
   @ViewChild("markdownComponentID_README", { static: false })
   private markdownComponentID_README: MarkdownComponent;
@@ -41,26 +40,26 @@ export class AboutView implements OnInit, AfterViewInit {
 
   private listenObj: any;
 
-  constructor(public electronService: ElectronService,
-              private markdownService: MarkdownService,
-              private scroller: ViewportScroller,
-              private router: Router,
-              private renderer: Renderer2,
-              private httpClient: HttpClient) {
-  }
+  constructor(
+    public electronService: ElectronService,
+    private markdownService: MarkdownService,
+    private scroller: ViewportScroller,
+    private router: Router,
+    private renderer: Renderer2,
+    private httpClient: HttpClient,
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this.prepareData().then(() => {
       console.log("End");
-    })
+    });
   }
 
   private async prepareData() {
-    let dependenciesData_Promises: Promise<IPackageJson>[] = [];
-    let devDependenciesData_Promises: Promise<IPackageJson>[] = [];
+    const dependenciesData_Promises: Promise<IPackageJson>[] = [];
+    const devDependenciesData_Promises: Promise<IPackageJson>[] = [];
     for (const dependency of this.dependencies) {
       dependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
     }
@@ -76,8 +75,8 @@ export class AboutView implements OnInit, AfterViewInit {
       const QUERY = this.SERVER_API + package_name + "@" + version + "/package.json";
       firstValueFrom(this.httpClient.get<IPackageJson>(QUERY)).then((response) => {
         resolve(JSON.parse(JSON.stringify(response)));
-      })
-    })
+      });
+    });
   }
 
   public onMarkdownLoad(id: string) {
@@ -104,7 +103,7 @@ export class AboutView implements OnInit, AfterViewInit {
     if (markdownComponent) {
       this.listenObj = this.renderer.listen(markdownComponent.element.nativeElement, "click", (e: Event) => {
         if (e.target && (e.target as any).tagName === "A") {
-          const el = (e.target as HTMLElement);
+          const el = e.target as HTMLElement;
           const linkURL = el.getAttribute && el.getAttribute("href");
           if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
             e.preventDefault();

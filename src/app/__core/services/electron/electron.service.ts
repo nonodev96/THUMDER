@@ -1,12 +1,11 @@
 import { Injectable } from "@angular/core";
-
-import { ipcRenderer, webFrame } from "electron";
 // import { remote } from "electron";
-import * as childProcess from "child_process";
-import * as fs from "fs";
+import type * as childProcess from "child_process";
+import type { ipcRenderer, webFrame } from "electron";
+import type * as fs from "fs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ElectronService {
   private _electron: any;
@@ -105,13 +104,13 @@ export class ElectronService {
 
   public static get debug(): any {
     return {
-      "isElectronApp": ElectronService.isElectronApp,
-      "isServer":      ElectronService.isServer,
-      "isMacOS":       ElectronService.isMacOS,
-      "isWindows":     ElectronService.isWindows,
-      "isLinux":       ElectronService.isLinux,
-      "isX86":         ElectronService.isX86,
-      "isX64":         ElectronService.isX64,
+      isElectronApp: ElectronService.isElectronApp,
+      isServer: ElectronService.isServer,
+      isMacOS: ElectronService.isMacOS,
+      isWindows: ElectronService.isWindows,
+      isLinux: ElectronService.isLinux,
+      isX86: ElectronService.isX86,
+      isX64: ElectronService.isX64,
     };
   }
 }

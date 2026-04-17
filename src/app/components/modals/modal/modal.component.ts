@@ -1,13 +1,12 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, type OnInit } from "@angular/core";
 
 @Component({
-    selector: "app-modal",
-    templateUrl: "./modal.component.html",
-    styleUrls: ["./modal.component.scss"],
-    standalone: false
+  selector: "app-modal",
+  templateUrl: "./modal.component.html",
+  styleUrls: ["./modal.component.scss"],
+  standalone: false,
 })
 export class ModalComponent implements OnInit {
-
   @Input() public modalID: string = "modal-id";
   @Input() public modalType: "" | "modal-sm" | "modal-lg" | "modal-xl" = "";
   @Input() public modalTitle: string = "MODAL.TITLE";
@@ -16,10 +15,7 @@ export class ModalComponent implements OnInit {
   @Input() public buttonCloseText: string = "MODAL.CLOSE";
   @Input() public buttonSaveText: string = "MODAL.OK";
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

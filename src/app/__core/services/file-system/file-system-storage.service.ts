@@ -1,17 +1,8 @@
+import type { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { firstValueFrom, Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import {
-  Firestore,
-  query,
-  where,
-  doc,
-  // getDoc,
-  getDocs,
-  updateDoc,
-  setDoc,
-  deleteDoc,
+  // DocumentSnapshot,
+  type CollectionReference,
   collection,
   // onSnapshot,
   // onSnapshotsInSync,
@@ -19,31 +10,39 @@ import {
   // docSnapshots,
   collectionChanges,
   collectionData,
+  type DocumentChange,
+  type DocumentData,
+  deleteDoc,
+  doc,
+  type Firestore,
+  // getDoc,
+  getDocs,
   // docData,
-  Query,
-  DocumentData,
-  DocumentChange,
-  // DocumentSnapshot,
-  CollectionReference,
+  type Query,
   // DocumentReference,
-  QuerySnapshot
+  type QuerySnapshot,
+  query,
+  setDoc,
+  updateDoc,
+  where,
 } from "@angular/fire/firestore";
-
-import { THUMDER_FileItem } from "./file-system.service";
+import { firstValueFrom, type Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import type { InterfaceUser } from "../../../Types";
 import { Utils } from "../../../Utils";
-import { InterfaceUser } from "../../../Types";
+import { THUMDER_FileItem } from "./file-system.service";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class FileSystemStorageService {
-
   private readonly dbFileItemsPath = "/fileitems";
 
   // https://dev.to/jdgamble555/angular-12-with-firebase-9-49a0
-  constructor(private httpClient: HttpClient,
-              private afs: Firestore) {
-  }
+  constructor(
+    private httpClient: HttpClient,
+    private afs: Firestore,
+  ) {}
 
   // TODO
   public async isInitialize(): Promise<boolean> {
@@ -71,19 +70,12 @@ export class FileSystemStorageService {
 
   public queryFileFromUser(filename: string): Promise<QuerySnapshot<DocumentData>> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    return getDocs(query(
-      collection(this.afs, this.dbFileItemsPath),
-      where("e1_uid", "==", userData.uid),
-      where("name", "==", filename)
-    ));
+    return getDocs(query(collection(this.afs, this.dbFileItemsPath), where("e1_uid", "==", userData.uid), where("name", "==", filename)));
   }
 
   private queryAllFilesFromUser(): Query<DocumentData> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
-    return query(
-      collection(this.afs, this.dbFileItemsPath),
-      where("e1_uid", "==", userData.uid),
-    )
+    return query(collection(this.afs, this.dbFileItemsPath), where("e1_uid", "==", userData.uid));
   }
 
   private collectionFileItems(): Promise<QuerySnapshot<DocumentData>> {
@@ -106,7 +98,7 @@ export class FileSystemStorageService {
           if (a.name > b.name) return 1;
           return 0;
         });
-      })
+      }),
     );
   }
 
@@ -135,7 +127,7 @@ export class FileSystemStorageService {
       thumderFileItem.thumbnail = fileItem.thumbnail ?? "";
 
       console.log("New document in firestore with ID: %s, %o", thumderFileItem.$key, thumderFileItem);
-      await setDoc(newDocument.ref, JSON.parse(JSON.stringify(thumderFileItem)), { merge: true })
+      await setDoc(newDocument.ref, JSON.parse(JSON.stringify(thumderFileItem)), { merge: true });
       return Promise.resolve(true);
     } catch (error) {
       console.error(error);
@@ -145,14 +137,14 @@ export class FileSystemStorageService {
 
   public async deleteFileItem($key: string): Promise<boolean> {
     await deleteDoc(doc(this.afs, this.dbFileItemsPath, $key));
-    return Promise.resolve(true)
+    return Promise.resolve(true);
   }
 
   public async updateFileItem($key: string, fileItem: THUMDER_FileItem): Promise<boolean> {
     await updateDoc(doc(this.afs, this.dbFileItemsPath, $key), JSON.parse(JSON.stringify(fileItem)));
-    return Promise.resolve(true)
+    return Promise.resolve(true);
   }
-/*
+  /*
   //  Documents
   public FileItem_Documents_valueChanges(id): Observable<THUMDER_FileItem> {
     return docData(
@@ -172,8 +164,9 @@ export class FileSystemStorageService {
     return collectionData<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
         collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
-        where('e1_uid', '==', userData.uid)
-      ), { idField: '$key' }
+        where("e1_uid", "==", userData.uid),
+      ),
+      { idField: "$key" },
     );
   }
 
@@ -182,8 +175,8 @@ export class FileSystemStorageService {
     return collectionChanges<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
         collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
-        where('e1_uid', '==', userData.uid)
-      )
+        where("e1_uid", "==", userData.uid),
+      ),
     );
   }
 
@@ -191,7 +184,7 @@ export class FileSystemStorageService {
     const newDocument = doc(collection(this.afs, this.dbFileItemsPath));
     return {
       ref: newDocument,
-      id:  newDocument.id
+      id: newDocument.id,
     };
   }
 
@@ -200,8 +193,8 @@ export class FileSystemStorageService {
     return getDocs<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
         collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
-        where('e1_uid', '==', userData.uid)
-      )
+        where("e1_uid", "==", userData.uid),
+      ),
     );
   }
 
@@ -210,7 +203,7 @@ export class FileSystemStorageService {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     const q = query<THUMDER_FileItem>(
       collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
-      where("e1_uid", "==", userData.uid)
+      where("e1_uid", "==", userData.uid),
     );
     const querySnapshot = await getDocs<THUMDER_FileItem>(q);
     querySnapshot.forEach((doc) => {
