@@ -1,16 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, type OnInit } from "@angular/core";
 
 @Component({
-    selector: "THUMDER-admin-navbar",
-    templateUrl: "./admin-navbar.component.html",
-    standalone: false
+  selector: "THUMDER-admin-navbar",
+  templateUrl: "./admin-navbar.component.html",
+  standalone: false,
 })
 export class AdminNavbarComponent implements OnInit {
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   log(msg: string): void {
     console.log(msg);

@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject, Subscription } from "rxjs";
 import FileSystemItem from "devextreme/file_management/file_system_item";
-import UploadInfo from "devextreme/file_management/upload_info";
-import { FileSystemStorageService } from "./file-system-storage.service";
-import { InterfaceFileItem } from "../../../Types";
+import type UploadInfo from "devextreme/file_management/upload_info";
+import { type Observable, Subject, Subscription } from "rxjs";
+import type { InterfaceFileItem } from "../../../Types";
 import { Utils } from "../../../Utils";
+import type { FileSystemStorageService } from "./file-system-storage.service";
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
   $key: string;
@@ -24,16 +24,14 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
 }
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class FileSystemService {
-
   public items: THUMDER_FileItem[] = [];
   private updateUI$: Subject<void> = new Subject<void>();
   private subscription: Subscription = new Subscription();
 
-  constructor(public fileSystemStorageService: FileSystemStorageService) {
-  }
+  constructor(public fileSystemStorageService: FileSystemStorageService) {}
 
   public async init(): Promise<void> {
     await this.setList_FileItems(await this.fileSystemStorageService.getFiles());
@@ -52,7 +50,7 @@ export class FileSystemService {
 
   public async getItems(path: FileSystemItem): Promise<Array<THUMDER_FileItem>> {
     await this.updateLocalItems();
-    const results = this.items.filter(value => value.path === path.path);
+    const results = this.items.filter((value) => value.path === path.path);
     const fileItems = results.map((fileItem) => {
       const item: THUMDER_FileItem = new THUMDER_FileItem(fileItem.path, fileItem.isDirectory, fileItem.pathKeys);
       return Object.assign({}, item, fileItem);
@@ -85,10 +83,15 @@ export class FileSystemService {
     }
   }
 
-  public async updateCategory(directory: FileSystemItem, selectedItems: FileSystemItem[], newCategory: any, viewArea: "navPane" | "itemView"): Promise<boolean> {
-    const items = (viewArea === "navPane") ? [directory] : selectedItems;
+  public async updateCategory(
+    directory: FileSystemItem,
+    selectedItems: FileSystemItem[],
+    newCategory: any,
+    viewArea: "navPane" | "itemView",
+  ): Promise<boolean> {
+    const items = viewArea === "navPane" ? [directory] : selectedItems;
     for (const item of items) {
-      const index = this.items.findIndex(value => value.key === item.key);
+      const index = this.items.findIndex((value) => value.key === item.key);
       if (item.dataItem) {
         item.dataItem.category = newCategory;
         this.items[index].dataItem.category = newCategory;
@@ -101,7 +104,7 @@ export class FileSystemService {
   }
 
   public async editFileItem(updateFileItem: THUMDER_FileItem, $key: string): Promise<void> {
-    const index = this.items.findIndex(value => value.key === updateFileItem.key);
+    const index = this.items.findIndex((value) => value.key === updateFileItem.key);
     if (index > -1) {
       this.items[index] = FileSystemService.transform_InterfaceFileItem_to_THUMDER_FileItem(updateFileItem);
 
@@ -113,7 +116,7 @@ export class FileSystemService {
   }
 
   public async renameItem(item: FileSystemItem, newName: string): Promise<THUMDER_FileItem> {
-    const index = this.items.findIndex(value => value.key === item.key);
+    const index = this.items.findIndex((value) => value.key === item.key);
     this.items[index].name = newName;
     this.items[index].dateModified = new Date();
     const { $key } = this.items[index];
@@ -123,9 +126,9 @@ export class FileSystemService {
   }
 
   public async deleteItem(item: FileSystemItem): Promise<void> {
-    const indexToDelete = this.items.findIndex(value => value.key === item.key);
+    const indexToDelete = this.items.findIndex((value) => value.key === item.key);
     if (indexToDelete > -1) {
-      const element = this.items.find(value => value.key === item.key);
+      const element = this.items.find((value) => value.key === item.key);
       // Actualizamos this.items
       await this.fileSystemStorageService.deleteFileItem(element.$key);
       this.updateUI$.next();
@@ -138,19 +141,23 @@ export class FileSystemService {
   // TODO
   public moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
     console.debug("TODO", item, destinationDirectory);
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   // TODO
-  public async uploadFileChunk(fileData: File, uploadInfo: UploadInfo, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
+  public async uploadFileChunk(
+    fileData: File,
+    uploadInfo: UploadInfo,
+    destinationDirectory: FileSystemItem,
+  ): Promise<THUMDER_FileItem | any> {
     console.debug("TODO", fileData, uploadInfo, destinationDirectory);
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   // TODO
   public async downloadItem(items: Array<FileSystemItem>): Promise<void> {
     console.debug("TODO", items);
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   private async setList_FileItems(items: THUMDER_FileItem[]): Promise<void> {
@@ -160,11 +167,10 @@ export class FileSystemService {
       const thumderFileItem = new THUMDER_FileItem(path, isDirectory, pathKeys);
       const newItem = Object.assign({}, thumderFileItem, { ...item });
       // newItem.$key = $key;
-      const index = this.items.findIndex(value => value.key === newItem.key);
+      const index = this.items.findIndex((value) => value.key === newItem.key);
       if (index > -1) {
         this.items[index] = newItem;
-      } else
-        this.items.push(newItem);
+      } else this.items.push(newItem);
     }
     // console.log({this_items: this.items})
     this.updateUI$.next();
@@ -177,11 +183,7 @@ export class FileSystemService {
   }
 
   private static transform_InterfaceFileItem_to_THUMDER_FileItem(interfaceFileItem: InterfaceFileItem): THUMDER_FileItem {
-    const file = new THUMDER_FileItem(
-      interfaceFileItem.path,
-      interfaceFileItem.isDirectory,
-      interfaceFileItem.pathKeys
-    );
+    const file = new THUMDER_FileItem(interfaceFileItem.path, interfaceFileItem.isDirectory, interfaceFileItem.pathKeys);
 
     file.$key = interfaceFileItem.$key;
     file.f_id = interfaceFileItem.f_id;

@@ -1,19 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, type OnInit } from "@angular/core";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "../../../CONSTANTS";
 import { Utils } from "../../../Utils";
 
 @Component({
-    selector: "view-calculator",
-    templateUrl: "./calculator.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-calculator",
+  templateUrl: "./calculator.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class CalculatorView implements OnInit {
-
-  private _valueByte: Uint8Array = new Uint8Array([ 0 ]);
-  private _valueHalfWord: Uint16Array = new Uint16Array([ 0 ]);
-  private _valueWord: Uint32Array = new Uint32Array([ 0 ]);
-  private _valueIntWord: Int32Array = new Int32Array([ 0 ]);
+  private _valueByte: Uint8Array = new Uint8Array([0]);
+  private _valueHalfWord: Uint16Array = new Uint16Array([0]);
+  private _valueWord: Uint32Array = new Uint32Array([0]);
+  private _valueIntWord: Int32Array = new Int32Array([0]);
   private _value32Float: string = DEFAULT_BINARY_32_BITS;
   private _value64Double: string = DEFAULT_BINARY_64_BITS;
 
@@ -114,7 +113,10 @@ export class CalculatorView implements OnInit {
   }
 
   get binary32Int_Hexadecimal(): string {
-    return parseInt((this._valueIntWord[0] >>> 0).toString(2), 2).toString(16).padStart(8, "0").toUpperCase();
+    return parseInt((this._valueIntWord[0] >>> 0).toString(2), 2)
+      .toString(16)
+      .padStart(8, "0")
+      .toUpperCase();
   }
 
   set binary32Int_Hexadecimal(value: string) {
@@ -189,10 +191,7 @@ export class CalculatorView implements OnInit {
 
   // endregion
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

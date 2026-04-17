@@ -1,21 +1,18 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { type AfterViewInit, Component, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
-import { TypeData, TypeDataRepresentation } from "../../../Types";
-import {
-  EditRegisterBinary32Component
-} from "../../../components/modals/edit-register-binary32/edit-register-binary32.component";
-import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R, MACHINE_REGISTERS_D } from "../../../CONSTANTS";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "../../../CONSTANTS";
+import { EditRegisterBinary32Component } from "../../../components/modals/edit-register-binary32/edit-register-binary32.component";
+import type { TypeData, TypeDataRepresentation } from "../../../Types";
 
 @Component({
-    selector: "view-registers",
-    templateUrl: "./registers.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-registers",
+  templateUrl: "./registers.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class RegistersView implements OnInit, AfterViewInit {
-
   @ViewChild(MatSort, { static: true })
   public sort: MatSort;
 
@@ -30,14 +27,12 @@ export class RegistersView implements OnInit, AfterViewInit {
   public dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R as number[]);
   public dataSourceF = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_F as number[]);
   public dataSourceD = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_D as number[]);
-  public displayedColumns: string[] = [ "Register", "Hexadecimal", "Binary", "Byte" ];
-  public displayedColumnsR: string[] = [ "Register", "Hexadecimal", "Binary", "Integer" ];
-  public displayedColumnsF: string[] = [ "Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Float" ];
-  public displayedColumnsD: string[] = [ "Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Double" ];
+  public displayedColumns: string[] = ["Register", "Hexadecimal", "Binary", "Byte"];
+  public displayedColumnsR: string[] = ["Register", "Hexadecimal", "Binary", "Integer"];
+  public displayedColumnsF: string[] = ["Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Float"];
+  public displayedColumnsD: string[] = ["Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Double"];
 
-
-  constructor(public machine: MachineService) {
-  }
+  constructor(public machine: MachineService) {}
 
   ngOnInit(): void {
     this.dataSource.filter = null;
@@ -45,20 +40,23 @@ export class RegistersView implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const list_cards = [ "registers_R_id", "registers_F_id", "registers_D_id" ];
+    const list_cards = ["registers_R_id", "registers_F_id", "registers_D_id"];
     for (const card_id of list_cards) {
       window.jQuery("#" + card_id).CardWidget("collapse");
     }
 
-    window.jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
+    window
+      .jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
       .on("expanded.lte.cardwidget", (/*$event*/) => {
         this.resizeCards("60vh");
       });
-    window.jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
+    window
+      .jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
       .on("minimized.lte.cardwidget", (/*$event*/) => {
         this.resizeCards("60vh");
       });
-    window.jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
+    window
+      .jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
       .on("maximized.lte.cardwidget", (/*$event*/) => {
         this.resizeCards("100%");
       });
@@ -81,16 +79,16 @@ export class RegistersView implements OnInit, AfterViewInit {
 
   public refresh(): void {
     this.dataSource.filter = null;
-    this.dataSource.data = [ ...this.dataSource.data ];
+    this.dataSource.data = [...this.dataSource.data];
 
     this.dataSourceR.filter = null;
-    this.dataSourceR.data = [ ...this.dataSourceR.data ];
+    this.dataSourceR.data = [...this.dataSourceR.data];
 
     this.dataSourceF.filter = null;
-    this.dataSourceF.data = [ ...this.dataSourceF.data ];
+    this.dataSourceF.data = [...this.dataSourceF.data];
 
     this.dataSourceD.filter = null;
-    this.dataSourceD.data = [ ...this.dataSourceD.data ];
+    this.dataSourceD.data = [...this.dataSourceD.data];
 
     window.dispatchEvent(new Event("resize"));
   }

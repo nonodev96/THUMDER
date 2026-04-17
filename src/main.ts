@@ -1,9 +1,9 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import * as PIXI from 'pixi.js';
+import { enableProdMode } from "@angular/core";
+import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import * as PIXI from "pixi.js";
 
-import { AppModule } from './app/app.module';
-import { AppConfig } from './environments/_environment';
+import { AppModule } from "./app/app.module";
+import { AppConfig } from "./environments/_environment";
 
 if (AppConfig.production) {
   enableProdMode();
@@ -15,6 +15,6 @@ PIXI.settings.SORTABLE_CHILDREN = true;
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule, {
-    preserveWhitespaces: false
+    preserveWhitespaces: false,
   })
-  .catch(err => console.error(err));
+  .catch((err) => console.error(err));

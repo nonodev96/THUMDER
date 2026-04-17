@@ -1,26 +1,26 @@
-import { AfterViewInit, Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { Observable, Subject } from "rxjs";
-import { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "../../Types";
-import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
-import MonacoConfig from "../../../monaco-config";
+import { type AfterViewInit, Component, Input, type OnDestroy, type OnInit } from "@angular/core";
 import * as monaco from "monaco-editor";
+import { type Observable, Subject } from "rxjs";
+import MonacoConfig from "../../../monaco-config";
+import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
+import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "../../Types";
+
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 import EditorOption = monaco.editor.EditorOption;
 
 @Component({
-    selector: "THUMDER-monaco-editor",
-    templateUrl: "./monaco-editor.component.html",
-    styleUrls: ["./monaco-editor.component.scss"],
-    standalone: false
+  selector: "THUMDER-monaco-editor",
+  templateUrl: "./monaco-editor.component.html",
+  styleUrls: ["./monaco-editor.component.scss"],
+  standalone: false,
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
+  @Input()
+  public inputTheme: string = "thumderTheme";
 
   @Input()
-  public inputTheme: string = 'thumderTheme';
-
-  @Input()
-  public inputLanguage: string = 'thumderLanguage';
+  public inputLanguage: string = "thumderLanguage";
 
   public readonly EDITOR_OPTIONS_THUMDER: IStandaloneEditorConstructionOptions = MonacoConfig.defaultOptions;
   public _height: number = 70;
@@ -46,8 +46,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return this._height;
   }
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit(): void {
     this.componentStatus$.next("OnInit");
@@ -97,9 +96,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD, () => {
       this.toggleDebuggerTag();
     });
-    this.editor.onDidChangeCursorSelection((_$event) => {
-
-    });
+    this.editor.onDidChangeCursorSelection((_$event) => {});
     this.editor.onDidChangeModelDecorations((_$event) => {
       this.breakpoints = this.getAllBreakpoints();
       this.breakpoints$.next(this.breakpoints);
@@ -126,19 +123,19 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public toggleDebuggerTag(line: number = null): void {
     line = line ?? this.editor.getPosition().lineNumber ?? 1;
     const decorations = this.editor.getModel().getLineDecorations(line);
-    const decorations_target_id = decorations.map(v => v.id);
-    if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
+    const decorations_target_id = decorations.map((v) => v.id);
+    if (decorations.some((value) => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
       this.breakpoints[line] = false;
       this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
     } else {
       this.breakpoints[line] = true;
       const newDecoration = {
-        range:   new monaco.Range(line, 0, line, 0),
+        range: new monaco.Range(line, 0, line, 0),
         options: {
           isWholeLine: true,
           // inlineClassName: 'fas fa-circle color-red',
           glyphMarginClassName: "fas fa-circle color-red",
-        }
+        },
       };
       this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [newDecoration]);
     }
@@ -150,9 +147,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     const lineCount = this.editor.getModel().getLineCount();
     for (let line = 0; line < lineCount; line++) {
       const decorations = this.editor.getModel().getLineDecorations(line);
-      if (decorations.some(value => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
+      if (decorations.some((value) => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
         vectorOfInstructions.push({
-          line:    line,
+          line: line,
           content: this.editor.getModel().getLineContent(line),
         });
       }
@@ -177,27 +174,27 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public printLine(line: number): void {
     const newDecoration = {
-      range:   new monaco.Range(line, 1, line, 1),
+      range: new monaco.Range(line, 1, line, 1),
       options: {
         isWholeLine: true,
-        className:   "debug-line"
-      }
+        className: "debug-line",
+      },
     };
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
   }
 
   public printErrorsInEditor(errors: TypeErrorInCode[]): void {
-    const markers = errors.map(error => {
+    const markers = errors.map((error) => {
       return {
-        startColumn:     1,
-        endColumn:       1000,
+        startColumn: 1,
+        endColumn: 1000,
         startLineNumber: error.line,
-        endLineNumber:   error.line,
-        message:         error.message,
-        severity:        error.severity as unknown as monaco.MarkerSeverity
-      } as monaco.editor.IMarkerData
-    })
-    monaco.editor.setModelMarkers(this.editor.getModel(), "IDK", markers)
+        endLineNumber: error.line,
+        message: error.message,
+        severity: error.severity as unknown as monaco.MarkerSeverity,
+      } as monaco.editor.IMarkerData;
+    });
+    monaco.editor.setModelMarkers(this.editor.getModel(), "IDK", markers);
   }
 
   public async setBreakpoints(breakpoints: TypeBreakpoints): Promise<void> {
@@ -209,7 +206,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public getBreakpoints(): TypeBreakpoints {
-    return this.breakpoints
+    return this.breakpoints;
   }
 
   public async setEditorFile(fileItem: InterfaceFileItem): Promise<void> {

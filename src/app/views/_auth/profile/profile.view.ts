@@ -1,20 +1,19 @@
-import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { AuthService } from "../../../__core/auth/auth.service";
+import { Component, Inject, type OnInit } from "@angular/core";
+import type { AuthService } from "../../../__core/auth/auth.service";
 
 @Component({
-    selector: "view-profile",
-    templateUrl: "./profile.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-profile",
+  templateUrl: "./profile.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class ProfileView implements OnInit {
   constructor(@Inject(DOCUMENT) private document: Document,
               public authService: AuthService) {
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public log(msg: string): void {
     console.debug(msg);

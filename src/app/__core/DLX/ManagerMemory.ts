@@ -1,7 +1,7 @@
-import { TypeInstructionsData, TypeMemory, TypeMemoryToUpdate, TypeDirectiveData } from "../../Types";
+import type { TypeDirectiveData, TypeInstructionsData, TypeMemory, TypeMemoryToUpdate } from "../../Types";
 import { Utils } from "../../Utils";
 import { Int32 } from "../TypesData";
-import { InterfaceMemory } from "./interfaces";
+import type { InterfaceMemory } from "./interfaces";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes
@@ -130,11 +130,13 @@ export class ManagerMemory implements InterfaceMemory {
   }
 
   public getMemoryWordBinaryByIndex(index: number): string {
-    return "" +
+    return (
+      "" +
       this._memoryInt8Array[index].toString(2).padStart(8, "0") +
       this._memoryInt8Array[index + 1].toString(2).padStart(8, "0") +
       this._memoryInt8Array[index + 2].toString(2).padStart(8, "0") +
-      this._memoryInt8Array[index + 3].toString(2).padStart(8, "0");
+      this._memoryInt8Array[index + 3].toString(2).padStart(8, "0")
+    );
   }
 
   // WORD - SET
@@ -182,9 +184,7 @@ export class ManagerMemory implements InterfaceMemory {
 
   // HALF WORD - GET
   public getMemoryHalfWordBinaryByIndex(index: number): string {
-    return "" +
-      this._memoryInt8Array[index].toString(2).padStart(8, "0") +
-      this._memoryInt8Array[index + 1].toString(2).padStart(8, "0");
+    return "" + this._memoryInt8Array[index].toString(2).padStart(8, "0") + this._memoryInt8Array[index + 1].toString(2).padStart(8, "0");
   }
 
   // HALF WORD - SET
@@ -202,7 +202,6 @@ export class ManagerMemory implements InterfaceMemory {
     this._memoryInt8Array[index] = parseInt(p0, 2);
     this._memoryInt8Array[index + 1] = parseInt(p1, 2);
   }
-
 
   // HALF WORD - SET
   public setMemoryFloatBinaryByAddress(address: string, binary32: string): void {
@@ -254,12 +253,14 @@ export class ManagerMemory implements InterfaceMemory {
   // TODO
   // group by 4 steps
   public getAllMemory(): TypeMemory[] {
-    return Array.from(this._memoryInt8Array).map((v, index) => {
-      if (v === 0) return;
-      return {
-        address: index.toString(16).padStart(2, "0"),
-        value:   v
-      } as TypeMemory;
-    }).filter((v) => v);
+    return Array.from(this._memoryInt8Array)
+      .map((v, index) => {
+        if (v === 0) return;
+        return {
+          address: index.toString(16).padStart(2, "0"),
+          value: v,
+        } as TypeMemory;
+      })
+      .filter((v) => v);
   }
 }

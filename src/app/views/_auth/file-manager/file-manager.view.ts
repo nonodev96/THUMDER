@@ -1,58 +1,58 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { NavigationExtras, Router } from "@angular/router";
-import { THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
-import { DxFileManagerComponent } from "devextreme-angular";
+import { Component, Inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
+import type { NavigationExtras, Router } from "@angular/router";
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
-import FileSystemItem from "devextreme/file_management/file_system_item";
-import FileManager from "devextreme/ui/file_manager";
+import type FileSystemItem from "devextreme/file_management/file_system_item";
+import type FileManager from "devextreme/ui/file_manager";
+import { DxFileManagerComponent } from "devextreme-angular";
 import { Subscription } from "rxjs";
+import type { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
 
 export type FileMenuOptions = {
   items: {
-    text: string,
-    icon: string,
+    text: string;
+    icon: string;
     items: {
-      text: string,
+      text: string;
       options: {
-        extension: string
-      }
-    }[],
-  }[]
-  onItemClick: () => void
+        extension: string;
+      };
+    }[];
+  }[];
+  onItemClick: () => void;
 };
 
 export type TypeEventSelectedFileOpened = {
-  file?: THUMDER_FileItem
+  file?: THUMDER_FileItem;
 };
 
 export type TypeOnContextMenuItemClick = {
-  component: FileManager,
-  element: HTMLElement,
-  event: Event,
-  fileSystemItem: FileSystemItem,
-  itemData: any,
-  itemElement: HTMLElement,
-  itemIndex: number,
-  model: any,
-  viewArea: "navPane" | "itemView",
+  component: FileManager;
+  element: HTMLElement;
+  event: Event;
+  fileSystemItem: FileSystemItem;
+  itemData: any;
+  itemElement: HTMLElement;
+  itemIndex: number;
+  model: any;
+  viewArea: "navPane" | "itemView";
 };
 
 export type TypeOnContentReady = {
-  component: FileManager,
-  element: HTMLElement,
-  model: any
+  component: FileManager;
+  element: HTMLElement;
+  model: any;
 };
 
 @Component({
-    selector: "view-file-manager",
-    templateUrl: "./file-manager.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-file-manager",
+  templateUrl: "./file-manager.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class FileManagerView implements OnInit, OnDestroy {
   get filesSelected() {
-    return this._filesSelected.map(v => v.name);
+    return this._filesSelected.map((v) => v.name);
   }
 
   public CreateNewFile_lang = "Create new file";
@@ -62,16 +62,20 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   public customFileProvider: CustomFileSystemProvider;
   public newFileMenuOptions: FileMenuOptions = {
-    items:       [{
-      text:  "Create new file",
-      icon:  "plus",
-      items: [{ text: "WinDLX Document", options: { extension: ".s" } }]
-    }],
-    onItemClick: this.onContextMenuItemClick.bind(this)
+    items: [
+      {
+        text: "Create new file",
+        icon: "plus",
+        items: [{ text: "WinDLX Document", options: { extension: ".s" } }],
+      },
+    ],
+    onItemClick: this.onContextMenuItemClick.bind(this),
   };
   public changeCategoryMenuOptions: FileMenuOptions = {
-    items:       [ /*{ text: 'Category', icon: 'tags', items: [] }*/],
-    onItemClick: this.onContextMenuItemClick.bind(this)
+    items: [
+      /*{ text: 'Category', icon: 'tags', items: [] }*/
+    ],
+    onItemClick: this.onContextMenuItemClick.bind(this),
   };
   public show: boolean = false;
   public showUID: boolean = false;
@@ -90,27 +94,27 @@ export class FileManagerView implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fileSystemService.init().then(() => {
       this.customFileProvider = new CustomFileSystemProvider({
-        getItems:        async (parentDirectory: FileSystemItem) => {
+        getItems: async (parentDirectory: FileSystemItem) => {
           return await this.fileSystemService.getItems(parentDirectory);
         },
         createDirectory: async (parentDirectory: FileSystemItem, name: string) => {
           return await this.fileSystemService.createDirectory(parentDirectory, name);
         },
-        renameItem:      async (item: FileSystemItem, name: string) => {
+        renameItem: async (item: FileSystemItem, name: string) => {
           return await this.fileSystemService.renameItem(item, name);
         },
-        deleteItem:      async (item: FileSystemItem) => {
+        deleteItem: async (item: FileSystemItem) => {
           return await this.fileSystemService.deleteItem(item);
         },
-        moveItem:        async (item: FileSystemItem, destinationDirectory: FileSystemItem) => {
+        moveItem: async (item: FileSystemItem, destinationDirectory: FileSystemItem) => {
           return await this.fileSystemService.moveItem(item, destinationDirectory);
         },
         uploadFileChunk: async (fileData, uploadInfo, destinationDirectory: FileSystemItem) => {
           return await this.fileSystemService.uploadFileChunk(fileData, uploadInfo, destinationDirectory);
         },
-        downloadItems:   async (items: FileSystemItem[]) => {
+        downloadItems: async (items: FileSystemItem[]) => {
           return await this.fileSystemService.downloadItem(items);
-        }
+        },
       });
     });
     this.show = true;
@@ -148,11 +152,10 @@ export class FileManagerView implements OnInit, OnDestroy {
       const interfaceFileItem = this.fileSystemService.items[index];
       const extras: NavigationExtras = {
         state: {
-          "interfaceFileItem": interfaceFileItem
-        }
+          interfaceFileItem: interfaceFileItem,
+        },
       };
-      this.router.navigateByUrl("/auth/editor", extras).then(() => {
-      });
+      this.router.navigateByUrl("/auth/editor", extras).then(() => {});
     }
   }
 

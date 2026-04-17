@@ -1,22 +1,19 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { type AfterViewInit, Component, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
-import { TranslateService } from "@ngx-translate/core";
-import {
-  EditMemoryBinary32Component
-} from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
-import { TypeAddress, TypeDataDisplayColumn } from "../../../Types";
-import { StorageService } from "../../../__core/storage/storage.service";
+import type { TranslateService } from "@ngx-translate/core";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import type { StorageService } from "../../../__core/storage/storage.service";
+import { EditMemoryBinary32Component } from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
+import type { TypeAddress, TypeDataDisplayColumn } from "../../../Types";
 
 @Component({
-    selector: "view-memory",
-    templateUrl: "./memory.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-memory",
+  templateUrl: "./memory.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class MemoryView implements OnInit, AfterViewInit {
-
   @ViewChild(MatSort, { static: true })
   public sort: MatSort;
 
@@ -24,14 +21,16 @@ export class MemoryView implements OnInit, AfterViewInit {
   public editBinary32Component: EditMemoryBinary32Component;
 
   // "Address-0", "Address-1", "Address-2", "Address-3"
-  public displayedColumnsMemory: string[] = [ "Address", "Hexadecimal", "Binary", "Word" ];
+  public displayedColumnsMemory: string[] = ["Address", "Hexadecimal", "Binary", "Word"];
   public dataSourceMemory: TableVirtualScrollDataSource<number> = new TableVirtualScrollDataSource<number>();
   public typeDataSelected: TypeDataDisplayColumn = "Word";
   public maxHeightCard: string = "75vh";
 
-  constructor(public machine: MachineService,
-              private translate: TranslateService,
-              private storage: StorageService) {
+  constructor(
+    public machine: MachineService,
+    private translate: TranslateService,
+    private storage: StorageService,
+  ) {
     this.dataSourceMemory.filter = null;
     this.dataSourceMemory.sort = this.sort;
   }
@@ -65,38 +64,38 @@ export class MemoryView implements OnInit, AfterViewInit {
     this.typeDataSelected = typeData;
     switch (typeData) {
       case "Byte":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Bytes" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Binary", "Bytes"];
         break;
       case "HalfWord":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "HalfWord" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Binary", "HalfWord"];
         break;
       case "Word":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "Word" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Binary", "Word"];
         break;
       case "ASCII":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "ASCII" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Binary", "ASCII"];
         break;
       case "Float":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "BinaryFloat", "Float" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "BinaryFloat", "Float"];
         break;
       case "Double":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "BinaryDouble", "Double" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "BinaryDouble", "Double"];
         break;
       case "InstructionCode":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Binary", "InstructionCode" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Binary", "InstructionCode"];
         break;
       case "Address-0-1-2-3":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "Address-0", "Address-1", "Address-2", "Address-3" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "Address-0", "Address-1", "Address-2", "Address-3"];
         break;
       case "HalfWord-0-1":
-        this.displayedColumnsMemory = [ "Address", "Hexadecimal", "HalfWord-0", "HalfWord-1" ];
+        this.displayedColumnsMemory = ["Address", "Hexadecimal", "HalfWord-0", "HalfWord-1"];
         break;
     }
   }
 
   public refresh(): void {
     this.dataSourceMemory.filter = null;
-    this.dataSourceMemory.data = [ ...this.dataSourceMemory.data ];
+    this.dataSourceMemory.data = [...this.dataSourceMemory.data];
     window.dispatchEvent(new Event("resize"));
   }
 
@@ -108,7 +107,7 @@ export class MemoryView implements OnInit, AfterViewInit {
   }
 
   public getInstructionDLXFromIndex(index: number): string {
-    const address: TypeAddress = `0x${ index.toString(16).padStart(8, "0") }`;
+    const address: TypeAddress = `0x${index.toString(16).padStart(8, "0")}`;
     return this.machine.code.has(address) ? this.machine.code.get(address).instruction : "";
   }
 }

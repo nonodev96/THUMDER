@@ -1,30 +1,29 @@
-import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { Router } from "@angular/router";
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../../../__core/auth/auth.service";
-import { ElectronService } from "../../../__core/services";
-import { AppComponent } from "../../../app.component";
-
+import { Component, Inject, type OnInit } from "@angular/core";
+import { type UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
+import type { Router } from "@angular/router";
+import type { AuthService } from "../../../__core/auth/auth.service";
+import type { ElectronService } from "../../../__core/services";
+import type { AppComponent } from "../../../app.component";
 
 @Component({
-    selector: "app-login",
-    templateUrl: "./login.view.html",
-    standalone: false
+  selector: "app-login",
+  templateUrl: "./login.view.html",
+  standalone: false,
 })
 export class LoginView implements OnInit {
   public loginForm: UntypedFormGroup;
   public showSpinner: boolean = false;
 
   public error_messages = {
-    email:    [
+    email: [
       { type: "required", message: "Email is required." },
-      { type: "email", message: "Please enter a valid email address." }
+      { type: "email", message: "Please enter a valid email address." },
     ],
     password: [
       { type: "required", message: "Password is required." },
       { type: "minlength", message: "Password min length." },
-      { type: "maxlength", message: "Password max length." }
+      { type: "maxlength", message: "Password max length." },
     ],
   };
   private translationEnabled: boolean = false;
@@ -54,8 +53,7 @@ export class LoginView implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   public async SignIn(email: string, password: string): Promise<void> {
     this.showSpinner = true;

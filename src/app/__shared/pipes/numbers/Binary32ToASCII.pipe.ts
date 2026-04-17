@@ -1,9 +1,9 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, type PipeTransform } from "@angular/core";
 import { Utils } from "../../../Utils";
 
 @Pipe({
-    name: "binary32_to_ascii",
-    standalone: false
+  name: "binary32_to_ascii",
+  standalone: false,
 })
 export class Binary32ToASCIIPipe implements PipeTransform {
   transform(binary: string = "00000000000000000000000000000000"): string {

@@ -1,53 +1,47 @@
 import { Injectable } from "@angular/core";
-import { firstValueFrom, interval, Observable, PartialObserver, Subject } from "rxjs";
+import type { TranslateService } from "@ngx-translate/core";
+import type { IndividualConfig, ToastrService } from "ngx-toastr";
+import { firstValueFrom, interval, type Observable, type PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { ToastrService } from "ngx-toastr";
-import { TranslateService } from "@ngx-translate/core";
-import { IndividualConfig } from "ngx-toastr";
-import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
-import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
+import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_ENABLED_FORWARDING_CONFIGURATION, DEFAULT_STEP_SIMULATION } from "../../CONSTANTS";
 import {
   EnumLogLevel,
-  InterfaceFileItem,
-  TypeAddress,
-  TypeAllMemory,
-  TypeAllRegisters,
-  TypeConfigurationMachine,
-  TypeDataStatistics,
-  TypeFloatingPointStageConfiguration,
-  TypeInstructionsData,
-  TypeLogger,
-  TypeMemoryToUpdate,
-  TypePipelineToProcess,
-  TypeRegisterToUpdate,
-  TypeSimulationInitRequest,
-  TypeSimulationInitResponse,
-  TypeSimulationStep,
-  TypeStage,
-  TypeBreakpoints,
-  TypeStatusMachine,
-  TypeErrorInCode,
-  TypeEnabledForwardingConfiguration
+  type InterfaceFileItem,
+  type TypeAddress,
+  type TypeAllMemory,
+  type TypeAllRegisters,
+  type TypeBreakpoints,
+  type TypeConfigurationMachine,
+  type TypeDataStatistics,
+  type TypeEnabledForwardingConfiguration,
+  type TypeErrorInCode,
+  type TypeFloatingPointStageConfiguration,
+  type TypeInstructionsData,
+  type TypeLogger,
+  type TypeMemoryToUpdate,
+  type TypePipelineToProcess,
+  type TypeRegisterToUpdate,
+  type TypeSimulationInitRequest,
+  type TypeSimulationInitResponse,
+  type TypeSimulationStep,
+  type TypeStage,
+  type TypeStatusMachine,
 } from "../../Types";
-import {
-  CONFIG_WEBSOCKET,
-  DEFAULT_CODE,
-  DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
-  DEFAULT_STEP_SIMULATION
-} from "../../CONSTANTS";
 import { Utils } from "../../Utils";
-import { StorageService } from "../storage/storage.service";
-import { ManagerRegisters } from "../DLX/ManagerRegisters";
-import { ManagerMemory } from "../DLX/ManagerMemory";
-import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
-import { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
-import { ManagerStatistics } from "../DLX/ManagerStatistics";
 import { UtilsDataStructures } from "../../UtilsDataStructures";
+import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
+import { ManagerMemory } from "../DLX/ManagerMemory";
+import { ManagerRegisters } from "../DLX/ManagerRegisters";
+import { ManagerStatistics } from "../DLX/ManagerStatistics";
+import type { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
+import type { StorageService } from "../storage/storage.service";
+import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
+import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
+
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
 
-
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class MachineService {
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
@@ -96,10 +90,12 @@ export class MachineService {
   isComplete: boolean = false;
   isBreakpoint: boolean = false;
 
-  constructor(private store: StorageService,
-              private socketProviderConnect: SocketProviderConnectService,
-              private translate: TranslateService,
-              private toast: ToastrService) {
+  constructor(
+    private store: StorageService,
+    private socketProviderConnect: SocketProviderConnectService,
+    private translate: TranslateService,
+    private toast: ToastrService,
+  ) {
     this.level = EnumLogLevel.All;
 
     this.canSimulate = false;
@@ -108,7 +104,7 @@ export class MachineService {
     this.pipeline = new PixiTHUMDER_Pipeline(
       this.floatingPointStageConfiguration.addition.count,
       this.floatingPointStageConfiguration.multiplication.count,
-      this.floatingPointStageConfiguration.division.count
+      this.floatingPointStageConfiguration.division.count,
     );
     this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
 
@@ -155,10 +151,7 @@ export class MachineService {
     });
 
     const timeSimulation = this.store.getItem("time_simulation_configuration");
-    this.timer = interval(timeSimulation).pipe(
-      takeUntil(this.isRunning$),
-      takeUntil(this.isComplete$)
-    );
+    this.timer = interval(timeSimulation).pipe(takeUntil(this.isRunning$), takeUntil(this.isComplete$));
 
     this.timerObserver = {
       next: async (_: number): Promise<void> => {
@@ -166,7 +159,7 @@ export class MachineService {
           await this.SimulationNextStep();
         }
         return Promise.resolve();
-      }
+      },
     };
   }
 
@@ -187,11 +180,13 @@ export class MachineService {
       this.memory.setSize(this.memorySize);
       this.memory.reset();
 
-      this.floatingPointStageConfiguration = this.store.getItem("floating_point_stage_configuration") as TypeFloatingPointStageConfiguration;
+      this.floatingPointStageConfiguration = this.store.getItem(
+        "floating_point_stage_configuration",
+      ) as TypeFloatingPointStageConfiguration;
       this.pipeline.reset(
         this.floatingPointStageConfiguration.addition.count,
         this.floatingPointStageConfiguration.multiplication.count,
-        this.floatingPointStageConfiguration.division.count
+        this.floatingPointStageConfiguration.division.count,
       );
       this.cycleClockDiagram.reset();
 
@@ -205,23 +200,23 @@ export class MachineService {
 
       const payload: TypeConfigurationMachine = {
         enabledForwarding: this.enabledForwarding,
-        memorySize:        this.memorySize,
-        addition:          {
+        memorySize: this.memorySize,
+        addition: {
           count: this.floatingPointStageConfiguration.addition.count,
-          delay: this.floatingPointStageConfiguration.addition.delay
+          delay: this.floatingPointStageConfiguration.addition.delay,
         },
-        division:          {
+        division: {
           count: this.floatingPointStageConfiguration.division.count,
-          delay: this.floatingPointStageConfiguration.division.delay
+          delay: this.floatingPointStageConfiguration.division.delay,
         },
-        multiplication:    {
+        multiplication: {
           count: this.floatingPointStageConfiguration.multiplication.count,
-          delay: this.floatingPointStageConfiguration.multiplication.delay
-        }
+          delay: this.floatingPointStageConfiguration.multiplication.delay,
+        },
       };
       this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", JSON.stringify(payload), (response) => {
         // console.log(response);
-        this.writeToLog(JSON.stringify(response))
+        this.writeToLog(JSON.stringify(response));
       });
 
       // Reset Editor
@@ -236,10 +231,7 @@ export class MachineService {
 
       const timeSimulation = this.store.getItem("time_simulation_configuration") as number;
       this.timer = null;
-      this.timer = interval(timeSimulation).pipe(
-        takeUntil(this.isRunning$),
-        takeUntil(this.isComplete$)
-      );
+      this.timer = interval(timeSimulation).pipe(takeUntil(this.isRunning$), takeUntil(this.isComplete$));
       // await this.loadExamples();
       return Promise.resolve(true);
     } catch (error) {
@@ -365,12 +357,12 @@ export class MachineService {
       const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
       const content = file.content;
       const payload = JSON.stringify({
-        id:        this.socketProviderConnect.socketIO.ioSocket.id,
-        filename:  file.name,
-        date:      Utils.dateToStringFormat(new Date()),
-        content:   content,
+        id: this.socketProviderConnect.socketIO.ioSocket.id,
+        filename: file.name,
+        date: Utils.dateToStringFormat(new Date()),
+        content: content,
         registers: [],
-        memory:    []
+        memory: [],
       } as TypeSimulationInitRequest);
       this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response) => {
         const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
@@ -405,11 +397,9 @@ export class MachineService {
   private async SimulationNextStep(): Promise<void> {
     try {
       const payload = JSON.stringify({
-        step: this.privateStep + 1
+        step: this.privateStep + 1,
       });
-      this.writeToLog("payload S: {0}", EnumLogLevel.Debug, [
-        { index: 0, value: this.privateStep },
-      ]);
+      this.writeToLog("payload S: {0}", EnumLogLevel.Debug, [{ index: 0, value: this.privateStep }]);
       this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response) => {
         this.statusMachineInStep = DEFAULT_STEP_SIMULATION;
         this.statusMachineInStep = JSON.parse(response) as TypeSimulationStep;
@@ -419,7 +409,7 @@ export class MachineService {
           this.writeToLog("SimulationNextStep S: {0} L: {1} JSON: {2}", EnumLogLevel.Debug, [
             { index: 0, value: this.privateStep },
             { index: 1, value: this.privateLine },
-            { index: 2, value: this.statusMachineInStep }
+            { index: 2, value: this.statusMachineInStep },
           ]);
         }
         // console.log("MachineInStep: ", this.statusMachineInStep);
@@ -522,7 +512,7 @@ export class MachineService {
 
   private stringFormat(msg: string, params: TypeLogger[]) {
     return msg.replace(/{([0-9]+)}/g, (match: string, index) => {
-      const logValue: TypeLogger = params.filter(v => v.index == index)[0] ?? { index: -1, value: "" };
+      const logValue: TypeLogger = params.filter((v) => v.index == index)[0] ?? { index: -1, value: "" };
       // console.log("msg", msg, "params", params, "logValue", logValue, "match", match, "index", index);
       if (typeof logValue.value == "object") {
         return JSON.stringify(logValue.value);
@@ -551,10 +541,10 @@ export class MachineService {
 
   public getAllStatusMachine(): TypeStatusMachine {
     return {
-      registers:   this.registers,
-      memory:      this.memory.getAllMemory(),
+      registers: this.registers,
+      memory: this.memory.getAllMemory(),
       breakpoints: this.breakpointManager.getAllBreakpoints(),
-      statistics:  this.dataStatistics.getData()
+      statistics: this.dataStatistics.getData(),
     };
   }
 
@@ -562,11 +552,10 @@ export class MachineService {
     this.socketProviderConnect.socketIO.ioSocket.connect(CONFIG_WEBSOCKET.url, { "force new connection": true });
   }
 
-  private async toastMessage(key_title: string = "TOAST.LOGIN_FALSE",
-                             key_message: string = "TOAST.ACCESS_DENIED"): Promise<void> {
+  private async toastMessage(key_title: string = "TOAST.LOGIN_FALSE", key_message: string = "TOAST.ACCESS_DENIED"): Promise<void> {
     const config: Partial<IndividualConfig> = {
-      timeOut:       500,
-      positionClass: "toast-bottom-left"
+      timeOut: 500,
+      positionClass: "toast-bottom-left",
     };
     const message = await firstValueFrom(this.translate.get(key_message));
     const title = await firstValueFrom(this.translate.get(key_title));
@@ -575,6 +564,6 @@ export class MachineService {
   }
 
   private processResponsePipeline() {
-    Utils.voidF()
+    Utils.voidF();
   }
 }

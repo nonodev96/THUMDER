@@ -1,8 +1,8 @@
-import { Float32, Int32 } from "../TypesData";
-import { InterfaceRegisters } from "./interfaces";
-import { TypeRegisterControl, TypeRegisterToUpdate } from "../../Types";
-import { Utils } from "../../Utils";
 import { MACHINE_ALL_REGISTER_CONTROL } from "../../CONSTANTS";
+import type { TypeRegisterControl, TypeRegisterToUpdate } from "../../Types";
+import { Utils } from "../../Utils";
+import { Float32, Int32 } from "../TypesData";
+import type { InterfaceRegisters } from "./interfaces";
 
 export class ManagerRegisters implements InterfaceRegisters {
   PC: Int32;

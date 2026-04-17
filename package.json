@@ -111,10 +111,12 @@
     "zone.js": "~0.15.1"
   },
   "devDependencies": {
+    "@angular-eslint/builder": "21.3.1",
     "@angular/cli": "20.3.24",
     "@angular/language-service": "20.3.19",
     "@biomejs/biome": "2.4.12",
     "@cypress/schematic": "1.5.1",
+    "@eslint/js": "^10.0.1",
     "@pixi/canvas-renderer": "7.4.3",
     "@types/chart.js": "2.9.29",
     "@types/jasmine": "~3.6.0",
@@ -122,6 +124,7 @@
     "@types/jquery": "3.5.6",
     "@types/mocha": "8.0.3",
     "@types/node": "14.14.35",
+    "angular-eslint": "21.3.1",
     "browserslist": "4.19.1",
     "chai": "4.2.0",
     "conventional-changelog-angular": "^8.0.0",
@@ -132,6 +135,7 @@
     "electron-builder": "23.0.3",
     "electron-chromedriver": "14.0.0",
     "electron-reload": "1.5.0",
+    "eslint": "^10.0.3",
     "firebase-tools": "11.2.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
@@ -144,6 +148,7 @@
     "ts-node": "9.0.0",
     "tslib": "^2.0.0",
     "typescript": "5.8.3",
+    "typescript-eslint": "8.56.1",
     "wait-on": "5.0.1",
     "webdriver-manager": "12.1.7"
   },

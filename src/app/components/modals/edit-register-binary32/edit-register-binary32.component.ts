@@ -1,28 +1,27 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, type OnInit } from "@angular/core";
+import type { TranslateService } from "@ngx-translate/core";
+import type { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { TypeRegister, TypeRegisterToEdit } from "../../../Types";
+import type { MachineService } from "../../../__core/machine/machine.service";
 import {
+  DEFAULT_BINARY_32_BITS,
+  DEFAULT_BINARY_64_BITS,
   MACHINE_REGISTERS_C,
   MACHINE_REGISTERS_D,
   MACHINE_REGISTERS_F,
   MACHINE_REGISTERS_R,
   MACHINE_TYPE_REGISTERS,
-  DEFAULT_BINARY_32_BITS,
-  DEFAULT_BINARY_64_BITS
 } from "../../../CONSTANTS";
+import type { TypeRegister, TypeRegisterToEdit } from "../../../Types";
 import { Utils } from "../../../Utils";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
 
 @Component({
-    selector: "THUMDER-edit-register-binary32",
-    templateUrl: "./edit-register-binary32.component.html",
-    styleUrls: ["./edit-register-binary32.component.scss"],
-    standalone: false
+  selector: "THUMDER-edit-register-binary32",
+  templateUrl: "./edit-register-binary32.component.html",
+  styleUrls: ["./edit-register-binary32.component.scss"],
+  standalone: false,
 })
 export class EditRegisterBinary32Component implements OnInit {
-
   readonly MACHINE_TYPE_REGISTERS = MACHINE_TYPE_REGISTERS;
 
   public aliasTypeRegister: string = "";
@@ -31,8 +30,8 @@ export class EditRegisterBinary32Component implements OnInit {
   public maxLengthHexadecimal: number = 8;
   public registerToEditHexadecimalValueIsValid: boolean = true;
   public lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
-  private regExp_32bits_hex: RegExp = new RegExp("\\b[0-9A-F]{8}\\b");
-  private regExp_64bits_hex: RegExp = new RegExp("\\b[0-9A-F]{16}\\b");
+  private regExp_32bits_hex: RegExp = /\b[0-9A-F]{8}\b/;
+  private regExp_64bits_hex: RegExp = /\b[0-9A-F]{16}\b/;
   private _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
   private registerToEdit: TypeRegisterToEdit = "PC";
 
@@ -79,14 +78,13 @@ export class EditRegisterBinary32Component implements OnInit {
     this._registerToEdit_binary = Utils.convertIEEE754_Number_To_Binary64Bits(double);
   }
 
-  constructor(public machine: MachineService,
-              private translate: TranslateService,
-              private toastService: ToastrService) {
-  }
+  constructor(
+    public machine: MachineService,
+    private translate: TranslateService,
+    private toastService: ToastrService,
+  ) {}
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 
   public changeRegisterToEdit(registerToEdit: TypeRegisterToEdit): void {
     this.registerToEdit = registerToEdit;
@@ -171,11 +169,13 @@ export class EditRegisterBinary32Component implements OnInit {
         }
       }
 
-      await this.machine.updateRegisterInServer([{
-        register:         this.registerToEdit,
-        typeRegister:     this.typeRegisterSelected,
-        hexadecimalValue: Utils.binaryToHexadecimal(this.registerToEdit_Binary)
-      }]);
+      await this.machine.updateRegisterInServer([
+        {
+          register: this.registerToEdit,
+          typeRegister: this.typeRegisterSelected,
+          hexadecimalValue: Utils.binaryToHexadecimal(this.registerToEdit_Binary),
+        },
+      ]);
 
       return Promise.resolve();
     } catch (e) {

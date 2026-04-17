@@ -1,55 +1,46 @@
-import {
-  app,
-  screen,
-  ipcMain,
-  nativeImage,
-  BrowserWindow,
-  Notification,
-  NotificationConstructorOptions,
-  Tray,
-  Menu
-} from "electron";
+import { app, BrowserWindow, ipcMain, Menu, Notification, type NotificationConstructorOptions, nativeImage, screen, Tray } from "electron";
 import * as path from "path";
 import * as url from "url";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1);
-const isServe = args.some(val => val === "--serve");
+const isServe = args.some((val) => val === "--serve");
 
 function createWindow(): BrowserWindow {
-
   const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
   win = new BrowserWindow({
     // titleBarStyle: 'hiddenInset',
-    x:              0,
-    y:              0,
-    width:          size.width,
-    height:         size.height,
-    minWidth:       400,
-    minHeight:      400,
+    x: 0,
+    y: 0,
+    width: size.width,
+    height: size.height,
+    minWidth: 400,
+    minHeight: 400,
     webPreferences: {
       // nativeWindowOpen: true,
       // enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
-      nodeIntegration:             true,
+      nodeIntegration: true,
       allowRunningInsecureContent: isServe,
-      contextIsolation:            false,  // false if you want to run 2e2 test with Spectron
+      contextIsolation: false, // false if you want to run 2e2 test with Spectron
     },
   });
 
   if (isServe) {
     win.webContents.openDevTools();
     require("electron-reload")(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`)
+      electron: require(`${__dirname}/node_modules/electron`),
     });
     win.loadURL("http://localhost:4200");
   } else {
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, "dist/index.html"),
-      protocol: "file:",
-      slashes:  true
-    }));
+    win.loadURL(
+      url.format({
+        pathname: path.join(__dirname, "dist/index.html"),
+        protocol: "file:",
+        slashes: true,
+      }),
+    );
   }
 
   // Emitted when the window is closed.
@@ -77,29 +68,31 @@ try {
     tray = new Tray(image.resize({ width: 20, height: 20 }));
     const contextMenu = Menu.buildFromTemplate([
       {
-        label:   "Always on top",
-        type:    "checkbox",
+        label: "Always on top",
+        type: "checkbox",
         checked: alwaysOnTop,
-        click:   () => {
+        click: () => {
           alwaysOnTop = !alwaysOnTop;
           if (win != null) win.setAlwaysOnTop(alwaysOnTop);
-        }
+        },
       },
-      { type: 'separator' },
+      { type: "separator" },
       {
         label: "Reload app",
         click: async () => {
           if (isServe) {
             await win.loadURL("http://localhost:4200");
           } else {
-            await win.loadURL(url.format({
-              pathname: path.join(__dirname, "dist/index.html"),
-              protocol: "file:",
-              slashes:  true
-            }));
+            await win.loadURL(
+              url.format({
+                pathname: path.join(__dirname, "dist/index.html"),
+                protocol: "file:",
+                slashes: true,
+              }),
+            );
           }
           // await shell.openExternal("https://electronjs.org");
-        }
+        },
       },
     ]);
     tray.setToolTip("This is my application.");
@@ -125,27 +118,28 @@ try {
 
   ipcMain.on("thumder-notification", (_$event, _args) => {
     const options: NotificationConstructorOptions = {
-      title:    "Custom Notification",
+      title: "Custom Notification",
       subtitle: "Subtitle of the Notification",
-      body:     "Body of Custom Notification",
-      silent:   false,
+      body: "Body of Custom Notification",
+      silent: false,
       // icon:             path.join(__dirname, "./src/assets/image.png"),
       // sound:            path.join(__dirname, "./src/assets/sound.mp3"),
-      hasReply:         true,
-      timeoutType:      "never",
+      hasReply: true,
+      timeoutType: "never",
       replyPlaceholder: "Reply Here",
-      urgency:          "critical",
-      closeButtonText:  "Close Button",
-      actions:          [ {
-        type: "button",
-        text: "Show Button"
-      } ]
+      urgency: "critical",
+      closeButtonText: "Close Button",
+      actions: [
+        {
+          type: "button",
+          text: "Show Button",
+        },
+      ],
     };
     const customNotification = new Notification(options);
     customNotification.show();
     // customNotification.close();
   });
-
 } catch (error) {
   console.error(error);
   // Catch Error

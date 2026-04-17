@@ -27,7 +27,7 @@ export namespace PixiUtils {
   export function MapToArray<K, V>(map: Map<K, V>): { key: K; value: V }[] {
     return Array.from(map, ([key, value]) => ({
       key,
-      value
+      value,
     }));
   }
 
@@ -50,7 +50,7 @@ export namespace PixiUtils {
     return result;
   }
 
-  export function drawArrow(start_x: number, start_y: number, to_x: number, to_y: number, color = 0xFF0000, angle = 35): PIXI.Graphics {
+  export function drawArrow(start_x: number, start_y: number, to_x: number, to_y: number, color = 0xff0000, angle = 35): PIXI.Graphics {
     const L = Math.sqrt((to_x - start_x) ** 2 + (to_y - start_y) ** 2);
     const x3 = to_x + (15 / L) * ((start_x - to_x) * Math.abs(Math.cos(angle)) + (start_y - to_y) * Math.abs(Math.sin(angle)));
     const y3 = to_y + (15 / L) * ((start_y - to_y) * Math.abs(Math.cos(angle)) - (start_x - to_x) * Math.abs(Math.sin(angle)));
@@ -66,5 +66,4 @@ export namespace PixiUtils {
     bezierArrow.lineTo(to_x, to_y);
     return bezierArrow;
   }
-
 }

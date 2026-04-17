@@ -1,21 +1,21 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { type Observable, Subject } from "rxjs";
 import {
-  DEFAULT_AUTO_SAVE_CONFIGURATION, DEFAULT_BREAKPOINTS,
+  DEFAULT_AUTO_SAVE_CONFIGURATION,
+  DEFAULT_BREAKPOINTS,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
   DEFAULT_INTERFACE_FILE_ITEM,
   DEFAULT_LANG,
   DEFAULT_MEMORY_SIZE_CONFIGURATION,
   DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
-  DEFAULT_WEB_SOCKET_CONFIGURATION
+  DEFAULT_WEB_SOCKET_CONFIGURATION,
 } from "../../CONSTANTS";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class StorageService {
-
   private storageSub = new Subject<string>();
 
   constructor() {

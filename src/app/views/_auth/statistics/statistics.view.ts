@@ -1,28 +1,27 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { TypeDataStatistics } from "../../../Types";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { DEFAULT_DATA_STATISTICS } from "../../../CONSTANTS";
-import { Utils } from "../../../Utils";
+import { Component, type OnDestroy, type OnInit } from "@angular/core";
+import type { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
-import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import type { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
+import { DEFAULT_DATA_STATISTICS } from "../../../CONSTANTS";
+import type { TypeDataStatistics } from "../../../Types";
+import { Utils } from "../../../Utils";
 
 @Component({
-    selector: "view-statistics",
-    templateUrl: "./statistics.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-statistics",
+  templateUrl: "./statistics.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class StatisticsView implements OnInit, OnDestroy {
-
   public data: TypeDataStatistics = Utils.clone<TypeDataStatistics>(DEFAULT_DATA_STATISTICS);
   private dataStatisticsSubscription: Subscription = new Subscription();
 
-  constructor(private translate: TranslateService,
-              private socketProviderConnectService: SocketProviderConnectService,
-              private machine: MachineService) {
-
-  }
+  constructor(
+    private translate: TranslateService,
+    private socketProviderConnectService: SocketProviderConnectService,
+    private machine: MachineService,
+  ) {}
 
   ngOnInit(): void {
     this.dataStatisticsSubscription = this.machine.getDataStatisticsObservable().subscribe((_data) => {
@@ -33,5 +32,4 @@ export class StatisticsView implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.dataStatisticsSubscription.unsubscribe();
   }
-
 }

@@ -1,5 +1,14 @@
-import { Float32, Int32 } from "../TypesData";
-import { stringOfLength, StringOfLength, TypeBreakpoints, TypeDataStatistics, TypeDirectiveData, TypeInstructionsData, TypeMemoryToUpdate, TypeRegisterToUpdate } from "../../Types";
+import {
+  type StringOfLength,
+  stringOfLength,
+  type TypeBreakpoints,
+  type TypeDataStatistics,
+  type TypeDirectiveData,
+  type TypeInstructionsData,
+  type TypeMemoryToUpdate,
+  type TypeRegisterToUpdate,
+} from "../../Types";
+import type { Float32, Int32 } from "../TypesData";
 
 export interface InterfaceBreakpoints {
   breakpoints: TypeBreakpoints;
@@ -116,7 +125,6 @@ export class InstructionTypeJ implements InterfaceInstructionTypeJ {
     return this.codeOP.toString() + this.des.toString();
   }
 }
-
 
 export interface InterfaceOperation {
   readonly name: string;

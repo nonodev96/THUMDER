@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, type OnInit } from "@angular/core";
 import { AppConfig } from "../../../../environments/_environment";
+import type { ElectronService } from "../../../__core/services";
+import type { Globals } from "../../../__core/services/globals/globals.service";
+import type { StorageService } from "../../../__core/storage/storage.service";
 import { NPM_VERSION } from "../../../CONSTANTS";
-import { Globals } from "../../../__core/services/globals/globals.service";
-import { StorageService } from "../../../__core/storage/storage.service";
-import { ElectronService } from "../../../__core/services";
 
 @Component({
-    selector: "THUMDER-footer",
-    templateUrl: "./footer.component.html",
-    standalone: false
+  selector: "THUMDER-footer",
+  templateUrl: "./footer.component.html",
+  standalone: false,
 })
 export class FooterComponent implements OnInit {
   public date: number = new Date().getFullYear();
@@ -16,10 +16,11 @@ export class FooterComponent implements OnInit {
   public environment: string = AppConfig.environment;
   public lang: string = "";
 
-  constructor(private storageService: StorageService,
-              public electronService: ElectronService,
-              public globals: Globals) {
-  }
+  constructor(
+    private storageService: StorageService,
+    public electronService: ElectronService,
+    public globals: Globals,
+  ) {}
 
   ngOnInit(): void {
     this.lang = this.storageService.getItem("lang");

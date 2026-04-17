@@ -1,9 +1,7 @@
 import { Directive } from "@angular/core";
 
 @Directive({
-    selector: "[appAuth]",
-    standalone: false
+  selector: "[appAuth]",
+  standalone: false,
 })
-export class AuthDirective {
-
-}
+export class AuthDirective {}

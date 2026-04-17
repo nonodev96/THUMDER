@@ -12,7 +12,7 @@ export class Position {
   toString() {
     return JSON.stringify({
       row: this.row,
-      col: this.col
+      col: this.col,
     });
   }
 }
@@ -28,7 +28,7 @@ export const DEFAULT_PIXI_TABLE_CONFIGURATION: PIXITableConfiguration = {
   cellMaxHeight: 10,
   cellMaxWidth: 10,
   columnSeparation: 10,
-  rowSeparation: 10
+  rowSeparation: 10,
 };
 
 export class PixiTHUMDER_Table extends PIXI.Container {
@@ -50,7 +50,7 @@ export class PixiTHUMDER_Table extends PIXI.Container {
 
   public getAllPositions(): Position[] {
     return Array.from(this.table.keys()).map((v) => {
-      return (JSON.parse(v) as Position);
+      return JSON.parse(v) as Position;
     });
   }
 
@@ -67,18 +67,22 @@ export class PixiTHUMDER_Table extends PIXI.Container {
   }
 
   public deleteRow(row: number): void {
-    const rowToDelete = Array.from(this.table.keys()).map((v) => JSON.parse(v) as Position).filter((position) => {
-      return (position).row === row;
-    });
-    for (const {row, col} of rowToDelete) {
+    const rowToDelete = Array.from(this.table.keys())
+      .map((v) => JSON.parse(v) as Position)
+      .filter((position) => {
+        return position.row === row;
+      });
+    for (const { row, col } of rowToDelete) {
       this.deleteCell(row, col);
     }
   }
 
   public deleteCol(col: number): void {
-    const colToDelete = Array.from(this.table.keys()).map((v) => JSON.parse(v) as Position).filter((position) => {
-      return (position).col === col;
-    });
+    const colToDelete = Array.from(this.table.keys())
+      .map((v) => JSON.parse(v) as Position)
+      .filter((position) => {
+        return position.col === col;
+      });
     for (const position of colToDelete) {
       this.deleteCell(position.row, position.col);
     }
@@ -113,17 +117,17 @@ export class PixiTHUMDER_Table extends PIXI.Container {
 
   public drawCell(row: number, col: number): void {
     const cell = this.getCell(row, col);
-    cell.y = row * this.cellMaxHeight + ((row + 1) * this.rowSeparation);
-    cell.x = col * this.cellMaxWidth + ((col + 1) * this.columnSeparation);
+    cell.y = row * this.cellMaxHeight + (row + 1) * this.rowSeparation;
+    cell.x = col * this.cellMaxWidth + (col + 1) * this.columnSeparation;
     this.addChild(cell);
   }
 
   public draw(): PIXI.Container {
     if (this.isDebug) console.warn("Keys: ", Array.from(this.table.keys()));
     const positions: Position[] = Array.from(this.table.keys()).map((v) => {
-      return (JSON.parse(v) as Position);
+      return JSON.parse(v) as Position;
     });
-    for (const {row, col} of positions) {
+    for (const { row, col } of positions) {
       this.drawCell(row, col);
     }
     return this;
@@ -145,7 +149,7 @@ export class PixiTHUMDER_Table extends PIXI.Container {
 
   public debug() {
     return {
-      table: this.table
+      table: this.table,
     };
   }
 }

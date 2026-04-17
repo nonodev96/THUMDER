@@ -1,18 +1,18 @@
 import { DOCUMENT } from "@angular/common";
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
+import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit } from "@angular/core";
+import type { Router } from "@angular/router";
 import { Subscription } from "rxjs";
-import { AppComponent } from "../../../app.component";
-import { AuthService } from "../../../__core/auth/auth.service";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { PublicRoutes } from "../../../Types";
-import { AUTH_ROUTES } from "../../../CONSTANTS";
 import { AppConfig } from "../../../../environments/_environment";
+import type { AuthService } from "../../../__core/auth/auth.service";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import type { AppComponent } from "../../../app.component";
+import { AUTH_ROUTES } from "../../../CONSTANTS";
+import type { PublicRoutes } from "../../../Types";
 
 @Component({
-    selector: "THUMDER-auth-navbar",
-    templateUrl: "./auth-navbar.component.html",
-    standalone: false
+  selector: "THUMDER-auth-navbar",
+  templateUrl: "./auth-navbar.component.html",
+  standalone: false,
 })
 export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);
@@ -46,7 +46,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    window.jQuery("[data-toggle=\"tooltip\"]").tooltip({ trigger: "hover" });
+    window.jQuery('[data-toggle="tooltip"]').tooltip({ trigger: "hover" });
   }
 
   ngOnDestroy(): void {
@@ -91,5 +91,4 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     const data = await this.router.navigateByUrl(menu.routerLink);
     return Promise.resolve(data);
   }
-
 }

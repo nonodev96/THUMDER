@@ -1,8 +1,7 @@
-import { InterfaceBreakpoints } from "./interfaces";
-import { TypeBreakpoints } from "../../Types";
+import type { TypeBreakpoints } from "../../Types";
+import type { InterfaceBreakpoints } from "./interfaces";
 
 export class ManagerBreakpoints implements InterfaceBreakpoints {
-
   public breakpoints: TypeBreakpoints = {};
 
   public toggleBreakpoint(lineNumber: number): void {
@@ -37,7 +36,7 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
   }
 
   public getAllLinesWithBreakpoints(): number[] {
-    return Object.keys(this.breakpoints).map(k => parseInt(k));
+    return Object.keys(this.breakpoints).map((k) => parseInt(k));
   }
 
   public isBreakpoint(line: number): boolean {
@@ -47,5 +46,4 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
   public reset(): void {
     this.breakpoints = {};
   }
-
 }

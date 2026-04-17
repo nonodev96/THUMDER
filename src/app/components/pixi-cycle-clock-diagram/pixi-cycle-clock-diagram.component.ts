@@ -1,28 +1,27 @@
+import {
+  type AfterViewInit,
+  Component,
+  type ElementRef,
+  EventEmitter,
+  HostListener,
+  type OnDestroy,
+  type OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import * as PIXI from "pixi.js";
 import * as Keyboard from "pixi.js-keyboard";
-import {
-  Component,
-  HostListener,
-  OnInit,
-  AfterViewInit,
-  ViewChild,
-  OnDestroy,
-  Output,
-  EventEmitter,
-  ElementRef
-} from "@angular/core";
 import { Subscription } from "rxjs";
-import { MachineService } from "../../__core/machine/machine.service";
+import type { MachineService } from "../../__core/machine/machine.service";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
 
 @Component({
-    selector: "THUMDER-pixi-cycle-clock-diagram",
-    templateUrl: "./pixi-cycle-clock-diagram.component.html",
-    styleUrls: ["./pixi-cycle-clock-diagram.component.scss"],
-    standalone: false
+  selector: "THUMDER-pixi-cycle-clock-diagram",
+  templateUrl: "./pixi-cycle-clock-diagram.component.html",
+  styleUrls: ["./pixi-cycle-clock-diagram.component.scss"],
+  standalone: false,
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
-
   @ViewChild("pixiCycleContainer")
   public pixiContainer: ElementRef<HTMLDivElement>;
 
@@ -49,12 +48,12 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
         const arrowDraw = {
           start: {
             instruction: arrow.fromAddressRow,
-            step:        arrow.fromStep
+            step: arrow.fromStep,
           },
-          to:    {
+          to: {
             instruction: arrow.toAddressRow,
-            step:        arrow.toStep
-          }
+            step: arrow.toStep,
+          },
         };
         const color = parseInt(String(arrow.color), 16);
         this.machine.cycleClockDiagram.addArrow(arrowDraw, color);
@@ -67,17 +66,17 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
     const canvas = document.createElement("canvas");
     canvas.id = this.idCanvas;
     this.pApp = new PIXI.Application({
-      width:           DEFAULT_CANVAS_WIDTH,
-      height:          DEFAULT_CANVAS_HEIGHT,
-      backgroundColor: 0xEEEEEE,
-      resolution:      1,
-      view:            canvas
+      width: DEFAULT_CANVAS_WIDTH,
+      height: DEFAULT_CANVAS_HEIGHT,
+      backgroundColor: 0xeeeeee,
+      resolution: 1,
+      view: canvas,
     });
     this.pApp.stage.addChild(<any>this.machine.cycleClockDiagram.draw());
     this.pixiContainer.nativeElement.appendChild(this.pApp.view as unknown as Node);
 
     this.ticker = PIXI.Ticker.shared;
-    const fps = new PIXI.Text("FPS: 0", { fill: 0xFFFFFF, fontSize: 12 });
+    const fps = new PIXI.Text("FPS: 0", { fill: 0xffffff, fontSize: 12 });
     fps.position.x = 0;
     fps.position.y = 0;
     fps.zIndex = 100;

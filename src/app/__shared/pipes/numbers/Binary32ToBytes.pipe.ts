@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, type PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: "binary32_to_bytes",
-    standalone: false
+  name: "binary32_to_bytes",
+  standalone: false,
 })
 export class Binary32ToBytesPipe implements PipeTransform {
   transform(binary: string = "00000000000000000000000000000000"): string {

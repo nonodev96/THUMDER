@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Pipe, type PipeTransform } from "@angular/core";
 
 @Pipe({
-    name: "number_to_hexadecimal",
-    standalone: false
+  name: "number_to_hexadecimal",
+  standalone: false,
 })
 export class NumberToHexadecimalPipe implements PipeTransform {
   transform(value: number, ...args: unknown[]): string {

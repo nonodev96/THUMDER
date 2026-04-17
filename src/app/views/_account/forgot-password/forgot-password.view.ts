@@ -1,22 +1,22 @@
-import { Component, Inject, OnInit } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../../../__core/auth/auth.service";
-import { AppComponent } from "../../../app.component";
+import { Component, Inject, type OnInit } from "@angular/core";
+import { type UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
+import type { AuthService } from "../../../__core/auth/auth.service";
+import type { AppComponent } from "../../../app.component";
 
 @Component({
-    selector: "app-forgot-password",
-    templateUrl: "./forgot-password.view.html",
-    standalone: false
+  selector: "app-forgot-password",
+  templateUrl: "./forgot-password.view.html",
+  standalone: false,
 })
 export class ForgotPasswordView implements OnInit {
   public forgotPasswordForm: UntypedFormGroup;
   public error_messages = {
     password_reset_email: [
       { type: "required", message: "Email is required." },
-      { type: "email", message: "Please enter a valid email address." }
+      { type: "email", message: "Please enter a valid email address." },
     ],
-  }
+  };
 
   constructor(@Inject(DOCUMENT)
               private document: Document,
@@ -32,6 +32,5 @@ export class ForgotPasswordView implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

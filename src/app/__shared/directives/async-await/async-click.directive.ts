@@ -1,19 +1,10 @@
-import {
-  Directive,
-  HostListener,
-  Input,
-  OnChanges,
-  OnDestroy,
-  Renderer2,
-  ElementRef,
-} from "@angular/core";
+import { Directive, type ElementRef, HostListener, Input, type OnChanges, type OnDestroy, type Renderer2 } from "@angular/core";
 
-import { Subscription, Observable } from "rxjs";
-
+import type { Observable, Subscription } from "rxjs";
 
 @Directive({
-    selector: "[asyncClick]",
-    standalone: false
+  selector: "[asyncClick]",
+  standalone: false,
 })
 export class AsyncClickDirective implements OnChanges, OnDestroy {
   private pending = true;
@@ -21,17 +12,15 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
 
   @Input("asyncClick") clickFunc;
 
-  @Input() defaultButtonClass = '';
-  @Input() successButtonClass = '';
-  @Input() warningButtonClass = '';
+  @Input() defaultButtonClass = "";
+  @Input() successButtonClass = "";
+  @Input() warningButtonClass = "";
 
-  constructor(private _renderer: Renderer2,
-              private _elementRef: ElementRef) {
-    this._renderer.setAttribute(
-      this._elementRef.nativeElement,
-      "class",
-      ""
-    );
+  constructor(
+    private _renderer: Renderer2,
+    private _elementRef: ElementRef,
+  ) {
+    this._renderer.setAttribute(this._elementRef.nativeElement, "class", "");
   }
 
   @HostListener("click")
@@ -42,10 +31,8 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(/*changes: SimpleChanges*/) {
-    const vector = this.defaultButtonClass.split(" ")
-    this._elementRef.nativeElement.classList.add(
-      ...vector
-    );
+    const vector = this.defaultButtonClass.split(" ");
+    this._elementRef.nativeElement.classList.add(...vector);
     if (this.pending) {
       this.enable();
     }
@@ -55,54 +42,33 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
   }
 
   disable() {
-    this._renderer.setAttribute(
-      this._elementRef.nativeElement,
-      "disabled",
-      "true"
-    );
+    this._renderer.setAttribute(this._elementRef.nativeElement, "disabled", "true");
   }
 
   enable() {
-    this._renderer.removeAttribute(
-      this._elementRef.nativeElement,
-      "disabled",
-    );
+    this._renderer.removeAttribute(this._elementRef.nativeElement, "disabled");
   }
 
   next(data: any) {
-    console.log(data)
+    console.log(data);
   }
 
   complete() {
-    this._renderer.removeAttribute(
-      this._elementRef.nativeElement,
-      "disabled"
-    );
+    this._renderer.removeAttribute(this._elementRef.nativeElement, "disabled");
 
-    const vector_successButtonClass = this.successButtonClass.split(" ")
-    const vector_warningButtonClass = this.warningButtonClass.split(" ")
-    this._elementRef.nativeElement.classList.add(
-      ...vector_successButtonClass
-    );
-    this._elementRef.nativeElement.classList.remove(
-      ...vector_warningButtonClass
-    );
+    const vector_successButtonClass = this.successButtonClass.split(" ");
+    const vector_warningButtonClass = this.warningButtonClass.split(" ");
+    this._elementRef.nativeElement.classList.add(...vector_successButtonClass);
+    this._elementRef.nativeElement.classList.remove(...vector_warningButtonClass);
   }
 
   error() {
-    this._renderer.removeAttribute(
-      this._elementRef.nativeElement,
-      "disabled"
-    );
+    this._renderer.removeAttribute(this._elementRef.nativeElement, "disabled");
 
-    const vector_successButtonClass = this.successButtonClass.split(" ")
-    const vector_warningButtonClass = this.warningButtonClass.split(" ")
-    this._elementRef.nativeElement.classList.remove(
-      ...vector_successButtonClass
-    );
-    this._elementRef.nativeElement.classList.add(
-      ...vector_warningButtonClass
-    );
+    const vector_successButtonClass = this.successButtonClass.split(" ");
+    const vector_warningButtonClass = this.warningButtonClass.split(" ");
+    this._elementRef.nativeElement.classList.remove(...vector_successButtonClass);
+    this._elementRef.nativeElement.classList.add(...vector_warningButtonClass);
   }
 
   subscribe(r) {
@@ -113,9 +79,9 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
     const error = () => this.error();
     if (typeof r.subscribe === "function") {
       this.subscription = (r as Observable<any>).subscribe({
-        next:     next,
+        next: next,
         complete: complete,
-        error:    error,
+        error: error,
       });
     } else if (typeof r.then === "function") {
       (r as Promise<any>).then(complete).catch(error);

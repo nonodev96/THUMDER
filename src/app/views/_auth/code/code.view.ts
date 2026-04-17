@@ -1,30 +1,24 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { type AfterViewInit, Component, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
-import { MachineService } from "../../../__core/machine/machine.service";
-import {
-  TypeInstructionsData,
-  TypeStage,
-  TypeInstructionsData_Table,
-  TypeAddress,
-  TypeAddressStage
-} from "../../../Types";
-import { Utils } from "../../../Utils";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { Subscription } from "rxjs";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import type { TypeAddress, TypeAddressStage, TypeInstructionsData, TypeInstructionsData_Table, TypeStage } from "../../../Types";
+import { Utils } from "../../../Utils";
 
 @Component({
-    selector: "view-code",
-    templateUrl: "./code.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-code",
+  templateUrl: "./code.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
-
   @ViewChild(MatSort, { static: true })
   public sort: MatSort;
 
-  public displayedColumnsMemory: string[] = [ "Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction" ];
-  public dataSourceCode: TableVirtualScrollDataSource<TypeInstructionsData_Table> = new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
+  public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction"];
+  public dataSourceCode: TableVirtualScrollDataSource<TypeInstructionsData_Table> =
+    new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
   public listRowActives: TypeAddressStage[] = [];
   public maxHeightCard: string = "75vh";
   private stepSimulation: number = 0;
@@ -45,12 +39,12 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       // FIX
       // const instructionGeneratedByHexCode = Utils.convertHexCodeToTextMachineInstructionDLX(hexCode);
       return {
-        index:       index,
-        instruction: "",//instructionGeneratedByHexCode,
-        address:     address,
-        code:        `0x${hexCode}`,
-        text:        "",
-        stage:       ""
+        index: index,
+        instruction: "", //instructionGeneratedByHexCode,
+        address: address,
+        code: `0x${hexCode}`,
+        text: "",
+        stage: "",
       } as TypeInstructionsData_Table;
     });
     this.codeSimulationSubscription = this.machine.getCodeSimulationObservable().subscribe((typeTableCode) => {
@@ -79,10 +73,10 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     for (const code_memory of array) {
       const index = Utils.addressToIndex(code_memory.value.address);
       const code: TypeInstructionsData = {
-        address:     code_memory.value.address,
+        address: code_memory.value.address,
         instruction: code_memory.value.instruction,
-        code:        code_memory.value.code,
-        text:        code_memory.value.text
+        code: code_memory.value.code,
+        text: code_memory.value.text,
       };
 
       this.setRow(index, code);
@@ -108,7 +102,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
 
   public refresh(): void {
     this.dataSourceCode.filter = null;
-    this.dataSourceCode.data = [ ...this.dataSourceCode.data ];
+    this.dataSourceCode.data = [...this.dataSourceCode.data];
     window.dispatchEvent(new Event("resize"));
   }
 
@@ -122,20 +116,20 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
    */
   private setRow(index: number, tableCode: TypeInstructionsData, stage: TypeStage = ""): void {
     this.dataSourceCode.data[index] = {
-      text:        tableCode.text,
-      address:     tableCode.address,
+      text: tableCode.text,
+      address: tableCode.address,
       instruction: tableCode.instruction ?? Utils.convertHexCodeToTextMachineInstructionDLX(tableCode.code),
-      code:        tableCode.code,
-      stage:       stage,
+      code: tableCode.code,
+      stage: stage,
       // binary: this.machine.getMemory(index).binary,
       index: index,
-      row:   0
+      row: 0,
     };
     this.refresh();
   }
 
   public checkElementStage(address: TypeAddress): TypeStage {
-    const elements = this.listRowActives.filter(v => v.address === address);
+    const elements = this.listRowActives.filter((v) => v.address === address);
     if (elements.length > 0) return elements[0].stage;
     return "";
   }

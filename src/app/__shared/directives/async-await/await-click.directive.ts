@@ -1,19 +1,18 @@
 import { Directive, Input } from "@angular/core";
 
 @Directive({
-    selector: "[asyncClick][awaitClick]",
-    standalone: false
+  selector: "[asyncClick][awaitClick]",
+  standalone: false,
 })
 export class AwaitClickDirective {
-
   @Input("awaitClick")
   set awaitClick(option) {
     if (typeof option === "string") {
-      console.log("string")
+      console.log("string");
     } else if (typeof option === "function") {
-      console.log("Function")
+      console.log("Function");
     } else if (Array.isArray(option)) {
-      console.log("Array.isArray(option)")
+      console.log("Array.isArray(option)");
     }
   }
 }

@@ -1,15 +1,15 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, QueryList, ViewChildren } from "@angular/core";
-import { TypeMultiviewConfiguration } from "../../../Types";
 import { CdkDrag } from "@angular/cdk/drag-drop";
-import { Utils } from "../../../Utils";
-import { Globals } from "../../../__core/services/globals/globals.service";
+import { type AfterViewInit, Component, type OnDestroy, type OnInit, type QueryList, ViewChildren } from "@angular/core";
+import type { Globals } from "../../../__core/services/globals/globals.service";
 import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";
+import type { TypeMultiviewConfiguration } from "../../../Types";
+import { Utils } from "../../../Utils";
 
 @Component({
-    selector: "view-multiples-views",
-    templateUrl: "./multiples-views.component.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-multiples-views",
+  templateUrl: "./multiples-views.component.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(CdkDrag) draggable_list: QueryList<CdkDrag>;
@@ -17,11 +17,11 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy
   public main_list_1 = [];
   public main_list_2 = [];
 
-  constructor(public globals: Globals) {
-  }
+  constructor(public globals: Globals) {}
 
   ngOnInit(): void {
-    this.multiviewConfiguration = JSON.parse(localStorage.getItem("multiview_configuration")) as TypeMultiviewConfiguration ?? DEFAULT_MULTIVIEW_CONFIGURATION;
+    this.multiviewConfiguration =
+      (JSON.parse(localStorage.getItem("multiview_configuration")) as TypeMultiviewConfiguration) ?? DEFAULT_MULTIVIEW_CONFIGURATION;
     this.main_list_1 = this.multiviewConfiguration.list_1;
     this.main_list_2 = this.multiviewConfiguration.list_2;
   }
@@ -41,13 +41,9 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy
     });
   }
 
-  ngOnDestroy(): void {
-
-  }
+  ngOnDestroy(): void {}
 
   private static closeAllCards() {
     window.jQuery(".card").not("#card-debug").CardWidget("collapse");
   }
-
-
 }

@@ -1,14 +1,13 @@
 import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { Socket, SocketIoConfig } from "ngx-socket-io";
-import { ToastrService } from "ngx-toastr";
-
-import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "../../../CONSTANTS";
+import type { TranslateService } from "@ngx-translate/core";
+import { Socket, type SocketIoConfig } from "ngx-socket-io";
+import type { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject } from "rxjs";
-import { TypeWebSocketConfiguration } from "../../../Types";
+import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "../../../CONSTANTS";
+import type { TypeWebSocketConfiguration } from "../../../Types";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class SocketProviderConnectService {
   public socketID: string;
@@ -18,9 +17,10 @@ export class SocketProviderConnectService {
 
   public socketIO: Socket;
 
-  constructor(private translate: TranslateService,
-              private toast: ToastrService) {
-
+  constructor(
+    private translate: TranslateService,
+    private toast: ToastrService,
+  ) {
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
     const config: SocketIoConfig = CONFIG_WEBSOCKET;
     config.url = configWebSocket.socket_url;

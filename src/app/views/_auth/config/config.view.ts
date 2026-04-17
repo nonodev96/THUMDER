@@ -1,37 +1,36 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
-import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
-import { StorageService } from "../../../__core/storage/storage.service";
-import { MachineService } from "../../../__core/machine/machine.service";
+import { type AfterViewInit, Component, type OnInit } from "@angular/core";
 import { AppConfig } from "../../../../environments/_environment";
+import type { MachineService } from "../../../__core/machine/machine.service";
+import type { Globals } from "../../../__core/services/globals/globals.service";
+import type { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
+import type { StorageService } from "../../../__core/storage/storage.service";
 import {
-  DEFAULT_AUTO_SAVE_CONFIGURATION, DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
+  DEFAULT_AUTO_SAVE_CONFIGURATION,
+  DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
   DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
   DEFAULT_MEMORY_SIZE_CONFIGURATION,
   DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
-  DEFAULT_WEB_SOCKET_CONFIGURATION
+  DEFAULT_WEB_SOCKET_CONFIGURATION,
 } from "../../../CONSTANTS";
-import {
+import type {
   TypeEnabledForwardingConfiguration,
   TypeFloatingPointStageConfiguration,
   TypeMultiviewConfiguration,
-  TypeWebSocketConfiguration
+  TypeWebSocketConfiguration,
 } from "../../../Types";
-
-import { Globals } from "../../../__core/services/globals/globals.service";
 
 interface EventTargetInput extends EventTarget {
   value: string | number | boolean;
 }
 
 @Component({
-    selector: "view-config",
-    templateUrl: "./config.view.html",
-    styleUrls: [],
-    standalone: false
+  selector: "view-config",
+  templateUrl: "./config.view.html",
+  styleUrls: [],
+  standalone: false,
 })
 export class ConfigView implements OnInit, AfterViewInit {
-
   public readonly webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
 
   public enabledForwardingConfiguration: TypeEnabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
@@ -42,15 +41,18 @@ export class ConfigView implements OnInit, AfterViewInit {
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   public webSocketConfiguration: TypeWebSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
 
-  constructor(public globals: Globals,
-              private storage: StorageService,
-              private socket: SocketProviderConnectService,
-              private machine: MachineService) {
-  }
+  constructor(
+    public globals: Globals,
+    private storage: StorageService,
+    private socket: SocketProviderConnectService,
+    private machine: MachineService,
+  ) {}
 
   ngOnInit(): void {
-    this.enabledForwardingConfiguration = this.storage.getItem("enabled_forwarding_configuration") ?? DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
-    this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration") ?? DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
+    this.enabledForwardingConfiguration =
+      this.storage.getItem("enabled_forwarding_configuration") ?? DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
+    this.floatingPointStageConfiguration =
+      this.storage.getItem("floating_point_stage_configuration") ?? DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
     this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration") ?? DEFAULT_MEMORY_SIZE_CONFIGURATION;
     this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration") ?? DEFAULT_TIME_SIMULATION_CONFIGURATION;
     this.autoSaveConfiguration = this.storage.getItem("auto_save_configuration") ?? DEFAULT_AUTO_SAVE_CONFIGURATION;
@@ -84,8 +86,7 @@ export class ConfigView implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-  }
+  ngAfterViewInit(): void {}
 
   public async updateConfiguration(): Promise<void> {
     this.storage.setItem("enabled_forwarding_configuration", this.enabledForwardingConfiguration);
@@ -124,7 +125,7 @@ export class ConfigView implements OnInit, AfterViewInit {
 
   public checkIfHttpUrlIsValid(_url: EventTargetInput | any | string): boolean {
     try {
-      let url = new URL(_url);
+      const url = new URL(_url);
       return url.protocol === "http:" || url.protocol === "https:";
     } catch (error) {
       console.error(error);
