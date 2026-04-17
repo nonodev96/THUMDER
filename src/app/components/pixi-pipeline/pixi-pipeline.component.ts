@@ -20,9 +20,9 @@ import type {
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("pixiPipelineContainer")
-  public pixiContainer: ElementRef<HTMLDivElement>;
+  public pixiContainer!: ElementRef<HTMLDivElement>;
 
-  public pApp: PIXI.Application;
+  public pApp!: PIXI.Application;
 
   private pipeline: PixiTHUMDER_Pipeline;
   private stepSimulationSubscription: Subscription = new Subscription();
@@ -72,7 +72,7 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   @HostListener("window:resize", ["$event"])
-  public onResize(event): void {
+  public onResize(event: any): void {
     event.preventDefault();
     event.stopPropagation();
     this.resizeCanvas();
@@ -96,10 +96,10 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private getInstructionDataPipeline(items: TypeCycleCellUnit[]): TypeInstructionPipelineFloatingRepresentation[] {
     return items.map((item) => {
-      if (item.address === undefined || (item.address as string).length === 0) return { unit: item.unit, text: "", draw: item.draw };
+      if (item.address === undefined || (item.address as string).length === 0) return { unit: item.unit ?? 0, text: "", draw: item.draw };
       const machineInstruction = this.machine.getCode(item.address);
       return {
-        unit: item.unit,
+        unit: item.unit ?? 0,
         text: machineInstruction.instruction,
         draw: item.draw,
       };

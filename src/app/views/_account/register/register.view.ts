@@ -1,16 +1,16 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnInit } from "@angular/core";
 import {
-  type AbstractControl,
-  type UntypedFormBuilder,
+  AbstractControl,
+  UntypedFormBuilder,
   UntypedFormControl,
   type UntypedFormGroup,
   type ValidationErrors,
   Validators,
 } from "@angular/forms";
-import type { AuthService } from "../../../__core/auth/auth.service";
-import type { ElectronService } from "../../../__core/services";
-import type { AppComponent } from "../../../app.component";
+import { AuthService } from "../../../__core/auth/auth.service";
+import { ElectronService } from "../../../__core/services";
+import { AppComponent } from "../../../app.component";
 
 @Component({
   selector: "app-register",
@@ -80,17 +80,17 @@ export class RegisterView implements OnInit {
 
   ngOnInit(): void {}
 
-  static matchValues(matchTo: string): (AbstractControl) => ValidationErrors | null {
+  static matchValues(matchTo: string): (arg: AbstractControl) => ValidationErrors | null {
     return (control: AbstractControl): ValidationErrors | null => {
-      return !!control.parent && !!control.parent.value && control.value === control.parent.controls[matchTo].value
+      return !!control.parent && !!control.parent.value && control.value === (control.parent.controls as Record<string, AbstractControl>)[matchTo]?.value
         ? null
         : { password_not_match: true };
     };
   }
 
   public checkPassword(formGroup: UntypedFormGroup) {
-    const { value: password } = formGroup.get("password");
-    const { value: confirmPassword } = formGroup.get("confirm_password");
+    const password = formGroup.get("password")?.value;
+    const confirmPassword = formGroup.get("confirm_password")?.value;
     return password === confirmPassword ? null : { password_not_match: true };
   }
 

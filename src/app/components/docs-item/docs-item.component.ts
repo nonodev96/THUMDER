@@ -13,12 +13,12 @@ import type { TypeIdTitleFile } from "../../Types";
 })
 export class DocsItemComponent implements OnInit {
   @Input()
-  public item: TypeIdTitleFile;
+  public item!: TypeIdTitleFile;
 
   @ViewChild("markdownComponentID", { static: false })
-  private markdownComponentID: MarkdownComponent;
+  private markdownComponentID!: MarkdownComponent;
 
-  private listenObj: ReturnType<Renderer2["listen"]>;
+  private listenObj!: ReturnType<Renderer2["listen"]>;
 
   constructor(
     _markdownService: MarkdownService,

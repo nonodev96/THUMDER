@@ -10,11 +10,11 @@ import type { ipcRenderer, webFrame } from "electron";
 export class ElectronService {
   private _electron: any;
 
-  public ipcRenderer: typeof ipcRenderer;
-  public webFrame: typeof webFrame;
+  public ipcRenderer!: typeof ipcRenderer;
+  public webFrame!: typeof webFrame;
   // public remote: typeof remote;
-  public childProcess: typeof childProcess;
-  public fs: typeof fs;
+  public childProcess!: typeof childProcess;
+  public fs!: typeof fs;
 
   constructor() {
     // Conditional imports

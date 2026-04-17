@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject } from "@angular/core";
-import type { Globals } from "../../__core/services/globals/globals.service";
+import { Globals } from "../../__core/services/globals/globals.service";
 
 @Component({
   selector: "THUMDER-layout-auth",
@@ -15,7 +15,7 @@ export class LayoutAuthComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+    this._document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
     const trees: any = window.jQuery('[data-widget="treeview"]');
     trees.Treeview("toggleRow");
   }

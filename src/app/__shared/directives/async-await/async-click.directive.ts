@@ -1,6 +1,6 @@
-import { Directive, type ElementRef, HostListener, Input, type OnChanges, type OnDestroy, type Renderer2 } from "@angular/core";
+import { Directive, ElementRef, HostListener, Input, type OnChanges, type OnDestroy, Renderer2 } from "@angular/core";
 
-import type { Observable, Subscription } from "rxjs";
+import { type Observable, Subscription } from "rxjs";
 
 @Directive({
   selector: "[asyncClick]",
@@ -8,9 +8,9 @@ import type { Observable, Subscription } from "rxjs";
 })
 export class AsyncClickDirective implements OnChanges, OnDestroy {
   private pending = true;
-  private subscription: Subscription;
+  private subscription!: Subscription;
 
-  @Input("asyncClick") clickFunc;
+  @Input("asyncClick") clickFunc: any;
 
   @Input() defaultButtonClass = "";
   @Input() successButtonClass = "";
@@ -71,10 +71,10 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
     this._elementRef.nativeElement.classList.add(...vector_warningButtonClass);
   }
 
-  subscribe(r) {
+  subscribe(r: any) {
     this.pending = true;
     this.disable();
-    const next = (data) => this.next(data);
+    const next = (data: any) => this.next(data);
     const complete = () => this.complete();
     const error = () => this.error();
     if (typeof r.subscribe === "function") {
@@ -85,7 +85,7 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
       });
     } else if (typeof r.then === "function") {
       (r as Promise<any>).then(complete).catch(error);
-      this.subscription = null;
+      // no Subscription for Promises
     }
   }
 

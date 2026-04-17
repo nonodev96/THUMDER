@@ -1,4 +1,4 @@
-import type { HttpClient } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import {
   // DocumentSnapshot,
@@ -14,7 +14,7 @@ import {
   type DocumentData,
   deleteDoc,
   doc,
-  type Firestore,
+  Firestore,
   // getDoc,
   getDocs,
   // docData,
@@ -55,7 +55,7 @@ export class FileSystemStorageService {
       return Promise.resolve(1);
     }
     const files = ["prim.s", "win-dlx.s"];
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     for (const filename of files) {
       const defaultFileItem = new THUMDER_FileItem("", false, []);
       defaultFileItem.name = filename;
@@ -69,12 +69,12 @@ export class FileSystemStorageService {
   }
 
   public queryFileFromUser(filename: string): Promise<QuerySnapshot<DocumentData>> {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     return getDocs(query(collection(this.afs, this.dbFileItemsPath), where("e1_uid", "==", userData.uid), where("name", "==", filename)));
   }
 
   private queryAllFilesFromUser(): Query<DocumentData> {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     return query(collection(this.afs, this.dbFileItemsPath), where("e1_uid", "==", userData.uid));
   }
 

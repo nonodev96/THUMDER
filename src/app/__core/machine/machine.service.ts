@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { IndividualConfig, ToastrService } from "ngx-toastr";
+import { TranslateService } from "@ngx-translate/core";
+import { type IndividualConfig, ToastrService } from "ngx-toastr";
 import { firstValueFrom, interval, type Observable, type PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_ENABLED_FORWARDING_CONFIGURATION, DEFAULT_STEP_SIMULATION } from "../../CONSTANTS";
@@ -33,8 +33,8 @@ import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
 import { ManagerMemory } from "../DLX/ManagerMemory";
 import { ManagerRegisters } from "../DLX/ManagerRegisters";
 import { ManagerStatistics } from "../DLX/ManagerStatistics";
-import type { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
-import type { StorageService } from "../storage/storage.service";
+import { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
+import { StorageService } from "../storage/storage.service";
 import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
 import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
 
@@ -61,7 +61,7 @@ export class MachineService {
   public code: THUMDER_Map<TypeAddress, TypeInstructionsData> = new THUMDER_Map();
   // Vector con los pasos de la simulación
   public canSimulate: boolean;
-  private statusMachineInStep: TypeSimulationStep | null;
+  private statusMachineInStep: TypeSimulationStep | null = null;
   // Line
   public isBreakpoint$: Subject<number> = new Subject<number>();
   public codeSimulation$: Subject<TypeInstructionsData[]> = new Subject<TypeInstructionsData[]>();
@@ -73,7 +73,7 @@ export class MachineService {
   private readonly level: EnumLogLevel;
   private privateStep: number = 0;
   private privateLine: number = 0;
-  private timer: Observable<number>;
+  private timer: Observable<number> | null = null;
   private readonly timerObserver: PartialObserver<number>;
 
   public reset$: Subject<void> = new Subject<void>();
@@ -126,26 +126,26 @@ export class MachineService {
     //    console.debug("Simulation Step", simulationStep);
     //  });
     // TODO CHECK
-    this.socketProviderConnect.socketIO.on("UpdateRegisterResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("UpdateRegisterResponse", (response: string) => {
       const registers = JSON.parse(response) as TypeRegisterToUpdate[];
       this.registers.processRegisterToUpdateArray(registers);
       console.debug("Registers update", registers);
     });
     // TODO CHECK
-    this.socketProviderConnect.socketIO.on("UpdateMemoryResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("UpdateMemoryResponse", (response: string) => {
       const memory = JSON.parse(response) as TypeMemoryToUpdate[];
       this.memory.processMemoryToUpdateArray(memory);
       console.debug("Memory update", memory);
     });
-    this.socketProviderConnect.socketIO.on("GetAllRegistersResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("GetAllRegistersResponse", (response: string) => {
       const allRegisters = JSON.parse(response) as TypeAllRegisters;
       console.debug("GetAllRegisters", allRegisters);
     });
-    this.socketProviderConnect.socketIO.on("GetAllMemoryResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("GetAllMemoryResponse", (response: string) => {
       const allMemory = JSON.parse(response) as TypeAllMemory;
       console.debug("GetAllMemory", allMemory);
     });
-    this.socketProviderConnect.socketIO.on("UpdateConfigurationMachineResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("UpdateConfigurationMachineResponse", (response: string) => {
       const configurationMachine = JSON.parse(response) as TypeConfigurationMachine;
       console.debug("Configuration machine", configurationMachine);
     });
@@ -214,7 +214,7 @@ export class MachineService {
           delay: this.floatingPointStageConfiguration.multiplication.delay,
         },
       };
-      this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", JSON.stringify(payload), (response) => {
+      this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", JSON.stringify(payload), (response: string) => {
         // console.log(response);
         this.writeToLog(JSON.stringify(response));
       });
@@ -293,6 +293,7 @@ export class MachineService {
   }
 
   public getListStatusPipeline(): TypePipelineToProcess[] {
+    if (this.statusMachineInStep === null) return [];
     const { IF, ID, intEX, MEM, WB } = this.statusMachineInStep.pipeline;
     const list_elements: TypePipelineToProcess[] = [];
     if (IF.draw) list_elements.push({ ...IF, stage: "IF" });
@@ -338,7 +339,7 @@ export class MachineService {
     this.isBreakpoint = false;
     this.isRunning = true;
     this.isRunning$.next(this.isRunning);
-    this.timer.subscribe(this.timerObserver);
+    this.timer?.subscribe(this.timerObserver);
     return Promise.resolve();
   }
 
@@ -363,8 +364,9 @@ export class MachineService {
         content: content,
         registers: [],
         memory: [],
+        breakpoints: [],
       } as TypeSimulationInitRequest);
-      this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response) => {
+      this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response: string) => {
         const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
 
         this.errorsInCode$.next(simulationInit.errors);
@@ -390,7 +392,7 @@ export class MachineService {
       });
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject((error as Error).message);
     }
   }
 
@@ -400,7 +402,7 @@ export class MachineService {
         step: this.privateStep + 1,
       });
       this.writeToLog("payload S: {0}", EnumLogLevel.Debug, [{ index: 0, value: this.privateStep }]);
-      this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response) => {
+      this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response: string) => {
         this.statusMachineInStep = DEFAULT_STEP_SIMULATION;
         this.statusMachineInStep = JSON.parse(response) as TypeSimulationStep;
         const canNextInstruction = await this.CheckConditions();
@@ -417,7 +419,7 @@ export class MachineService {
       return Promise.resolve();
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject((error as Error).message);
     }
   }
 
@@ -450,8 +452,8 @@ export class MachineService {
   }
 
   private async ProcessStep(): Promise<void> {
-    if (this.isComplete === true) {
-      console.warn("isComplete", this.isComplete);
+    if (this.isComplete === true || this.statusMachineInStep === null) {
+      console.warn("isComplete or statusMachineInStep is null");
       return Promise.resolve();
     }
     if (this.statusMachineInStep.pipeline) {
@@ -482,7 +484,7 @@ export class MachineService {
       return Promise.resolve(true);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject((error as Error).message);
     }
   }
 
@@ -495,7 +497,7 @@ export class MachineService {
       return Promise.resolve(true);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject((error as Error).message);
     }
   }
 

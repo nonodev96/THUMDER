@@ -10,7 +10,7 @@ export class LayoutLandingComponent implements OnInit, AfterViewInit {
   constructor(@Inject(DOCUMENT) private _document: Document) {}
 
   ngOnInit(): void {
-    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+    this._document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
   }
 
   ngAfterViewInit(): void {

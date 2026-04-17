@@ -1,8 +1,8 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnInit } from "@angular/core";
-import { type UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
-import type { AuthService } from "../../../__core/auth/auth.service";
-import type { AppComponent } from "../../../app.component";
+import { UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
+import { AuthService } from "../../../__core/auth/auth.service";
+import { AppComponent } from "../../../app.component";
 
 @Component({
   selector: "app-forgot-password",

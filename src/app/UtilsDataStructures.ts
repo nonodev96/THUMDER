@@ -1,6 +1,6 @@
 export namespace UtilsDataStructures {
   export class THUMDER_Map<K, V> {
-    private _defaultValue: V;
+    private _defaultValue!: V;
     private readonly _map: Map<string, V>;
 
     constructor() {

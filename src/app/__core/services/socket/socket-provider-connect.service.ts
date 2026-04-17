@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import type { TranslateService } from "@ngx-translate/core";
+import { TranslateService } from "@ngx-translate/core";
 import { Socket, type SocketIoConfig } from "ngx-socket-io";
-import type { ToastrService } from "ngx-toastr";
+import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject } from "rxjs";
 import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "../../../CONSTANTS";
 import type { TypeWebSocketConfiguration } from "../../../Types";
@@ -10,7 +10,7 @@ import type { TypeWebSocketConfiguration } from "../../../Types";
   providedIn: "root",
 })
 export class SocketProviderConnectService {
-  public socketID: string;
+  public socketID!: string;
   private connect$ = new Subject<"Connect" | "Disconnect">();
   private publicMessage$ = new Subject();
   private privateMessage$ = new Subject();
@@ -21,7 +21,7 @@ export class SocketProviderConnectService {
     private translate: TranslateService,
     private toast: ToastrService,
   ) {
-    const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
+    const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration") ?? "{}") as TypeWebSocketConfiguration;
     const config: SocketIoConfig = CONFIG_WEBSOCKET;
     config.url = configWebSocket.socket_url;
     this.socketIO = new Socket(config);
@@ -32,7 +32,7 @@ export class SocketProviderConnectService {
       const connect = this.socketIO.connect();
       this.socketID = this.socketIO.ioSocket.id;
       if (connect.connected) {
-        this.socketIO.ioSocket.on(this.socketIO.ioSocket.id, (res) => {
+        this.socketIO.ioSocket.on(this.socketIO.ioSocket.id, (res: any) => {
           this.privateMessage$.next(res);
         });
       }
@@ -47,12 +47,12 @@ export class SocketProviderConnectService {
       console.debug("WebSocket-disconnect");
     });
     // When the connection to the server fails.
-    this.socketIO.ioSocket.on("connect_failed", async (err) => {
+    this.socketIO.ioSocket.on("connect_failed", async (err: any) => {
       console.debug("WebSocket-connect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
     // An error event is sent from the server.
-    this.socketIO.ioSocket.on("error", async (err) => {
+    this.socketIO.ioSocket.on("error", async (err: any) => {
       console.debug("WebSocket-error");
       SocketProviderConnectService.handleErrors(err);
     });
@@ -67,18 +67,18 @@ export class SocketProviderConnectService {
       console.debug("WebSocket-reconnecting");
     });
     // When the reconnection attempt fails.
-    this.socketIO.ioSocket.on("reconnect_failed", async (err) => {
+    this.socketIO.ioSocket.on("reconnect_failed", async (err: any) => {
       console.debug("WebSocket-reconnect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
-    this.socketIO.ioSocket.on("connect_error", async (_err) => {
+    this.socketIO.ioSocket.on("connect_error", async (_err: any) => {
       console.debug("WebSocket-connect_error");
       // SocketProviderConnectService.handleErrors(err);
       const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SERVER_DOWN"));
       const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SERVER_DOWN"));
       this.toast.warning(message, title, DEFAULT_CONFIG_TOAST);
     });
-    this.socketIO.ioSocket.on("message", (data) => {
+    this.socketIO.ioSocket.on("message", (data: any) => {
       console.debug("WebSocket-message");
       const title = this.translate.instant("WEBSOCKET.TITLE_NEW_MESSAGE");
       const message = this.translate.instant("WEBSOCKET.MESSAGE_NEW_MESSAGE", { type: "message" });
@@ -93,13 +93,13 @@ export class SocketProviderConnectService {
 
   public updateSocketURl() {
     this.socketIO.disconnect();
-    const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration")) as TypeWebSocketConfiguration;
+    const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration") ?? "{}") as TypeWebSocketConfiguration;
     const config: SocketIoConfig = CONFIG_WEBSOCKET;
     config.url = configWebSocket.socket_url;
     this.socketIO = new Socket(config);
   }
 
-  public emitMessage(event = "default", payload = {}, callback?: (...response) => void) {
+  public emitMessage(event = "default", payload = {}, callback?: (...response: any[]) => void) {
     this.socketIO.ioSocket.emit(event, payload, callback);
   }
 

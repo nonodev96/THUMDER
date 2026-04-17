@@ -23,14 +23,14 @@ import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("pixiCycleContainer")
-  public pixiContainer: ElementRef<HTMLDivElement>;
+  public pixiContainer!: ElementRef<HTMLDivElement>;
 
   @Output()
   public inCanvasEventEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public pApp: PIXI.Application;
+  public pApp!: PIXI.Application;
   private inCanvas: boolean = false;
-  private ticker: PIXI.Ticker;
+  private ticker!: PIXI.Ticker;
   private keyboard;
   private stepSimulationSubscription: Subscription = new Subscription();
   private readonly idCanvas: string = "pixi-cycle-clock-diagram-id";

@@ -1,10 +1,10 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnInit } from "@angular/core";
-import { type UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
-import type { Router } from "@angular/router";
-import type { AuthService } from "../../../__core/auth/auth.service";
-import type { ElectronService } from "../../../__core/services";
-import type { AppComponent } from "../../../app.component";
+import { UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
+import { AuthService } from "../../../__core/auth/auth.service";
+import { ElectronService } from "../../../__core/services";
+import { AppComponent } from "../../../app.component";
 
 @Component({
   selector: "app-login",

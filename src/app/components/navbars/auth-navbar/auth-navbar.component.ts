@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 import { AppConfig } from "../../../../environments/_environment";
 import { AuthService } from "../../../__core/auth/auth.service";
 import { MachineService } from "../../../__core/machine/machine.service";
-import type { AppComponent } from "../../../app.component";
+import { AppComponent } from "../../../app.component";
 import { AUTH_ROUTES } from "../../../CONSTANTS";
 import type { PublicRoutes } from "../../../Types";
 
