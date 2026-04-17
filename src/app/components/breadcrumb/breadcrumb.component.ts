@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { type ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs/operators";
 import { Utils } from "../../Utils";
 
@@ -15,8 +15,8 @@ type MenuItem = {
   standalone: false,
 })
 export class BreadcrumbComponent {
-  public menuItems: MenuItem[];
-  public menuItemsLoaded: Promise<boolean>;
+  public menuItems!: MenuItem[];
+  public menuItemsLoaded!: Promise<boolean>;
 
   constructor(
     private router: Router,
@@ -46,5 +46,6 @@ export class BreadcrumbComponent {
         return this.createBreadcrumbs(child, url, breadcrumbs);
       }
     }
+    return breadcrumbs;
   }
 }

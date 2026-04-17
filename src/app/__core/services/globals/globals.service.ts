@@ -27,7 +27,7 @@ export class Globals {
     }
   }
 
-  public moveWithinContainer(container, fromIndex, toIndex) {
+  public moveWithinContainer(container: any, fromIndex: any, toIndex: any) {
     if (fromIndex === toIndex) {
       return;
     }
@@ -40,7 +40,7 @@ export class Globals {
     }
   }
 
-  public transferNodeToContainer(node, container, toIndex) {
+  public transferNodeToContainer(node: any, container: any, toIndex: any) {
     if (toIndex === container.children.length) {
       container.appendChild(node);
     } else {

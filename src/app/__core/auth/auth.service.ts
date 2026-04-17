@@ -1,5 +1,5 @@
-import { Injectable, type NgZone } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Injectable, NgZone } from "@angular/core";
+import { Router } from "@angular/router";
 
 //import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
 // import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -9,7 +9,7 @@ import type { Router } from "@angular/router";
 
 import type { FirebaseError } from "@angular/fire/app";
 import {
-  type Auth,
+  Auth,
   createUserWithEmailAndPassword,
   GithubAuthProvider,
   GoogleAuthProvider,
@@ -23,13 +23,13 @@ import {
   // getAuth, setPersistence,
   // browserLocalPersistence, browserSessionPersistence, inMemoryPersistence
 } from "@angular/fire/auth";
-import { doc, type Firestore, setDoc } from "@angular/fire/firestore";
-import type { TranslateService } from "@ngx-translate/core";
-import type { ToastrService } from "ngx-toastr";
+import { doc, Firestore, setDoc } from "@angular/fire/firestore";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
 import { type Observable, Subject, Subscription } from "rxjs";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
 import type { InterfaceUser } from "../../Types";
-import type { ElectronService } from "../services";
+import { ElectronService } from "../services";
 
 @Injectable({
   providedIn: "root",
@@ -37,7 +37,7 @@ import type { ElectronService } from "../services";
 export class AuthService {
   public isLogging$: Subject<boolean> = new Subject<boolean>();
 
-  public userData: InterfaceUser; // Save logged in user data
+  public userData!: InterfaceUser; // Save logged in user data
   private subscriptions$ = new Subscription();
 
   constructor(
@@ -54,14 +54,19 @@ export class AuthService {
       this.afAuth.onAuthStateChanged((user) => {
         if (user) {
           window.document.body.className = "";
-          window.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+          window.document.body.classList.add(
+            "dx-viewport",
+            "sidebar-mini",
+            "layout-fixed",
+            "layout-footer-fixed",
+            "layout-navbar-fixed",
+          );
 
-          this.userData = user;
+          this.userData = user as unknown as InterfaceUser;
           localStorage.setItem("user", JSON.stringify(this.userData));
-          // JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(true);
         } else {
-          localStorage.setItem("user", null);
+          localStorage.setItem("user", JSON.stringify(null));
           // JSON.parse(localStorage.getItem("user"));
           this.isLogging$.next(false);
           this.ngZone.run(() => {
@@ -85,7 +90,7 @@ export class AuthService {
   }
 
   // Sign in with email/password
-  public async SignIn(email, password): Promise<boolean> {
+  public async SignIn(email: string, password: string): Promise<boolean> {
     try {
       const userCredential = await signInWithEmailAndPassword(this.afAuth, email, password);
       await this.SetUserData(userCredential);
@@ -98,7 +103,7 @@ export class AuthService {
   }
 
   // Sign up with email/password
-  public async SignUp(email, password): Promise<UserCredential | undefined> {
+  public async SignUp(email: string, password: string): Promise<UserCredential | undefined> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.afAuth, email, password);
       await this.SendVerificationMail(userCredential);
@@ -108,7 +113,7 @@ export class AuthService {
       console.error(error);
       this.displayError(error);
     }
-    return Promise.resolve();
+    return Promise.resolve(undefined);
   }
 
   // Send email verification when new user sign up
@@ -124,7 +129,7 @@ export class AuthService {
   }
 
   // Reset Forgot password
-  public async ForgotPassword(passwordResetEmail): Promise<void> {
+  public async ForgotPassword(passwordResetEmail: string): Promise<void> {
     try {
       await sendPasswordResetEmail(this.afAuth, passwordResetEmail);
       this.displayMessage("Email send, heck your inbox.");
@@ -137,7 +142,7 @@ export class AuthService {
 
   // Returns true when user is logged in and email is verified
   get isLoggedIn(): boolean {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user") ?? "null");
     return user !== null /*&& user.emailVerified !== false*/;
   }
 
@@ -166,7 +171,7 @@ export class AuthService {
     return Promise.resolve();
   }
 
-  private async AuthLogin(provider): Promise<void> {
+  private async AuthLogin(provider: any): Promise<void> {
     try {
       const userCredential = await signInWithPopup(this.afAuth, provider);
       await this.SetUserData(userCredential);
@@ -201,7 +206,7 @@ export class AuthService {
   public async AuthCheckLoginRedirect(): Promise<boolean> {
     if (!this.electronService.isElectronApp) {
       const userCredential = await getRedirectResult(this.afAuth);
-      if (userCredential.user !== null) {
+      if (userCredential && userCredential.user !== null) {
         // console.debug("getRedirectResult", userCredential);
         await this.SetUserData(userCredential);
         this.ngZone.run(() => {
@@ -218,9 +223,9 @@ export class AuthService {
     const userRef = doc(this.afs, `users/${userCredential.user.uid}`);
     const userData: InterfaceUser = {
       uid: userCredential.user.uid,
-      email: userCredential.user.email,
-      displayName: userCredential.user.displayName,
-      photoURL: userCredential.user.photoURL,
+      email: userCredential.user.email ?? "",
+      displayName: userCredential.user.displayName ?? "",
+      photoURL: userCredential.user.photoURL ?? "",
       emailVerified: userCredential.user.emailVerified,
     };
     return setDoc(userRef, userData);
@@ -230,9 +235,10 @@ export class AuthService {
     this.toast.info(message, "", DEFAULT_CONFIG_TOAST);
   }
 
-  private displayError(error: FirebaseError) {
-    const error_title = this.translate.instant("ERROR.TITLE", { title: error?.code ?? "" });
-    const error_message = this.translate.instant("ERROR.MESSAGE", { message: error?.message ?? "" });
+  private displayError(error: unknown) {
+    const err = error as { code?: string; message?: string };
+    const error_title = this.translate.instant("ERROR.TITLE", { title: err?.code ?? "" });
+    const error_message = this.translate.instant("ERROR.MESSAGE", { message: err?.message ?? "" });
     this.toast.error(error_message, error_title, DEFAULT_CONFIG_TOAST);
   }
 }

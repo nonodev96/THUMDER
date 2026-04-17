@@ -59,10 +59,10 @@ export namespace Utils {
   }
 
   export function addressToIndex(address: TypeAddress): number {
-    return Math.trunc(this.hexadecimalToDecimal(address) / 4);
+    return Math.trunc(hexadecimalToDecimal(address) / 4);
   }
 
-  export function orderJSONBy(array, _selector, desc = false) {
+  export function orderJSONBy(array: any[], _selector: any, desc = false) {
     return [...array].sort((a, b) => {
       if (desc) {
         return parseFloat(a.selector) - parseFloat(b.selector);
@@ -86,7 +86,7 @@ export namespace Utils {
 
   export function voidF(): void {}
 
-  export function isSubsetV2(a, b): boolean {
+  export function isSubsetV2(a: any[], b: any[]): boolean {
     return new Set(b).size === new Set(b.concat(a)).size;
   }
 
@@ -106,7 +106,7 @@ export namespace Utils {
     return true;
   }
 
-  export function toBase(base, num) {
+  export function toBase(base: number, num: number) {
     const largest_power = ~~(Math.log(num) / Math.log(base));
     const result = [];
     for (let pow = largest_power; pow >= 0; pow--) {

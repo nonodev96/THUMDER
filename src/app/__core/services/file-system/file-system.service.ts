@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import type UploadInfo from "devextreme/file_management/upload_info";
-import { type Observable, Subject } from "rxjs";
+import { type Observable, Subscription, Subject } from "rxjs";
 import type { InterfaceFileItem } from "../../../Types";
 import { Utils } from "../../../Utils";
-import type { FileSystemStorageService } from "./file-system-storage.service";
+import { FileSystemStorageService } from "./file-system-storage.service";
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
   $key: string;
@@ -29,6 +29,7 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
 export class FileSystemService {
   public items: THUMDER_FileItem[] = [];
   private updateUI$: Subject<void> = new Subject<void>();
+  private subscription!: Subscription;
 
   constructor(public fileSystemStorageService: FileSystemStorageService) {}
 

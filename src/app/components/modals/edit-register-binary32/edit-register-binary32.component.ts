@@ -1,6 +1,6 @@
 import { Component, type OnInit } from "@angular/core";
-import type { TranslateService } from "@ngx-translate/core";
-import type { ToastrService } from "ngx-toastr";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
 import { MachineService } from "../../../__core/machine/machine.service";
 import {
@@ -141,7 +141,7 @@ export class EditRegisterBinary32Component implements OnInit {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
-          this.machine.registers[this.registerToEdit].binary = binary;
+          this.machine.registers[this.registerToEdit as any].binary = binary;
           break;
         }
         case "Integer": {

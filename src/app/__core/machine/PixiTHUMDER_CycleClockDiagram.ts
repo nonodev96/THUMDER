@@ -182,7 +182,7 @@ export class PixiTHUMDER_CycleClockDiagram extends PIXI.Container {
     this.drawSteps();
     const stages: TypePipelineStage[] = ["IF", "ID", "intEX", "MEM", "WB"];
     for (const iterStage of stages) {
-      const stage = iterStage as TypeStage;
+      const stage = iterStage as "IF" | "ID" | "intEX" | "MEM" | "WB";
       if (pipeline[stage].draw === true) {
         const cell = PixiTHUMDER_CycleClockDiagram.drawCycle(iterStage);
         this.table.setCell(pipeline[stage].addressRow, step, cell);

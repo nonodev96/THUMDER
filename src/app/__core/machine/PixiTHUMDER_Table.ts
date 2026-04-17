@@ -42,10 +42,10 @@ export class PixiTHUMDER_Table extends PIXI.Container {
   constructor(configuration: Partial<PIXITableConfiguration> = DEFAULT_PIXI_TABLE_CONFIGURATION) {
     super();
     this.table = new Map<string, PIXI.Container>();
-    this.rowSeparation = configuration.rowSeparation;
-    this.columnSeparation = configuration.columnSeparation;
-    this.cellMaxWidth = configuration.cellMaxWidth;
-    this.cellMaxHeight = configuration.cellMaxHeight;
+    this.rowSeparation = configuration.rowSeparation ?? 0;
+    this.columnSeparation = configuration.columnSeparation ?? 0;
+    this.cellMaxWidth = configuration.cellMaxWidth ?? 0;
+    this.cellMaxHeight = configuration.cellMaxHeight ?? 0;
   }
 
   public getAllPositions(): Position[] {
@@ -143,7 +143,7 @@ export class PixiTHUMDER_Table extends PIXI.Container {
       return new PIXI.Container();
     } else {
       const key = new Position(row, col);
-      return this.table.get(key.toString());
+      return this.table.get(key.toString()) ?? new PIXI.Container();
     }
   }
 

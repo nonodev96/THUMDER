@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
 export namespace PixiUtils {
-  export function getRandomInt(min, max): number {
+  export function getRandomInt(min: number, max: number): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  export function getAngleTo(mx, my, px, py) {
+  export function getAngleTo(mx: number, my: number, px: number, py: number) {
     // var self = that;
     const distX = my - py;
     const distY = mx - px;
@@ -16,11 +16,11 @@ export namespace PixiUtils {
     // const degrees = angle * 180/ Math.PI;
   }
 
-  export function getAngleX(length, angle) {
+  export function getAngleX(length: number, angle: number) {
     return Math.cos(angle) * length;
   }
 
-  export function getAngleY(length, angle) {
+  export function getAngleY(length: number, angle: number) {
     return Math.sin(angle) * length;
   }
 
@@ -31,13 +31,13 @@ export namespace PixiUtils {
     }));
   }
 
-  export function cloneObject(obj) {
+  export function cloneObject(obj: any) {
     //Edge case
     if (obj == null || typeof obj !== "object") {
       return obj;
     }
 
-    const result = {};
+    const result: Record<string, any> = {};
     const keys_ = Object.getOwnPropertyNames(obj);
 
     for (let i = 0; i < keys_.length; i++) {

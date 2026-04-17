@@ -27,7 +27,7 @@ export class StorageService {
   }
 
   public getItem(key: string): any {
-    return JSON.parse(localStorage.getItem(key));
+    return JSON.parse(localStorage.getItem(key) ?? "null");
   }
 
   public setItem(key: string, data: any): void {

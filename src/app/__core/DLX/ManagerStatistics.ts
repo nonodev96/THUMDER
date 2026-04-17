@@ -12,7 +12,7 @@ export class ManagerStatistics implements InterfaceDataStatistics {
 
   public processResponse(response: Partial<TypeDataStatistics>): void {
     for (const responseElement of Object.keys(response)) {
-      this._data[responseElement] = response[responseElement];
+      (this._data as any)[responseElement] = (response as any)[responseElement];
     }
   }
 

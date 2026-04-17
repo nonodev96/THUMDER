@@ -1,7 +1,7 @@
-import { type ChangeDetectorRef, Component, type OnInit } from "@angular/core";
-import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import type { TranslateService } from "@ngx-translate/core";
-import type { ToastrService } from "ngx-toastr";
+import { ChangeDetectorRef, Component, type OnInit } from "@angular/core";
+import { DomSanitizer, type SafeHtml } from "@angular/platform-browser";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "../../../CONSTANTS";
@@ -481,7 +481,7 @@ export class EditMemoryBinary32Component implements OnInit {
     if (value === undefined || value === null) {
       value = 0;
     }
-    if (value > MAX_VALUE_TYPE_DATA[this.typeDataSelected]) {
+    if (value > (MAX_VALUE_TYPE_DATA as any)[this.typeDataSelected]) {
       await this.TOAST_ErrorInValueMemory();
       this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
       console.error("Value not valid, data size error");

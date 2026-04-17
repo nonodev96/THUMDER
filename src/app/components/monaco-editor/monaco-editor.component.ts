@@ -28,7 +28,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public editorFile: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
   private breakpoints: TypeBreakpoints = {};
-  private editor: IStandaloneCodeEditor;
+  private editor!: IStandaloneCodeEditor;
   private oldDecorationDebugLine: string[] = [];
   private oldDecorationDebugTag_targetId: string[] = [];
 
@@ -118,37 +118,37 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
    * Controllers
    */
 
-  public toggleDebuggerTag(line: number = null): void {
-    line = line ?? this.editor.getPosition().lineNumber ?? 1;
-    const decorations = this.editor.getModel().getLineDecorations(line);
+  public toggleDebuggerTag(line: number | null = null): void {
+    const lineNum: number = line ?? this.editor.getPosition()?.lineNumber ?? 1;
+    const decorations = this.editor.getModel()!.getLineDecorations(lineNum);
     const decorations_target_id = decorations.map((v) => v.id);
     if (decorations.some((value) => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
-      this.breakpoints[line] = false;
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([...decorations_target_id], []);
+      this.breakpoints[lineNum] = false;
+      this.oldDecorationDebugTag_targetId = this.editor.getModel()!.deltaDecorations([...decorations_target_id], []);
     } else {
-      this.breakpoints[line] = true;
+      this.breakpoints[lineNum] = true;
       const newDecoration = {
-        range: new monaco.Range(line, 0, line, 0),
+        range: new monaco.Range(lineNum, 0, lineNum, 0),
         options: {
           isWholeLine: true,
           // inlineClassName: 'fas fa-circle color-red',
           glyphMarginClassName: "fas fa-circle color-red",
         },
       };
-      this.oldDecorationDebugTag_targetId = this.editor.getModel().deltaDecorations([], [newDecoration]);
+      this.oldDecorationDebugTag_targetId = this.editor.getModel()!.deltaDecorations([], [newDecoration]);
     }
     localStorage.setItem("breakpoints", JSON.stringify(this.breakpoints));
   }
 
   public getListOfTags(): TypeTags {
     const vectorOfInstructions: TypeTags = [];
-    const lineCount = this.editor.getModel().getLineCount();
+    const lineCount = this.editor.getModel()!.getLineCount();
     for (let line = 0; line < lineCount; line++) {
-      const decorations = this.editor.getModel().getLineDecorations(line);
+      const decorations = this.editor.getModel()!.getLineDecorations(line);
       if (decorations.some((value) => value.options.glyphMarginClassName === "fas fa-circle color-red")) {
         vectorOfInstructions.push({
           line: line,
-          content: this.editor.getModel().getLineContent(line),
+          content: this.editor.getModel()!.getLineContent(line),
         });
       }
     }
@@ -156,7 +156,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public getAllBreakpoints(): TypeBreakpoints {
-    const allDecorations = this.editor.getModel().getAllDecorations();
+    const allDecorations = this.editor.getModel()!.getAllDecorations();
     const tags: { [line: number]: boolean } = {};
     for (const decoration of allDecorations) {
       if (decoration.options.glyphMarginClassName === "fas fa-circle color-red") {

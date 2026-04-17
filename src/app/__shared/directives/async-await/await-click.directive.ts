@@ -6,7 +6,7 @@ import { Directive, Input } from "@angular/core";
 })
 export class AwaitClickDirective {
   @Input("awaitClick")
-  set awaitClick(option) {
+  set awaitClick(option: any) {
     if (typeof option === "string") {
       console.log("string");
     } else if (typeof option === "function") {

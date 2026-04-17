@@ -1,19 +1,19 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnDestroy, type OnInit } from "@angular/core";
-import { NavigationEnd, NavigationStart, type Router } from "@angular/router";
-import type { TranslateService } from "@ngx-translate/core";
-import type { NgcCookieConsentService, NgcNoCookieLawEvent, NgcStatusChangeEvent } from "ngx-cookieconsent";
+import { NavigationEnd, NavigationStart, Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { NgcCookieConsentService, type NgcNoCookieLawEvent, type NgcStatusChangeEvent } from "ngx-cookieconsent";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import type { AuthService } from "./__core/auth/auth.service";
-import type { MachineService } from "./__core/machine/machine.service";
-import type { ElectronService } from "./__core/services";
-import type { StorageService } from "./__core/storage/storage.service";
+import { AuthService } from "./__core/auth/auth.service";
+import { MachineService } from "./__core/machine/machine.service";
+import { ElectronService } from "./__core/services";
+import { StorageService } from "./__core/storage/storage.service";
 import { DEFAULT_LANG } from "./CONSTANTS";
 import type { TypeLang } from "./Types";
 
 declare const AppAdminLTE: {
-  initMainPage();
+  initMainPage(): void;
 };
 
 import { getAnalytics, logEvent } from "@angular/fire/analytics";
