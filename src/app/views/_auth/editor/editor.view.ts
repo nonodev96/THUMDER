@@ -1,12 +1,12 @@
 import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { TranslateService } from "@ngx-translate/core";
-import type { ToastrService } from "ngx-toastr";
+import { Router } from "@angular/router";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subscription } from "rxjs";
 import * as env from "../../../../environments/_environment";
-import type { MachineService } from "../../../__core/machine/machine.service";
-import type { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
+import { MachineService } from "../../../__core/machine/machine.service";
+import { type THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
 import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
 import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "../../../Types";

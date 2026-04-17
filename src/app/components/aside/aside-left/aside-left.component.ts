@@ -1,8 +1,8 @@
 import { Component, type OnInit } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AppConfig } from "../../../../environments/_environment";
-import type { AuthService } from "../../../__core/auth/auth.service";
-import type { ElectronService } from "../../../__core/services";
+import { AuthService } from "../../../__core/auth/auth.service";
+import { ElectronService } from "../../../__core/services";
 
 @Component({
   selector: "THUMDER-aside-left",

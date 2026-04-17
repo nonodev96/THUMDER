@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { type ActivatedRoute, type Data, type Event, NavigationEnd, type Router } from "@angular/router";
+import { type ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs/operators";
 import { Utils } from "../../Utils";
 

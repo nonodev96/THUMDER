@@ -12,7 +12,7 @@ import {
 import * as PIXI from "pixi.js";
 import * as Keyboard from "pixi.js-keyboard";
 import { Subscription } from "rxjs";
-import type { MachineService } from "../../__core/machine/machine.service";
+import { MachineService } from "../../__core/machine/machine.service";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
 
 @Component({

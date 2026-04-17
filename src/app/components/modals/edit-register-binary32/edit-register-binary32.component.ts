@@ -2,7 +2,7 @@ import { Component, type OnInit } from "@angular/core";
 import type { TranslateService } from "@ngx-translate/core";
 import type { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import type { MachineService } from "../../../__core/machine/machine.service";
+import { MachineService } from "../../../__core/machine/machine.service";
 import {
   DEFAULT_BINARY_32_BITS,
   DEFAULT_BINARY_64_BITS,

@@ -1,7 +1,7 @@
 import { type AfterViewInit, Component, type ElementRef, HostListener, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import * as PIXI from "pixi.js";
 import { Subscription } from "rxjs";
-import type { MachineService } from "../../__core/machine/machine.service";
+import { MachineService } from "../../__core/machine/machine.service";
 import type { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
 import type {

@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject, type OnInit } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { AppConfig } from "../../../environments/_environment";
 import { AUTH_ROUTES } from "../../CONSTANTS";
 
@@ -19,7 +19,7 @@ export class IndexView implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+    this._document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
   }
 
   ngAfterViewInit(): void {

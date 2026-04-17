@@ -2,7 +2,7 @@ import { type AfterViewInit, Component, type OnDestroy, type OnInit, ViewChild }
 import { MatSort } from "@angular/material/sort";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { Subscription } from "rxjs";
-import type { MachineService } from "../../../__core/machine/machine.service";
+import { MachineService } from "../../../__core/machine/machine.service";
 import type { TypeAddress, TypeAddressStage, TypeInstructionsData, TypeInstructionsData_Table, TypeStage } from "../../../Types";
 import { Utils } from "../../../Utils";
 
@@ -25,6 +25,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   private stepSimulationSubscription: Subscription = new Subscription();
   private codeSimulationSubscription: Subscription = new Subscription();
   private resetSimulationSubscription: Subscription = new Subscription();
+  public stepSimulation: any;
 
   constructor(public machine: MachineService) {
     this.dataSourceCode.filter = null;

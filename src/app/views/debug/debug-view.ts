@@ -1,8 +1,8 @@
 import { type AfterViewInit, Component, type OnInit } from "@angular/core";
-import type { ToastrService } from "ngx-toastr";
-import type { ElectronService } from "../../__core/services";
+import { ToastrService } from "ngx-toastr";
+import { ElectronService } from "../../__core/services";
 import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
-import type { SocketProviderConnectService } from "../../__core/services/socket/socket-provider-connect.service";
+import { SocketProviderConnectService } from "../../__core/services/socket/socket-provider-connect.service";
 import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
 import type {
   TypeAddress,

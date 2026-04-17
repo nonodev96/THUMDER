@@ -32,8 +32,9 @@
 			},
 			"correctness": {
 				"noUnusedVariables": "warn",
-				"noUnusedImports": "warn",
-				"noUnusedFunctionParameters": "off"
+				"noUnusedImports": "off",
+				"noUnusedFunctionParameters": "off",
+				"noUnusedPrivateClassMembers": "off"
 			}
 		}
 	},
