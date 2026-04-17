@@ -3,7 +3,7 @@ import type { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import type { TranslateService } from "@ngx-translate/core";
 import type { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import type { MachineService } from "../../../__core/machine/machine.service";
+import { MachineService } from "../../../__core/machine/machine.service";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "../../../CONSTANTS";
 import type { TypeData } from "../../../Types";
 import { Utils } from "../../../Utils";

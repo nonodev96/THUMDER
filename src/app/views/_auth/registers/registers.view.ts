@@ -1,7 +1,7 @@
 import { type AfterViewInit, Component, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
-import type { MachineService } from "../../../__core/machine/machine.service";
+import { MachineService } from "../../../__core/machine/machine.service";
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "../../../CONSTANTS";
 import { EditRegisterBinary32Component } from "../../../components/modals/edit-register-binary32/edit-register-binary32.component";
 import type { TypeData, TypeDataRepresentation } from "../../../Types";

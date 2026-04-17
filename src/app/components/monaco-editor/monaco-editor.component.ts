@@ -30,6 +30,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private breakpoints: TypeBreakpoints = {};
   private editor: IStandaloneCodeEditor;
   private oldDecorationDebugLine: string[] = [];
+  private oldDecorationDebugTag_targetId: string[] = [];
 
   public initialized$: Subject<boolean> = new Subject<boolean>();
   public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();

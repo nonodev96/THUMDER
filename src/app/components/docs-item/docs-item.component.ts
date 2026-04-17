@@ -1,7 +1,7 @@
-import type { ViewportScroller } from "@angular/common";
-import { Component, Input, type OnInit, type Renderer2, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MarkdownComponent, MarkdownService } from "ngx-markdown";
+import { ViewportScroller } from "@angular/common";
+import { Component, Input, type OnInit, Renderer2, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../CONSTANTS";
 import type { TypeIdTitleFile } from "../../Types";
 
@@ -17,6 +17,8 @@ export class DocsItemComponent implements OnInit {
 
   @ViewChild("markdownComponentID", { static: false })
   private markdownComponentID: MarkdownComponent;
+
+  private listenObj: ReturnType<Renderer2["listen"]>;
 
   constructor(
     _markdownService: MarkdownService,

@@ -1,5 +1,5 @@
 import { Component, type OnInit, ViewChild } from "@angular/core";
-import type { MachineService } from "../../../__core/machine/machine.service";
+import { MachineService } from "../../../__core/machine/machine.service";
 import { XtermComponent } from "../../../components/xterm/xterm.component";
 import type { TypeOnKeyEvent } from "../../../Types";
 

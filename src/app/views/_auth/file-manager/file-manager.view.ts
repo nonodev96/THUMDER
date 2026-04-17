@@ -1,12 +1,12 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
-import type { NavigationExtras, Router } from "@angular/router";
+import { type NavigationExtras, Router } from "@angular/router";
 import CustomFileSystemProvider from "devextreme/file_management/custom_provider";
 import type FileSystemItem from "devextreme/file_management/file_system_item";
 import type FileManager from "devextreme/ui/file_manager";
 import { DxFileManagerComponent } from "devextreme-angular";
 import { Subscription } from "rxjs";
-import type { FileSystemService, THUMDER_FileItem } from "../../../__core/services/file-system/file-system.service";
+import { type THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
 
 export type FileMenuOptions = {
   items: {

@@ -1,10 +1,10 @@
 import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit } from "@angular/core";
-import type { Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../../environments/_environment";
-import type { AuthService } from "../../../__core/auth/auth.service";
-import type { MachineService } from "../../../__core/machine/machine.service";
+import { AuthService } from "../../../__core/auth/auth.service";
+import { MachineService } from "../../../__core/machine/machine.service";
 import type { AppComponent } from "../../../app.component";
 import { AUTH_ROUTES } from "../../../CONSTANTS";
 import type { PublicRoutes } from "../../../Types";

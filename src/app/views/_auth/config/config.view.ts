@@ -1,9 +1,9 @@
 import { type AfterViewInit, Component, type OnInit } from "@angular/core";
 import { AppConfig } from "../../../../environments/_environment";
-import type { MachineService } from "../../../__core/machine/machine.service";
-import type { Globals } from "../../../__core/services/globals/globals.service";
-import type { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
-import type { StorageService } from "../../../__core/storage/storage.service";
+import { MachineService } from "../../../__core/machine/machine.service";
+import { Globals } from "../../../__core/services/globals/globals.service";
+import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
+import { StorageService } from "../../../__core/storage/storage.service";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION,
   DEFAULT_ENABLED_FORWARDING_CONFIGURATION,

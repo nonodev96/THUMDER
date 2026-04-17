@@ -1,12 +1,12 @@
-import type { ViewportScroller } from "@angular/common";
-import type { HttpClient } from "@angular/common/http";
-import { type AfterViewInit, Component, type OnInit, type Renderer2, ViewChild } from "@angular/core";
-import type { Router } from "@angular/router";
-import type { MarkdownComponent, MarkdownService } from "ngx-markdown";
+import { ViewportScroller } from "@angular/common";
+import { HttpClient } from "@angular/common/http";
+import { type AfterViewInit, Component, type OnInit, Renderer2, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
 import type { IPackageJson } from "package-json-type";
 import { firstValueFrom } from "rxjs";
 import npm from "../../../../../package.json";
-import type { ElectronService } from "../../../__core/services";
+import { ElectronService } from "../../../__core/services";
 import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
 
 @Component({
@@ -37,6 +37,8 @@ export class AboutView implements OnInit, AfterViewInit {
 
   @ViewChild("markdownComponentID_CHANGELOG", { static: false })
   private markdownComponentID_CHANGELOG: MarkdownComponent;
+
+  private listenObj: ReturnType<Renderer2["listen"]>;
 
   constructor(
     public electronService: ElectronService,
