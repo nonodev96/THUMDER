@@ -57,7 +57,7 @@ export class EditMemoryBinary32Component implements OnInit {
     if (REGEX_HEXADECIMAL_08.test(hexadecimalAddress)) {
       this._hexadecimalAddressMemory = hexadecimalAddress;
     } else {
-      throw new Error("Error in address: " + hexadecimalAddress.toString());
+      throw new Error(`Error in address: ${hexadecimalAddress.toString()}`);
     }
   }
 
@@ -131,7 +131,7 @@ export class EditMemoryBinary32Component implements OnInit {
     } else if (binary.length === 64) {
       this._binaryValue = binary;
     } else {
-      throw new Error("Binary length error: " + binary.length.toString());
+      throw new Error(`Binary length error: ${binary.length.toString()}`);
     }
   }
 

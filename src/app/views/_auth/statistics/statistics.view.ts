@@ -18,8 +18,8 @@ export class StatisticsView implements OnInit, OnDestroy {
   private dataStatisticsSubscription: Subscription = new Subscription();
 
   constructor(
-    private translate: TranslateService,
-    private socketProviderConnectService: SocketProviderConnectService,
+    _translate: TranslateService,
+    _socketProviderConnectService: SocketProviderConnectService,
     private machine: MachineService,
   ) {}
 

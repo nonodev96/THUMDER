@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import type UploadInfo from "devextreme/file_management/upload_info";
-import { type Observable, Subject, Subscription } from "rxjs";
+import { type Observable, Subject } from "rxjs";
 import type { InterfaceFileItem } from "../../../Types";
 import { Utils } from "../../../Utils";
 import type { FileSystemStorageService } from "./file-system-storage.service";
@@ -29,7 +29,6 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
 export class FileSystemService {
   public items: THUMDER_FileItem[] = [];
   private updateUI$: Subject<void> = new Subject<void>();
-  private subscription: Subscription = new Subscription();
 
   constructor(public fileSystemStorageService: FileSystemStorageService) {}
 
@@ -73,7 +72,7 @@ export class FileSystemService {
       const { path, pathKeys } = item;
       const newItem = new THUMDER_FileItem(path, false, pathKeys);
       newItem.key = Utils.uuidv4();
-      newItem.name = "New file - " + newItem.key + extension;
+      newItem.name = `New file - ${newItem.key}${extension}`;
       await this.fileSystemStorageService.createFileItem(newItem);
       this.updateUI$.next();
       return Promise.resolve(true);

@@ -9,7 +9,5 @@ import { Component, type OnInit } from "@angular/core";
 export class ModalBottomComponent implements OnInit {
   modalID: string = "modal-bottom-id";
 
-  constructor() {}
-
   ngOnInit(): void {}
 }

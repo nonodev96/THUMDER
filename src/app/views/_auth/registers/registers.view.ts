@@ -42,7 +42,7 @@ export class RegistersView implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     const list_cards = ["registers_R_id", "registers_F_id", "registers_D_id"];
     for (const card_id of list_cards) {
-      window.jQuery("#" + card_id).CardWidget("collapse");
+      window.jQuery(`#${card_id}`).CardWidget("collapse");
     }
 
     window

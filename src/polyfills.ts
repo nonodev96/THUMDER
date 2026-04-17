@@ -60,4 +60,5 @@ import "zone.js"; // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-(window as any)["global"] = window;
+// biome-ignore lint/suspicious/noExplicitAny: required for zone.js global polyfill
+(window as any).global = window;

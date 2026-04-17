@@ -8,7 +8,5 @@ import { Component, type OnInit } from "@angular/core";
 export class FooterAdminComponent implements OnInit {
   date = new Date().getFullYear();
 
-  constructor() {}
-
   ngOnInit(): void {}
 }

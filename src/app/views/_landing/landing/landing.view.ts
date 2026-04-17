@@ -7,9 +7,10 @@ import { Component, Inject, type OnInit } from "@angular/core";
   standalone: false,
 })
 export class LandingView implements OnInit {
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
-  }
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+  ) {}
 
   ngOnInit(): void {}
 }

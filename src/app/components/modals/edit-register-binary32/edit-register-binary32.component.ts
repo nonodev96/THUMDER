@@ -131,7 +131,7 @@ export class EditRegisterBinary32Component implements OnInit {
 
   private async changeRegisterToEditValue(hexadecimal: string): Promise<void> {
     try {
-      let binary;
+      let binary: string | undefined;
       if (this.typeRegisterSelected === "Integer" && this.registerToEdit === 0) {
         await this.TOAST_ErrorRegister();
         return;
@@ -162,7 +162,7 @@ export class EditRegisterBinary32Component implements OnInit {
           this.registerToEditHexadecimalValueIsValid = this.regExp_64bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal, { maxLength: 64, fillString: "0" });
           this.registerToEdit_Binary = binary;
-          const index = parseInt(this.registerToEdit.toString());
+          const index = parseInt(this.registerToEdit.toString(), 10);
           this.machine.registers.F[index].binary = binary.substr(0, 32);
           this.machine.registers.F[index + 1].binary = binary.substr(32, 32);
           break;

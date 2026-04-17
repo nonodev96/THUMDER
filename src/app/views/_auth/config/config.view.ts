@@ -134,7 +134,7 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   public checkCount(target: EventTargetInput | any): void {
-    const count = parseInt(target.value.toString());
+    const count = parseInt(target.value.toString(), 10);
     if (count >= 1 && count <= 8) {
       target.value = count;
     } else {
@@ -143,7 +143,7 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   public checkDelay(target: EventTargetInput | any): void {
-    const delay = parseInt(target.value.toString());
+    const delay = parseInt(target.value.toString(), 10);
     if (delay >= 1 && delay <= 50) {
       target.value = delay;
     } else {
@@ -152,7 +152,7 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   public checkMemorySize(target: EventTargetInput | any): void {
-    const size = parseInt(target.value.toString());
+    const size = parseInt(target.value.toString(), 10);
     if (size >= 512 && size <= 1048576) {
       target.value = size;
     } else {
@@ -169,6 +169,6 @@ export class ConfigView implements OnInit, AfterViewInit {
   }
 
   public updateTimeSimulation(target: EventTargetInput | any): void {
-    this.timeSimulationConfiguration = parseInt(target.value.toString());
+    this.timeSimulationConfiguration = parseInt(target.value.toString(), 10);
   }
 }

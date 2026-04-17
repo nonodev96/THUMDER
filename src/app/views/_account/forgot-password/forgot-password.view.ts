@@ -18,17 +18,15 @@ export class ForgotPasswordView implements OnInit {
     ],
   };
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
-              public app: AppComponent,
-              public authService: AuthService,
-              public formBuilder: UntypedFormBuilder) {
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+    public app: AppComponent,
+    public authService: AuthService,
+    public formBuilder: UntypedFormBuilder,
+  ) {
     this.forgotPasswordForm = this.formBuilder.group({
-      password_reset_email: new UntypedFormControl("", Validators.compose([
-          Validators.required,
-          Validators.email
-        ])
-      ),
+      password_reset_email: new UntypedFormControl("", Validators.compose([Validators.required, Validators.email])),
     });
   }
 

@@ -22,6 +22,8 @@ ng-update-*.log
 pnpm-update*.log
 pnpm-install*.log
 
+_logs/
+
 # dependencies
 /node_modules
 

@@ -5,10 +5,10 @@ import commonSetup from "../_common-setup";
 describe("THUMDER App Memory", function () {
   commonSetup.apply(this);
 
-  let client: SpectronClient;
+  let _client: SpectronClient;
 
   beforeEach(function () {
-    client = this.app.client;
+    _client = this.app.client;
   });
 
   it("example", () => {

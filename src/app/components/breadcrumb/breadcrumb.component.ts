@@ -34,7 +34,7 @@ export class BreadcrumbComponent {
       return breadcrumbs;
     }
     for (const child of children) {
-      if (child.snapshot != undefined) {
+      if (child.snapshot !== undefined) {
         const routeURL: string = child.snapshot.url.map((segment) => segment.path).join("/");
         if (routeURL !== "") {
           url += `/${routeURL}`;

@@ -148,13 +148,13 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     this.drawBox(0xa2a2ff, { x: 100, y: 500 }, "WB");
 
     for (let i = 0; i < this.faddEX_count; i++) {
-      this.drawBox(0xffc3ff, { x: 400, y: 100 + i * 100 }, "faddEX[" + i + "]");
+      this.drawBox(0xffc3ff, { x: 400, y: 100 + i * 100 }, `faddEX[${i}]`);
     }
     for (let i = 0; i < this.fmultEX_count; i++) {
-      this.drawBox(0xc3ffc3, { x: 650, y: 100 + i * 100 }, "fmultEX[" + i + "]");
+      this.drawBox(0xc3ffc3, { x: 650, y: 100 + i * 100 }, `fmultEX[${i}]`);
     }
     for (let i = 0; i < this.fdivEX_count; i++) {
-      this.drawBox(0xffcb8e, { x: 900, y: 100 + i * 100 }, "fdivEX[" + i + "]");
+      this.drawBox(0xffcb8e, { x: 900, y: 100 + i * 100 }, `fdivEX[${i}]`);
     }
   }
 
