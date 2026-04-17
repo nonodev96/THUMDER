@@ -116,6 +116,7 @@
     "@angular-eslint/template-parser": "19.8.1",
     "@angular/cli": "20.3.24",
     "@angular/language-service": "20.3.19",
+    "@biomejs/biome": "2.4.12",
     "@cypress/schematic": "1.5.1",
     "@pixi/canvas-renderer": "7.4.3",
     "@types/chart.js": "2.9.29",

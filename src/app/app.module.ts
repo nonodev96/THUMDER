@@ -71,44 +71,12 @@ import { AppComponent } from "./app.component";
 
 
 import { SharedModule } from "./__shared/shared.module";
-import { AuthGuard } from "./__shared/guard/auth.guard";
-import { NoAuthGuard } from "./__shared/guard/no-auth.guard";
 
 
 // _layouts
 import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
 import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
 import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
-
-// _admin views
-
-// _auth views
-import { GridViewComponent } from './views/_auth/_grid_view/grid-view.component';
-import { MultiplesViewsComponent } from "./views/_auth/_views/multiples-views.component";
-import { CalculatorView } from "./views/_auth/calculator/calculator.view";
-import { CodeView } from "./views/_auth/code/code.view";
-import { ConfigView } from "./views/_auth/config/config.view";
-import { DocsView } from "./views/_auth/docs/docs.view";
-import { FileManagerView } from "./views/_auth/file-manager/file-manager.view";
-import { EditorView } from "./views/_auth/editor/editor.view";
-import { LoggerView } from "./views/_auth/logger/logger.view";
-import { MemoryView } from "./views/_auth/memory/memory.view";
-import { CycleClockDiagramView } from "./views/_auth/pixi-cycle-clock-diagram/cycle-clock-diagram.view";
-import { PipelineView } from "./views/_auth/pixi-pipeline/pipeline.view";
-import { ProfileView } from "./views/_auth/profile/profile.view";
-import { RegistersView } from "./views/_auth/registers/registers.view";
-import { StatisticsView } from "./views/_auth/statistics/statistics.view";
-
-// no _layouts views
-import { DebugView } from "./views/debug/debug-view";
-// import { AboutView } from "./views/_landing/about/about.view";
-// import { LandingView } from "./views/_landing/landing/landing.view";
-
-// account views
-// import { ForgotPasswordView } from "./views/_account/forgot-password/forgot-password.view";
-// import { LoginView } from "./views/_account/login/login.view";
-// import { RegisterView } from "./views/_account/register/register.view";
-
 
 // Index
 import { IndexView } from "./views/_index/index.view";
@@ -191,37 +159,13 @@ export function markedOptionsFactory(): object {
 }
 
 // const app = initializeApp(AppConfig.firebase);
-// const auth = getAuth(app);
-// const analytics = getAnalytics(app);
-// const firebase_firestore = getFirestore(app);
-// const firebase_storage = getStorage(app);
-// const firebase_database = getDatabase(app);
-// const firebase_functions = getFunctions(app);
 
 @NgModule({ declarations: [
         AppComponent,
-        DebugView,
-        MultiplesViewsComponent,
         LayoutAdminComponent,
         LayoutAuthComponent,
         LayoutLandingComponent,
         IndexView,
-        // LandingView,
-        // AboutView,
-        CalculatorView,
-        CodeView,
-        ConfigView,
-        DocsView,
-        FileManagerView,
-        EditorView,
-        LoggerView,
-        MemoryView,
-        CycleClockDiagramView,
-        PipelineView,
-        ProfileView,
-        RegistersView,
-        StatisticsView,
-        GridViewComponent
     ],
     exports: [],
     bootstrap: [
@@ -256,19 +200,11 @@ export function markedOptionsFactory(): object {
             }
         }),
         // MonacoEditorModule,
-        CovalentCodeEditorModule,
         DxToolbarModule,
         DxListModule,
         DxPopupModule,
         DxFileManagerModule,
         // use forRoot() in main app module only.
-        // AngularFireModule,
-        // AngularFireModule.initializeApp(AppConfig.firebase),
-        // AngularFireAnalyticsModule,
-        // AngularFireDatabaseModule,
-        // AngularFireStorageModule,
-        // AngularFirestoreModule,
-        // AngularFireAuthModule,
         provideFirebaseApp(() => initializeApp(AppConfig.firebase)),
         provideAuth(() => getAuth()),
         provideAnalytics(() => getAnalytics()),
@@ -284,24 +220,8 @@ export function markedOptionsFactory(): object {
         ScrollingModule,
         TableVirtualScrollModule,
         DragDropModule], providers: [
-        // {
-        //   provide: MONACO_PATH,
-        //   useValue: 'https://unpkg.com/browse/monaco-editor@0.26.1/min/vs/'
-        // },
-        AppComponent,
-        AuthGuard,
-        NoAuthGuard,
         UtilityService,
         CookieService,
-        /*
-            MachineService,
-            {
-              provide: APP_INITIALIZER,
-              useFactory: Utils.initServicesFactory,
-              deps: [MachineService],
-              multi: true
-            }
-         */
         UserTrackingService,
         ScreenTrackingService,
         provideHttpClient(withInterceptorsFromDi())

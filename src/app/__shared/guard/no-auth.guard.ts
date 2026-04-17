@@ -1,19 +1,13 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, RouterStateSnapshot, Router } from "@angular/router";
+import { inject } from "@angular/core";
+import { CanActivateFn, Router } from "@angular/router";
 import { AuthService } from "../../__core/auth/auth.service";
 
-@Injectable({
-  providedIn: "root"
-})
-export class NoAuthGuard  {
+export const NoAuthGuard: CanActivateFn = async (_route, _state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  constructor(public authService: AuthService, public router: Router) {
+  if (authService.isLoggedIn) {
+    await router.navigateByUrl("/");
   }
-
-  public async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    if (this.authService.isLoggedIn) {
-      await this.router.navigateByUrl("/");
-    }
-    return Promise.resolve(!this.authService.isLoggedIn);
-  }
-}
+  return !authService.isLoggedIn;
+};

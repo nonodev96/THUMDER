@@ -1,11 +1,11 @@
-import { Component, Inject, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
+import { Component, Inject, OnInit, OnDestroy } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { NavigationEnd, NavigationStart, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { Subscription } from "rxjs";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import {
   NgcCookieConsentService,
-  NgcInitializingEvent,
   NgcStatusChangeEvent,
   NgcNoCookieLawEvent
 } from "ngx-cookieconsent";
@@ -21,18 +21,8 @@ declare const AppAdminLTE: {
   initMainPage();
 };
 
-import enMessages from 'devextreme/localization/messages/en.json';
-import esMessages from 'devextreme/localization/messages/es.json';
-import { locale, loadMessages } from 'devextreme/localization';
-import { getAnalytics, logEvent, setAnalyticsCollectionEnabled, setUserProperties } from "@angular/fire/analytics";
-import {
-  fetchAndActivate,
-  fetchConfig,
-  getAll,
-  getBoolean,
-  getRemoteConfig,
-  getValue,
-} from "@angular/fire/remote-config";
+import { getAnalytics, logEvent } from "@angular/fire/analytics";
+import { fetchAndActivate, getBoolean, getRemoteConfig } from "@angular/fire/remote-config";
 
 @Component({
     selector: "app-root",
@@ -40,16 +30,11 @@ import {
     styleUrls: ["./app.component.scss"],
     standalone: false
 })
-export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
 
   public lang: string = DEFAULT_LANG;
   public translationEnabled: boolean = false;
-  private popupOpenSubscription: Subscription;
-  private popupCloseSubscription: Subscription;
-  private initializeSubscription: Subscription;
-  private statusChangeSubscription: Subscription;
-  private revokeChoiceSubscription: Subscription;
-  private noCookieLawSubscription: Subscription;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(@Inject(DOCUMENT) private document: Document,
               public auth: AuthService,
@@ -59,25 +44,27 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
               private electronService: ElectronService,
               private translate: TranslateService,
               private router: Router) {
-    // setAnalyticsCollectionEnabled(getAnalytics(), true);
-    logEvent(getAnalytics(), 'start_app_THUMDER', { status: 'ok' })
+    logEvent(getAnalytics(), 'start_app_THUMDER', { status: 'ok' });
 
-    this.auth.getIsLoggingObservable().subscribe((isLogging) => {
-      if (isLogging) this.storageService.defaultDataInStorage();
-    });
-    this.router.events.subscribe((route) => {
-      if (route instanceof NavigationStart) {
-        this.document.body.className = "";
-        this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
-      }
-      if (route instanceof NavigationEnd) {
-        window.jQuery("body").Layout();
-        const cards: any = window.jQuery(".card");
-        cards.on("expanded.lte.cardwidget", () => {
-          // const resize = window.dispatchEvent(new Event("resize"));
-        });
-      }
-    });
+    this.auth.getIsLoggingObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isLogging) => {
+        if (isLogging) this.storageService.defaultDataInStorage();
+      });
+
+    this.router.events
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((route) => {
+        if (route instanceof NavigationStart) {
+          this.document.body.className = "";
+          this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+        }
+        if (route instanceof NavigationEnd) {
+          window.jQuery("body").Layout();
+          const cards: any = window.jQuery(".card");
+          cards.on("expanded.lte.cardwidget", () => {});
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -87,39 +74,40 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     this.translate.addLangs([ "en", "sp" ]);
     this.translate.setDefaultLang(this.lang);
 
-    this.popupOpenSubscription = this.ccService.popupOpen$.subscribe(() => {
-      // you can use this.ccService.getConfig() to do stuff...
-      document.getElementById("cookieconsent:link").addEventListener("click", async (_$event) => {
-        console.log("Go to cookies");
-        await this.router.navigateByUrl("/landing/about");
-        await new Promise(resolve => setTimeout(resolve, 750));
-        document.getElementById("collapse-header-cookies").click();
+    this.ccService.popupOpen$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        const link = document.getElementById("cookieconsent:link");
+        if (link) {
+          link.addEventListener("click", async () => {
+            await this.router.navigateByUrl("/landing/about");
+            await new Promise(resolve => setTimeout(resolve, 750));
+            document.getElementById("collapse-header-cookies")?.click();
+          });
+        }
       });
-    });
-    this.popupCloseSubscription = this.ccService.popupClose$.subscribe(() => {
-      // you can use this.ccService.getConfig() to do stuff...
-    });
-    this.initializeSubscription = this.ccService.initialized$.subscribe((_$event: void) => {
-      // you can use this.ccService.getConfig() to do stuff...
-    });
-    this.statusChangeSubscription = this.ccService.statusChange$.subscribe(($event: NgcStatusChangeEvent) => {
-      // you can use this.ccService.getConfig() to do stuff...
-      localStorage.setItem("cookieconsent", $event.status);
-    });
-    this.revokeChoiceSubscription = this.ccService.revokeChoice$.subscribe(() => {
-      // you can use this.ccService.getConfig() to do stuff...
-    });
-    this.noCookieLawSubscription = this.ccService.noCookieLaw$.subscribe((_$event: NgcNoCookieLawEvent) => {
-      // you can use this.ccService.getConfig() to do stuff...
-    });
+
+    this.ccService.popupClose$.pipe(takeUntil(this.destroy$)).subscribe();
+    this.ccService.initialized$.pipe(takeUntil(this.destroy$)).subscribe();
+
+    this.ccService.statusChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(($event: NgcStatusChangeEvent) => {
+        localStorage.setItem("cookieconsent", $event.status);
+      });
+
+    this.ccService.revokeChoice$.pipe(takeUntil(this.destroy$)).subscribe();
+
+    this.ccService.noCookieLaw$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((_$event: NgcNoCookieLawEvent) => {});
+
     this.updateCookiesConsentLang();
 
-    let remoteConfig = getRemoteConfig();
+    const remoteConfig = getRemoteConfig();
     fetchAndActivate(remoteConfig)
-      .then((s) => {
+      .then(() => {
         this.translationEnabled = getBoolean(remoteConfig, "translationEnabled");
-        // console.debug({ getAll: Object.entries(getAll(remoteConfig)) });
-        // console.debug("activar?", this.translationEnabled);
       })
       .catch((err) => {
         this.translationEnabled = false;
@@ -127,16 +115,9 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  ngAfterViewInit(): void {
-  }
-
   ngOnDestroy(): void {
-    this.popupOpenSubscription.unsubscribe();
-    this.popupCloseSubscription.unsubscribe();
-    this.initializeSubscription.unsubscribe();
-    this.statusChangeSubscription.unsubscribe();
-    this.revokeChoiceSubscription.unsubscribe();
-    this.noCookieLawSubscription.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public setLang(lang: TypeLang) {
@@ -161,30 +142,8 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         this.ccService.getConfig().content.link = data["cookie.link"];
         this.ccService.getConfig().content.policy = data["cookie.policy"];
 
-        this.ccService.destroy(); // remove previous cookie bar (with default messages)
-        this.ccService.init(this.ccService.getConfig()); // update config with translated messages
-      });
+this.ccService.destroy();
+    this.ccService.init(this.ccService.getConfig());
+    });
   }
-
-  // private updateDevExpressLocation(lang: TypeLang) {
-  //   if (lang === "en") {
-  //     loadMessages(enMessages);
-  //     locale("en")
-  //   } else if (lang === "sp") {
-  //     const esMessagesDefault = {
-  //       es: {
-  //         "dxFileManager-commandDelete":                        "Borrar",
-  //         "dxFileManager-rootDirectoryName":                    "Archivos",
-  //         "dxFileManager-commandRename":                        "Rename",
-  //         "dxFileManager-listDetailsColumnCaptionName":         "Nombre",
-  //         "dxFileManager-listDetailsColumnCaptionDateModified": "Fecha modificada",
-  //       }
-  //     };
-  //     const op1 = { ...esMessages.es };
-  //     const op2 = { ...esMessagesDefault.es }
-  //     const copy = { ...op1, ...op2 };
-  //     loadMessages(copy);
-  //     locale("es");
-  //   }
-  // }
 }

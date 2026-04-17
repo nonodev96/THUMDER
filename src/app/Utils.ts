@@ -65,7 +65,7 @@ export namespace Utils {
   }
 
   export function isNullOrUndefined(object: any): boolean {
-    return object == null || false;
+    return object == null;
   }
 
   export function uuidv4() {
