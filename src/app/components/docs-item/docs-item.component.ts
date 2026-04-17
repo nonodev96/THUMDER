@@ -17,12 +17,11 @@ export class DocsItemComponent implements OnInit {
 
   @ViewChild("markdownComponentID", { static: false })
   private markdownComponentID: MarkdownComponent;
-  private listenObj: any;
 
   constructor(
-    private markdownService: MarkdownService,
+    _markdownService: MarkdownService,
     private scroller: ViewportScroller,
-    private router: Router,
+    _router: Router,
     private renderer: Renderer2,
   ) {}
 
@@ -33,7 +32,7 @@ export class DocsItemComponent implements OnInit {
       this.listenObj = this.renderer.listen(this.markdownComponentID.element.nativeElement, "click", (e: Event) => {
         if (e.target && (e.target as any).tagName === "A") {
           const el = e.target as HTMLElement;
-          const linkURL = el.getAttribute && el.getAttribute("href");
+          const linkURL = el.getAttribute?.("href");
           if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
             e.preventDefault();
             const id = linkURL.replace("#", "");

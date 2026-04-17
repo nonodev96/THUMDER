@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
 // import { remote } from "electron";
-import type * as childProcess from "child_process";
+import type * as childProcess from "node:child_process";
+import type * as fs from "node:fs";
+import { Injectable } from "@angular/core";
 import type { ipcRenderer, webFrame } from "electron";
-import type * as fs from "fs";
 
 @Injectable({
   providedIn: "root",
@@ -29,12 +29,16 @@ export class ElectronService {
   }
 
   public async openInExternal(url: string): Promise<void> {
+    if (!this.shell) {
+      console.warn("Electron shell module is not available.");
+      return;
+    }
     await this.shell.openExternal(url);
   }
 
   private get electron(): any {
     if (!this._electron) {
-      if (window && window.require) {
+      if (window?.require) {
         this._electron = window.require("electron");
         return this._electron;
       }
@@ -44,7 +48,7 @@ export class ElectronService {
   }
 
   public static isElectron() {
-    return window && window.process && window.process.type;
+    return window?.process?.type;
   }
 
   public static get isServer(): boolean {
@@ -94,7 +98,7 @@ export class ElectronService {
   //   return this.electron.screen.getAllDisplays();
   // }
 
-  public get shell(): Electron.Shell {
+  public get shell(): Electron.Shell | null {
     return this.electron ? this.electron.shell : null;
   }
 
@@ -102,7 +106,7 @@ export class ElectronService {
     this.ipcRenderer.send(channel, args);
   }
 
-  public static get debug(): any {
+  public static get debug() {
     return {
       isElectronApp: ElectronService.isElectronApp,
       isServer: ElectronService.isServer,

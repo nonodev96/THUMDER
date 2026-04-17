@@ -30,35 +30,36 @@ export class AppComponent implements OnInit, OnDestroy {
   public translationEnabled: boolean = false;
   private readonly destroy$ = new Subject<void>();
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              public auth: AuthService,
-              private ccService: NgcCookieConsentService,
-              private storageService: StorageService,
-              private machine: MachineService,
-              private electronService: ElectronService,
-              private translate: TranslateService,
-              private router: Router) {
-    logEvent(getAnalytics(), 'start_app_THUMDER', { status: 'ok' });
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    public auth: AuthService,
+    private ccService: NgcCookieConsentService,
+    private storageService: StorageService,
+    private machine: MachineService,
+    private electronService: ElectronService,
+    private translate: TranslateService,
+    private router: Router,
+  ) {
+    logEvent(getAnalytics(), "start_app_THUMDER", { status: "ok" });
 
-    this.auth.getIsLoggingObservable()
+    this.auth
+      .getIsLoggingObservable()
       .pipe(takeUntil(this.destroy$))
       .subscribe((isLogging) => {
         if (isLogging) this.storageService.defaultDataInStorage();
       });
 
-    this.router.events
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((route) => {
-        if (route instanceof NavigationStart) {
-          this.document.body.className = "";
-          this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
-        }
-        if (route instanceof NavigationEnd) {
-          window.jQuery("body").Layout();
-          const cards: any = window.jQuery(".card");
-          cards.on("expanded.lte.cardwidget", () => {});
-        }
-      });
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((route) => {
+      if (route instanceof NavigationStart) {
+        this.document.body.className = "";
+        this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+      }
+      if (route instanceof NavigationEnd) {
+        window.jQuery("body").Layout();
+        const cards: any = window.jQuery(".card");
+        cards.on("expanded.lte.cardwidget", () => {});
+      }
+    });
   }
 
   ngOnInit(): void {

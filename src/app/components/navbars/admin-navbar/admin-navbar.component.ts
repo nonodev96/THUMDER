@@ -6,8 +6,6 @@ import { Component, type OnInit } from "@angular/core";
   standalone: false,
 })
 export class AdminNavbarComponent implements OnInit {
-  constructor() {}
-
   ngOnInit(): void {}
 
   log(msg: string): void {

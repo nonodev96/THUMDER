@@ -26,25 +26,22 @@ export class LoginView implements OnInit {
       { type: "maxlength", message: "Password max length." },
     ],
   };
-  private translationEnabled: boolean = false;
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              public electronService: ElectronService,
-              public authService: AuthService,
-              public router: Router,
-              public app: AppComponent,
-              public formBuilder: UntypedFormBuilder) {
-    this.loginForm = this.formBuilder.group({
-      email:    new UntypedFormControl("", Validators.compose([
-        Validators.required,
-        Validators.email
-      ])),
-      password: new UntypedFormControl("", Validators.compose([
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(30)
-      ])),
-    }, {});
+  constructor(
+    @Inject(DOCUMENT) private _document: Document,
+    public electronService: ElectronService,
+    public authService: AuthService,
+    public router: Router,
+    public app: AppComponent,
+    public formBuilder: UntypedFormBuilder,
+  ) {
+    this.loginForm = this.formBuilder.group(
+      {
+        email: new UntypedFormControl("", Validators.compose([Validators.required, Validators.email])),
+        password: new UntypedFormControl("", Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30)])),
+      },
+      {},
+    );
 
     this.authService.getIsLoggingObservable().subscribe(async (isLogging) => {
       if (isLogging) {

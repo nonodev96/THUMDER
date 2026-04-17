@@ -193,8 +193,6 @@ export class XtermComponent implements OnInit, AfterViewInit {
     },
   };
 
-  constructor() {}
-
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {

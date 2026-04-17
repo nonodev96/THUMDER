@@ -68,7 +68,7 @@ export interface InterfaceFileItem {
   dataItem: any;
 }
 
-export type StringOfLength<Min, Max> = string & {
+export type StringOfLength<_Min, _Max> = string & {
   readonly StringOfLength: unique symbol; // this is the phantom type
 };
 

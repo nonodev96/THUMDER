@@ -62,7 +62,7 @@ export class FileSystemStorageService {
       defaultFileItem.key = Utils.uuidv4();
       defaultFileItem.e1_uid = userData.uid;
       defaultFileItem.dateModified = new Date();
-      defaultFileItem.content = await firstValueFrom(this.httpClient.get("assets/examples-dlx/" + filename, { responseType: "text" }));
+      defaultFileItem.content = await firstValueFrom(this.httpClient.get(`assets/examples-dlx/${filename}`, { responseType: "text" }));
       await this.createFileItem(defaultFileItem);
     }
     return Promise.resolve(0);
@@ -76,10 +76,6 @@ export class FileSystemStorageService {
   private queryAllFilesFromUser(): Query<DocumentData> {
     const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
     return query(collection(this.afs, this.dbFileItemsPath), where("e1_uid", "==", userData.uid));
-  }
-
-  private collectionFileItems(): Promise<QuerySnapshot<DocumentData>> {
-    return getDocs(this.queryAllFilesFromUser());
   }
 
   // Observable<InterfaceFileItem[]>

@@ -1,4 +1,4 @@
-const AppAdminLTE = {
+const _AppAdminLTE = {
   initMainPage: () => {
     window.jQuery("body").Layout();
     window.jQuery('[data-toggle="push-menu"]').PushMenu();

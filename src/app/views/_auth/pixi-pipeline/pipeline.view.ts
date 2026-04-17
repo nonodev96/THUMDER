@@ -12,9 +12,10 @@ export class PipelineView implements OnInit {
   @ViewChild(PixiPipelineComponent)
   public pixi_PipelineComponent: PixiPipelineComponent;
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
-  }
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+  ) {}
 
   ngOnInit(): void {}
 }

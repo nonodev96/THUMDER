@@ -46,35 +46,35 @@ export class RegisterView implements OnInit {
 
   public translationEnabled: boolean = false;
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              public authService: AuthService,
-              public app: AppComponent,
-              public electronService: ElectronService,
-              public formBuilder: UntypedFormBuilder) {
-    this.registerForm = this.formBuilder.group({
-      first_name:       new UntypedFormControl("", Validators.compose([
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(30)
-      ])),
-      email:            new UntypedFormControl("", Validators.compose([
-        Validators.required,
-        Validators.email
-      ])),
-      password:         new UntypedFormControl("", Validators.compose([
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(30)
-      ])),
-      confirm_password: new UntypedFormControl("", Validators.compose([
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(30),
-        RegisterView.matchValues('password')
-      ])),
-    }, {
-      validators: this.checkPassword.bind(this)
-    });
+  constructor(
+    @Inject(DOCUMENT) private _document: Document,
+    public authService: AuthService,
+    public app: AppComponent,
+    public electronService: ElectronService,
+    public formBuilder: UntypedFormBuilder,
+  ) {
+    this.registerForm = this.formBuilder.group(
+      {
+        first_name: new UntypedFormControl(
+          "",
+          Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30)]),
+        ),
+        email: new UntypedFormControl("", Validators.compose([Validators.required, Validators.email])),
+        password: new UntypedFormControl("", Validators.compose([Validators.required, Validators.minLength(6), Validators.maxLength(30)])),
+        confirm_password: new UntypedFormControl(
+          "",
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(30),
+            RegisterView.matchValues("password"),
+          ]),
+        ),
+      },
+      {
+        validators: this.checkPassword.bind(this),
+      },
+    );
     this.showSpinner = false;
   }
 

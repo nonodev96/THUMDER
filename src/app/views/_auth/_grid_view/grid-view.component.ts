@@ -11,8 +11,6 @@ export class GridViewComponent implements OnInit {
   options: GridsterConfig;
   dashboard: Array<GridsterItem>;
 
-  constructor() {}
-
   ngOnInit(): void {
     this.options = {
       draggable: {

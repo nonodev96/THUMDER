@@ -207,6 +207,7 @@ export const MAX_VALUE_TYPE_DATA = {
   HalfWord: 65535,
   Word: 4294967295,
   Float: 4294967295,
+  // biome-ignore lint/correctness/noPrecisionLoss: intentional max 64-bit unsigned integer for DLX double register display
   Double: 18446744073709551615,
 };
 

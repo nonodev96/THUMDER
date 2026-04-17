@@ -38,13 +38,11 @@ export class AboutView implements OnInit, AfterViewInit {
   @ViewChild("markdownComponentID_CHANGELOG", { static: false })
   private markdownComponentID_CHANGELOG: MarkdownComponent;
 
-  private listenObj: any;
-
   constructor(
     public electronService: ElectronService,
-    private markdownService: MarkdownService,
+    _markdownService: MarkdownService,
     private scroller: ViewportScroller,
-    private router: Router,
+    _router: Router,
     private renderer: Renderer2,
     private httpClient: HttpClient,
   ) {}
@@ -72,7 +70,7 @@ export class AboutView implements OnInit, AfterViewInit {
 
   private async queryNPMPackage(package_name: string, version: string): Promise<IPackageJson> {
     return new Promise((resolve) => {
-      const QUERY = this.SERVER_API + package_name + "@" + version + "/package.json";
+      const QUERY = `${this.SERVER_API + package_name}@${version}/package.json`;
       firstValueFrom(this.httpClient.get<IPackageJson>(QUERY)).then((response) => {
         resolve(JSON.parse(JSON.stringify(response)));
       });
@@ -104,7 +102,7 @@ export class AboutView implements OnInit, AfterViewInit {
       this.listenObj = this.renderer.listen(markdownComponent.element.nativeElement, "click", (e: Event) => {
         if (e.target && (e.target as any).tagName === "A") {
           const el = e.target as HTMLElement;
-          const linkURL = el.getAttribute && el.getAttribute("href");
+          const linkURL = el.getAttribute?.("href");
           if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
             e.preventDefault();
             const id = linkURL.replace("#", "");

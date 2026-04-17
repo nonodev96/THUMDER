@@ -34,13 +34,15 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   public date: Date = new Date();
   public isMaximize = false;
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
-              private router: Router,
-              private machine: MachineService,
-              private fileSystem: FileSystemService,
-              private translate: TranslateService,
-              private toastService: ToastrService) {
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+    private router: Router,
+    private machine: MachineService,
+    private fileSystem: FileSystemService,
+    private translate: TranslateService,
+    private toastService: ToastrService,
+  ) {
     this.extrasIDE = this.router.getCurrentNavigation().extras.state as TypeExtrasIDE;
     setInterval(() => {
       this.date = new Date();

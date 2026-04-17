@@ -9,9 +9,10 @@ import type { AuthService } from "../../../__core/auth/auth.service";
   standalone: false,
 })
 export class ProfileView implements OnInit {
-  constructor(@Inject(DOCUMENT) private document: Document,
-              public authService: AuthService) {
-  }
+  constructor(
+    @Inject(DOCUMENT) private _document: Document,
+    public authService: AuthService,
+  ) {}
 
   ngOnInit(): void {}
 

@@ -15,7 +15,5 @@ export class ModalComponent implements OnInit {
   @Input() public buttonCloseText: string = "MODAL.CLOSE";
   @Input() public buttonSaveText: string = "MODAL.OK";
 
-  constructor() {}
-
   ngOnInit(): void {}
 }

@@ -7,9 +7,10 @@ import { type AfterViewInit, Component, Inject } from "@angular/core";
   standalone: false,
 })
 export class LayoutAdminComponent implements AfterViewInit {
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
-  }
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+  ) {}
 
   ngAfterViewInit(): void {
     this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");

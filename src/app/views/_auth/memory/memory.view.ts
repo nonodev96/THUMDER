@@ -28,7 +28,7 @@ export class MemoryView implements OnInit, AfterViewInit {
 
   constructor(
     public machine: MachineService,
-    private translate: TranslateService,
+    _translate: TranslateService,
     private storage: StorageService,
   ) {
     this.dataSourceMemory.filter = null;

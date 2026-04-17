@@ -1,6 +1,6 @@
+import * as path from "node:path";
+import * as url from "node:url";
 import { app, BrowserWindow, ipcMain, Menu, Notification, type NotificationConstructorOptions, nativeImage, screen, Tray } from "electron";
-import * as path from "path";
-import * as url from "url";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1);

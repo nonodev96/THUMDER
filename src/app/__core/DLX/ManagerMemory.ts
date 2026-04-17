@@ -184,7 +184,7 @@ export class ManagerMemory implements InterfaceMemory {
 
   // HALF WORD - GET
   public getMemoryHalfWordBinaryByIndex(index: number): string {
-    return "" + this._memoryInt8Array[index].toString(2).padStart(8, "0") + this._memoryInt8Array[index + 1].toString(2).padStart(8, "0");
+    return `${this._memoryInt8Array[index].toString(2).padStart(8, "0")}${this._memoryInt8Array[index + 1].toString(2).padStart(8, "0")}`;
   }
 
   // HALF WORD - SET
@@ -225,7 +225,7 @@ export class ManagerMemory implements InterfaceMemory {
   // 00000000 - 00000000 - 00000000 - 00000000
   public getAllMemoryWord(): Int32[] {
     const list = [];
-    let data;
+    let data: Int32;
     for (let index = 0; index <= this._memorySizeBytes; index += 4) {
       data = new Int32();
       data.binary = this.getMemoryWordBinaryByIndex(index);
@@ -253,14 +253,14 @@ export class ManagerMemory implements InterfaceMemory {
   // TODO
   // group by 4 steps
   public getAllMemory(): TypeMemory[] {
-    return Array.from(this._memoryInt8Array)
-      .map((v, index) => {
-        if (v === 0) return;
-        return {
+    return Array.from(this._memoryInt8Array).flatMap((v, index) => {
+      if (v === 0) return [];
+      return [
+        {
           address: index.toString(16).padStart(2, "0"),
           value: v,
-        } as TypeMemory;
-      })
-      .filter((v) => v);
+        } as TypeMemory,
+      ];
+    });
   }
 }

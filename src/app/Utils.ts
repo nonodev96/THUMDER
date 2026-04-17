@@ -45,9 +45,11 @@ export namespace Utils {
 
   export function stringFormat(msg: string, ...args: any) {
     return msg.replace(/{([0-9]+)}/g, (match, index) => {
+      // biome-ignore lint/suspicious/noDoubleEquals: intentional loose equality to detect object type
       if (typeof args[index] == "object") {
         return JSON.stringify(args[index]);
       }
+      // biome-ignore lint/suspicious/noDoubleEquals: intentional loose equality to detect undefined
       return typeof args[index] == "undefined" ? match : args[index];
     });
   }
@@ -60,7 +62,7 @@ export namespace Utils {
     return Math.trunc(this.hexadecimalToDecimal(address) / 4);
   }
 
-  export function orderJSONBy(array, selector, desc = false) {
+  export function orderJSONBy(array, _selector, desc = false) {
     return [...array].sort((a, b) => {
       if (desc) {
         return parseFloat(a.selector) - parseFloat(b.selector);
@@ -119,14 +121,14 @@ export namespace Utils {
     if (n < 0) {
       n = 0xffffffff + n + 1;
     }
-    return "0x" + ("00000000" + n.toString(16).toUpperCase()).substr(-8);
+    return `0x${(`00000000${n.toString(16).toUpperCase()}`).substr(-8)}`;
   }
 
   export function indexToAddress(number: number, args = { maxLength: 8, fillString: "0" }) {
     if (number < 0) {
       number = 0xffffffff + number + 1;
     }
-    return "0x" + number.toString(16).toUpperCase().padStart(args.maxLength, args.fillString);
+    return `0x${number.toString(16).toUpperCase().padStart(args.maxLength, args.fillString)}`;
   }
 
   export function binaryToASCII(binary8: string): string {
@@ -205,7 +207,7 @@ export namespace Utils {
       elements.push(element.toString().padStart(3, "0"));
     }
     const list = elements.join("-");
-    return "[" + list + "]";
+    return `[${list}]`;
   }
 
   export function convertBinaryIEEE754_64bits_ToUintArray(float64: number): string {
@@ -215,7 +217,7 @@ export namespace Utils {
       elements.push(element.toString().padStart(3, "0"));
     }
     const list = elements.join("-");
-    return "[" + list + "]";
+    return `[${list}]`;
   }
 
   export function convertIEEE754_Binary32Bits_To_Number(str: string): number {
@@ -292,7 +294,7 @@ export namespace Utils {
       if (obj_instruction_type_r_opcode_0) {
         const instruction_name = obj_instruction_type_r_opcode_0.name;
         // Type R with opcode = 0
-        return instruction_name + " R" + rd0 + ", R" + rs1 + ", R" + rs2;
+        return `${instruction_name} R${rd0}, R${rs1}, R${rs2}`;
       }
       return "Instruction error #0";
     }
@@ -305,7 +307,7 @@ export namespace Utils {
       if (obj_instruction_type_r_opcode_1) {
         const instruction_name = obj_instruction_type_r_opcode_1.name;
         // Type R with opcode = 1
-        return instruction_name + " F" + rd0F + ", F" + rs1F + ", F" + rs2F;
+        return `${instruction_name} F${rd0F}, F${rs1F}, F${rs2F}`;
       }
       return "Instruction error #1";
     }
@@ -324,50 +326,50 @@ export namespace Utils {
 
         // Type I or type J
         if (["ADDI", "ADDUI", "SUBI", "SUBUI", "ANDI", "ORI", "XORI"].includes(instruction_name)) {
-          return instruction_name + " R" + rd0I + ", R" + rs1I + ", #" + data;
+          return `${instruction_name} R${rd0I}, R${rs1I}, #${data}`;
         }
         if ("LHI" === instruction_name) {
-          return instruction_name + " R" + rd0I + ", #" + data;
+          return `${instruction_name} R${rd0I}, #${data}`;
         }
 
         // Type J ?
         if (["J", "JAL"].includes(instruction_name)) {
-          return instruction_name + " #" + data;
+          return `${instruction_name} #${data}`;
         }
         if (["BEQZ", "BNEZ"].includes(instruction_name)) {
-          return instruction_name + " R" + rs1I + ", #" + data;
+          return `${instruction_name} R${rs1I}, #${data}`;
         }
         if (["BFPT", "BFPF"].includes(instruction_name)) {
-          return instruction_name + " #" + data;
+          return `${instruction_name} #${data}`;
         }
         if ("RFE" === instruction_name) {
           return instruction_name;
         }
         if ("TRAP" === instruction_name) {
-          return instruction_name + " #" + data_26;
+          return `${instruction_name} #${data_26}`;
         }
 
         // No se de que tipo son :3 supongamos que de tipo I
         if (["JR", "JALR"].includes(instruction_name)) {
-          return instruction_name + " R" + rs1I;
+          return `${instruction_name} R${rs1I}`;
         }
 
         if (["SLLI", "SRLI", "SRAI", "SEQI", "SNEI", "SLTI", "SGTI", "SLEI", "SGEI"].includes(instruction_name)) {
-          return instruction_name + " R" + rd0I + ", R" + rs1I + ", #" + data;
+          return `${instruction_name} R${rd0I}, R${rs1I}, #${data}`;
         }
 
         if (["LB", "LH", "LW", "LBU", "LHU"].includes(instruction_name)) {
-          return instruction_name + " R" + rd0I + ", ##" + data + "(R" + rs1I + ")";
+          return `${instruction_name} R${rd0I}, ##${data}(R${rs1I})`;
         }
         if (["LF", "LD"].includes(instruction_name)) {
-          return instruction_name + " F" + rd0I + ", ##" + data + "(R" + rs1I + ")";
+          return `${instruction_name} F${rd0I}, ##${data}(R${rs1I})`;
         }
 
         if (["SB", "SH", "SW"].includes(instruction_name)) {
-          return instruction_name + " ##" + data + "(R" + rs1I + "), R" + rd0I;
+          return `${instruction_name} ##${data}(R${rs1I}), R${rd0I}`;
         }
         if (["SF", "SD"].includes(instruction_name)) {
-          return instruction_name + " ##" + data + "(R" + rs1I + "), F" + rd0I;
+          return `${instruction_name} ##${data}(R${rs1I}), F${rd0I}`;
         }
       }
       return "Instruction error #1";

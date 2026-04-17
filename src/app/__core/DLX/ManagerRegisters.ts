@@ -120,7 +120,7 @@ export class ManagerRegisters implements InterfaceRegisters {
 
   public setRegisterIntegerWithBinary(index: number, binary: string) {
     if (index < 0 || index > 31) {
-      throw new Error("Register Integer error in range (index: " + index + ")");
+      throw new Error(`Register Integer error in range (index: ${index})`);
     }
     this.R[index] = new Int32();
     this.R[index].binary = binary;
@@ -128,7 +128,7 @@ export class ManagerRegisters implements InterfaceRegisters {
 
   public setRegisterFloatWithBinary(index: number, binary: string) {
     if (index < 0 || index > 31) {
-      throw new Error("Register Float error in range (index: " + index + ")");
+      throw new Error(`Register Float error in range (index: ${index})`);
     }
     this.F[index] = new Float32();
     this.F[index].binary = binary;
@@ -136,7 +136,7 @@ export class ManagerRegisters implements InterfaceRegisters {
 
   public setRegisterDoubleWithBinary(index: number, binary: string) {
     if (index < 0 || index > 31) {
-      throw new Error("Register Double error in range (index: " + index + ")");
+      throw new Error(`Register Double error in range (index: ${index})`);
     }
     this.F[index] = new Float32();
     this.F[index + 1] = new Float32();

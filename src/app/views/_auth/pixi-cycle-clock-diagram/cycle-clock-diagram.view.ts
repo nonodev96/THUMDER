@@ -13,9 +13,10 @@ export class CycleClockDiagramView implements OnInit {
 
   public inCanvas: boolean = false;
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document) {
-  }
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+  ) {}
 
   ngOnInit(): void {}
 

@@ -502,9 +502,9 @@ export class MachineService {
   public writeToLog(msg: string, level: EnumLogLevel = EnumLogLevel.Debug, params: TypeLogger[] = []) {
     if (this.shouldLog(level)) {
       this.logger = "";
-      this.logger = new Date().toLocaleString() + " - ";
-      this.logger += "Type: " + EnumLogLevel[this.level];
-      this.logger += " - " + this.stringFormat(msg, params);
+      this.logger = `${new Date().toLocaleString()} - `;
+      this.logger += `Type: ${EnumLogLevel[this.level]}`;
+      this.logger += ` - ${this.stringFormat(msg, params)}`;
       console.debug(this.logger);
       this.logger$.next(this.logger);
     }
@@ -512,9 +512,9 @@ export class MachineService {
 
   private stringFormat(msg: string, params: TypeLogger[]) {
     return msg.replace(/{([0-9]+)}/g, (match: string, index) => {
-      const logValue: TypeLogger = params.filter((v) => v.index == index)[0] ?? { index: -1, value: "" };
+      const logValue: TypeLogger = params.filter((v) => v.index === index)[0] ?? { index: -1, value: "" };
       // console.log("msg", msg, "params", params, "logValue", logValue, "match", match, "index", index);
-      if (typeof logValue.value == "object") {
+      if (typeof logValue.value === "object") {
         return JSON.stringify(logValue.value);
       }
       return typeof logValue.value === "undefined" ? match : logValue.value;

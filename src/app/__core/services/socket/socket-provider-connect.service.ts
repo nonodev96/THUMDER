@@ -71,7 +71,7 @@ export class SocketProviderConnectService {
       console.debug("WebSocket-reconnect_failed");
       SocketProviderConnectService.handleErrors(err);
     });
-    this.socketIO.ioSocket.on("connect_error", async (err) => {
+    this.socketIO.ioSocket.on("connect_error", async (_err) => {
       console.debug("WebSocket-connect_error");
       // SocketProviderConnectService.handleErrors(err);
       const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SERVER_DOWN"));

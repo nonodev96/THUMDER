@@ -2,7 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject, type OnInit } from "@angular/core";
 import type { Router } from "@angular/router";
 import { AppConfig } from "../../../environments/_environment";
-import { AUTH_ROUTES, PUBLIC_ROUTES } from "../../CONSTANTS";
+import { AUTH_ROUTES } from "../../CONSTANTS";
 
 @Component({
   selector: "app-index",
@@ -13,9 +13,10 @@ export class IndexView implements OnInit, AfterViewInit {
   public readonly PRIVATE_AUTH_ROUTES = AUTH_ROUTES;
   public readonly AppConfig = AppConfig;
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              private router: Router) {
-  }
+  constructor(
+    @Inject(DOCUMENT) private _document: Document,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");

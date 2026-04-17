@@ -98,7 +98,7 @@ export class AuthService {
   }
 
   // Sign up with email/password
-  public async SignUp(email, password): Promise<UserCredential | void> {
+  public async SignUp(email, password): Promise<UserCredential | undefined> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.afAuth, email, password);
       await this.SendVerificationMail(userCredential);

@@ -5,7 +5,7 @@ import { Pipe, type PipeTransform } from "@angular/core";
   standalone: false,
 })
 export class NumberToHexadecimalPipe implements PipeTransform {
-  transform(value: number, ...args: unknown[]): string {
+  transform(value: number, ..._args: unknown[]): string {
     return value.toString(16);
   }
 }

@@ -189,9 +189,5 @@ export class CalculatorView implements OnInit {
     this._value64Double = binary.padStart(64, "0");
   }
 
-  // endregion
-
-  constructor() {}
-
   ngOnInit(): void {}
 }

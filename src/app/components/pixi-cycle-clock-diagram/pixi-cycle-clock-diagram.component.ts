@@ -135,7 +135,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   }
 
   @HostListener("document:click", ["$event", "$event.target"])
-  public handleOnClick(event: MouseEvent, targetElement: HTMLElement): void {
+  public handleOnClick(_event: MouseEvent, targetElement: HTMLElement): void {
     if (!targetElement) {
       return;
     }

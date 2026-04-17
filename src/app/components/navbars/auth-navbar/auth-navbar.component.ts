@@ -23,12 +23,13 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   public isWebsocketStatusConnect: boolean = false;
   private isRunningSubscription: Subscription = new Subscription();
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              private router: Router,
-              public app: AppComponent,
-              public machine: MachineService,
-              public authService: AuthService) {
-  }
+  constructor(
+    @Inject(DOCUMENT) private _document: Document,
+    private router: Router,
+    public app: AppComponent,
+    public machine: MachineService,
+    public authService: AuthService,
+  ) {}
 
   ngOnInit(): void {
     this.isRunningSubscription = this.machine.getIsRunningObservable().subscribe((isRunning) => {
@@ -87,7 +88,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
     return Promise.resolve();
   }
 
-  public async goToPage($event: MouseEvent, menu: PublicRoutes): Promise<boolean> {
+  public async goToPage(_$event: MouseEvent, menu: PublicRoutes): Promise<boolean> {
     const data = await this.router.navigateByUrl(menu.routerLink);
     return Promise.resolve(data);
   }

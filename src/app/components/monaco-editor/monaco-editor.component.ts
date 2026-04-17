@@ -29,7 +29,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public editorFile: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
   private breakpoints: TypeBreakpoints = {};
   private editor: IStandaloneCodeEditor;
-  private oldDecorationDebugTag_targetId: string[] = [];
   private oldDecorationDebugLine: string[] = [];
 
   public initialized$: Subject<boolean> = new Subject<boolean>();
@@ -45,8 +44,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   get height(): number {
     return this._height;
   }
-
-  constructor() {}
 
   ngOnInit(): void {
     this.componentStatus$.next("OnInit");
@@ -89,7 +86,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       monaco.editor.setModelLanguage(model, this.inputLanguage);
     }
     this.editor.layout();
-    this.editor.updateOptions({ readOnly: this.editorFile.$key == "" });
+    this.editor.updateOptions({ readOnly: this.editorFile.$key === "" });
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, async () => {
       this.save();
     });
@@ -200,7 +197,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public async setBreakpoints(breakpoints: TypeBreakpoints): Promise<void> {
     this.breakpoints = breakpoints;
     for (const line of Object.keys(this.breakpoints)) {
-      this.toggleDebuggerTag(parseInt(line));
+      this.toggleDebuggerTag(parseInt(line, 10));
     }
     return Promise.resolve();
   }
@@ -226,7 +223,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editorFile.thumbnail = fileItem.thumbnail;
     this.editorFile.dataItem = fileItem.dataItem;
 
-    this.editor.updateOptions({ readOnly: this.editorFile.$key == "" });
+    this.editor.updateOptions({ readOnly: this.editorFile.$key === "" });
 
     return Promise.resolve();
   }

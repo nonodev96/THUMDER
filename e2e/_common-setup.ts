@@ -1,6 +1,6 @@
 const Application = require("spectron").Application;
 const electronPath = require("electron"); // Require Electron from the binaries included in node_modules.
-const path = require("path");
+const path = require("node:path");
 
 export default function setup(): void {
   beforeEach(async function () {
@@ -31,7 +31,7 @@ export default function setup(): void {
   });
 
   afterEach(async function () {
-    if (this.app && this.app.isRunning()) {
+    if (this.app?.isRunning()) {
       await this.app.stop();
     }
   });

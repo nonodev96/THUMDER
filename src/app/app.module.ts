@@ -24,9 +24,6 @@ import { MatTableModule } from "@angular/material/table";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
-// Monaco
-// import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
-import { CovalentCodeEditorModule } from "@covalent/code-editor";
 // NG Translate
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -121,7 +118,7 @@ export function markedOptionsFactory(): object {
     if (!href) {
       return defaultMarkedRenderer.link({ href, title, text } as any);
     }
-    const isElectron = window && window.process && window.process.type;
+    const isElectron = window?.process?.type;
     if (isElectron) {
       if (href.startsWith("http://") || href.startsWith("https://")) {
         return `<a href="javascript:;" onclick="window.require('electron').shell.openExternal('${href}');" title="${title}">${text}</a>`;

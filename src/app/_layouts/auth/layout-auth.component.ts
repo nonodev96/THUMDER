@@ -8,10 +8,11 @@ import type { Globals } from "../../__core/services/globals/globals.service";
   standalone: false,
 })
 export class LayoutAuthComponent implements AfterViewInit {
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
-              public globals: Globals) {
-  }
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+    public globals: Globals,
+  ) {}
 
   ngAfterViewInit(): void {
     this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");

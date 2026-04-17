@@ -82,10 +82,12 @@ export class FileManagerView implements OnInit, OnDestroy {
   private _filesSelected: any[] = [];
   private updateUISubscription: Subscription = new Subscription();
 
-  constructor(@Inject(DOCUMENT)
-              private document: Document,
-              public fileSystemService: FileSystemService,
-              private router: Router) {
+  constructor(
+    @Inject(DOCUMENT)
+    private _document: Document,
+    public fileSystemService: FileSystemService,
+    private router: Router,
+  ) {
     this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(async () => {
       await this.updateUI();
     });

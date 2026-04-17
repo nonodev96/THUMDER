@@ -99,7 +99,7 @@ const MonacoConfig: TypeMonacoConfig = {
 
     // Register a completion item provider for the new language
     monaco.languages.registerCompletionItemProvider("thumderLanguage", {
-      provideCompletionItems: (model, position, context, token) => {
+      provideCompletionItems: (_model, _position, _context, _token) => {
         const completionListItem: any[] = [];
         const documentations: monaco.languages.CompletionItem[] = [];
         const snippets: monaco.languages.CompletionItem[] = Object.keys(OPCODES).map(
@@ -123,7 +123,7 @@ const MonacoConfig: TypeMonacoConfig = {
       provideHover(
         model: monaco.editor.ITextModel,
         position: monaco.Position,
-        token: monaco.CancellationToken,
+        _token: monaco.CancellationToken,
       ): monaco.languages.ProviderResult<monaco.languages.Hover> {
         const word = model.getWordAtPosition(position);
 

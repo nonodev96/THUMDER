@@ -21,7 +21,6 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
     new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
   public listRowActives: TypeAddressStage[] = [];
   public maxHeightCard: string = "75vh";
-  private stepSimulation: number = 0;
   private stepSubscription: Subscription = new Subscription();
   private stepSimulationSubscription: Subscription = new Subscription();
   private codeSimulationSubscription: Subscription = new Subscription();
