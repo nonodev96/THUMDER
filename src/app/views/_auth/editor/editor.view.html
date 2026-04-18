@@ -2,14 +2,14 @@
   <div class="card-header">
     <h3 class="card-title">{{ 'NAVIGATION.EDITOR' | translate }} | {{ interfaceFileItem.name ?? ''}}</h3>
     <div class="card-tools">
-      <ng-container *ngIf="env.environment === 'DEV'">
+      @if (env.environment === 'DEV') {
         <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="getListOfTags()">
           Get List Of Tags
         </button>
         <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="toggleDebuggerTag()">
           Toggle Debugger in cursor
         </button>
-      </ng-container>
+      }
 
       <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
         <i class="fas fa-circle" aria-hidden="true"></i>
@@ -37,16 +37,16 @@
 
   <div class="card-footer">
 
-    <ng-container *ngIf="interfaceFileItem">
-<pre>
-$Key: {{interfaceFileItem.$key ?? ''}}
-  User: {{interfaceFileItem.e1_uid ?? ''}}
-  Key: {{interfaceFileItem.key ?? ''}}
-  Name: {{interfaceFileItem.name ?? ''}}
-  Path: {{interfaceFileItem.path ?? ''}}
-  Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}}
-</pre>
-    </ng-container>
+    @if (interfaceFileItem) {
+      <pre>
+        $Key: {{interfaceFileItem.$key ?? ''}}
+        User: {{interfaceFileItem.e1_uid ?? ''}}
+        Key: {{interfaceFileItem.key ?? ''}}
+        Name: {{interfaceFileItem.name ?? ''}}
+        Path: {{interfaceFileItem.path ?? ''}}
+        Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}}
+      </pre>
+    }
 
   </div>
 </div>

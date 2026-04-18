@@ -1,20 +1,22 @@
 <ng-container cdkDropListGroup>
   <div class="row">
     <div class="col-12 col-xxl-12 example-list" id="accordion"
-         cdkDropList
-         #mainList="cdkDropList"
-         [cdkDropListData]="main_list"
-         (cdkDropListDropped)="MyDrop($event)">
+      cdkDropList
+      #mainList="cdkDropList"
+      [cdkDropListData]="main_list"
+      (cdkDropListDropped)="MyDrop($event)">
 
-      <div *ngFor="let document of main_list" cdkDrag>
-        <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-        <THUMDER-docs-item [item]="document">
+      @for (document of main_list; track document) {
+        <div cdkDrag>
+          <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+          <THUMDER-docs-item [item]="document">
           <button type="button" class="btn btn-tool" title="Drag to reorder" cdkDragHandle>
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </THUMDER-docs-item>
       </div>
+    }
 
-    </div>
   </div>
+</div>
 </ng-container>

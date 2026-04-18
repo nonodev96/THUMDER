@@ -7,32 +7,36 @@
   <div class="row">
     <div class="col-12" style="height: 100vh">
       <gridster [options]="options">
-        <gridster-item [item]="item" *ngFor="let item of dashboard">
-          <!-- your content here -->
-
-          <div class="gridster-item-content" *ngIf="item.calculator">
-            <view-calculator>
-              <button type="button" class="btn btn-tool drag-handler">
-                <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+        @for (item of dashboard; track item) {
+          <gridster-item [item]="item">
+            <!-- your content here -->
+            @if (item.calculator) {
+              <div class="gridster-item-content">
+                <view-calculator>
+                  <button type="button" class="btn btn-tool drag-handler">
+                    <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+                  </button>
+                </view-calculator>
+              </div>
+            }
+            @if (item.pipeline) {
+              <div class="gridster-item-content">
+                <view-pipeline>
+                  <button type="button" class="btn btn-tool drag-handler">
+                    <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+                  </button>
+                </view-pipeline>
+              </div>
+            }
+            @if (item.itemVoid) {
+              <button type="button" class="btn btn-outline-primary btn-lg"
+                (mousedown)="removeItem($event, item)"
+                (touchstart)="removeItem($event, item)">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i>
               </button>
-            </view-calculator>
-          </div>
-
-          <div class="gridster-item-content" *ngIf="item.pipeline">
-            <view-pipeline>
-              <button type="button" class="btn btn-tool drag-handler">
-                <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-              </button>
-            </view-pipeline>
-          </div>
-
-          <button type="button" class="btn btn-outline-primary btn-lg" *ngIf="item.itemVoid"
-                  (mousedown)="removeItem($event, item)"
-                  (touchstart)="removeItem($event, item)">
-            <i class="fas fa-trash-alt" aria-hidden="true"></i>
-          </button>
-
-        </gridster-item>
+            }
+          </gridster-item>
+        }
       </gridster>
     </div>
   </div>

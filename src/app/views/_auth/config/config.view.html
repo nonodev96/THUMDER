@@ -18,51 +18,51 @@
           <th id="CONFIG_ADDITION">{{ 'CONFIG.ADDITION' | translate }}</th>
           <td>
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="floatingPointStageConfiguration.addition.count"
-                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
-                   title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="floatingPointStageConfiguration.addition.count"
+              (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
+              title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
           </td>
           <td>
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="floatingPointStageConfiguration.addition.delay"
-                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
-                   title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="floatingPointStageConfiguration.addition.delay"
+              (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
+              title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
           </td>
         </tr>
         <tr>
           <th id="CONFIG_MULTIPLICATION">{{ 'CONFIG.MULTIPLICATION' | translate }}</th>
           <td>
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="floatingPointStageConfiguration.multiplication.count"
-                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
-                   title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="floatingPointStageConfiguration.multiplication.count"
+              (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
+              title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
           </td>
           <td>
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="floatingPointStageConfiguration.multiplication.delay"
-                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
-                   title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="floatingPointStageConfiguration.multiplication.delay"
+              (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
+              title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
           </td>
         </tr>
         <tr>
           <th id="CONFIG_DIVISION">{{ 'CONFIG.DIVISION' | translate }}</th>
           <td>
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="floatingPointStageConfiguration.division.count"
-                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
-                   title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="floatingPointStageConfiguration.division.count"
+              (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
+              title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
           </td>
           <td>
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="floatingPointStageConfiguration.division.delay"
-                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
-                   title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="floatingPointStageConfiguration.division.delay"
+              (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
+              title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
           </td>
         </tr>
 
@@ -81,11 +81,11 @@
           <th id="CONFIG_MEMORY_SIZE">{{ 'CONFIG.MEMORY_SIZE' | translate }}</th>
           <td colspan="2">
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="memorySizeConfiguration"
-                   (change)="checkMemorySize($event.target)"
-                   class="form-control" min="512" max="1048576" step="8"
-                   title="{{ 'CONFIG.MEMORY_SIZE' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="memorySizeConfiguration"
+              (change)="checkMemorySize($event.target)"
+              class="form-control" min="512" max="1048576" step="8"
+              title="{{ 'CONFIG.MEMORY_SIZE' | translate }}">
           </td>
         </tr>
 
@@ -98,13 +98,13 @@
           <td colspan="2">
             <div class="form-check">
               <input type="checkbox"
-                     [ngModelOptions]="{standalone: true}"
-                     [(ngModel)]="enabledForwardingConfiguration"
-                     (change)="updateEnableForwarding($event.target)"
-                     class="form-check-input"
-                     id="enableForwarding_ID">
+                [ngModelOptions]="{standalone: true}"
+                [(ngModel)]="enabledForwardingConfiguration"
+                (change)="updateEnableForwarding($event.target)"
+                class="form-check-input"
+                id="enableForwarding_ID">
               <label class="form-check-label"
-                     for="enableForwarding_ID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
+              for="enableForwarding_ID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
             </div>
           </td>
         </tr>
@@ -118,11 +118,11 @@
           <td colspan="2">
             <div class="form-check">
               <input type="checkbox"
-                     [ngModelOptions]="{standalone: true}"
-                     [(ngModel)]="autoSaveConfiguration"
-                     (change)="updateAutoSave($event.target)"
-                     class="form-check-input"
-                     id="autoSaveCheck_ID">
+                [ngModelOptions]="{standalone: true}"
+                [(ngModel)]="autoSaveConfiguration"
+                (change)="updateAutoSave($event.target)"
+                class="form-check-input"
+                id="autoSaveCheck_ID">
               <label class="form-check-label" for="autoSaveCheck_ID">{{ 'CONFIG.AUTO_SAVE' | translate }}</label>
             </div>
           </td>
@@ -136,11 +136,11 @@
           <th id="CONFIG_TIME_SIMULATION_FORM">{{ 'CONFIG.TIME_SIMULATION' | translate }}</th>
           <td colspan="2">
             <input type="number"
-                   [ngModelOptions]="{standalone: true}"
-                   [(ngModel)]="timeSimulationConfiguration"
-                   (change)="updateTimeSimulation($event.target)"
-                   class="form-control" min="100" max="10000" step="50"
-                   title="{{ 'CONFIG.TIME_SIMULATION' | translate }}">
+              [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="timeSimulationConfiguration"
+              (change)="updateTimeSimulation($event.target)"
+              class="form-control" min="100" max="10000" step="50"
+              title="{{ 'CONFIG.TIME_SIMULATION' | translate }}">
           </td>
         </tr>
 
@@ -154,44 +154,44 @@
             <td>
               <div class="form-group">
                 <div class="form-group-list-drag"
-                     cdkDropList
-                     #list_1="cdkDropList"
-                     [cdkDropListConnectedTo]="[list_2]"
-                     [cdkDropListData]="this.multiviewConfiguration.list_1"
-                     (cdkDropListDropped)="globals.drop($event)">
-                  <ng-container *ngFor="let component of this.multiviewConfiguration.list_1">
+                  cdkDropList
+                  #list_1="cdkDropList"
+                  [cdkDropListConnectedTo]="[list_2]"
+                  [cdkDropListData]="this.multiviewConfiguration.list_1"
+                  (cdkDropListDropped)="globals.drop($event)">
+                  @for (component of this.multiviewConfiguration.list_1; track component) {
                     <div class="form-check" cdkDrag>
                       <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
                       <input class="form-check-input" type="checkbox"
-                             [ngModelOptions]="{standalone: true}"
-                             [(ngModel)]="multiviewConfiguration[component]"
-                             title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
+                        [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="multiviewConfiguration[component]"
+                        title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
                       <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
                       <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
                     </div>
-                  </ng-container>
+                  }
                 </div>
               </div>
             </td>
 
             <td>
               <div class="form-group-list-drag"
-                   cdkDropList
-                   #list_2="cdkDropList"
-                   [cdkDropListConnectedTo]="[list_1]"
-                   [cdkDropListData]="this.multiviewConfiguration.list_2"
-                   (cdkDropListDropped)="globals.drop($event)">
-                <ng-container *ngFor="let component of this.multiviewConfiguration.list_2">
+                cdkDropList
+                #list_2="cdkDropList"
+                [cdkDropListConnectedTo]="[list_1]"
+                [cdkDropListData]="this.multiviewConfiguration.list_2"
+                (cdkDropListDropped)="globals.drop($event)">
+                @for (component of this.multiviewConfiguration.list_2; track component) {
                   <div class="form-check" cdkDrag>
                     <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
                     <input class="form-check-input" type="checkbox"
-                           [ngModelOptions]="{standalone: true}"
-                           [(ngModel)]="multiviewConfiguration[component]"
-                           title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
+                      [ngModelOptions]="{standalone: true}"
+                      [(ngModel)]="multiviewConfiguration[component]"
+                      title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
                     <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
                     <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
                   </div>
-                </ng-container>
+                }
               </div>
             </td>
           </tr>
@@ -206,12 +206,12 @@
           <td colspan="2">
             <div class="form-group">
               <input type="text"
-                     class="form-control"
-                     id="webSocketConfigurationID"
-                     [readonly]="this.webSocketUrlIsEditable"
-                     [ngModelOptions]="{standalone: true}"
-                     (change)="checkIfHttpUrlIsValid($event.target)"
-                     [(ngModel)]="webSocketConfiguration.socket_url">
+                class="form-control"
+                id="webSocketConfigurationID"
+                [readonly]="this.webSocketUrlIsEditable"
+                [ngModelOptions]="{standalone: true}"
+                (change)="checkIfHttpUrlIsValid($event.target)"
+                [(ngModel)]="webSocketConfiguration.socket_url">
             </div>
           </td>
         </tr>
@@ -223,8 +223,8 @@
 
   <div class="card-footer">
     <button type="reset" class="btn btn-secondary"
-            (click)="resetConfiguration()">{{ "FORMS.RESET" | translate }}</button>
+    (click)="resetConfiguration()">{{ "FORMS.RESET" | translate }}</button>
     <button type="submit" class="btn btn-primary float-right"
-            (click)="updateConfiguration()">{{ "FORMS.SAVE" | translate }}</button>
+    (click)="updateConfiguration()">{{ "FORMS.SAVE" | translate }}</button>
   </div>
 </div>

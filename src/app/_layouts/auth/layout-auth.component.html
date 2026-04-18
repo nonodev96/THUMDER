@@ -51,4 +51,6 @@
   <THUMDER-footer></THUMDER-footer>
 </div>
 
-<THUMDER-windows-debug *ngIf="globals.showDebug"></THUMDER-windows-debug>
+@if (globals.showDebug) {
+  <THUMDER-windows-debug></THUMDER-windows-debug>
+}
