@@ -36,7 +36,7 @@ import { THUMDER_FileItem } from "@core/services/file-system/file-system.service
   providedIn: "root",
 })
 export class FileSystemStorageService {
-  private readonly dbFileItemsPath = "/fileitems";
+  private readonly dbFileItemsPath = "/file-items";
 
   // https://dev.to/jdgamble555/angular-12-with-firebase-9-49a0
   constructor(
@@ -50,8 +50,8 @@ export class FileSystemStorageService {
     return Promise.resolve(documents.size > 0);
   }
 
-  public async generateDefaultFiles(): Promise<number> {
-    if (await this.isInitialize()) {
+  public async generateDefaultFiles(force = false): Promise<number> {
+    if (!force && await this.isInitialize()) {
       return Promise.resolve(1);
     }
     const files = ["prim.s", "win-dlx.s"];
