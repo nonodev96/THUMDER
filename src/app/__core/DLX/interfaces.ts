@@ -7,8 +7,8 @@ import {
   type TypeInstructionsData,
   type TypeMemoryToUpdate,
   type TypeRegisterToUpdate,
-} from "../../Types";
-import type { Float32, Int32 } from "../TypesData";
+} from "@app/Types";
+import type { Float32, Int32 } from "@core/TypesData";
 
 export interface InterfaceBreakpoints {
   breakpoints: TypeBreakpoints;

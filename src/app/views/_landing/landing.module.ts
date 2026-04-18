@@ -2,9 +2,9 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { MarkdownModule } from "ngx-markdown";
-import { AboutView } from "./about/about.view";
-import { LandingView } from "./landing/landing.view";
-import { LandingRoutingModule } from "./landing-routing.module";
+import { AboutView } from "@views/_landing/about/about.view";
+import { LandingView } from "@views/_landing/landing/landing.view";
+import { LandingRoutingModule } from "@views/_landing/landing-routing.module";
 
 @NgModule({
   declarations: [AboutView, LandingView],

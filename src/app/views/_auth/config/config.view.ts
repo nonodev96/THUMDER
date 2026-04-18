@@ -1,9 +1,9 @@
 import { type AfterViewInit, Component, type OnInit } from "@angular/core";
 import { AppConfig } from "../../../../environments/_environment";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { Globals } from "../../../__core/services/globals/globals.service";
-import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
-import { StorageService } from "../../../__core/storage/storage.service";
+import { MachineService } from "@core/machine/machine.service";
+import { Globals } from "@core/services/globals/globals.service";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { StorageService } from "@core/storage/storage.service";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION,
   DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
@@ -12,13 +12,13 @@ import {
   DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
   DEFAULT_WEB_SOCKET_CONFIGURATION,
-} from "../../../CONSTANTS";
+} from "@app/CONSTANTS";
 import type {
   TypeEnabledForwardingConfiguration,
   TypeFloatingPointStageConfiguration,
   TypeMultiviewConfiguration,
   TypeWebSocketConfiguration,
-} from "../../../Types";
+} from "@app/Types";
 
 interface EventTargetInput extends EventTarget {
   value: string | number | boolean;

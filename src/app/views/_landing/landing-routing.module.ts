@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, type Routes } from "@angular/router";
-import { LayoutLandingComponent } from "../../_layouts/landing/layout-landing.component";
-import { AboutView } from "./about/about.view";
-import { LandingView } from "./landing/landing.view";
+import { LayoutLandingComponent } from "@layout/landing/layout-landing.component";
+import { AboutView } from "@views/_landing/about/about.view";
+import { LandingView } from "@views/_landing/landing/landing.view";
 
 const routes: Routes = [
   {

@@ -1,7 +1,7 @@
 import { Component, type OnInit, ViewChild } from "@angular/core";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { XtermComponent } from "../../../components/xterm/xterm.component";
-import type { TypeOnKeyEvent } from "../../../Types";
+import { MachineService } from "@core/machine/machine.service";
+import { XtermComponent } from "@components/xterm/xterm.component";
+import type { TypeOnKeyEvent } from "@app/Types";
 
 @Component({
   selector: "view-logger",

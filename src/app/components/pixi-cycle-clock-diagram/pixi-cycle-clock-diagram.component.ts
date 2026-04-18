@@ -12,8 +12,8 @@ import {
 import * as PIXI from "pixi.js";
 import * as Keyboard from "pixi.js-keyboard";
 import { Subscription } from "rxjs";
-import { MachineService } from "../../__core/machine/machine.service";
-import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
+import { MachineService } from "@core/machine/machine.service";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
 
 @Component({
   selector: "THUMDER-pixi-cycle-clock-diagram",

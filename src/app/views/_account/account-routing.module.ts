@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, type Routes } from "@angular/router";
 
-import { NoAuthGuard } from "../../__shared/guard/no-auth.guard";
+import { NoAuthGuard } from "@shared/guard/no-auth.guard";
 
-import { ForgotPasswordView } from "./forgot-password/forgot-password.view";
-import { LoginView } from "./login/login.view";
-import { RegisterView } from "./register/register.view";
+import { ForgotPasswordView } from "@views/_account/forgot-password/forgot-password.view";
+import { LoginView } from "@views/_account/login/login.view";
+import { RegisterView } from "@views/_account/register/register.view";
 
 const routes: Routes = [
   {

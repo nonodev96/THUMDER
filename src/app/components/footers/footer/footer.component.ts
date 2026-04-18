@@ -1,9 +1,9 @@
 import { Component, type OnInit } from "@angular/core";
 import { AppConfig } from "../../../../environments/_environment";
-import { ElectronService } from "../../../__core/services";
-import { Globals } from "../../../__core/services/globals/globals.service";
-import { StorageService } from "../../../__core/storage/storage.service";
-import { NPM_VERSION } from "../../../CONSTANTS";
+import { ElectronService } from "@core/services";
+import { Globals } from "@core/services/globals/globals.service";
+import { StorageService } from "@core/storage/storage.service";
+import { NPM_VERSION } from "@app/CONSTANTS";
 
 @Component({
   selector: "THUMDER-footer",

@@ -1,5 +1,5 @@
 import { Pipe, type PipeTransform } from "@angular/core";
-import { Utils } from "../../../Utils";
+import { Utils } from "@app/Utils";
 
 @Pipe({
   name: "binary64_to_decimal_IEEE754",

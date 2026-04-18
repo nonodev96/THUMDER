@@ -1,6 +1,6 @@
 import { Component, type OnInit } from "@angular/core";
-import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "../../../CONSTANTS";
-import { Utils } from "../../../Utils";
+import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "@app/CONSTANTS";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "view-calculator",

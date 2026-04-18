@@ -3,8 +3,8 @@ import { type CanActivateFn, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { type IndividualConfig, ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import { AuthService } from "../../__core/auth/auth.service";
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
+import { AuthService } from "@core/auth/auth.service";
+import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
 
 export const AuthGuard: CanActivateFn = async (_route, _state) => {
   const authService = inject(AuthService);

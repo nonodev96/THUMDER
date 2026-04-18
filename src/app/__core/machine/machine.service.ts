@@ -3,7 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { type IndividualConfig, ToastrService } from "ngx-toastr";
 import { firstValueFrom, interval, type Observable, type PartialObserver, Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_ENABLED_FORWARDING_CONFIGURATION, DEFAULT_STEP_SIMULATION } from "../../CONSTANTS";
+import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_ENABLED_FORWARDING_CONFIGURATION, DEFAULT_STEP_SIMULATION } from "@app/CONSTANTS";
 import {
   EnumLogLevel,
   type InterfaceFileItem,
@@ -26,17 +26,17 @@ import {
   type TypeSimulationStep,
   type TypeStage,
   type TypeStatusMachine,
-} from "../../Types";
-import { Utils } from "../../Utils";
-import { UtilsDataStructures } from "../../UtilsDataStructures";
-import { ManagerBreakpoints } from "../DLX/ManagerBreakpoints";
-import { ManagerMemory } from "../DLX/ManagerMemory";
-import { ManagerRegisters } from "../DLX/ManagerRegisters";
-import { ManagerStatistics } from "../DLX/ManagerStatistics";
-import { SocketProviderConnectService } from "../services/socket/socket-provider-connect.service";
-import { StorageService } from "../storage/storage.service";
-import { PixiTHUMDER_CycleClockDiagram } from "./PixiTHUMDER_CycleClockDiagram";
-import { PixiTHUMDER_Pipeline } from "./PixiTHUMDER_Pipeline";
+} from "@app/Types";
+import { Utils } from "@app/Utils";
+import { UtilsDataStructures } from "@app/UtilsDataStructures";
+import { ManagerBreakpoints } from "@core/DLX/ManagerBreakpoints";
+import { ManagerMemory } from "@core/DLX/ManagerMemory";
+import { ManagerRegisters } from "@core/DLX/ManagerRegisters";
+import { ManagerStatistics } from "@core/DLX/ManagerStatistics";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { StorageService } from "@core/storage/storage.service";
+import { PixiTHUMDER_CycleClockDiagram } from "@core/machine/PixiTHUMDER_CycleClockDiagram";
+import { PixiTHUMDER_Pipeline } from "@core/machine/PixiTHUMDER_Pipeline";
 
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
 

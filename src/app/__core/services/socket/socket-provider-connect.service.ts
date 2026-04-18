@@ -3,8 +3,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { Socket, type SocketIoConfig } from "ngx-socket-io";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject } from "rxjs";
-import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "../../../CONSTANTS";
-import type { TypeWebSocketConfiguration } from "../../../Types";
+import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
+import type { TypeWebSocketConfiguration } from "@app/Types";
 
 @Injectable({
   providedIn: "root",

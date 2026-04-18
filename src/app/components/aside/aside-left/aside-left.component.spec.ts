@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AsideLeftComponent } from './aside-left.component';
+import { AsideLeftComponent } from '@components/aside/aside-left/aside-left.component';
 
 describe('AsideLeftComponent', () => {
   let component: AsideLeftComponent;

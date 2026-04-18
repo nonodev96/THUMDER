@@ -2,7 +2,7 @@ import { Component, type OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import { MachineService } from "../../../__core/machine/machine.service";
+import { MachineService } from "@core/machine/machine.service";
 import {
   DEFAULT_BINARY_32_BITS,
   DEFAULT_BINARY_64_BITS,
@@ -11,9 +11,9 @@ import {
   MACHINE_REGISTERS_F,
   MACHINE_REGISTERS_R,
   MACHINE_TYPE_REGISTERS,
-} from "../../../CONSTANTS";
-import type { TypeRegister, TypeRegisterToEdit } from "../../../Types";
-import { Utils } from "../../../Utils";
+} from "@app/CONSTANTS";
+import type { TypeRegister, TypeRegisterToEdit } from "@app/Types";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "THUMDER-edit-register-binary32",

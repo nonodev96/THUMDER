@@ -19,6 +19,8 @@
       "mini-signals": [
         "../node_modules/mini-signals/index.js"
       ],
+      "@app": ["./src/app"],
+      "@app/*": ["./src/app/*"],
       "@core": ["./src/app/__core"],
       "@core/*": ["./src/app/__core/*"],
       "@shared": ["./src/app/__shared"],

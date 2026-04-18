@@ -2,10 +2,10 @@ import { type AfterViewInit, Component, type OnInit, ViewChild } from "@angular/
 import { MatSort } from "@angular/material/sort";
 import { TranslateService } from "@ngx-translate/core";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { StorageService } from "../../../__core/storage/storage.service";
-import { EditMemoryBinary32Component } from "../../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
-import type { TypeAddress, TypeDataDisplayColumn } from "../../../Types";
+import { MachineService } from "@core/machine/machine.service";
+import { StorageService } from "@core/storage/storage.service";
+import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
+import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
 
 @Component({
   selector: "view-memory",

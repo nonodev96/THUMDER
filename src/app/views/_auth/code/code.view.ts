@@ -2,9 +2,9 @@ import { type AfterViewInit, Component, type OnDestroy, type OnInit, ViewChild }
 import { MatSort } from "@angular/material/sort";
 import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { Subscription } from "rxjs";
-import { MachineService } from "../../../__core/machine/machine.service";
-import type { TypeAddress, TypeAddressStage, TypeInstructionsData, TypeInstructionsData_Table, TypeStage } from "../../../Types";
-import { Utils } from "../../../Utils";
+import { MachineService } from "@core/machine/machine.service";
+import type { TypeAddress, TypeAddressStage, TypeInstructionsData, TypeInstructionsData_Table, TypeStage } from "@app/Types";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "view-code",

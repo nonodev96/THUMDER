@@ -1,1 +1,1 @@
-export * from "./webview/webview.directive";
+export * from "@shared/directives/webview/webview.directive";

@@ -28,9 +28,9 @@ import {
 } from "@angular/fire/firestore";
 import { firstValueFrom, type Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import type { InterfaceUser } from "../../../Types";
-import { Utils } from "../../../Utils";
-import { THUMDER_FileItem } from "./file-system.service";
+import type { InterfaceUser } from "@app/Types";
+import { Utils } from "@app/Utils";
+import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
 
 @Injectable({
   providedIn: "root",

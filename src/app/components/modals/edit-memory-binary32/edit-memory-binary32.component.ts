@@ -3,10 +3,10 @@ import { DomSanitizer, type SafeHtml } from "@angular/platform-browser";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "../../../CONSTANTS";
-import type { TypeData } from "../../../Types";
-import { Utils } from "../../../Utils";
+import { MachineService } from "@core/machine/machine.service";
+import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "@app/CONSTANTS";
+import type { TypeData } from "@app/Types";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "THUMDER-edit-memory-binary32",

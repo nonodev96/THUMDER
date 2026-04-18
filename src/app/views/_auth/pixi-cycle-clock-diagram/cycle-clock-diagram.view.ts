@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnInit, ViewChild } from "@angular/core";
-import { PixiCycleClockDiagramComponent } from "../../../components/pixi-cycle-clock-diagram/pixi-cycle-clock-diagram.component";
+import { PixiCycleClockDiagramComponent } from "@components/pixi-cycle-clock-diagram/pixi-cycle-clock-diagram.component";
 
 @Component({
   selector: "view-cycle-clock-diagram",

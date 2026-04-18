@@ -1,4 +1,4 @@
-import type { InterfaceRegisters } from "./__core/DLX/interfaces";
+import type { InterfaceRegisters } from "@core/DLX/interfaces";
 
 declare global {
   interface Window {

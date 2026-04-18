@@ -1,5 +1,5 @@
 import { Pipe, type PipeTransform } from "@angular/core";
-import type { TypeTransformDecimalToBase } from "../../../Types";
+import type { TypeTransformDecimalToBase } from "@app/Types";
 
 @Pipe({
   name: "number_to_base",

@@ -1,5 +1,5 @@
 import { Pipe, type PipeTransform } from "@angular/core";
-import { DEFAULT_BINARY_32_BITS } from "../../../CONSTANTS";
+import { DEFAULT_BINARY_32_BITS } from "@app/CONSTANTS";
 
 @Pipe({
   name: "binary32_to_word",

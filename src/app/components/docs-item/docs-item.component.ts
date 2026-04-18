@@ -2,8 +2,8 @@ import { ViewportScroller } from "@angular/common";
 import { Component, Input, type OnInit, Renderer2, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
-import { REGEX_IS_ABSOLUTE_HREF } from "../../CONSTANTS";
-import type { TypeIdTitleFile } from "../../Types";
+import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
+import type { TypeIdTitleFile } from "@app/Types";
 
 @Component({
   selector: "THUMDER-docs-item",

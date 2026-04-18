@@ -1,8 +1,8 @@
 import { Component, type OnDestroy, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { Globals } from "../../../__core/services/globals/globals.service";
+import { MachineService } from "@core/machine/machine.service";
+import { Globals } from "@core/services/globals/globals.service";
 
 @Component({
   selector: "THUMDER-windows-debug",

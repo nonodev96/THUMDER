@@ -1,7 +1,7 @@
 import { CdkDrag, type CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { type AfterViewInit, Component, type OnInit, type QueryList, ViewChildren } from "@angular/core";
-import { Globals } from "../../../__core/services/globals/globals.service";
-import type { TypeIdTitleFile } from "../../../Types";
+import { Globals } from "@core/services/globals/globals.service";
+import type { TypeIdTitleFile } from "@app/Types";
 // import { fetchAndActivate, getRemoteConfig, getValue } from "@angular/fire/remote-config";
 
 @Component({
