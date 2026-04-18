@@ -70,9 +70,19 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   public async generateDefaultFiles(): Promise<void> {
-    const code = await this.fileSystemService.fileSystemStorageService.generateDefaultFiles();
-    if (code === 0) console.debug("Se han generado los ficheros por defecto");
-    if (code === 1) console.debug("No se han generado los ficheros por defecto");
+    try {
+      const code = await this.fileSystemService.fileSystemStorageService.generateDefaultFiles(true);
+      if (code === 0) {
+        console.log("[FileManager] Default files generated successfully");
+        alert("Default files generated successfully.");
+      } else {
+        console.log("[FileManager] Default files already existed, skipped.");
+        alert("Default files already existed — skipped.");
+      }
+    } catch (error) {
+      console.error("[FileManager] Error generating default files:", error);
+      alert(`Error generating default files: ${error}`);
+    }
     return Promise.resolve();
   }
 

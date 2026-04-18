@@ -91,6 +91,8 @@ export class FileSystemService {
     const newDirectory = new THUMDER_FileItem(path, true, pathKeys);
     newDirectory.name = name;
     newDirectory.key = Utils.uuidv4();
+    newDirectory.dateModified = new Date();
+    await this.fileSystemStorageService.createFileItem(newDirectory);
     this.items.push(newDirectory);
     this.updateUI$.next();
     return Promise.resolve(newDirectory);
