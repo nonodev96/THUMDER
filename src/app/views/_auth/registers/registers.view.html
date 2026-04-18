@@ -7,35 +7,35 @@
       <span data-card-widget="collapse">{{'MACHINE.REGISTERS_CONTROL' | translate}}</span>
     </h3>
     <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="Byte"
+      <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" title="{{ 'MACHINE.BYTE' | translate }}"
               (click)="changeTypeDataInTableRegisters('Byte')">
         <i class="fas fa-table" aria-hidden="true"></i> Bytes
       </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="HalfWord"
+      <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" title="{{ 'MACHINE.HALF_WORD' | translate }}"
               (click)="changeTypeDataInTableRegisters('HalfWord')">
         <i class="fas fa-table" aria-hidden="true"></i> HalfWord
       </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="Word"
+      <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" title="{{ 'MACHINE.WORD' | translate }}"
               (click)="changeTypeDataInTableRegisters('Word')">
         <i class="fas fa-table" aria-hidden="true"></i> Word
       </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="ASCII"
+      <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="{{ 'MACHINE.ASCII' | translate }}"
               (click)="changeTypeDataInTableRegisters('ASCII')">
         <i class="fas fa-table" aria-hidden="true"></i> ASCII
       </button>
 
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister" id="modal-EditRegister-Button">
+      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" data-toggle="modal" data-target="#modal-EditRegister" id="modal-EditRegister-Button">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" (click)="refresh()">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
         <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
 
 
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" data-card-widget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" data-card-widget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
@@ -57,43 +57,43 @@
         <ng-container matColumnDef="Hexadecimal">
           <th mat-header-cell class="width-20" *matHeaderCellDef>{{'MACHINE.HEXADECIMAL' | translate}}</th>
           <td mat-cell class="width-20" *matCellDef="let element">
-            <p>{{ (machine.registers[element].binary | binary_32_64_to_hexadecimal) }}</p>
+            <p>{{ ($any(machine.registers)[element].binary | binary_32_64_to_hexadecimal) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Binary">
           <th mat-header-cell class="width-40" *matHeaderCellDef>{{'MACHINE.BINARY' | translate}}</th>
           <td mat-cell class="width-40" *matCellDef="let register">
-            <p>{{ (machine.registers[register].binary) }}</p>
+            <p>{{ ($any(machine.registers)[register].binary) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Uint8Array">
           <th mat-header-cell class="width-30" *matHeaderCellDef>{{'MACHINE.UINT8ARRAY' | translate}}</th>
           <td mat-cell class="width-30" *matCellDef="let element">
-            <p>{{ (machine.registers[element].binary | binary_to_number | uint_IEEE754_32) }}</p>
+            <p>{{ ($any(machine.registers)[element].binary | binary_to_number | uint_IEEE754_32) }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Byte">
           <th mat-header-cell class="width-30" *matHeaderCellDef>{{'MACHINE.BYTES' | translate}}</th>
           <td mat-cell class="width-30" *matCellDef="let element">
-            <p>{{ machine.registers[element].binary | binary32_to_bytes }}</p>
+            <p>{{ $any(machine.registers)[element].binary | binary32_to_bytes }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="HalfWord">
           <th mat-header-cell class="width-30" *matHeaderCellDef>{{'MACHINE.HALF_WORD' | translate}}</th>
           <td mat-cell class="width-30" *matCellDef="let element">
-            <p>{{ machine.registers[element].binary | binary32_to_halfword }}</p>
+            <p>{{ $any(machine.registers)[element].binary | binary32_to_halfword }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="Word">
           <th mat-header-cell class="width-30" *matHeaderCellDef>{{'MACHINE.WORD' | translate}}</th>
           <td mat-cell class="width-30" *matCellDef="let element">
-            <p>{{ machine.registers[element].binary | binary32_to_word }}</p>
+            <p>{{ $any(machine.registers)[element].binary | binary32_to_word }}</p>
           </td>
         </ng-container>
         <ng-container matColumnDef="ASCII">
           <th mat-header-cell class="width-30" *matHeaderCellDef>{{'MACHINE.ASCII' | translate}}</th>
           <td mat-cell class="width-30" *matCellDef="let element">
-            <p>{{ machine.registers[element].binary | binary32_to_ascii }}</p>
+            <p>{{ $any(machine.registers)[element].binary | binary32_to_ascii }}</p>
           </td>
         </ng-container>
       </table>
@@ -105,16 +105,16 @@
   <div class="card-header">
     <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_INTEGER' | translate}}</span></h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
+      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" data-toggle="modal" data-target="#modal-EditRegister">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" (click)="refresh()">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
         <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" data-card-widget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" data-card-widget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
@@ -161,24 +161,24 @@
   <div class="card-header">
     <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_FLOAT' | translate}}</span></h3>
     <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Binary' ? 'btn--active' : '' }}" title="Binary"
+      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Binary' ? 'btn--active' : '' }}" title="{{ 'MACHINE.BINARY' | translate }}"
               (click)="changeTypeDataInTableFloatRegisters('Binary')">
         <i class="fas fa-table" aria-hidden="true"></i> Binary
       </button>
-      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Uint8Array' ? 'btn--active' : '' }}" title="Uint8Array"
+      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Uint8Array' ? 'btn--active' : '' }}" title="{{ 'MACHINE.UINT8ARRAY' | translate }}"
               (click)="changeTypeDataInTableFloatRegisters('Uint8Array')">
         <i class="fas fa-table" aria-hidden="true"></i> Uint8Array
       </button>
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
+      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" data-toggle="modal" data-target="#modal-EditRegister">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" (click)="refresh()">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
         <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" data-card-widget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" data-card-widget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
@@ -235,24 +235,24 @@
   <div class="card-header">
     <h3 class="card-title"><span data-card-widget="collapse">{{'MACHINE.REGISTERS_DOUBLE' | translate}}</span></h3>
     <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Binary' ? 'btn--active' : '' }}" title="Binary"
+      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Binary' ? 'btn--active' : '' }}" title="{{ 'MACHINE.BINARY' | translate }}"
               (click)="changeTypeDataInTableDoubleRegisters('Binary')">
         <i class="fas fa-table" aria-hidden="true"></i> Binary
       </button>
-      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Uint8Array' ? 'btn--active' : '' }}" title="Uint8Array"
+      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Uint8Array' ? 'btn--active' : '' }}" title="{{ 'MACHINE.UINT8ARRAY' | translate }}"
               (click)="changeTypeDataInTableDoubleRegisters('Uint8Array')">
         <i class="fas fa-table" aria-hidden="true"></i> Uint8Array
       </button>
-      <button type="button" class="btn btn-tool" data-toggle="modal" data-target="#modal-EditRegister">
+      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" data-toggle="modal" data-target="#modal-EditRegister">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" (click)="refresh()">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
         <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" data-card-widget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" data-card-widget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>

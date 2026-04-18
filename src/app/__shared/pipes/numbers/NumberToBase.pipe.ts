@@ -7,6 +7,6 @@ import type { TypeTransformDecimalToBase } from "../../../Types";
 })
 export class NumberToBasePipe implements PipeTransform {
   transform(value: number, args: TypeTransformDecimalToBase = { base: 10, maxLength: 0, fillString: "" }): string {
-    return value.toString(args.base).padStart(args.maxLength, args.fillString);
+    return value.toString(args.base).padStart(args.maxLength ?? 0, args.fillString ?? "");
   }
 }

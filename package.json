@@ -30,6 +30,7 @@
   "scripts": {
     "ws:server": "node ../THUMDER-server/dist/main.js --startWebSocketServer",
     "postinstall": "electron-builder install-app-deps && node scripts/patch-monaco-exports.js",
+    "dev": "ng run thumder-angular-electron:serve:dev -o",
     "ng:build:dev": "ng run thumder-angular-electron:build:dev",
     "ng:build:web": "ng run thumder-angular-electron:build:web",
     "ng:build:production": "ng run thumder-angular-electron:build:production",

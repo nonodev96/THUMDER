@@ -123,13 +123,13 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.ccService.getConfig().content = this.ccService.getConfig().content || {};
         // Override default messages with the translated ones
-        this.ccService.getConfig().content.header = data["cookie.header"];
-        this.ccService.getConfig().content.message = data["cookie.message"];
-        this.ccService.getConfig().content.dismiss = data["cookie.dismiss"];
-        this.ccService.getConfig().content.allow = data["cookie.allow"];
-        this.ccService.getConfig().content.deny = data["cookie.deny"];
-        this.ccService.getConfig().content.link = data["cookie.link"];
-        this.ccService.getConfig().content.policy = data["cookie.policy"];
+        this.ccService.getConfig().content!.header = data["cookie.header"];
+        this.ccService.getConfig().content!.message = data["cookie.message"];
+        this.ccService.getConfig().content!.dismiss = data["cookie.dismiss"];
+        this.ccService.getConfig().content!.allow = data["cookie.allow"];
+        this.ccService.getConfig().content!.deny = data["cookie.deny"];
+        this.ccService.getConfig().content!.link = data["cookie.link"];
+        this.ccService.getConfig().content!.policy = data["cookie.policy"];
 
         this.ccService.destroy();
         this.ccService.init(this.ccService.getConfig());

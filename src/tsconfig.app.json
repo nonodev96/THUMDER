@@ -9,7 +9,8 @@
   },
   "include": [
     "main.ts",
-    "polyfill.ts"
+    "polyfill.ts",
+    "typings.d.ts"
   ],
   "exclude": [
     "**/*.spec.ts"

@@ -192,7 +192,10 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
         severity: error.severity as unknown as monaco.MarkerSeverity,
       } as monaco.editor.IMarkerData;
     });
-    monaco.editor.setModelMarkers(this.editor.getModel(), "IDK", markers);
+    const model = this.editor.getModel();
+    if (model) {
+      monaco.editor.setModelMarkers(model, "IDK", markers);
+    }
   }
 
   public async setBreakpoints(breakpoints: TypeBreakpoints): Promise<void> {

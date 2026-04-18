@@ -17,8 +17,8 @@
           <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Full name" id="userName"
                    autocomplete="name" name="name"
-                   [class.is-valid]="registerForm.get('first_name').valid"
-                   [class.is-invalid]="!registerForm.get('first_name').valid"
+                   [class.is-valid]="registerForm.get('first_name')?.valid"
+                   [class.is-invalid]="!registerForm.get('first_name')?.valid"
                    formControlName="first_name">
             <div class="input-group-append">
               <div class="input-group-text">
@@ -27,7 +27,7 @@
             </div>
           </div>
           <ng-container *ngFor="let error of error_messages.first_name">
-            <div class="error-messages" *ngIf="registerForm.get('first_name').hasError(error.type)">
+            <div class="error-messages" *ngIf="registerForm.get('first_name')?.hasError(error.type)">
               <p> {{ error.message }} </p>
             </div>
           </ng-container>
@@ -35,8 +35,8 @@
           <div class="input-group mb-3">
             <input type="email" class="form-control" placeholder="Email" id="userEmail"
                    autocomplete="email" name="email"
-                   [class.is-valid]="registerForm.get('email').valid"
-                   [class.is-invalid]="!registerForm.get('email').valid"
+                   [class.is-valid]="registerForm.get('email')?.valid"
+                   [class.is-invalid]="!registerForm.get('email')?.valid"
                    formControlName="email" #userEmail>
             <div class="input-group-append">
               <div class="input-group-text">
@@ -46,7 +46,7 @@
           </div>
           <div class="error-messages">
             <ng-container *ngFor="let error of error_messages.email">
-              <div class="error-message" *ngIf="registerForm.get('email').hasError(error.type)">
+              <div class="error-message" *ngIf="registerForm.get('email')?.hasError(error.type)">
                 <p>{{ error.message }}</p>
               </div>
             </ng-container>
@@ -54,8 +54,8 @@
           <div class="input-group mb-3">
             <input type="password" class="form-control" placeholder="Password" id="newPassword"
                    autocomplete="new-password" name="new-password"
-                   [class.is-valid]="registerForm.get('password').valid"
-                   [class.is-invalid]="!registerForm.get('password').valid"
+                   [class.is-valid]="registerForm.get('password')?.valid"
+                   [class.is-invalid]="!registerForm.get('password')?.valid"
                    formControlName="password" #userPwd>
             <div class="input-group-append">
               <div class="input-group-text">
@@ -66,7 +66,7 @@
 
           <div class="error-messages">
             <ng-container *ngFor="let error of error_messages.password">
-              <div class="error-message" *ngIf="registerForm.get('password').hasError(error.type)">
+              <div class="error-message" *ngIf="registerForm.get('password')?.hasError(error.type)">
                 <p>{{ error.message }}</p>
               </div>
             </ng-container>
@@ -75,8 +75,8 @@
           <div class="input-group mb-3">
             <input type="password" class="form-control" placeholder="Retype password" id="confirmNewPassword"
                    autocomplete="new-password" name="confirm-new-password"
-                   [class.is-valid]="registerForm.get('confirm_password').valid"
-                   [class.is-invalid]="!registerForm.get('confirm_password').valid"
+                   [class.is-valid]="registerForm.get('confirm_password')?.valid"
+                   [class.is-invalid]="!registerForm.get('confirm_password')?.valid"
                    formControlName="confirm_password">
             <div class="input-group-append">
               <div class="input-group-text">
@@ -87,7 +87,7 @@
 
           <div class="error-messages">
             <ng-container *ngFor="let error of error_messages.confirm_password">
-              <div class="error-message" *ngIf="registerForm.get('confirm_password').hasError(error.type)">
+              <div class="error-message" *ngIf="registerForm.get('confirm_password')?.hasError(error.type)">
                 <p>{{ error.message }}</p>
               </div>
             </ng-container>

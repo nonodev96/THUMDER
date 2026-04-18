@@ -27,7 +27,7 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
     }
     this.breakpoints = {};
     for (const [line, enabled] of Object.entries(breakpoints)) {
-      this.breakpoints[line] = enabled;
+      this.breakpoints[parseInt(line, 10)] = enabled;
     }
   }
 

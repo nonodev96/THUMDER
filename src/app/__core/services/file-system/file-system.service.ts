@@ -130,7 +130,7 @@ export class FileSystemService {
     if (indexToDelete > -1) {
       const element = this.items.find((value) => value.key === item.key);
       // Actualizamos this.items
-      await this.fileSystemStorageService.deleteFileItem(element.$key);
+      await this.fileSystemStorageService.deleteFileItem(element!.$key);
       this.updateUI$.next();
       return Promise.resolve();
     } else {

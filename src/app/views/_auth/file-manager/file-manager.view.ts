@@ -19,7 +19,7 @@ export type FileMenuOptions = {
       };
     }[];
   }[];
-  onItemClick: () => void;
+  onItemClick: ($event: TypeOnContextMenuItemClick) => void;
 };
 
 export type TypeEventSelectedFileOpened = {
@@ -58,9 +58,9 @@ export class FileManagerView implements OnInit, OnDestroy {
   public CreateNewFile_lang = "Create new file";
 
   @ViewChild(DxFileManagerComponent, { static: false })
-  public fileManager: DxFileManagerComponent;
+  public fileManager!: DxFileManagerComponent;
 
-  public customFileProvider: CustomFileSystemProvider;
+  public customFileProvider!: CustomFileSystemProvider;
   public newFileMenuOptions: FileMenuOptions = {
     items: [
       {
@@ -69,13 +69,13 @@ export class FileManagerView implements OnInit, OnDestroy {
         items: [{ text: "WinDLX Document", options: { extension: ".s" } }],
       },
     ],
-    onItemClick: this.onContextMenuItemClick.bind(this),
+    onItemClick: ($event: TypeOnContextMenuItemClick) => this.onContextMenuItemClick($event),
   };
   public changeCategoryMenuOptions: FileMenuOptions = {
     items: [
       /*{ text: 'Category', icon: 'tags', items: [] }*/
     ],
-    onItemClick: this.onContextMenuItemClick.bind(this),
+    onItemClick: ($event: TypeOnContextMenuItemClick) => this.onContextMenuItemClick($event),
   };
   public show: boolean = false;
   public showUID: boolean = false;
@@ -124,10 +124,10 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.show = false;
-    this.fileManager = null;
-    this.customFileProvider = null;
-    this.newFileMenuOptions = null;
-    this.changeCategoryMenuOptions = null;
+    this.fileManager = undefined!;
+    this.customFileProvider = undefined!;
+    this.newFileMenuOptions = undefined!;
+    this.changeCategoryMenuOptions = undefined!;
     this.updateUISubscription.unsubscribe();
   }
 
@@ -149,7 +149,12 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   public onSelectedFileOpened($event: TypeEventSelectedFileOpened): void {
-    const index = this.fileSystemService.items.findIndex((value) => $event.file.key === value.key);
+    const file = $event.file;
+    if (!file) {
+      console.error("No file found in the event");
+      throw new Error("No file found in the event");
+    }
+    const index = this.fileSystemService.items.findIndex((value) => file.key === value.key);
     if (index > -1) {
       const interfaceFileItem = this.fileSystemService.items[index];
       const extras: NavigationExtras = {

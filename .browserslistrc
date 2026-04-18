@@ -1,69 +1,17 @@
-# Comment
-defaults
-
-# Not keyword
-not dead
-
-# Market share with %
-> 10%
-< 1.5% in US
->= .5%
-
-# Rare queries
-maintained node versions
-supports es6-module
-
-# Extend keyword
-extends browserslist-config-mycompany
-extends @company/browserslist-config
-extends @company/browserslist-config-mycompany
-
-# Direct versions
-Chrome 50
-Firefox ESR
-Safari TP
-OperaMini all
-
-# Browser names
-Android
-Baidu
-BlackBerry or bb
-Chrome
-ChromeAndroid or and_chr
-Edge
-Electron
-Explorer or ie
-ExplorerMobile or ie_mob
-Firefox or ff
-FirefoxAndroid or and_ff
-iOS or ios_saf
-Node
-Opera
-OperaMini or op_mini
-OperaMobile or op_mob
-QQAndroid or and_qq
-Safari
-Samsung
-UCAndroid or and_uc
-kaios
-
-
+[production]
+last 5 Chrome versions
+last 5 ChromeAndroid versions
+last 5 Firefox versions
+last 5 FirefoxAndroid versions
+last 5 Edge major versions
+last 5 Opera major versions
+last 2 Safari major versions
+last 2 ios_saf major versions
 not IE 11
 not IE 10
 not IE 9
 
-
-# Block header
-[production]
-last 5 Chrome version
-last 5 ChromeAndroid version
-last 5 Firefox version
-last 5 FirefoxAndroid version
-last 5 Edge major version
-last 5 Opera major version
-last 2 Safari major version
-last 2 ios_saf major version
-# Electron
-# iOS or ios_saf
-# ChromeAndroid or and_chr
-# FirefoxAndroid or and_ff
+[development]
+last 1 Chrome version
+last 1 Firefox version
+last 1 Edge version

@@ -390,6 +390,7 @@ export class MachineService {
         this.codeSimulation$.next(code_data_array);
         return Promise.resolve(true);
       });
+      return Promise.resolve(false);
     } catch (error) {
       console.error(error);
       return Promise.reject((error as Error).message);
