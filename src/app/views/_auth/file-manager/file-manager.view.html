@@ -1,91 +1,138 @@
 @if (show) {
-  <dx-file-manager id="fileManager"
-    currentPath="Widescreen"
-    [fileSystemProvider]="customFileProvider"
-    [height]="height()"
-    (onContentReady)="onContentReady($event)"
-    (onContextMenuItemClick)="onContextMenuItemClick($event)"
-    (onSelectionChanged)="onSelectionChanged($event)"
-    (onSelectedFileOpened)="onSelectedFileOpened($event)">
-    <!--                 (onContextMenuItemClick)="onItemClick($event)"-->
-    <!--                 (onContentReady)="onContentReady($event)"-->
-    <!--                 (onSelectedFileOpened)="onSelectedFileOpened($event)"-->
-    <dxo-permissions [create]="true" [copy]="true" [delete]="true" [rename]="true" [move]="false" [upload]="false"
-    [download]="false"></dxo-permissions>
-    <dxo-item-view [showParentFolder]="false">
-      <dxo-details>
-        <dxi-column dataField="thumbnail"></dxi-column>
-        <dxi-column dataField="name"></dxi-column>
-        @if (showUID) {
-          <dxi-column dataField="e1_uid"></dxi-column>
+  <div class="file-manager-container">
+
+    <!-- Toolbar -->
+    <mat-toolbar>
+      <button mat-icon-button (click)="navigateTo(-1)" [disabled]="!currentPath" matTooltip="Home">
+        <mat-icon>home</mat-icon>
+      </button>
+      <button mat-icon-button (click)="navigateTo(pathSegments.length - 2)" [disabled]="!currentPath" matTooltip="Back">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <!-- Breadcrumb -->
+      <button mat-button (click)="navigateTo(-1)">Root</button>
+      @for (seg of pathSegments; track $index) {
+        <mat-icon>chevron_right</mat-icon>
+        <button mat-button (click)="navigateTo($index)">{{ seg }}</button>
+      }
+
+      <span class="flex-spacer"></span>
+
+      <button mat-icon-button [matMenuTriggerFor]="newMenu" matTooltip="New">
+        <mat-icon>add</mat-icon>
+      </button>
+      <mat-menu #newMenu="matMenu">
+        <button mat-menu-item (click)="createNewFile('.s')">
+          <mat-icon>insert_drive_file</mat-icon>
+          <span>WinDLX Document (.s)</span>
+        </button>
+        <button mat-menu-item (click)="createNewDirectory()">
+          <mat-icon>create_new_folder</mat-icon>
+          <span>New Folder</span>
+        </button>
+      </mat-menu>
+
+      @if (selectedItems.length === 1) {
+        <button mat-icon-button (click)="renameSelected()" matTooltip="Rename">
+          <mat-icon>drive_file_rename_outline</mat-icon>
+        </button>
+      }
+      @if (selectedItems.length > 0) {
+        <button mat-icon-button (click)="deleteSelected()" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      }
+    </mat-toolbar>
+
+    <!-- File table -->
+    <div class="file-manager-content" [style.height.px]="height()"
+      [class.external-drag-over]="isExternalDragOver"
+      (dragover)="onContainerDragOver($event)"
+      (dragleave)="onContainerDragLeave($event)"
+      (drop)="onContainerDrop($event)">
+      <mat-table [dataSource]="currentItems" [trackBy]="trackByKey" class="file-table mat-elevation-z2">
+
+        <ng-container matColumnDef="icon">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let item">
+            <mat-icon>{{ item.isDirectory ? 'folder' : 'insert_drive_file' }}</mat-icon>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+          <mat-cell *matCellDef="let item">
+            <span class="item-name" (dblclick)="onItemDoubleClick(item)">{{ item.name }}</span>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dateModified">
+          <mat-header-cell *matHeaderCellDef>Date Modified</mat-header-cell>
+          <mat-cell *matCellDef="let item">{{ item.dateModified | date:'medium' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let item">
+            <button mat-icon-button [matMenuTriggerFor]="itemMenu" [matMenuTriggerData]="{item: item}"
+              (click)="$event.stopPropagation()">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"
+          [class.selected-row]="isSelected(row)"
+          [class.drag-over-folder]="row.isDirectory && dragOverFolderKey === row.key"
+          [class.dragging]="draggingItem?.key === row.key"
+          [draggable]="true"
+          (dragstart)="onDragStart($event, row)"
+          (dragover)="onDragOver($event, row)"
+          (dragleave)="onDragLeave($event, row)"
+          (drop)="onDrop($event, row)"
+          (dragend)="onDragEnd()"
+          (click)="onRowClick(row)"
+          (dblclick)="onItemDoubleClick(row)">
+        </mat-row>
+      </mat-table>
+    </div>
+
+    <!-- Item context menu -->
+    <mat-menu #itemMenu="matMenu">
+      <ng-template matMenuContent let-item="item">
+        @if (!item.isDirectory) {
+          <button mat-menu-item (click)="openItem(item)">
+            <mat-icon>open_in_new</mat-icon>
+            <span>Open in Editor</span>
+          </button>
         }
-        <dxi-column dataField="dateModified"></dxi-column>
-        <!--      <dxi-column dataField="size"></dxi-column>-->
-        <!--      <dxi-column dataField="category" caption="Category" width="95"></dxi-column>-->
-      </dxo-details>
-    </dxo-item-view>
-    <dxo-toolbar>
-      <dxi-item name="showNavPane" visible="true"></dxi-item>
-      <dxi-item name="separator"></dxi-item>
-      <!--    <dxi-item name="create"></dxi-item>-->
-      <dxi-item widget="dxMenu" location="before" [options]="newFileMenuOptions"></dxi-item>
-      <dxi-item name="refresh"></dxi-item>
-      <dxi-item name="separator" location="after"></dxi-item>
-      <dxi-item name="switchView"></dxi-item>
-      <dxi-file-selection-item name="rename"></dxi-file-selection-item>
-      <dxi-file-selection-item name="separator"></dxi-file-selection-item>
-      <dxi-file-selection-item name="delete"></dxi-file-selection-item>
-      <dxi-file-selection-item name="separator"></dxi-file-selection-item>
-      <dxi-file-selection-item widget="dxMenu" location="before"
-      [options]="changeCategoryMenuOptions"></dxi-file-selection-item>
-      <dxi-file-selection-item name="refresh"></dxi-file-selection-item>
-      <dxi-file-selection-item name="clearSelection"></dxi-file-selection-item>
-    </dxo-toolbar>
-    <dxo-context-menu>
-      <!--<dxi-item name="create"></dxi-item>-->
-      <dxi-item text="{{CreateNewFile_lang}}" icon="plus">
-        <dxi-item text="WinDLX Document" [options]="{ extension: '.s' }"></dxi-item>
-      </dxi-item>
-      <dxi-item name="rename" beginGroup="true"></dxi-item>
-      <dxi-item name="delete"></dxi-item>
-      <dxi-item text="Category" icon="tags" beginGroup="true"></dxi-item>
-      <dxi-item name="refresh"></dxi-item>
-    </dxo-context-menu>
-  </dx-file-manager>
-  <hr>
+        <button mat-menu-item (click)="renameItem(item)">
+          <mat-icon>drive_file_rename_outline</mat-icon>
+          <span>Rename</span>
+        </button>
+        <button mat-menu-item (click)="deleteItem(item)">
+          <mat-icon>delete</mat-icon>
+          <span>Delete</span>
+        </button>
+      </ng-template>
+    </mat-menu>
+
+    <hr>
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{{'DEBUG' | translate}}</h3>
+        <h3 class="card-title">DEBUG</h3>
         <div class="card-tools">
-          <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="showUID = !showUID">Toggle UID
-          </button>
-          <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.generateDefaultFiles()">Generate
-            default files
-          </button>
-          <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="this.updateUI()">Refresh UI</button>
-          <button type="button" class="btn btn-tool" data-card-widget="maximize">
-            <i class="fas fa-expand" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn btn-tool" data-card-widget="collapse">
-            <i class="fas fa-minus" aria-hidden="true"></i>
-          </button>
+          <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="showUID = !showUID">Toggle UID</button>
+          <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="generateDefaultFiles()">Generate default files</button>
+          <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="updateUI()">Refresh UI</button>
         </div>
       </div>
       <div class="card-body">
         <p>Files selected: {{ filesSelected }}</p>
       </div>
-      <div class="card-footer">
-      </div>
     </div>
-    <!--
-    <dx-popup id="photo-popup"
-      maxHeight="600"
-      closeOnOutsideClick="true"
-      [(title)]="imageItemToDisplay.name"
-      [(visible)]="popupVisible">
-      <div *dxTemplate="let data of 'content'" class="photo-popup-content">
-        <img src="{{imageItemToDisplay.dataItem.url}}" class="photo-popup-image" alt=""/>
-      </div>
-    </dx-popup>
-    -->
-  }
+
+  </div>
+}

@@ -29,8 +29,6 @@ import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 // angular-gridster2
 import { GridsterModule } from "angular-gridster2";
-// devextreme
-import { DxFileManagerModule, DxListModule, DxPopupModule, DxToolbarModule } from "devextreme-angular";
 // SOCKET
 // import { SocketIoModule } from "ngx-socket-io";
 // NG-TABLE
@@ -178,10 +176,6 @@ export function markedOptionsFactory(): object {
       },
     }),
     // MonacoEditorModule,
-    DxToolbarModule,
-    DxListModule,
-    DxPopupModule,
-    DxFileManagerModule,
     // use forRoot() in main app module only.
     provideFirebaseApp(() => initializeApp(AppConfig.firebase)),
     provideAuth(() => getAuth()),

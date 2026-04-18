@@ -1,10 +1,38 @@
 import { Injectable } from "@angular/core";
-import FileSystemItem from "devextreme/file_management/file_system_item";
-import type UploadInfo from "devextreme/file_management/upload_info";
 import { type Observable, Subscription, Subject } from "rxjs";
 import type { InterfaceFileItem } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
+
+// Replaces devextreme/file_management/file_system_item
+export class FileSystemItem {
+  path: string;
+  isDirectory: boolean;
+  pathKeys: string[];
+  name: string = "";
+  key: string = "";
+  dateModified: Date = new Date();
+  size: number = 0;
+  hasSubDirectories: boolean = false;
+  thumbnail: string = "";
+  dataItem: any = null;
+
+  constructor(path: string, isDirectory: boolean, pathKeys: string[]) {
+    this.path = path;
+    this.isDirectory = isDirectory;
+    this.pathKeys = [...pathKeys];
+  }
+}
+
+// Replaces devextreme/file_management/upload_info
+export type UploadInfo = {
+  chunkIndex: number;
+  chunkCount: number;
+  chunkBlob: Blob;
+  chunkSize: number;
+  uploadedSize: number;
+  customData: Record<string, unknown>;
+};
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
   $key: string;
@@ -138,10 +166,45 @@ export class FileSystemService {
     }
   }
 
-  // TODO
-  public moveItem(item: FileSystemItem, destinationDirectory: FileSystemItem): Promise<THUMDER_FileItem | any> {
-    console.debug("TODO", item, destinationDirectory);
-    return Promise.resolve();
+  public async moveItem(item: THUMDER_FileItem, destinationDirectory: THUMDER_FileItem): Promise<void> {
+    const destPath = destinationDirectory.path
+      ? `${destinationDirectory.path}/${destinationDirectory.name}`
+      : destinationDirectory.name;
+
+    if (item.isDirectory) {
+      const oldFullPath = item.path ? `${item.path}/${item.name}` : item.name;
+      for (const child of this.items) {
+        if (child.path === oldFullPath || child.path.startsWith(`${oldFullPath}/`)) {
+          const newChildPath = `${destPath}/${item.name}${child.path.slice(oldFullPath.length)}`;
+          child.path = newChildPath;
+          child.pathKeys = newChildPath.split("/");
+          child.dateModified = new Date();
+          await this.fileSystemStorageService.updateFileItem(child.$key, child);
+        }
+      }
+    }
+
+    const index = this.items.findIndex((v) => v.key === item.key);
+    if (index > -1) {
+      this.items[index].path = destPath;
+      this.items[index].pathKeys = destPath ? destPath.split("/") : [];
+      this.items[index].dateModified = new Date();
+      await this.fileSystemStorageService.updateFileItem(this.items[index].$key, this.items[index]);
+      this.updateUI$.next();
+    }
+  }
+
+  public async importFile(file: File, destinationPath: string): Promise<void> {
+    const content = await file.text();
+    const pathKeys = destinationPath ? destinationPath.split("/") : [];
+    const newItem = new THUMDER_FileItem(destinationPath, false, pathKeys);
+    newItem.key = Utils.uuidv4();
+    newItem.name = file.name;
+    newItem.content = content;
+    newItem.dateModified = new Date(file.lastModified);
+    newItem.size = file.size;
+    await this.fileSystemStorageService.createFileItem(newItem);
+    this.updateUI$.next();
   }
 
   // TODO

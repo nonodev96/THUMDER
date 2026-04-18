@@ -21,7 +21,7 @@ export class ForgotPasswordView implements OnInit {
   constructor(
     @Inject(DOCUMENT)
     private _document: Document,
-    public app: AppComponent,
+    @Inject(AppComponent) public app: AppComponent,
     public authService: AuthService,
     public formBuilder: UntypedFormBuilder,
   ) {

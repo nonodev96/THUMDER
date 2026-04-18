@@ -7,7 +7,11 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { TranslateModule } from "@ngx-translate/core";
 import { GridsterModule } from "angular-gridster2";
-import { DxFileManagerModule } from "devextreme-angular";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { NgChartsModule } from "ng2-charts";
 import { MarkdownModule } from "ngx-markdown";
@@ -60,7 +64,11 @@ import { StatisticsView } from "@views/_auth/statistics/statistics.view";
     TableVirtualScrollModule,
     NgChartsModule,
     GridsterModule,
-    DxFileManagerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatToolbarModule,
+    MatTooltipModule,
     DragDropModule,
     MarkdownModule,
     TranslateModule,
