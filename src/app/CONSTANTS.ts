@@ -20,6 +20,7 @@ import type {
   TypeRegisterToEdit,
   TypeSimulationStep,
   TypeWebSocketConfiguration,
+  TypeData,
 } from "./Types";
 
 export const NPM_VERSION = npm.version.toString();
@@ -28,7 +29,7 @@ export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
   $key: "",
   content: "",
   dataItem: undefined,
-  dateModified: undefined,
+  dateModified: new Date(0),
   description: "",
   e1_uid: "",
   f_id: "",
@@ -202,13 +203,14 @@ export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   closeButton: true,
 };
 
-export const MAX_VALUE_TYPE_DATA = {
+export const MAX_VALUE_TYPE_DATA: Record<TypeData, number> = {
   Byte: 255,
   HalfWord: 65535,
   Word: 4294967295,
   Float: 4294967295,
   // biome-ignore lint/correctness/noPrecisionLoss: intentional max 64-bit unsigned integer for DLX double register display
   Double: 18446744073709551615,
+  ASCII: 127,
 };
 
 export const REGISTER_TO_EDIT: TypeRegister = "Control";

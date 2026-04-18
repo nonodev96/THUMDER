@@ -8,8 +8,8 @@ import type { GridsterConfig, GridsterItem } from "angular-gridster2";
   standalone: false,
 })
 export class GridViewComponent implements OnInit {
-  options: GridsterConfig;
-  dashboard: Array<GridsterItem>;
+  options!: GridsterConfig;
+  dashboard!: Array<GridsterItem>;
 
   ngOnInit(): void {
     this.options = {
@@ -57,17 +57,17 @@ export class GridViewComponent implements OnInit {
     });
   }
 
-  public removeItem($event: MouseEvent | TouchEvent, item): void {
+  public removeItem($event: MouseEvent | TouchEvent, item: GridsterItem): void {
     $event.preventDefault();
     $event.stopPropagation();
     this.dashboard.splice(this.dashboard.indexOf(item), 1);
   }
 
-  static itemChange(item, itemComponent) {
+  static itemChange(item: any, itemComponent: any) {
     console.info("itemChanged", item, itemComponent);
   }
 
-  static itemResize(item, itemComponent) {
+  static itemResize(item: any, itemComponent: any) {
     console.info("itemResized", item, itemComponent);
   }
 }

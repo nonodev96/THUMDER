@@ -141,21 +141,21 @@ export class EditRegisterBinary32Component implements OnInit {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
-          this.machine.registers[this.registerToEdit as any].binary = binary;
+          (this.machine.registers as any)[this.registerToEdit].binary = binary;
           break;
         }
         case "Integer": {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
-          this.machine.registers.R[this.registerToEdit].binary = binary;
+          this.machine.registers.R[parseInt(this.registerToEdit.toString(), 10)].binary = binary;
           break;
         }
         case "Float": {
           this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
           binary = Utils.hexadecimalToBinary(hexadecimal);
           this.registerToEdit_Binary = binary;
-          this.machine.registers.F[this.registerToEdit].binary = binary;
+          this.machine.registers.F[parseInt(this.registerToEdit.toString(), 10)].binary = binary;
           break;
         }
         case "Double": {

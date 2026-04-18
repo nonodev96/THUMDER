@@ -161,7 +161,10 @@
     "ENTER_VALUE": "Instroducir valor",
     "RESET": "Reiniciar",
     "CLOSE": "Cerrar",
-    "SAVE": "Guardar"
+    "SAVE": "Guardar",
+    "REFRESH": "Actualizar",
+    "MAXIMIZE": "Maximizar",
+    "COLLAPSE": "Colapsar"
   },
   "CONFIG": {
     "LANG": "Idioma",

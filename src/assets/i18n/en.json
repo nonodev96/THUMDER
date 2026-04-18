@@ -162,7 +162,10 @@
     "ENTER_VALUE": "Enter Value",
     "SAVE": "Save",
     "RESET": "Reset",
-    "CLOSE": "Close"
+    "CLOSE": "Close",
+    "REFRESH": "Refresh",
+    "MAXIMIZE": "Maximize",
+    "COLLAPSE": "Collapse"
   },
   "CONFIG": {
     "LANG": "Language",

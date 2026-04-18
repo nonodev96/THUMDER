@@ -15,10 +15,10 @@ import type { TypeAddress, TypeDataDisplayColumn } from "../../../Types";
 })
 export class MemoryView implements OnInit, AfterViewInit {
   @ViewChild(MatSort, { static: true })
-  public sort: MatSort;
+  public sort!: MatSort;
 
   @ViewChild(EditMemoryBinary32Component)
-  public editBinary32Component: EditMemoryBinary32Component;
+  public editBinary32Component!: EditMemoryBinary32Component;
 
   // "Address-0", "Address-1", "Address-2", "Address-3"
   public displayedColumnsMemory: string[] = ["Address", "Hexadecimal", "Binary", "Word"];
@@ -31,7 +31,7 @@ export class MemoryView implements OnInit, AfterViewInit {
     _translate: TranslateService,
     private storage: StorageService,
   ) {
-    this.dataSourceMemory.filter = null;
+    this.dataSourceMemory.filter = "";
     this.dataSourceMemory.sort = this.sort;
   }
 
@@ -94,7 +94,7 @@ export class MemoryView implements OnInit, AfterViewInit {
   }
 
   public refresh(): void {
-    this.dataSourceMemory.filter = null;
+    this.dataSourceMemory.filter = "";
     this.dataSourceMemory.data = [...this.dataSourceMemory.data];
     window.dispatchEvent(new Event("resize"));
   }
@@ -108,6 +108,6 @@ export class MemoryView implements OnInit, AfterViewInit {
 
   public getInstructionDLXFromIndex(index: number): string {
     const address: TypeAddress = `0x${index.toString(16).padStart(8, "0")}`;
-    return this.machine.code.has(address) ? this.machine.code.get(address).instruction : "";
+    return this.machine.code.get(address)?.instruction ?? "";
   }
 }

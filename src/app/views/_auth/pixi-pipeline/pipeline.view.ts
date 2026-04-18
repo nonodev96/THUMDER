@@ -10,7 +10,7 @@ import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pi
 })
 export class PipelineView implements OnInit {
   @ViewChild(PixiPipelineComponent)
-  public pixi_PipelineComponent: PixiPipelineComponent;
+  public pixi_PipelineComponent!: PixiPipelineComponent;
 
   constructor(
     @Inject(DOCUMENT)

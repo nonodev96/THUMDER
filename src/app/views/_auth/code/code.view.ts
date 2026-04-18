@@ -14,7 +14,7 @@ import { Utils } from "../../../Utils";
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(MatSort, { static: true })
-  public sort: MatSort;
+  public sort!: MatSort;
 
   public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction"];
   public dataSourceCode: TableVirtualScrollDataSource<TypeInstructionsData_Table> =
@@ -28,7 +28,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   public stepSimulation: any;
 
   constructor(public machine: MachineService) {
-    this.dataSourceCode.filter = null;
+    this.dataSourceCode.filter = "";
     this.dataSourceCode.sort = this.sort;
   }
 
@@ -57,6 +57,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
       this.listRowActives = [];
       const stepSimulationPipeline = this.machine.getListStatusPipeline();
       for (const step of stepSimulationPipeline) {
+        if (step.stage === undefined) continue;
         this.listRowActives.push({ address: step.address, stage: step.stage });
       }
     });
@@ -101,7 +102,7 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public refresh(): void {
-    this.dataSourceCode.filter = null;
+    this.dataSourceCode.filter = "";
     this.dataSourceCode.data = [...this.dataSourceCode.data];
     window.dispatchEvent(new Event("resize"));
   }

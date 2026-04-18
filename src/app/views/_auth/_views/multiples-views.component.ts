@@ -12,23 +12,23 @@ import { Utils } from "../../../Utils";
   standalone: false,
 })
 export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren(CdkDrag) draggable_list: QueryList<CdkDrag>;
+  @ViewChildren(CdkDrag) draggable_list!: QueryList<CdkDrag>;
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
-  public main_list_1 = [];
-  public main_list_2 = [];
+  public main_list_1: string[] = [];
+  public main_list_2: string[] = [];
 
   constructor(public globals: Globals) {}
 
   ngOnInit(): void {
     this.multiviewConfiguration =
-      (JSON.parse(localStorage.getItem("multiview_configuration")) as TypeMultiviewConfiguration) ?? DEFAULT_MULTIVIEW_CONFIGURATION;
+      (JSON.parse(localStorage.getItem("multiview_configuration") ?? "null") as TypeMultiviewConfiguration) ?? DEFAULT_MULTIVIEW_CONFIGURATION;
     this.main_list_1 = this.multiviewConfiguration.list_1;
     this.main_list_2 = this.multiviewConfiguration.list_2;
   }
 
   ngAfterViewInit(): void {
     MultiplesViewsComponent.closeAllCards();
-    this.main_list_1.push(this.draggable_list.toArray());
+    this.main_list_1.push(...this.draggable_list.toArray().map(d => String(d.data)));
     const cards: any = window.jQuery(".card").not("#card-debug");
     cards.on("expanded.lte.cardwidget", async () => {
       await Utils.wait(500);

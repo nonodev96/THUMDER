@@ -21,7 +21,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   public env = env.AppConfig;
 
   @ViewChild(MonacoEditorComponent)
-  public monacoEditorComponent: MonacoEditorComponent;
+  public monacoEditorComponent!: MonacoEditorComponent;
 
   public interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
   private initializedSubscription: Subscription = new Subscription();
@@ -43,18 +43,18 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     private translate: TranslateService,
     private toastService: ToastrService,
   ) {
-    this.extrasIDE = this.router.getCurrentNavigation().extras.state as TypeExtrasIDE;
+    this.extrasIDE = this.router.currentNavigation()?.extras.state as TypeExtrasIDE;
     setInterval(() => {
       this.date = new Date();
     }, 1000);
   }
 
   ngOnInit(): void {
-    window.jQuery("#card-IDE").on("maximized.lte.cardwidget", (_$event) => {
+    window.jQuery("#card-IDE").on("maximized.lte.cardwidget", (_$event: unknown) => {
       this.isMaximize = true;
       this.monacoEditorComponent.height = 88;
     });
-    window.jQuery("#card-IDE").on("minimized.lte.cardwidget", (_$event) => {
+    window.jQuery("#card-IDE").on("minimized.lte.cardwidget", (_$event: unknown) => {
       this.isMaximize = false;
       this.monacoEditorComponent.height = 70;
     });
@@ -63,14 +63,24 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
+        let interfaceFileItem_storaged = localStorage.getItem("interfaceFileItem");
+        if (!interfaceFileItem_storaged) {
+          throw new Error("No interface file item found in local storage");
+        }
+
+        const breakpoints_storaged = localStorage.getItem("breakpoints");
+        if (!breakpoints_storaged) {
+          throw new Error("No breakpoints found in local storage");
+        }
+
         this.interfaceFileItem = (this.extrasIDE?.interfaceFileItem ??
-          JSON.parse(localStorage.getItem("interfaceFileItem")) ??
+          JSON.parse(interfaceFileItem_storaged) ??
           DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
 
         await this.monacoEditorComponent.setEditorFile(this.interfaceFileItem);
         await this.monacoEditorComponent.setEditorContent(this.interfaceFileItem.content);
 
-        const breakpoints = (JSON.parse(localStorage.getItem("breakpoints")) as TypeBreakpoints) ?? {};
+        const breakpoints = (JSON.parse(breakpoints_storaged) as TypeBreakpoints) ?? {};
         await this.monacoEditorComponent.setBreakpoints(breakpoints);
       }
     });

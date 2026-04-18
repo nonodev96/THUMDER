@@ -4,7 +4,7 @@ import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 import { MachineService } from "../../../__core/machine/machine.service";
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "../../../CONSTANTS";
 import { EditRegisterBinary32Component } from "../../../components/modals/edit-register-binary32/edit-register-binary32.component";
-import type { TypeData, TypeDataRepresentation } from "../../../Types";
+import type { TypeData, TypeDataRepresentation, TypeRegisterControl } from "../../../Types";
 
 @Component({
   selector: "view-registers",
@@ -14,16 +14,16 @@ import type { TypeData, TypeDataRepresentation } from "../../../Types";
 })
 export class RegistersView implements OnInit, AfterViewInit {
   @ViewChild(MatSort, { static: true })
-  public sort: MatSort;
+  public sort!: MatSort;
 
   @ViewChild(EditRegisterBinary32Component)
-  public editRegisterBinary32Component: EditRegisterBinary32Component;
+  public editRegisterBinary32Component!: EditRegisterBinary32Component;
 
   public maxHeightCard: string = "60vh";
   public typeDataSelected: TypeData = "Byte";
   public typeDataSelectedFloat: TypeDataRepresentation = "Binary";
   public typeDataSelectedDouble: TypeDataRepresentation = "Binary";
-  public dataSource = new TableVirtualScrollDataSource<string>(MACHINE_REGISTERS_C as string[]);
+  public dataSource = new TableVirtualScrollDataSource<TypeRegisterControl>(MACHINE_REGISTERS_C as TypeRegisterControl[]);
   public dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R as number[]);
   public dataSourceF = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_F as number[]);
   public dataSourceD = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_D as number[]);
@@ -35,7 +35,7 @@ export class RegistersView implements OnInit, AfterViewInit {
   constructor(public machine: MachineService) {}
 
   ngOnInit(): void {
-    this.dataSource.filter = null;
+    this.dataSource.filter = "";
     this.dataSource.sort = this.sort;
   }
 
@@ -78,16 +78,16 @@ export class RegistersView implements OnInit, AfterViewInit {
   }
 
   public refresh(): void {
-    this.dataSource.filter = null;
+    this.dataSource.filter = "";
     this.dataSource.data = [...this.dataSource.data];
 
-    this.dataSourceR.filter = null;
+    this.dataSourceR.filter = "";
     this.dataSourceR.data = [...this.dataSourceR.data];
 
-    this.dataSourceF.filter = null;
+    this.dataSourceF.filter = "";
     this.dataSourceF.data = [...this.dataSourceF.data];
 
-    this.dataSourceD.filter = null;
+    this.dataSourceD.filter = "";
     this.dataSourceD.data = [...this.dataSourceD.data];
 
     window.dispatchEvent(new Event("resize"));

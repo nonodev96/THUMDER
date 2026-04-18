@@ -100,7 +100,7 @@ export class FileSystemStorageService {
 
   public async createFileItem(fileItem: THUMDER_FileItem): Promise<boolean> {
     try {
-      const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+      const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
       const newDocument = this.createNewDocument();
 
       const { path, isDirectory, pathKeys } = fileItem;
@@ -156,7 +156,7 @@ export class FileSystemStorageService {
 */
   // Collections
   public FileItems_Collections_valueChanges(): Observable<THUMDER_FileItem[]> {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     return collectionData<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
         collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
@@ -167,7 +167,7 @@ export class FileSystemStorageService {
   }
 
   public FileItems_Collections_snapShotChanges(): Observable<DocumentChange<THUMDER_FileItem>[]> {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     return collectionChanges<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
         collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
@@ -185,7 +185,7 @@ export class FileSystemStorageService {
   }
 
   public async getAllFilesFromFirestore(): Promise<QuerySnapshot<THUMDER_FileItem>> {
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     return getDocs<THUMDER_FileItem>(
       query<THUMDER_FileItem>(
         collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
@@ -196,7 +196,7 @@ export class FileSystemStorageService {
 
   public async getFiles(): Promise<THUMDER_FileItem[]> {
     const files: THUMDER_FileItem[] = [];
-    const userData = JSON.parse(localStorage.getItem("user")) as InterfaceUser;
+    const userData = JSON.parse(localStorage.getItem("user") ?? "null") as InterfaceUser;
     const q = query<THUMDER_FileItem>(
       collection(this.afs, this.dbFileItemsPath) as CollectionReference<THUMDER_FileItem>,
       where("e1_uid", "==", userData.uid),
@@ -214,3 +214,4 @@ export class FileSystemStorageService {
 // create file
 // async data
 // generate 2 files by default
+

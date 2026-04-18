@@ -96,7 +96,7 @@ const PIKACHU = `
 })
 export class XtermComponent implements OnInit, AfterViewInit {
   @ViewChild("myTerminal")
-  public terminalDiv: ElementRef;
+  public terminalDiv!: ElementRef;
 
   @Input()
   public data = "";
@@ -147,7 +147,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
           [
             "Welcome to xterm.js! Try some of the commands below.",
             "",
-            ...Object.keys(this.commands).map((e) => `  ${e.padEnd(10)} ${this.commands[e].description}`),
+            ...Object.keys(this.commands).map((e) => `  ${e.padEnd(10)} ${(this.commands as Record<string, { description: string; f: () => void }>)[e].description}`),
           ].join("\n\r"),
         );
         this.prompt();
@@ -251,13 +251,14 @@ export class XtermComponent implements OnInit, AfterViewInit {
     this.terminal.write("\r\n$ ");
   }
 
-  public runCommand(text) {
+  public runCommand(text: string) {
     const command = text.trim().split(" ")[0];
     if (command.length > 0) {
       this.terminal.writeln("");
-      if (command in this.commands) {
-        this.commands[command].f();
-        console.debug(this.commands[command].description);
+      const cmds = this.commands as Record<string, { description: string; f: () => void }>;
+      if (command in cmds) {
+        cmds[command].f();
+        console.debug(cmds[command].description);
         return;
       }
       this.terminal.writeln(`${command}: command not found`);

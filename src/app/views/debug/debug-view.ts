@@ -72,7 +72,7 @@ export class DebugView implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.socketProviderConnect.socketIO.on("CodeResponse", (response) => {
+    this.socketProviderConnect.socketIO.on("CodeResponse", (response: string) => {
       const code = JSON.parse(response) as TypeCodeResponse;
       this.testCodeResponse_instructions = code.machineInstructions.map((v) => {
         return {
@@ -183,7 +183,7 @@ export class DebugView implements OnInit, AfterViewInit {
       this.socketProviderConnect.emitMessage("UpdateRegisterRequest", payload);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve(true);
   }
@@ -200,7 +200,7 @@ export class DebugView implements OnInit, AfterViewInit {
       this.socketProviderConnect.emitMessage("UpdateMemoryRequest", payload);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve(true);
   }
@@ -214,6 +214,7 @@ export class DebugView implements OnInit, AfterViewInit {
         filename: "prim.s",
         date: new Date().toLocaleDateString(),
         content: content,
+        breakpoints: [],
         registers: [],
         memory: [],
       } as TypeSimulationInitRequest);
@@ -221,7 +222,7 @@ export class DebugView implements OnInit, AfterViewInit {
       this.socketProviderConnect.emitMessage("SimulationInitRequest", payload);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve(true);
   }
@@ -234,7 +235,7 @@ export class DebugView implements OnInit, AfterViewInit {
       this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve(true);
   }
@@ -259,7 +260,7 @@ export class DebugView implements OnInit, AfterViewInit {
       this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", payload);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve();
   }
@@ -272,7 +273,7 @@ export class DebugView implements OnInit, AfterViewInit {
       this.socketProviderConnect.emitMessage("GetAllRegistersRequest", payload);
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve();
   }
@@ -282,12 +283,12 @@ export class DebugView implements OnInit, AfterViewInit {
       const payload = JSON.stringify({
         id: this.socketProviderConnect.socketIO.ioSocket.id,
       });
-      this.socketProviderConnect.socketIO.emit("GetAllMemoryRequest", payload, (response) => {
+      this.socketProviderConnect.socketIO.emit("GetAllMemoryRequest", payload, (response: unknown) => {
         console.log("callback memory", response);
       });
     } catch (error) {
       console.error(error);
-      return Promise.reject(error.message);
+      return Promise.reject(error instanceof Error ? error.message : error);
     }
     return Promise.resolve();
   }

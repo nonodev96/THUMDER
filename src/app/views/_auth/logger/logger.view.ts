@@ -11,7 +11,7 @@ import type { TypeOnKeyEvent } from "../../../Types";
 })
 export class LoggerView implements OnInit {
   @ViewChild(XtermComponent)
-  public xtermComponent: XtermComponent;
+  public xtermComponent!: XtermComponent;
   public text: string = "";
 
   constructor(public machine: MachineService) {}

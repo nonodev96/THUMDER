@@ -42,7 +42,7 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   ngOnInit(): void {
     this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       if (stepSimulation.isNewInstruction === true) {
-        this.machine.cycleClockDiagram.addInstruction(this.machine.code.getOrDefaultValue(stepSimulation.pipeline.IF.address).instruction);
+        this.machine.cycleClockDiagram.addInstruction(this.machine.code.getOrDefaultValue(stepSimulation.pipeline.IF.address)?.instruction ?? "");
       }
       for (const arrow of stepSimulation.pipeline.arrows) {
         const arrowDraw = {

@@ -9,7 +9,7 @@ import { PixiCycleClockDiagramComponent } from "../../../components/pixi-cycle-c
 })
 export class CycleClockDiagramView implements OnInit {
   @ViewChild(PixiCycleClockDiagramComponent)
-  public pixi_CycleClockDiagramComponent: PixiCycleClockDiagramComponent;
+  public pixi_CycleClockDiagramComponent!: PixiCycleClockDiagramComponent;
 
   public inCanvas: boolean = false;
 
@@ -20,7 +20,7 @@ export class CycleClockDiagramView implements OnInit {
 
   ngOnInit(): void {}
 
-  public handleInCanvas($event): void {
-    this.inCanvas = $event as boolean;
+  public handleInCanvas($event: boolean): void {
+    this.inCanvas = $event;
   }
 }

@@ -603,6 +603,7 @@ export type TypeInstructionsData_Table = TypeInstructionsData & {
 };
 
 export type TypeMultiviewConfiguration = {
+  [key: string]: boolean | string[];
   calculator: boolean;
   pipeline: boolean;
   cycle_clock_diagram: boolean;

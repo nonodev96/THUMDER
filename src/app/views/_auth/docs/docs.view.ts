@@ -96,7 +96,7 @@ export class DocsView implements OnInit, AfterViewInit {
   // public docsEnabled: string = "";
 
   @ViewChildren(CdkDrag)
-  public draggable_list: QueryList<CdkDrag>;
+  public draggable_list!: QueryList<CdkDrag>;
 
   constructor(public globals: Globals) {}
 

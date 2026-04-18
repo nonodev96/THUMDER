@@ -20,13 +20,15 @@
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="floatingPointStageConfiguration.addition.count"
-                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control">
+                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
+                   title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
           </td>
           <td>
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="floatingPointStageConfiguration.addition.delay"
-                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control">
+                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
+                   title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
           </td>
         </tr>
         <tr>
@@ -35,13 +37,15 @@
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="floatingPointStageConfiguration.multiplication.count"
-                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control">
+                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
+                   title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
           </td>
           <td>
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="floatingPointStageConfiguration.multiplication.delay"
-                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control">
+                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
+                   title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
           </td>
         </tr>
         <tr>
@@ -50,13 +54,15 @@
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="floatingPointStageConfiguration.division.count"
-                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control">
+                   (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
+                   title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
           </td>
           <td>
             <input type="number"
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="floatingPointStageConfiguration.division.delay"
-                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control">
+                   (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
+                   title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
           </td>
         </tr>
 
@@ -78,7 +84,8 @@
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="memorySizeConfiguration"
                    (change)="checkMemorySize($event.target)"
-                   class="form-control" min="512" max="1048576" step="8">
+                   class="form-control" min="512" max="1048576" step="8"
+                   title="{{ 'CONFIG.MEMORY_SIZE' | translate }}">
           </td>
         </tr>
 
@@ -132,7 +139,8 @@
                    [ngModelOptions]="{standalone: true}"
                    [(ngModel)]="timeSimulationConfiguration"
                    (change)="updateTimeSimulation($event.target)"
-                   class="form-control" min="100" max="10000" step="50">
+                   class="form-control" min="100" max="10000" step="50"
+                   title="{{ 'CONFIG.TIME_SIMULATION' | translate }}">
           </td>
         </tr>
 
@@ -156,7 +164,8 @@
                       <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
                       <input class="form-check-input" type="checkbox"
                              [ngModelOptions]="{standalone: true}"
-                             [(ngModel)]="multiviewConfiguration[component]">
+                             [(ngModel)]="multiviewConfiguration[component]"
+                             title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
                       <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
                       <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
                     </div>
@@ -177,7 +186,8 @@
                     <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
                     <input class="form-check-input" type="checkbox"
                            [ngModelOptions]="{standalone: true}"
-                           [(ngModel)]="multiviewConfiguration[component]">
+                           [(ngModel)]="multiviewConfiguration[component]"
+                           title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
                     <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
                     <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
                   </div>
