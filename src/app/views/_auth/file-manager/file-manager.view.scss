@@ -1,0 +1,145 @@
+.file-manager-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem 1rem;
+
+  mat-toolbar {
+    background: transparent;
+    padding: 0;
+    height: auto;
+    min-height: 48px;
+    flex-wrap: wrap;
+    gap: 2px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    margin-bottom: 8px;
+
+    .flex-spacer {
+      flex: 1 1 auto;
+    }
+
+    button[mat-button] {
+      font-size: 0.85rem;
+      min-width: unset;
+      padding: 0 6px;
+      line-height: 36px;
+    }
+
+    mat-icon.chevron {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      line-height: 36px;
+      color: rgba(0, 0, 0, 0.38);
+    }
+  }
+
+  .file-manager-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    position: relative;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &.external-drag-over {
+      border-color: rgba(63, 81, 181, 0.8);
+      box-shadow: inset 0 0 0 2px rgba(63, 81, 181, 0.4);
+
+      &::after {
+        content: "Drop files here to import";
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: rgba(63, 81, 181, 0.8);
+        background: rgba(63, 81, 181, 0.06);
+        pointer-events: none;
+        z-index: 10;
+      }
+    }
+
+    .file-table {
+      width: 100%;
+
+      ::ng-deep .mat-column-icon {
+        flex: 0 0 44px;
+        padding: 0 8px;
+
+        mat-icon {
+          color: rgba(0, 0, 0, 0.54);
+          font-size: 20px;
+          height: 20px;
+          width: 20px;
+        }
+      }
+
+      ::ng-deep .mat-column-name {
+        flex: 1 1 auto;
+
+        .item-name {
+          cursor: pointer;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      ::ng-deep .mat-column-dateModified {
+        flex: 0 0 180px;
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 0.8rem;
+      }
+
+      ::ng-deep .mat-column-actions {
+        flex: 0 0 44px;
+        justify-content: flex-end;
+        padding-right: 4px;
+      }
+
+      ::ng-deep mat-row {
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.04);
+        }
+
+        &.selected-row {
+          background-color: rgba(63, 81, 181, 0.12);
+        }
+
+        &.dragging {
+          opacity: 0.4;
+        }
+
+        &.drag-over-folder {
+          background-color: rgba(63, 81, 181, 0.22);
+          outline: 2px dashed rgba(63, 81, 181, 0.6);
+          outline-offset: -2px;
+        }
+      }
+
+      ::ng-deep mat-header-row {
+        background-color: #fafafa;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: rgba(0, 0, 0, 0.54);
+      }
+    }
+  }
+
+  hr {
+    margin: 1.25rem 0;
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+}

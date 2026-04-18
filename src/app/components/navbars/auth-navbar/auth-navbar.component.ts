@@ -26,7 +26,7 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     @Inject(DOCUMENT) private _document: Document,
     private router: Router,
-    public app: AppComponent,
+    @Inject(AppComponent) public app: AppComponent,
     public machine: MachineService,
     public authService: AuthService,
   ) {}

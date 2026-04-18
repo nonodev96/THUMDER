@@ -1,4 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Angular Material theme (M3 API — Angular Material v17+)
+@use '@angular/material' as mat;
+
+$thumder-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (scale: 0),
+));
+
+html {
+  @include mat.all-component-themes($thumder-theme);
+}
+
 html {
   overflow-y: scroll;
   font-size: 0.9em;

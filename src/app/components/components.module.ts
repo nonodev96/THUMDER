@@ -6,7 +6,6 @@ import { FormsModule } from "@angular/forms";
 import { MatTableModule } from "@angular/material/table";
 import { RouterModule } from "@angular/router";
 import { CovalentCodeEditorModule } from "@covalent/code-editor";
-import { DxFileManagerModule } from "devextreme-angular";
 import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
 import { MarkdownModule } from "ngx-markdown";
 import { SharedModule } from "@shared/shared.module";
@@ -36,7 +35,6 @@ import { XtermComponent } from "@components/xterm/xterm.component";
     FormsModule,
     ScrollingModule,
     CovalentCodeEditorModule,
-    DxFileManagerModule,
     TableVirtualScrollModule,
     MatTableModule,
     SharedModule,
