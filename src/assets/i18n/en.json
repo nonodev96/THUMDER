@@ -165,7 +165,16 @@
     "CLOSE": "Close",
     "REFRESH": "Refresh",
     "MAXIMIZE": "Maximize",
-    "COLLAPSE": "Collapse"
+    "COLLAPSE": "Collapse",
+    "SEARCH": "Search"
+  },
+  "NAVBAR": {
+    "TOGGLE_SIDEBAR": "Toggle sidebar",
+    "HOME": "Home",
+    "SEARCH": "Search",
+    "MESSAGES": "Messages",
+    "NOTIFICATIONS": "Notifications",
+    "TOGGLE_CONTROL_SIDEBAR": "Toggle control sidebar"
   },
   "CONFIG": {
     "LANG": "Language",

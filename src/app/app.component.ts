@@ -26,7 +26,7 @@ import { fetchAndActivate, getBoolean, getRemoteConfig } from "@angular/fire/rem
   standalone: false,
 })
 export class AppComponent implements OnInit, OnDestroy {
-  public lang: string = DEFAULT_LANG;
+  public lang: TypeLang = DEFAULT_LANG;
   public translationEnabled: boolean = false;
   private readonly destroy$ = new Subject<void>();
 
@@ -42,6 +42,13 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {
     logEvent(getAnalytics(), "start_app_THUMDER", { status: "ok" });
 
+    // Inicializar idioma en el constructor para que la carga HTTP comience
+    // antes de que los componentes hijos rendericen (evita flash de claves sin traducir)
+    const storedLang = (this.storageService.getItem("lang") as TypeLang | null) ?? DEFAULT_LANG;
+    this.lang = storedLang;
+    this.translate.setDefaultLang(storedLang);
+    this.translate.use(storedLang);
+
     this.auth
       .getIsLoggingObservable()
       .pipe(takeUntil(this.destroy$))
@@ -52,7 +59,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.pipe(takeUntil(this.destroy$)).subscribe((route) => {
       if (route instanceof NavigationStart) {
         this.document.body.className = "";
-        this.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
+        this.document.body.classList.add(
+          "dx-viewport",
+          "sidebar-mini",
+          "layout-fixed",
+          "layout-footer-fixed",
+          "layout-navbar-fixed",
+        );
       }
       if (route instanceof NavigationEnd) {
         window.jQuery("body").Layout();
@@ -64,10 +77,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     AppAdminLTE.initMainPage();
-    this.lang = this.storageService.getItem("lang");
-    this.document.documentElement.lang = this.lang;
-    this.translate.addLangs(["en", "sp"]);
-    this.translate.setDefaultLang(this.lang);
+    this.lang = this.storageService.getItem("lang") ?? DEFAULT_LANG;
+    this.setLang(this.lang);
 
     this.ccService.popupOpen$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       const link = document.getElementById("cookieconsent:link");
@@ -83,20 +94,27 @@ export class AppComponent implements OnInit, OnDestroy {
     this.ccService.popupClose$.pipe(takeUntil(this.destroy$)).subscribe();
     this.ccService.initialized$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    this.ccService.statusChange$.pipe(takeUntil(this.destroy$)).subscribe(($event: NgcStatusChangeEvent) => {
-      localStorage.setItem("cookieconsent", $event.status);
-    });
+    this.ccService.statusChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(($event: NgcStatusChangeEvent) => {
+        localStorage.setItem("cookieconsent", $event.status);
+      });
 
     this.ccService.revokeChoice$.pipe(takeUntil(this.destroy$)).subscribe();
 
-    this.ccService.noCookieLaw$.pipe(takeUntil(this.destroy$)).subscribe((_$event: NgcNoCookieLawEvent) => {});
+    this.ccService.noCookieLaw$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((_$event: NgcNoCookieLawEvent) => {});
 
     this.updateCookiesConsentLang();
 
     const remoteConfig = getRemoteConfig();
     fetchAndActivate(remoteConfig)
       .then(() => {
-        this.translationEnabled = getBoolean(remoteConfig, "translationEnabled");
+        this.translationEnabled = getBoolean(
+          remoteConfig,
+          "translationEnabled",
+        );
       })
       .catch((err) => {
         this.translationEnabled = false;
@@ -112,16 +130,27 @@ export class AppComponent implements OnInit, OnDestroy {
   public setLang(lang: TypeLang) {
     this.storageService.setItem("lang", lang);
     this.lang = lang;
+    this.document.documentElement.lang = lang;
     this.translate.setDefaultLang(lang);
+    this.translate.use(lang);
     // this.updateDevExpressLocation(lang);
     this.updateCookiesConsentLang();
   }
 
   private updateCookiesConsentLang() {
     this.translate
-      .get(["cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy"])
+      .get([
+        "cookie.header",
+        "cookie.message",
+        "cookie.dismiss",
+        "cookie.allow",
+        "cookie.deny",
+        "cookie.link",
+        "cookie.policy",
+      ])
       .subscribe((data) => {
-        this.ccService.getConfig().content = this.ccService.getConfig().content || {};
+        this.ccService.getConfig().content =
+          this.ccService.getConfig().content || {};
         // Override default messages with the translated ones
         this.ccService.getConfig().content!.header = data["cookie.header"];
         this.ccService.getConfig().content!.message = data["cookie.message"];

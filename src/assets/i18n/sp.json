@@ -164,7 +164,16 @@
     "SAVE": "Guardar",
     "REFRESH": "Actualizar",
     "MAXIMIZE": "Maximizar",
-    "COLLAPSE": "Colapsar"
+    "COLLAPSE": "Colapsar",
+    "SEARCH": "Buscar"
+  },
+  "NAVBAR": {
+    "TOGGLE_SIDEBAR": "Alternar barra lateral",
+    "HOME": "Inicio",
+    "SEARCH": "Buscar",
+    "MESSAGES": "Mensajes",
+    "NOTIFICATIONS": "Notificaciones",
+    "TOGGLE_CONTROL_SIDEBAR": "Alternar panel de control"
   },
   "CONFIG": {
     "LANG": "Idioma",
