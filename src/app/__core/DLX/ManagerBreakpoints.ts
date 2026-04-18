@@ -1,5 +1,5 @@
-import type { TypeBreakpoints } from "../../Types";
-import type { InterfaceBreakpoints } from "./interfaces";
+import type { TypeBreakpoints } from "@app/Types";
+import type { InterfaceBreakpoints } from "@core/DLX/interfaces";
 
 export class ManagerBreakpoints implements InterfaceBreakpoints {
   public breakpoints: TypeBreakpoints = {};

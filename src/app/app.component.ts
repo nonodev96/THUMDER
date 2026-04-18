@@ -5,12 +5,12 @@ import { TranslateService } from "@ngx-translate/core";
 import { NgcCookieConsentService, type NgcNoCookieLawEvent, type NgcStatusChangeEvent } from "ngx-cookieconsent";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
-import { AuthService } from "./__core/auth/auth.service";
-import { MachineService } from "./__core/machine/machine.service";
-import { ElectronService } from "./__core/services";
-import { StorageService } from "./__core/storage/storage.service";
-import { DEFAULT_LANG } from "./CONSTANTS";
-import type { TypeLang } from "./Types";
+import { AuthService } from "@core/auth/auth.service";
+import { MachineService } from "@core/machine/machine.service";
+import { ElectronService } from "@core/services";
+import { StorageService } from "@core/storage/storage.service";
+import { DEFAULT_LANG } from "@app/CONSTANTS";
+import type { TypeLang } from "@app/Types";
 
 declare const AppAdminLTE: {
   initMainPage(): void;

@@ -1,4 +1,4 @@
-import { ObjectsPipe } from './objects.pipe';
+import { ObjectsPipe } from '@shared/pipes/Objects/objects.pipe';
 
 describe('ObjectsPipe', () => {
   it('create an instance', () => {

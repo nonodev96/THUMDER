@@ -27,9 +27,9 @@ import { doc, Firestore, setDoc } from "@angular/fire/firestore";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { type Observable, Subject, Subscription } from "rxjs";
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
-import type { InterfaceUser } from "../../Types";
-import { ElectronService } from "../services";
+import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
+import type { InterfaceUser } from "@app/Types";
+import { ElectronService } from "@core/services";
 
 @Injectable({
   providedIn: "root",

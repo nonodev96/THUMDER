@@ -1,6 +1,6 @@
-import { HaltOperation } from "./HaltOperation";
-import type { Operation } from "./interfaces";
-import { Operation_Register } from "./Operation_Register";
+import { HaltOperation } from "@core/DLX/HaltOperation";
+import type { Operation } from "@core/DLX/interfaces";
+import { Operation_Register } from "@core/DLX/Operation_Register";
 
 export type TypeOperation =
   | "debug"

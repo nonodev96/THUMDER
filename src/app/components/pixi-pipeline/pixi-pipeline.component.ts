@@ -1,16 +1,16 @@
 import { type AfterViewInit, Component, type ElementRef, HostListener, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import * as PIXI from "pixi.js";
 import { Subscription } from "rxjs";
-import { MachineService } from "../../__core/machine/machine.service";
-import type { PixiTHUMDER_Pipeline } from "../../__core/machine/PixiTHUMDER_Pipeline";
-import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "../../CONSTANTS";
+import { MachineService } from "@core/machine/machine.service";
+import type { PixiTHUMDER_Pipeline } from "@core/machine/PixiTHUMDER_Pipeline";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
 import type {
   TypeCycleCell,
   TypeCycleCellUnit,
   TypeInstructionPipelineFloatingRepresentation,
   TypeInstructionPipelineRepresentation,
   TypePipelineInstructions,
-} from "../../Types";
+} from "@app/Types";
 
 @Component({
   selector: "THUMDER-pixi-pipeline",

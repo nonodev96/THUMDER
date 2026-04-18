@@ -1,9 +1,9 @@
 import { CdkDrag } from "@angular/cdk/drag-drop";
 import { type AfterViewInit, Component, type OnDestroy, type OnInit, type QueryList, ViewChildren } from "@angular/core";
-import { Globals } from "../../../__core/services/globals/globals.service";
-import { DEFAULT_MULTIVIEW_CONFIGURATION } from "../../../CONSTANTS";
-import type { TypeMultiviewConfiguration } from "../../../Types";
-import { Utils } from "../../../Utils";
+import { Globals } from "@core/services/globals/globals.service";
+import { DEFAULT_MULTIVIEW_CONFIGURATION } from "@app/CONSTANTS";
+import type { TypeMultiviewConfiguration } from "@app/Types";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "view-multiples-views",

@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import FileSystemItem from "devextreme/file_management/file_system_item";
 import type UploadInfo from "devextreme/file_management/upload_info";
 import { type Observable, Subscription, Subject } from "rxjs";
-import type { InterfaceFileItem } from "../../../Types";
-import { Utils } from "../../../Utils";
-import { FileSystemStorageService } from "./file-system-storage.service";
+import type { InterfaceFileItem } from "@app/Types";
+import { Utils } from "@app/Utils";
+import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
   $key: string;

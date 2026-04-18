@@ -5,11 +5,11 @@ import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subscription } from "rxjs";
 import * as env from "../../../../environments/_environment";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { type THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
-import { DEFAULT_INTERFACE_FILE_ITEM } from "../../../CONSTANTS";
-import { MonacoEditorComponent } from "../../../components/monaco-editor/monaco-editor.component";
-import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "../../../Types";
+import { MachineService } from "@core/machine/machine.service";
+import { type THUMDER_FileItem, FileSystemService } from "@core/services/file-system/file-system.service";
+import { DEFAULT_INTERFACE_FILE_ITEM } from "@app/CONSTANTS";
+import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
+import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "@app/Types";
 
 @Component({
   selector: "view-editor",

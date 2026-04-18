@@ -47,22 +47,22 @@ import { MARKED_OPTIONS, MarkdownModule, MarkedRenderer } from "ngx-markdown";
 import { ToastrModule } from "ngx-toastr";
 // APP
 import { AppConfig } from "../environments/_environment";
-import { CoreModule } from "./__core/core.module";
+import { CoreModule } from "@core/core.module";
 // Services
-import { UtilityService } from "./__core/services/utility/utility.service";
-import { SharedModule } from "./__shared/shared.module";
+import { UtilityService } from "@core/services/utility/utility.service";
+import { SharedModule } from "@shared/shared.module";
 // _layouts
-import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
-import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
-import { LayoutLandingComponent } from "./_layouts/landing/layout-landing.component";
+import { LayoutAdminComponent } from "@layout/admin/layout-admin.component";
+import { LayoutAuthComponent } from "@layout/auth/layout-auth.component";
+import { LayoutLandingComponent } from "@layout/landing/layout-landing.component";
 // import { CONFIG_WEBSOCKET } from "./CONSTANTS";
-import { AppComponent } from "./app.component";
-import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "@app/app.component";
+import { AppRoutingModule } from "@app/app-routing.module";
 // MODULES
-import { ComponentsModule } from "./components/components.module";
+import { ComponentsModule } from "@components/components.module";
 
 // Index
-import { IndexView } from "./views/_index/index.view";
+import { IndexView } from "@views/_index/index.view";
 
 // AoT requires an exported function for factories
 

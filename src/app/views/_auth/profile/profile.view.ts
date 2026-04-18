@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnInit } from "@angular/core";
-import { AuthService } from "../../../__core/auth/auth.service";
+import { AuthService } from "@core/auth/auth.service";
 
 @Component({
   selector: "view-profile",

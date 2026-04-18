@@ -21,7 +21,7 @@ import type {
   TypeSimulationStep,
   TypeWebSocketConfiguration,
   TypeData,
-} from "./Types";
+} from "@app/Types";
 
 export const NPM_VERSION = npm.version.toString();
 

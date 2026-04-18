@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
 import { filter } from "rxjs/operators";
-import { Utils } from "../../Utils";
+import { Utils } from "@app/Utils";
 
 type MenuItem = {
   label: Data;

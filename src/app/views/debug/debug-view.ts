@@ -1,9 +1,9 @@
 import { type AfterViewInit, Component, type OnInit } from "@angular/core";
 import { ToastrService } from "ngx-toastr";
-import { ElectronService } from "../../__core/services";
-import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
-import { SocketProviderConnectService } from "../../__core/services/socket/socket-provider-connect.service";
-import { DEFAULT_CONFIG_TOAST } from "../../CONSTANTS";
+import { ElectronService } from "@core/services";
+import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
 import type {
   TypeAddress,
   TypeCodeResponse,
@@ -15,8 +15,8 @@ import type {
   TypeRegister,
   TypeRegisterToUpdate,
   TypeSimulationInitRequest,
-} from "../../Types";
-import { Utils } from "../../Utils";
+} from "@app/Types";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "app-debug",

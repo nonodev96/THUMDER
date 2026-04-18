@@ -2,8 +2,8 @@ import { type AfterViewInit, Component, Input, type OnDestroy, type OnInit } fro
 import * as monaco from "monaco-editor";
 import { type Observable, Subject } from "rxjs";
 import MonacoConfig from "../../../monaco-config";
-import { THUMDER_FileItem } from "../../__core/services/file-system/file-system.service";
-import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "../../Types";
+import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
+import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "@app/Types";
 
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;

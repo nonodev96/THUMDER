@@ -1,4 +1,4 @@
-import { AsideRightComponent } from './aside-right.component';
+import { AsideRightComponent } from '@components/aside/aside-right/aside-right.component';
 // import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 describe('AsideRightComponent', () => {

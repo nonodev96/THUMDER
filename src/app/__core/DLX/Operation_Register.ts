@@ -1,4 +1,4 @@
-import { Operation } from "./interfaces";
+import { Operation } from "@core/DLX/interfaces";
 
 export class Operation_Register extends Operation {
   private argumentSyntax = /^ *R(\d+) *, *R(\d+) *, *R(\d+) *$/;

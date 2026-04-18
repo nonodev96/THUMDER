@@ -1,4 +1,4 @@
-import { Utils } from "../Utils";
+import { Utils } from "@app/Utils";
 
 export class Int32 {
   // Se almacena en cadena de texto binaria

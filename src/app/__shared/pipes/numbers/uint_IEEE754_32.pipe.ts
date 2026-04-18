@@ -1,5 +1,5 @@
 import { Pipe, type PipeTransform } from "@angular/core";
-import { Utils } from "../../../Utils";
+import { Utils } from "@app/Utils";
 
 @Pipe({
   name: "uint_IEEE754_32",

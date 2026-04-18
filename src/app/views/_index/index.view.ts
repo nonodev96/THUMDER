@@ -2,7 +2,7 @@ import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { AppConfig } from "../../../environments/_environment";
-import { AUTH_ROUTES } from "../../CONSTANTS";
+import { AUTH_ROUTES } from "@app/CONSTANTS";
 
 @Component({
   selector: "app-index",

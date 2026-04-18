@@ -1,5 +1,5 @@
 import {waitForAsync} from "@angular/core/testing";
-import {AppComponent} from "./app.component";
+import {AppComponent} from "@app/app.component";
 // import {RouterTestingModule} from "@angular/router/testing";
 // import {TranslateModule} from "@ngx-translate/core";
 // import {ElectronService} from "./__core/services";

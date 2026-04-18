@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GridViewComponent } from './grid-view.component';
+import { GridViewComponent } from '@views/_auth/_grid_view/grid-view.component';
 
 describe('GridViewComponent', () => {
   let component: GridViewComponent;

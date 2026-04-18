@@ -1,16 +1,16 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, type Routes } from "@angular/router";
 
-import { PageNotFoundComponent } from "./__shared/components";
+import { PageNotFoundComponent } from "@shared/components";
 // Guards
-import { AuthGuard } from "./__shared/guard/auth.guard";
+import { AuthGuard } from "@shared/guard/auth.guard";
 // _layouts
-import { LayoutAdminComponent } from "./_layouts/admin/layout-admin.component";
-import { LayoutAuthComponent } from "./_layouts/auth/layout-auth.component";
+import { LayoutAdminComponent } from "@layout/admin/layout-admin.component";
+import { LayoutAuthComponent } from "@layout/auth/layout-auth.component";
 // components
-import { MonacoEditorComponent } from "./components/monaco-editor/monaco-editor.component";
+import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
 // Index view
-import { IndexView } from "./views/_index/index.view";
+import { IndexView } from "@views/_index/index.view";
 
 const routes: Routes = [
   {
@@ -31,17 +31,17 @@ const routes: Routes = [
     component: LayoutAuthComponent,
     canActivate: [AuthGuard],
     data: { breadcrumb: "Home" },
-    loadChildren: () => import("./views/_auth/auth.module").then((m) => m.AuthModule),
+    loadChildren: () => import("@views/_auth/auth.module").then((m) => m.AuthModule),
   },
   // _landing views
   {
     path: "landing",
-    loadChildren: () => import("./views/_landing/landing.module").then((m) => m.LandingModule),
+    loadChildren: () => import("@views/_landing/landing.module").then((m) => m.LandingModule),
   },
   // _account views
   {
     path: "account",
-    loadChildren: () => import("./views/_account/account.module").then((m) => m.AccountModule),
+    loadChildren: () => import("@views/_account/account.module").then((m) => m.AccountModule),
   },
   {
     path: "monaco",

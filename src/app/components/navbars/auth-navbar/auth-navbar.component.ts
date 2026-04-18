@@ -3,11 +3,11 @@ import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit } fr
 import { Router } from "@angular/router";
 import { Subscription } from "rxjs";
 import { AppConfig } from "../../../../environments/_environment";
-import { AuthService } from "../../../__core/auth/auth.service";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { AppComponent } from "../../../app.component";
-import { AUTH_ROUTES } from "../../../CONSTANTS";
-import type { PublicRoutes } from "../../../Types";
+import { AuthService } from "@core/auth/auth.service";
+import { MachineService } from "@core/machine/machine.service";
+import { AppComponent } from "@app/app.component";
+import { AUTH_ROUTES } from "@app/CONSTANTS";
+import type { PublicRoutes } from "@app/Types";
 
 @Component({
   selector: "THUMDER-auth-navbar",

@@ -1,7 +1,7 @@
-import { DEFAULT_DATA_STATISTICS } from "../../CONSTANTS";
-import type { TypeDataStatistics } from "../../Types";
-import { Utils } from "../../Utils";
-import type { InterfaceDataStatistics } from "./interfaces";
+import { DEFAULT_DATA_STATISTICS } from "@app/CONSTANTS";
+import type { TypeDataStatistics } from "@app/Types";
+import { Utils } from "@app/Utils";
+import type { InterfaceDataStatistics } from "@core/DLX/interfaces";
 
 export class ManagerStatistics implements InterfaceDataStatistics {
   public _data: TypeDataStatistics;

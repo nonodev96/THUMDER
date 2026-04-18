@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { type AfterViewInit, Component, Inject } from "@angular/core";
-import { Globals } from "../../__core/services/globals/globals.service";
+import { Globals } from "@core/services/globals/globals.service";
 
 @Component({
   selector: "THUMDER-layout-auth",

@@ -12,8 +12,8 @@ import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
 import type { IPackageJson } from "package-json-type";
 import { firstValueFrom } from "rxjs";
 import npm from "../../../../../package.json";
-import { ElectronService } from "../../../__core/services";
-import { REGEX_IS_ABSOLUTE_HREF } from "../../../CONSTANTS";
+import { ElectronService } from "@core/services";
+import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
 
 @Component({
   selector: "app-about",

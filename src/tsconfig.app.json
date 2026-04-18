@@ -5,6 +5,21 @@
     "resolveJsonModule": true,
     "module": "es2020",
     "baseUrl": "",
+    "paths": {
+      "mini-signals": ["../node_modules/mini-signals/index.js"],
+      "@app": ["./app"],
+      "@app/*": ["./app/*"],
+      "@core": ["./app/__core"],
+      "@core/*": ["./app/__core/*"],
+      "@shared": ["./app/__shared"],
+      "@shared/*": ["./app/__shared/*"],
+      "@layout": ["./app/_layouts"],
+      "@layout/*": ["./app/_layouts/*"],
+      "@components": ["./app/components"],
+      "@components/*": ["./app/components/*"],
+      "@views": ["./app/views"],
+      "@views/*": ["./app/views/*"]
+    },
     "types": []
   },
   "include": [

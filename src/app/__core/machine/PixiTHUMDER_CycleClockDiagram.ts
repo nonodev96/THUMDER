@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
-import type { TypePipeline, TypePipelineStage, TypeStage, TypeStall } from "../../Types";
-import { PixiTHUMDER_Table } from "./PixiTHUMDER_Table";
-import { PixiUtils } from "./PixiUtils";
+import type { TypePipeline, TypePipelineStage, TypeStage, TypeStall } from "@app/Types";
+import { PixiTHUMDER_Table } from "@core/machine/PixiTHUMDER_Table";
+import { PixiUtils } from "@core/machine/PixiUtils";
 
 const styleFontTextInstruction = new PIXI.TextStyle({
   fontFamily: "Arial",

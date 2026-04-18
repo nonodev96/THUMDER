@@ -8,9 +8,9 @@ import {
   type ValidationErrors,
   Validators,
 } from "@angular/forms";
-import { AuthService } from "../../../__core/auth/auth.service";
-import { ElectronService } from "../../../__core/services";
-import { AppComponent } from "../../../app.component";
+import { AuthService } from "@core/auth/auth.service";
+import { ElectronService } from "@core/services";
+import { AppComponent } from "@app/app.component";
 
 @Component({
   selector: "app-register",

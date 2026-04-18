@@ -1,11 +1,11 @@
 import { Component, type OnDestroy, type OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription } from "rxjs";
-import { MachineService } from "../../../__core/machine/machine.service";
-import { SocketProviderConnectService } from "../../../__core/services/socket/socket-provider-connect.service";
-import { DEFAULT_DATA_STATISTICS } from "../../../CONSTANTS";
-import type { TypeDataStatistics } from "../../../Types";
-import { Utils } from "../../../Utils";
+import { MachineService } from "@core/machine/machine.service";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { DEFAULT_DATA_STATISTICS } from "@app/CONSTANTS";
+import type { TypeDataStatistics } from "@app/Types";
+import { Utils } from "@app/Utils";
 
 @Component({
   selector: "view-statistics",

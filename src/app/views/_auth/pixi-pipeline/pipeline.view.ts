@@ -1,6 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Component, Inject, type OnInit, ViewChild } from "@angular/core";
-import { PixiPipelineComponent } from "../../../components/pixi-pipeline/pixi-pipeline.component";
+import { PixiPipelineComponent } from "@components/pixi-pipeline/pixi-pipeline.component";
 
 @Component({
   selector: "view-pipeline",

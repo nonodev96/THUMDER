@@ -6,7 +6,7 @@ import type FileSystemItem from "devextreme/file_management/file_system_item";
 import type FileManager from "devextreme/ui/file_manager";
 import { DxFileManagerComponent } from "devextreme-angular";
 import { Subscription } from "rxjs";
-import { type THUMDER_FileItem, FileSystemService } from "../../../__core/services/file-system/file-system.service";
+import { type THUMDER_FileItem, FileSystemService } from "@core/services/file-system/file-system.service";
 
 export type FileMenuOptions = {
   items: {
