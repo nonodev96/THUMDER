@@ -137,7 +137,7 @@
           "configurations": {
             "dev": {
               "optimization": false,
-              "outputHashing": "all",
+              "outputHashing": "media",
               "sourceMap": true,
               "extractLicenses": true,
               "fileReplacements": [

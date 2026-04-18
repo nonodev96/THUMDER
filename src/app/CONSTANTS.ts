@@ -50,7 +50,7 @@ export const REGEX_HEXADECIMAL_08 = /^(0x|0X)?([a-fA-F0-9]{08})$/i;
 export const DEFAULT_BREAKPOINTS: [] = [];
 export const DEFAULT_TIME_SIMULATION_CONFIGURATION: number = 250;
 export const DEFAULT_AUTO_SAVE_CONFIGURATION: boolean = true;
-export const DEFAULT_LANG: TypeLang = "en";
+export const DEFAULT_LANG: TypeLang = "sp";
 // 0x8000 --> 32768
 export const DEFAULT_MEMORY_SIZE_CONFIGURATION: number = 32768;
 
