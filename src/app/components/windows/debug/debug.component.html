@@ -16,7 +16,9 @@
       </button>
     </div>
   </div>
-  <div class="card-body card-font-console"><ng-container *ngFor="let line of private_logger">{{line}}<br></ng-container></div>
+  <div class="card-body card-font-console">@for (line of private_logger; track line) {
+    {{line}}<br>
+  }</div>
   <div class="card-footer">
     {{"URL: " + router.url}}
   </div>

@@ -13,7 +13,7 @@
       <div id="collapse_about" class="collapse show" data-parent="#accordion_ABOUT">
         <div class="card-body">
           <markdown [src]="'assets/md/ABOUT.md'" (load)="onMarkdownLoad('markdownComponentID_ABOUT')"
-                    #markdownComponentID_ABOUT></markdown>
+          #markdownComponentID_ABOUT></markdown>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
       <div id="collapse_readme" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
           <markdown [src]="'assets/md/README.md'" (load)="onMarkdownLoad('markdownComponentID_README')"
-                    #markdownComponentID_README></markdown>
+          #markdownComponentID_README></markdown>
         </div>
       </div>
     </div>
@@ -45,7 +45,7 @@
       <div id="collapseOne_LICENSE" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
           <markdown [src]="'assets/md/LICENSE.md'" (load)="onMarkdownLoad('markdownComponentID_LICENSE')"
-                    #markdownComponentID_LICENSE></markdown>
+          #markdownComponentID_LICENSE></markdown>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
       <div id="collapseOne_COOKIES" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
           <markdown [src]="'assets/md/COOKIES.md'" (load)="onMarkdownLoad('markdownComponentID_COOKIES')"
-                    #markdownComponentID_COOKIES></markdown>
+          #markdownComponentID_COOKIES></markdown>
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@
       <div id="collapseOne_CHANGELOG" class="collapse" data-parent="#accordion_ABOUT">
         <div class="card-body">
           <markdown [src]="'assets/md/CHANGELOG.md'" (load)="onMarkdownLoad('markdownComponentID_CHANGELOG')"
-                    #markdownComponentID_CHANGELOG></markdown>
+          #markdownComponentID_CHANGELOG></markdown>
         </div>
       </div>
     </div>
@@ -106,24 +106,24 @@
                     <th>{{ "TABLE.AUTHOR" | translate }}</th>
                     <th>{{ "TABLE.DESCRIPTION" | translate }}</th>
                   </tr>
-                  <ng-container *ngFor="let data of this.dependenciesData">
+                  @for (data of this.dependenciesData; track data) {
                     <tr>
                       <td>
-                        <ng-container *ngIf="data?.homepage">
+                        @if (data?.homepage) {
                           <a (click)="openInExternal(data?.homepage)" class="link-primary">
                             {{data?.name}}
                           </a>
-                        </ng-container>
-                        <ng-container *ngIf="!data?.homepage">
+                        }
+                        @if (!data?.homepage) {
                           {{data?.name}}
-                        </ng-container>
+                        }
                       </td>
                       <td>{{data?.version}}</td>
                       <td>{{data?.license}}</td>
                       <td>{{data?.author?.name}}</td>
                       <td>{{data?.description}}</td>
                     </tr>
-                  </ng-container>
+                  }
                 </table>
               </div>
 
@@ -137,24 +137,24 @@
                     <th>{{ "TABLE.AUTHOR" | translate }}</th>
                     <th>{{ "TABLE.DESCRIPTION" | translate }}</th>
                   </tr>
-                  <ng-container *ngFor="let data of this.devDependenciesData">
+                  @for (data of this.devDependenciesData; track data) {
                     <tr>
                       <td>
-                        <ng-container *ngIf="data?.homepage">
+                        @if (data?.homepage) {
                           <a (click)="openInExternal(data?.homepage)" class="link-primary">
                             {{data?.name}}
                           </a>
-                        </ng-container>
-                        <ng-container *ngIf="!data?.homepage">
+                        }
+                        @if (!data?.homepage) {
                           {{data?.name}}
-                        </ng-container>
+                        }
                       </td>
                       <td>{{data?.version}}</td>
                       <td>{{data?.license}}</td>
                       <td>{{data?.author?.name}}</td>
                       <td>{{data?.description}}</td>
                     </tr>
-                  </ng-container>
+                  }
                 </table>
               </div>
 

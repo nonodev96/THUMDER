@@ -3,8 +3,8 @@
   <ul class="navbar-nav">
     <li class="nav-item">
       <a class="nav-link" role="button"
-         aria-labelledby="navbar-button"
-         data-widget="pushmenu">
+        aria-labelledby="navbar-button"
+        data-widget="pushmenu">
         <i class="fas fa-bars" aria-hidden="true"></i>
       </a>
     </li>
@@ -14,114 +14,107 @@
     </li>
 
 
-    <ng-container *ngIf="authService.isLoggedIn">
+    @if (authService.isLoggedIn) {
       <li class="nav-item dropdown">
         <a id="dropdownSubMenuNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-           class="nav-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</a>
+        class="nav-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</a>
         <ul aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow">
-          <li *ngFor="let menu of PRIVATE_AUTH_ROUTES;">
-            <ng-container *ngIf="menu.show">
-              <a class="dropdown-item" title="{{menu.path}}" (click)="goToPage($event, menu)">
-                {{ 'NAVIGATION.' + menu.lang | translate }}
-              </a>
-            </ng-container>
-          </li>
+          @for (menu of PRIVATE_AUTH_ROUTES; track menu) {
+            <li>
+              @if (menu.show) {
+                <a class="dropdown-item" title="{{menu.path}}" (click)="goToPage($event, menu)">
+                  {{ 'NAVIGATION.' + menu.lang | translate }}
+                </a>
+              }
+            </li>
+          }
         </ul>
       </li>
-
       <li class="nav-item d-none d-sm-inline-block">
         <a [routerLink]="['/auth/config']" class="nav-link" title="AUTH-CONFIG">
           {{ 'NAVIGATION.CONFIG' | translate }}
         </a>
       </li>
-
       <li class="nav-item d-none d-sm-inline-block">
         <a [routerLink]="['/auth/file-manager']" class="nav-link" title="AUTH-NAVBAR-FILE-MANAGER">
           {{ 'NAVIGATION.FILE_MANAGER' | translate }}
         </a>
       </li>
-
       <li class="nav-item d-none d-sm-inline-block">
         <a [routerLink]="['/auth/editor']" class="nav-link" title="AUTH-NAVBAR-EDITOR">
           {{ 'NAVIGATION.EDITOR' | translate }}
         </a>
       </li>
-
       <li class="nav-item d-none d-sm-inline-block">
         <a [routerLink]="['/auth/multiview']" class="nav-link" title="VIEW-MULTIVIEW">
           {{ 'NAVIGATION.MULTIVIEW' | translate }}
         </a>
       </li>
-
-      <ng-container *ngIf="isDEV">
+      @if (isDEV) {
         <li class="nav-item d-none d-sm-inline-block">
           <a [routerLink]="['/auth/grid-view']" class="nav-link badge-beta" title="GRID-VIEW">
             {{ 'NAVIGATION.GRID_VIEW' | translate }}
           </a>
         </li>
-      </ng-container>
-
-    </ng-container>
+      }
+    }
 
   </ul>
 
   <!-- SEARCH FORM -->
   <!--
-    <form class="form-inline ml-3">
-      <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-        <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit" title="search-button">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
+  <form class="form-inline ml-3">
+    <div class="input-group input-group-sm">
+      <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+      <div class="input-group-append">
+        <button class="btn btn-navbar" type="submit" title="search-button">
+          <i class="fas fa-search"></i>
+        </button>
       </div>
-    </form>
+    </div>
+  </form>
   -->
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
 
 
-    <ng-container *ngIf="authService.isLoggedIn">
+    @if (authService.isLoggedIn) {
       <div class="input-group input-group-sm">
         <div class="btn-group" role="group" aria-label="Basic example">
           <button type="button" class="btn" (click)="resetConnection()"
-                  data-toggle="tooltip" data-placement="bottom" title="Reset connection"
-                  [style.color]="isWebsocketStatusConnect">
+            data-toggle="tooltip" data-placement="bottom" title="Reset connection"
+            [style.color]="isWebsocketStatusConnect">
             <i class="fas fa-sync"></i>
           </button>
-
           <button type="button" class="btn" (click)="reset()"
-                  data-toggle="tooltip" data-placement="bottom" title="Reset code"
-                  [style.color]="isWebsocketStatusConnect ? '#28a745' : '#ffc107'">
+            data-toggle="tooltip" data-placement="bottom" title="Reset code"
+            [style.color]="isWebsocketStatusConnect ? '#28a745' : '#ffc107'">
             <i class="fas fa-exchange-alt"></i>
           </button>
-
           <button type="button" class="btn" (click)="togglePlayPause()"
-                  data-toggle="tooltip" data-placement="bottom" title="Play / Pause"
-                  [disabled]="!this.machine.canSimulate"
-                  [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-            <ng-container *ngIf="isRunning === true">
+            data-toggle="tooltip" data-placement="bottom" title="Play / Pause"
+            [disabled]="!this.machine.canSimulate"
+            [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+            @if (isRunning === true) {
               <i class="fas fa-pause"></i>
-            </ng-container>
-            <ng-container *ngIf="isRunning === false">
+            }
+            @if (isRunning === false) {
               <i class="fas fa-play"></i>
-            </ng-container>
+            }
           </button>
-
           <button type="button" class="btn" (click)="nextStep()"
-                  data-toggle="tooltip" data-placement="bottom" title="Next step"
-                  [disabled]="!this.machine.canSimulate"
-                  [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+            data-toggle="tooltip" data-placement="bottom" title="Next step"
+            [disabled]="!this.machine.canSimulate"
+            [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
             <i class="fas fa-angle-right"></i>
           </button>
         </div>
       </div>
-    </ng-container>
+    }
 
     <li class="nav-item dropdown">
       <a id="dropdownSubMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-         class="nav-link dropdown-toggle">{{ 'CONFIG.LANG' | translate }}</a>
+      class="nav-link dropdown-toggle">{{ 'CONFIG.LANG' | translate }}</a>
       <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu border-0 shadow">
         <li>
           <a class="dropdown-item" (click)="app.setLang('sp')" id="changeLangToSpanish">
@@ -138,59 +131,56 @@
       </ul>
     </li>
 
-    <ng-container *ngIf="authService.isLoggedIn">
+    @if (authService.isLoggedIn) {
       <!--
-       <li class="nav-item d-none d-sm-inline-block">
-         <a class="nav-link" (click)="debug()">
-           <i class="fas fa-bug"></i>
-         </a>
-       </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" (click)="debug()">
+          <i class="fas fa-bug"></i>
+        </a>
+      </li>
       -->
-
       <!--
-        <li class="nav-item d-none d-sm-inline-block">
-          <a class="nav-link" (click)="reset()"
-             [style.color]="colorWebsocketStatus">
-            <i class="fas fa-sync"></i>
-          </a>
-        </li>
-
-        <li class="nav-item d-none d-sm-inline-block">
-          <a class="nav-link" (click)="togglePlayPause()"
-             [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-            <ng-container *ngIf="isRunning === true">
-              <i class="fas fa-pause"></i>
-            </ng-container>
-            <ng-container *ngIf="isRunning === false">
-              <i class="fas fa-play"></i>
-            </ng-container>
-          </a>
-        </li>
-
-        <li class="nav-item d-none d-sm-inline-block">
-          <a class="nav-link" (click)="nextStep()"
-             [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-            <i class="fas fa-angle-right"></i>
-          </a>
-        </li>
-        -->
+      <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" (click)="reset()"
+          [style.color]="colorWebsocketStatus">
+          <i class="fas fa-sync"></i>
+        </a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" (click)="togglePlayPause()"
+          [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+          <ng-container *ngIf="isRunning === true">
+            <i class="fas fa-pause"></i>
+          </ng-container>
+          <ng-container *ngIf="isRunning === false">
+            <i class="fas fa-play"></i>
+          </ng-container>
+        </a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a class="nav-link" (click)="nextStep()"
+          [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
+          <i class="fas fa-angle-right"></i>
+        </a>
+      </li>
+      -->
       <!--
       <li class="nav-item d-none d-sm-inline-block">
         <a class="nav-link" (click)="end()">
           <i class="fas fa-angle-double-right"></i>
         </a>
       </li>
-    -->
-    </ng-container>
+      -->
+    }
 
 
-    <ng-container *ngIf="authService.isLoggedIn">
+    @if (authService.isLoggedIn) {
       <li class="nav-item">
         <a class="nav-link" id="buttonSignOutID" (click)="authService.SignOut()">
           <i class="fas fa-sign-out-alt"></i>
         </a>
       </li>
-    </ng-container>
+    }
   </ul>
 </nav>
 <!-- /.navbar -->

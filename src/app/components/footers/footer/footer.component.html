@@ -1,10 +1,10 @@
 <footer class="main-footer">
-  <ng-container *ngIf="electronService.isElectronApp">
+  @if (electronService.isElectronApp) {
     <strong>Copyright &copy; 2020-2022 <a href="#" (click)="electronService.openInExternal('https://github.com/nonodev96/THUMDER')">THUMDER</a>.</strong>
-  </ng-container>
-  <ng-container *ngIf="!electronService.isElectronApp">
+  }
+  @if (!electronService.isElectronApp) {
     <strong>Copyright &copy; 2020-2022 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong>
-  </ng-container>
+  }
   All rights reserved. |
   <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" (click)="globals.showDebug=!globals.showDebug">Debug</button>
 

@@ -20,58 +20,58 @@
   <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.MACHINE' | translate }}</h4>
   <div class="row">
     <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PIPELINE}"></ng-container>
+    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PIPELINE}"></ng-container>
     <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CYCLE_CLOCK_DIAGRAM}"></ng-container>
+    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CYCLE_CLOCK_DIAGRAM}"></ng-container>
     <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.REGISTERS}"></ng-container>
+    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.REGISTERS}"></ng-container>
     <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MEMORY}"></ng-container>
+    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MEMORY}"></ng-container>
     <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CODE}"></ng-container>
+    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CODE}"></ng-container>
     <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.STATISTICS}"></ng-container>
+    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.STATISTICS}"></ng-container>
   </div>
   <hr>
 
-  <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.IDE' | translate }}</h4>
-  <div class="row">
-    <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.FILE_MANAGER}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.EDITOR}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MULTIVIEW}"></ng-container>
-  </div>
-  <hr>
-
-  <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.UTILS' | translate }}</h4>
-  <div class="row">
-    <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CALCULATOR}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DOCUMENTATION}"></ng-container>
-  </div>
-  <hr>
-
-
-  <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.CONFIG' | translate }}</h4>
-  <div class="row">
-    <ng-container [ngTemplateOutlet]="card"
-                  [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CONFIG}"></ng-container>
-  </div>
-  <hr>
-
-  <ng-container *ngIf="AppConfig.environment === 'DEV'">
-    <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.DEBUG' | translate }}</h4>
+    <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.IDE' | translate }}</h4>
     <div class="row">
       <ng-container [ngTemplateOutlet]="card"
-                    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DEBUG}"></ng-container>
+      [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.FILE_MANAGER}"></ng-container>
       <ng-container [ngTemplateOutlet]="card"
-                    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.LOGGER}"></ng-container>
+      [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.EDITOR}"></ng-container>
       <ng-container [ngTemplateOutlet]="card"
-                    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PROFILE}"></ng-container>
+      [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MULTIVIEW}"></ng-container>
     </div>
-  </ng-container>
+    <hr>
 
-</div>
+      <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.UTILS' | translate }}</h4>
+      <div class="row">
+        <ng-container [ngTemplateOutlet]="card"
+        [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CALCULATOR}"></ng-container>
+        <ng-container [ngTemplateOutlet]="card"
+        [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DOCUMENTATION}"></ng-container>
+      </div>
+      <hr>
+
+
+        <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.CONFIG' | translate }}</h4>
+        <div class="row">
+          <ng-container [ngTemplateOutlet]="card"
+          [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CONFIG}"></ng-container>
+        </div>
+        <hr>
+
+          @if (AppConfig.environment === 'DEV') {
+            <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.DEBUG' | translate }}</h4>
+            <div class="row">
+              <ng-container [ngTemplateOutlet]="card"
+              [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DEBUG}"></ng-container>
+              <ng-container [ngTemplateOutlet]="card"
+              [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.LOGGER}"></ng-container>
+              <ng-container [ngTemplateOutlet]="card"
+              [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PROFILE}"></ng-container>
+            </div>
+          }
+
+        </div>

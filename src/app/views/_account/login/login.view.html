@@ -1,77 +1,71 @@
-<ng-container *ngIf="authService.isLoggedIn === true">
+@if (authService.isLoggedIn === true) {
   Login but isLoggedIn
-</ng-container>
-<ng-container *ngIf="authService.isLoggedIn === false">
+}
+@if (authService.isLoggedIn === false) {
   <div class="login-page" style="justify-content: center !important">
     <div class="login-box">
       <div class="login-logo">
         <img src="assets/icons/favicon.256x256.png" alt="Logo" class="img-fluid mb-4">
         <h2>{{ 'TITLE' | translate }}</h2>
       </div>
-
       <div class="card">
         <div class="card-body login-card-body">
           <p class="login-box-msg">{{ 'ACCOUNT.SIGN_IN_TO_START_YOUR_SESSION' | translate }}</p>
-
           <form [formGroup]="loginForm">
-
             <div class="input-group mb-3">
               <input type="email" class="form-control" placeholder="Email" id="userEmail"
-                     autocomplete="email" name="email"
-                     [class.is-valid]="loginForm.get('email')?.valid"
-                     [class.is-invalid]="!loginForm.get('email')?.valid"
-                     formControlName="email" #userEmail>
+                autocomplete="email" name="email"
+                [class.is-valid]="loginForm.get('email')?.valid"
+                [class.is-invalid]="!loginForm.get('email')?.valid"
+                formControlName="email" #userEmail>
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-envelope"></span>
                 </div>
               </div>
             </div>
-
-            <ng-container *ngFor="let error of error_messages.email">
-              <div class="error-messages"
-                   *ngIf="loginForm.get('email')?.hasError(error.type) && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)">
-                <p>{{ error.message }}</p>
-              </div>
-            </ng-container>
-
+            @for (error of error_messages.email; track error) {
+              @if (loginForm.get('email')?.hasError(error.type) && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)) {
+                <div class="error-messages"
+                  >
+                  <p>{{ error.message }}</p>
+                </div>
+              }
+            }
             <div class="input-group mb-3">
               <input type="password" class="form-control" placeholder="Password" id="userPassword"
-                     autocomplete="current-password" name="current-password"
-                     [class.is-valid]="loginForm.get('password')?.valid"
-                     [class.is-invalid]="!loginForm.get('password')?.valid"
-                     formControlName="password" #userPassword>
+                autocomplete="current-password" name="current-password"
+                [class.is-valid]="loginForm.get('password')?.valid"
+                [class.is-invalid]="!loginForm.get('password')?.valid"
+                formControlName="password" #userPassword>
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-lock"></span>
                 </div>
               </div>
             </div>
-
-            <ng-container *ngFor="let error of error_messages.password">
-              <div class="error-messages"
-                   *ngIf="loginForm.get('password')?.hasError(error.type) && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)">
-                <p>{{ error.message }}</p>
-              </div>
-            </ng-container>
-
+            @for (error of error_messages.password; track error) {
+              @if (loginForm.get('password')?.hasError(error.type) && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)) {
+                <div class="error-messages"
+                  >
+                  <p>{{ error.message }}</p>
+                </div>
+              }
+            }
             <div class="row">
               <div class="col-6">
-
               </div>
               <div class="col-6">
                 <button type="submit" class="btn btn-primary btn-block"
-                        id="buttonSignInID"
-                        [disabled]="!loginForm.valid"
-                        (click)="SignIn(userEmail.value, userPassword.value)">
+                  id="buttonSignInID"
+                  [disabled]="!loginForm.valid"
+                  (click)="SignIn(userEmail.value, userPassword.value)">
                   {{ 'ACCOUNT.SIGN_IN' | translate }}
                 </button>
               </div>
             </div>
-
           </form>
-
-          <ng-container *ngIf="!electronService.isElectronApp">
+          @if (!electronService.isElectronApp) {
             <div class="social-auth-links text-center mb-3">
               <p>-</p>
               <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
@@ -81,47 +75,44 @@
                 <i class="fab fa-github mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
               </a>
             </div>
-          </ng-container>
-
+          }
           <p class="mt-3 mb-1">
             <a [routerLink]="['/account/forgot-password']">{{ 'ACCOUNT.I_FORGOT_MY_PASSWORD' | translate }}</a>
           </p>
           <p class="mb-0">
             <a [routerLink]="['/account/register']"
-               class="text-center">{{ 'ACCOUNT.REGISTER_A_NEW_MEMBERSHIP' | translate }}</a>
+            class="text-center">{{ 'ACCOUNT.REGISTER_A_NEW_MEMBERSHIP' | translate }}</a>
           </p>
-
-          <div class="row mt-3 mb-1" *ngIf="app.translationEnabled">
-            <div class="col-12">
-              <div class="dropdown">
-                <button class="btn btn-info btn-block dropdown-toggle" type="button"
-                        id="dropdownMenuButton_lang" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                  {{ 'CONFIG.LANG' | translate }}
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_lang">
-                  <a class="dropdown-item" (click)="app.setLang('sp')">
-                    <span class="flag-icon flag-icon-esp"></span>
-                    Spanish
-                  </a>
-                  <a class="dropdown-item" (click)="app.setLang('en')">
-                    <span class="flag-icon flag-icon-gbr"></span>
-                    English
-                  </a>
+          @if (app.translationEnabled) {
+            <div class="row mt-3 mb-1">
+              <div class="col-12">
+                <div class="dropdown">
+                  <button class="btn btn-info btn-block dropdown-toggle" type="button"
+                    id="dropdownMenuButton_lang" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    {{ 'CONFIG.LANG' | translate }}
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_lang">
+                    <a class="dropdown-item" (click)="app.setLang('sp')">
+                      <span class="flag-icon flag-icon-esp"></span>
+                      Spanish
+                    </a>
+                    <a class="dropdown-item" (click)="app.setLang('en')">
+                      <span class="flag-icon flag-icon-gbr"></span>
+                      English
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
+          }
         </div>
-
-        <ng-container *ngIf="showSpinner">
+        @if (showSpinner) {
           <div class="overlay">
             <i class="fas fa-2x fa-sync-alt fa-spin" aria-hidden="true"></i>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
   </div>
-
-</ng-container>
+}

@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal-EditRegister" tabindex="-1" role="dialog"
-     aria-labelledby="editRegisterModalLabel" aria-hidden="true">
+  aria-labelledby="editRegisterModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -17,10 +17,10 @@
               <div class="form-group">
                 <label for="selectTypeRegisterId">{{ 'MACHINE.SELECT_TYPE_REGISTER' | translate }}</label>
                 <select class="form-control" (change)="changeTypeRegister($any($event.target).value)"
-                        id="selectTypeRegisterId">
-                  <ng-template ngFor let-item [ngForOf]="MACHINE_TYPE_REGISTERS" let-currentElementIndex="index">
+                  id="selectTypeRegisterId">
+                  @for (item of MACHINE_TYPE_REGISTERS; track item; let currentElementIndex = $index) {
                     <option [value]="item">{{ item }}</option>
-                  </ng-template>
+                  }
                 </select>
               </div>
             </div>
@@ -30,10 +30,10 @@
               <div class="form-group">
                 <label for="selectRegisterId">{{ lang_SELECT_REGISTER | translate }}</label>
                 <select class="form-control" (change)="changeRegisterToEdit($any($event.target).value)"
-                        id="selectRegisterId">
-                  <ng-template ngFor let-item [ngForOf]="listRegisters" let-currentElementIndex="index">
+                  id="selectRegisterId">
+                  @for (item of listRegisters; track item; let currentElementIndex = $index) {
                     <option [value]="item">{{aliasTypeRegister}}{{item}}</option>
-                  </ng-template>
+                  }
                 </select>
               </div>
             </div>
@@ -45,108 +45,118 @@
                   <span class="input-group-text">0x</span>
                 </div>
                 <input type="text" id="registerToEditValueHexadecimalId"
-                       class="form-control {{ this.registerToEditHexadecimalValueIsValid ? 'is-valid' : 'is-invalid' }}"
-                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
-                       [ngModel]="registerToEdit_Hexadecimal"
-                       [ngModelOptions]="{standalone: true}"
-                       (ngModelChange)="onRegisterToEditChangeHexadecimal($event)">
-                <div class="input-group-append">
-                  <span class="input-group-text">in hexadecimal</span>
+                  class="form-control {{ this.registerToEditHexadecimalValueIsValid ? 'is-valid' : 'is-invalid' }}"
+                  placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                  [ngModel]="registerToEdit_Hexadecimal"
+                  [ngModelOptions]="{standalone: true}"
+                  (ngModelChange)="onRegisterToEditChangeHexadecimal($event)">
+                  <div class="input-group-append">
+                    <span class="input-group-text">in hexadecimal</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="col-sm-6" *ngIf="typeRegisterSelected === 'Control' || typeRegisterSelected === 'Integer'">
-              <label for="registerToEditValueDecimalId">{{ 'MACHINE.DECIMAL' | translate }}</label>
-              <div class="input-group mb-3">
-                <input type="number" id="registerToEditValueDecimalId"
-                       class="form-control"
-                       max="4294967295"
-                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
-                       [ngModel]="registerToEdit_Word"
-                       [ngModelOptions]="{standalone: true}"
-                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
-                <div class="input-group-append">
-                  <span class="input-group-text">in decimal</span>
-                </div>
+              @if (typeRegisterSelected === 'Control' || typeRegisterSelected === 'Integer') {
+                <div class="col-sm-6">
+                  <label for="registerToEditValueDecimalId">{{ 'MACHINE.DECIMAL' | translate }}</label>
+                  <div class="input-group mb-3">
+                    <input type="number" id="registerToEditValueDecimalId"
+                      class="form-control"
+                      max="4294967295"
+                      placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                      [ngModel]="registerToEdit_Word"
+                      [ngModelOptions]="{standalone: true}"
+                      (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
+                      <div class="input-group-append">
+                        <span class="input-group-text">in decimal</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+                @if (typeRegisterSelected === 'Float') {
+                  <div class="col-sm-6">
+                    <label for="registerToEditValueFloatId">{{ 'MACHINE.DECIMAL' | translate }}</label>
+                    <div class="input-group mb-3">
+                      <input type="number" id="registerToEditValueFloatId"
+                        class="form-control"
+                        placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                        [ngModel]="registerToEdit_Float"
+                        [ngModelOptions]="{standalone: true}"
+                        (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
+                        <div class="input-group-append">
+                          <span class="input-group-text">in decimal</span>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                  @if (typeRegisterSelected === 'Double') {
+                    <div class="col-sm-5">
+                      <label for="registerToEditValueDoubleId">{{ 'MACHINE.DECIMAL' | translate }}</label>
+                      <div class="input-group mb-3">
+                        <input type="number" id="registerToEditValueDoubleId"
+                          class="form-control"
+                          placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
+                          [ngModel]="registerToEdit_Double"
+                          [ngModelOptions]="{standalone: true}"
+                          (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
+                          <div class="input-group-append">
+                            <span class="input-group-text">in decimal</span>
+                          </div>
+                        </div>
+                      </div>
+                    }
+
+                    <div class="col-sm-12">
+                      <p><strong>{{ 'MACHINE.BINARY' | translate }}:</strong></p>
+                      <p class="text-monospace">{{ registerToEdit_Binary }}</p>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <p><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong></p>
+                      <p class="text-monospace">{{ (registerToEdit_Binary | binary_to_number) }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                      <p><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong></p>
+                      <p class="text-monospace">{{ (registerToEdit_Binary | binary_to_number | number_to_base: {base: 8}) }}</p>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <p><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong></p>
+                      <p
+                        class="text-monospace">{{ (registerToEdit_Binary | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
+                        maxLength: maxLengthHexadecimal,
+                        fillString: '0'
+                      }) }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                      <p><strong>{{ 'MACHINE.BYTE' | translate }}:</strong></p>
+                      <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_bytes }}</p>
+                    </div>
+
+                    <div class="col-sm-6">
+                      <p><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong></p>
+                      <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_halfword }}</p>
+                    </div>
+                    <div class="col-sm-6">
+                      <p><strong>{{ 'MACHINE.ASCII' | translate }}:</strong></p>
+                      <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_ascii }}</p>
+                    </div>
+
+                    <div class="col-sm-12">
+                      <p class="text-monospace"><strong>{{ (typeRegisterSelected === 'Double' ? 'TYPE_DATA.IEEE754_64' : 'TYPE_DATA.IEEE754') | translate }}:</strong></p>
+                      @if (typeRegisterSelected !== 'Double') {
+                        <p class="text-monospace"
+                        >{{ registerToEdit_Binary | binary32_to_decimal_IEEE754 }}</p>
+                      }
+                      @if (typeRegisterSelected === 'Double') {
+                        <p class="text-monospace"
+                        >{{ registerToEdit_Binary | binary64_to_decimal_IEEE754 }}</p>
+                      }
+                    </div>
+
+                  </div>
+                </form>
               </div>
             </div>
-            <div class="col-sm-6" *ngIf="typeRegisterSelected === 'Float'">
-              <label for="registerToEditValueFloatId">{{ 'MACHINE.DECIMAL' | translate }}</label>
-              <div class="input-group mb-3">
-                <input type="number" id="registerToEditValueFloatId"
-                       class="form-control"
-                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
-                       [ngModel]="registerToEdit_Float"
-                       [ngModelOptions]="{standalone: true}"
-                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
-                <div class="input-group-append">
-                  <span class="input-group-text">in decimal</span>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-5" *ngIf="typeRegisterSelected === 'Double'">
-              <label for="registerToEditValueDoubleId">{{ 'MACHINE.DECIMAL' | translate }}</label>
-              <div class="input-group mb-3">
-                <input type="number" id="registerToEditValueDoubleId"
-                       class="form-control"
-                       placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
-                       [ngModel]="registerToEdit_Double"
-                       [ngModelOptions]="{standalone: true}"
-                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
-                <div class="input-group-append">
-                  <span class="input-group-text">in decimal</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-12">
-              <p><strong>{{ 'MACHINE.BINARY' | translate }}:</strong></p>
-              <p class="text-monospace">{{ registerToEdit_Binary }}</p>
-            </div>
-
-            <div class="col-sm-6">
-              <p><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong></p>
-              <p class="text-monospace">{{ (registerToEdit_Binary | binary_to_number) }}</p>
-            </div>
-            <div class="col-sm-6">
-              <p><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong></p>
-              <p class="text-monospace">{{ (registerToEdit_Binary | binary_to_number | number_to_base: {base: 8}) }}</p>
-            </div>
-
-            <div class="col-sm-6">
-              <p><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong></p>
-              <p
-                class="text-monospace">{{ (registerToEdit_Binary | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
-                maxLength: maxLengthHexadecimal,
-                fillString: '0'
-              }) }}</p>
-            </div>
-            <div class="col-sm-6">
-              <p><strong>{{ 'MACHINE.BYTE' | translate }}:</strong></p>
-              <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_bytes }}</p>
-            </div>
-
-            <div class="col-sm-6">
-              <p><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong></p>
-              <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_halfword }}</p>
-            </div>
-            <div class="col-sm-6">
-              <p><strong>{{ 'MACHINE.ASCII' | translate }}:</strong></p>
-              <p class="text-monospace">{{ registerToEdit_Binary | binary32_to_ascii }}</p>
-            </div>
-
-            <div class="col-sm-12">
-              <p class="text-monospace"><strong>{{ (typeRegisterSelected === 'Double' ? 'TYPE_DATA.IEEE754_64' : 'TYPE_DATA.IEEE754') | translate }}:</strong></p>
-              <p class="text-monospace"
-                 *ngIf="typeRegisterSelected !== 'Double'">{{ registerToEdit_Binary | binary32_to_decimal_IEEE754 }}</p>
-              <p class="text-monospace"
-                 *ngIf="typeRegisterSelected === 'Double'">{{ registerToEdit_Binary | binary64_to_decimal_IEEE754 }}</p>
-            </div>
-
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+        </div>

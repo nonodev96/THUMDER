@@ -14,9 +14,9 @@
 
     <button class="btn btn-outline-primary mr-1" (click)="notification()">Electron notification</button>
     <button class="" [asyncClick]="wait_resolve"
-            defaultButtonClass="btn mr-1"
-            successButtonClass="btn-outline-success"
-            warningButtonClass="btn-outline-warning">Wait resolve</button>
+      defaultButtonClass="btn mr-1"
+      successButtonClass="btn-outline-success"
+    warningButtonClass="btn-outline-warning">Wait resolve</button>
 
   </div>
 
@@ -27,226 +27,230 @@
 
 <hr>
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} 1</h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{'DEBUG' | translate}} 1</h3>
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="maximize">
+          <i class="fas fa-expand" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="card-body">
-    <button class="btn btn-outline-primary mr-1" (click)="socketReconnect()">Socket reconnect</button>
-    <button class="btn btn-outline-primary mr-1" (click)="showToast()">Show Toast</button>
-    <button class="btn btn-outline-primary mr-1" (click)="debugLocalStorage()">Debug Localstorage</button>
-    <button class="btn btn-outline-primary mr-1" (click)="getSomethingFromRemoteP()">Promise</button>
-    <button class="btn btn-outline-primary mr-1" (click)="simulationInit()">Promise simulation init</button>
-    <button class="btn btn-outline-primary mr-1" (click)="simulationNextStep()">Promise simulation next step</button>
-  </div>
-  <div class="card-footer">
-    <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
-  </div>
-</div>
-
-<hr>
-
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} Registers</h3>
-    <div class="card-tools">
-      <button class="btn btn-xs btn-outline-primary mr-1"
-              (click)="updateRegisterServer($any(typeRegister.value), register.value, registerValue.value)">
-        Debug - Update register
-      </button>
-      <button class="btn btn-xs btn-outline-primary mr-1" (click)="getAllRegisters()">
-        Debug - Get all registers
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
+    <div class="card-body">
+      <button class="btn btn-outline-primary mr-1" (click)="socketReconnect()">Socket reconnect</button>
+      <button class="btn btn-outline-primary mr-1" (click)="showToast()">Show Toast</button>
+      <button class="btn btn-outline-primary mr-1" (click)="debugLocalStorage()">Debug Localstorage</button>
+      <button class="btn btn-outline-primary mr-1" (click)="getSomethingFromRemoteP()">Promise</button>
+      <button class="btn btn-outline-primary mr-1" (click)="simulationInit()">Promise simulation init</button>
+      <button class="btn btn-outline-primary mr-1" (click)="simulationNextStep()">Promise simulation next step</button>
+    </div>
+    <div class="card-footer">
+      <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
     </div>
   </div>
 
-  <div class="card-body">
-    <form>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-4">
-            <div class="form-group">
-              <label for="typeRegisterID">Register type</label>
-              <input type="text" class="form-control" id="typeRegisterID" #typeRegister>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="form-group">
-              <label for="registerID">Register</label>
-              <input type="text" class="form-control" id="registerID" #register>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="form-group">
-              <label for="registerValueID">Register value</label>
-              <input type="text" class="form-control" id="registerValueID" #registerValue>
-            </div>
-          </div>
+  <hr>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{{'DEBUG' | translate}} Registers</h3>
+        <div class="card-tools">
+          <button class="btn btn-xs btn-outline-primary mr-1"
+            (click)="updateRegisterServer($any(typeRegister.value), register.value, registerValue.value)">
+            Debug - Update register
+          </button>
+          <button class="btn btn-xs btn-outline-primary mr-1" (click)="getAllRegisters()">
+            Debug - Get all registers
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="maximize">
+            <i class="fas fa-expand" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
-    </form>
-  </div>
 
-  <div class="card-footer">
-    <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
-  </div>
-</div>
+      <div class="card-body">
+        <form>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="typeRegisterID">Register type</label>
+                  <input type="text" class="form-control" id="typeRegisterID" #typeRegister>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="registerID">Register</label>
+                  <input type="text" class="form-control" id="registerID" #register>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label for="registerValueID">Register value</label>
+                  <input type="text" class="form-control" id="registerValueID" #registerValue>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
 
-<hr>
+      <div class="card-footer">
+        <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
+      </div>
+    </div>
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} Memory</h3>
-    <div class="card-tools">
-      <button class="btn btn-xs btn-outline-primary mr-1"
+    <hr>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{'DEBUG' | translate}} Memory</h3>
+          <div class="card-tools">
+            <button class="btn btn-xs btn-outline-primary mr-1"
               (click)="updateMemoryServer($any(memoryTypeData.value), $any(memoryAddress.value), memoryValue.value)">
-        Debug - Update memory
-      </button>
-      <button class="btn btn-xs btn-outline-primary mr-1"
+              Debug - Update memory
+            </button>
+            <button class="btn btn-xs btn-outline-primary mr-1"
               (click)="getAllMemory()">
-        Debug - Get all memory
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-
-  <div class="card-body">
-    <form>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-4">
-            <div class="form-group">
-              <label for="memoryTypeDataID">Data type</label>
-              <input type="text" class="form-control" id="memoryTypeDataID" #memoryTypeData>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="form-group">
-              <label for="memoryAddressID">Address</label>
-              <input type="text" class="form-control" id="memoryAddressID" #memoryAddress>
-            </div>
-          </div>
-          <div class="col-4">
-            <div class="form-group">
-              <label for="memoryValueID">Memory value</label>
-              <input type="text" class="form-control" id="memoryValueID" #memoryValue>
-            </div>
+              Debug - Get all memory
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="maximize">
+              <i class="fas fa-expand" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
+
+        <div class="card-body">
+          <form>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="memoryTypeDataID">Data type</label>
+                    <input type="text" class="form-control" id="memoryTypeDataID" #memoryTypeData>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="memoryAddressID">Address</label>
+                    <input type="text" class="form-control" id="memoryAddressID" #memoryAddress>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label for="memoryValueID">Memory value</label>
+                    <input type="text" class="form-control" id="memoryValueID" #memoryValue>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card-footer">
+          <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
+        </div>
       </div>
-    </form>
-  </div>
 
-  <div class="card-footer">
-    <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
-  </div>
-</div>
+      <hr>
 
-<hr>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">{{'DEBUG' | translate}} Code</h3>
+            <div class="card-tools">
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} Code</h3>
-    <div class="card-tools">
+              <button class="btn btn-xs btn-outline-primary mr-1"
+                (click)="debugCodeRequestSocket()">Debug Code Request Socket
+              </button>
 
-      <button class="btn btn-xs btn-outline-primary mr-1"
-              (click)="debugCodeRequestSocket()">Debug Code Request Socket
-      </button>
+              <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                <i class="fas fa-expand" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <textarea class="form-control"
+              style="font-family: monospace;"
+              name="message"
+              rows="8"
+            [(ngModel)]="testCodeRequest"></textarea>
 
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-  <div class="card-body">
-          <textarea class="form-control"
-                    style="font-family: monospace;"
-                    name="message"
-                    rows="8"
-                    [(ngModel)]="testCodeRequest"></textarea>
+            <table class="table" aria-describedby="debug table with address, code, text and instruction">
+              <tr>
+                <th>{{ 'ADDRESS' | translate }}</th>
+                <th>{{ 'CODE' | translate }}</th>
+                <th>{{ 'TEXT' | translate }}</th>
+                <th>{{ 'INSTRUCTION' | translate }}</th>
+              </tr>
 
-    <table class="table" aria-describedby="debug table with address, code, text and instruction">
-      <tr>
-        <th>{{ 'ADDRESS' | translate }}</th>
-        <th>{{ 'CODE' | translate }}</th>
-        <th>{{ 'TEXT' | translate }}</th>
-        <th>{{ 'INSTRUCTION' | translate }}</th>
-      </tr>
+              @for (item of testCodeResponse_instructions; track item) {
+                <tr>
+                  <td>{{item.address}}</td>
+                  <td>{{item.code}}</td>
+                  <td>{{item.text}}</td>
+                  <td>{{item.instruction}}</td>
+                </tr>
+              }
+            </table>
 
-      <tr *ngFor="let item of testCodeResponse_instructions">
-        <td>{{item.address}}</td>
-        <td>{{item.code}}</td>
-        <td>{{item.text}}</td>
-        <td>{{item.instruction}}</td>
-      </tr>
-    </table>
+            <table class="table" aria-describedby="debug table with address, hex value, text and directive">
+              <tr>
+                <th>{{ 'ADDRESS' | translate }}</th>
+                <th>{{ 'HEX VALUE' | translate }}</th>
+                <th>{{ 'TEXT' | translate }}</th>
+                <th>{{ 'DIRECTIVE' | translate }}</th>
+              </tr>
 
-    <table class="table" aria-describedby="debug table with address, hex value, text and directive">
-      <tr>
-        <th>{{ 'ADDRESS' | translate }}</th>
-        <th>{{ 'HEX VALUE' | translate }}</th>
-        <th>{{ 'TEXT' | translate }}</th>
-        <th>{{ 'DIRECTIVE' | translate }}</th>
-      </tr>
+              @for (item of testCodeResponse_directives; track item) {
+                <tr>
+                  <td>{{item.address}}</td>
+                  <td>{{item.hexValue}}</td>
+                  <td>{{item.text}}</td>
+                  <td>{{item.directive}}</td>
+                </tr>
+              }
+            </table>
 
-      <tr *ngFor="let item of testCodeResponse_directives">
-        <td>{{item.address}}</td>
-        <td>{{item.hexValue}}</td>
-        <td>{{item.text}}</td>
-        <td>{{item.directive}}</td>
-      </tr>
-    </table>
+          </div>
+          <div class="card-footer">
+            <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
+          </div>
+        </div>
 
-  </div>
-  <div class="card-footer">
-    <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
-  </div>
-</div>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">{{'DEBUG' | translate}} Config</h3>
+            <div class="card-tools">
 
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">{{'DEBUG' | translate}} Config</h3>
-    <div class="card-tools">
+              <button class="btn btn-xs btn-outline-primary mr-1"
+                (click)="debugUpdateConfigRequestSocket()">Debug Update Config Request Socket
+              </button>
 
-      <button class="btn btn-xs btn-outline-primary mr-1"
-              (click)="debugUpdateConfigRequestSocket()">Debug Update Config Request Socket
-      </button>
-
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-  <div class="card-body">
+              <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                <i class="fas fa-expand" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                <i class="fas fa-minus" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
 
 
-  </div>
-  <div class="card-footer">
-    <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
-  </div>
-</div>
+          </div>
+          <div class="card-footer">
+            <p>Socket ID: {{ socketProviderConnect?.socketIO?.ioSocket?.id?.toString() ?? '' }}</p>
+          </div>
+        </div>
