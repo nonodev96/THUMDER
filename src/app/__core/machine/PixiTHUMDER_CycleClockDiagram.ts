@@ -1,4 +1,4 @@
-import { type TypePipeline, type TypePipelineStage, type TypeStall } from "@app/Types";
+import type { TypePipeline, TypePipelineStage, TypeStall } from "@app/Types";
 import { PixiTHUMDER_Table } from "@core/machine/PixiTHUMDER_Table";
 import { PixiUtils } from "@core/machine/PixiUtils";
 import * as PIXI from "pixi.js";

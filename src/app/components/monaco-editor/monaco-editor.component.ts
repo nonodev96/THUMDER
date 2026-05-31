@@ -94,7 +94,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD, () => {
       this.toggleDebuggerTag();
     });
-    this.editor.onDidChangeCursorSelection((_$event) => { });
+    this.editor.onDidChangeCursorSelection((_$event) => {});
     this.editor.onDidChangeModelDecorations((_$event) => {
       this.breakpoints = this.getAllBreakpoints();
       this.breakpoints$.next(this.breakpoints);

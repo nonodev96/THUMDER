@@ -1,18 +1,5 @@
 @if (show) {
-<div class="card">
-  <div class="card-header">
-    <h3 class="card-title">DEBUG</h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="showUID = !showUID">Toggle UID</button>
-      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="generateDefaultFiles()">Generate
-        default files</button>
-      <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="updateUI()">Refresh UI</button>
-    </div>
-  </div>
-  <div class="card-body">
-    <p>Files selected: {{ filesSelected }}</p>
-  </div>
-</div>
+
 <div class="file-manager-container">
 
   <!-- Toolbar -->
@@ -126,6 +113,20 @@
 
   <hr>
 
-
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">DEBUG</h3>
+      <div class="card-tools">
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="showUID = !showUID">Toggle
+          UID</button>
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="generateDefaultFiles()">Generate
+          default files</button>
+        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="updateUI()">Refresh UI</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <p>Files selected: {{ filesSelected }}</p>
+    </div>
+  </div>
 </div>
 }
