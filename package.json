@@ -91,6 +91,7 @@
     "firebase": "9.8.4",
     "image-to-ascii-art": "0.0.4",
     "jquery": "3.6.0",
+    "marked": "^18.0.4",
     "monaco-editor": "^0.55.1",
     "ng-table-virtual-scroll": "1.6.1",
     "ng2-charts": "5.0.4",
@@ -154,8 +155,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@babel/runtime": "7.26.0",
-      "marked": "15.0.12"
+      "@babel/runtime": "7.26.0"
     }
   }
 }

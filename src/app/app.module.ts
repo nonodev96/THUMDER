@@ -1,6 +1,10 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { ScrollingModule } from "@angular/cdk/scrolling";
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from "@angular/common/http";
 import { NgModule, SecurityContext } from "@angular/core";
 import {
   getAnalytics,
@@ -9,14 +13,26 @@ import {
   UserTrackingService,
   /*initializeAnalytics*/
 } from "@angular/fire/analytics";
-import { initializeApp, provideFirebaseApp /*getApp*/ } from "@angular/fire/app";
-import { getAuth /* initializeAuth, browserLocalPersistence, browserPopupRedirectResolver*/, provideAuth } from "@angular/fire/auth";
+import {
+  initializeApp,
+  provideFirebaseApp /*getApp*/,
+} from "@angular/fire/app";
+import {
+  getAuth /* initializeAuth, browserLocalPersistence, browserPopupRedirectResolver*/,
+  provideAuth,
+} from "@angular/fire/auth";
 import { getDatabase, provideDatabase } from "@angular/fire/database";
-import { getFirestore, /*initializeFirestore*/ provideFirestore } from "@angular/fire/firestore";
+import {
+  getFirestore,
+  /*initializeFirestore*/ provideFirestore,
+} from "@angular/fire/firestore";
 import { getFunctions, provideFunctions } from "@angular/fire/functions";
 import { getMessaging, provideMessaging } from "@angular/fire/messaging";
 import { getPerformance, providePerformance } from "@angular/fire/performance";
-import { getRemoteConfig, provideRemoteConfig } from "@angular/fire/remote-config";
+import {
+  getRemoteConfig,
+  provideRemoteConfig,
+} from "@angular/fire/remote-config";
 import { getStorage, provideStorage } from "@angular/fire/storage";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatSortModule } from "@angular/material/sort";
@@ -53,9 +69,18 @@ import { NgChartsModule } from "ng2-charts";
 // Cookies
 import { CookieService } from "ngx-cookie-service";
 // ngx-cookieconsent
-import { type NgcCookieConsentConfig, NgcCookieConsentModule } from "ngx-cookieconsent";
+import {
+  type NgcCookieConsentConfig,
+  NgcCookieConsentModule,
+} from "ngx-cookieconsent";
 // ngx-markdown
-import { MARKED_OPTIONS, MarkdownModule, MarkedRenderer } from "ngx-markdown";
+import {
+  MARKED_OPTIONS,
+  MarkdownModule,
+  MarkedRenderer,
+  type MarkedOptions,
+} from "ngx-markdown";
+
 // TOAST
 import { ToastrModule } from "ngx-toastr";
 // APP
@@ -93,55 +118,75 @@ const cookieConfig: NgcCookieConsentConfig = {
   },
 };
 
+import { Parser, type Tokens } from "marked";
+
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
 }
 
-export function markedOptionsFactory(): object {
-  const defaultMarkedRenderer = new MarkedRenderer();
-  const markedRenderer = new MarkedRenderer();
+export function markedOptionsFactory(): MarkedOptions {
+  const renderer = new MarkedRenderer({});
 
-  markedRenderer.table = ((token: any) => {
-    const defaultHtml = defaultMarkedRenderer.table(token);
-    return defaultHtml.replace("<table>", '<table class="table table-striped">');
-  }) as any;
+  renderer.table = (token: Tokens.Table) => {
+    const parser = new Parser({});
+    return parser
+      .parse([token])
+      .replace("<table>", "<table class='table table-striped'>");
+  };
 
-  markedRenderer.heading = (({ text, depth }: any) => {
-    const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
-    return `<h${depth}><a class="anchor" href="#${escapedText}" id="${escapedText}"><span class="header-link"></span></a> ${text}</h${depth}>`;
-  }) as any;
+  renderer.blockquote = ({ tokens }) => {
+    return (
+      '<blockquote class="blockquote"><p>' +
+      Parser.parse(tokens) +
+      "</p></blockquote>"
+    );
+  };
 
-  markedRenderer.link = (({ href, title, text }: any) => {
+  renderer.link = ({ href, title, tokens }: Tokens.Link): string => {
+    // Renderizar los tokens internos a string
+    const text =
+      renderer.parser?.parseInline(tokens) ??
+      tokens.map((t) => ("text" in t ? t.text : "")).join("");
+    const safeTitle = title ? ` title="${title}"` : "";
+
     if (!href) {
-      return defaultMarkedRenderer.link({ href, title, text } as any);
+      return `<a${safeTitle}>${text}</a>`;
     }
-    const isElectron = window?.process?.type;
+
+    const isElectron = (window as any)?.process?.type;
+
     if (isElectron) {
       if (href.startsWith("http://") || href.startsWith("https://")) {
-        return `<a href="javascript:;" onclick="window.require('electron').shell.openExternal('${href}');" title="${title}">${text}</a>`;
-      } else if (href.indexOf("#") !== -1) {
-        return `<a href="javascript:;" title="${title}">${text}</a>`;
+        const safeHref = href.replace(/'/g, "\\'");
+        return `<a href="javascript:;" onclick="window.require('electron').shell.openExternal('${safeHref}');"${safeTitle}>${text}</a>`;
+      } else if (href.includes("#")) {
+        return `<a href="javascript:;"${safeTitle}>${text}</a>`;
       }
-    } else {
-      return `<a href="${href}" title="${title}">${text}</a>`;
+      // href local (no http, no #) — enlace normal
+      return `<a href="${href}"${safeTitle}>${text}</a>`;
     }
-  }) as any;
+
+    return `<a href="${href}"${safeTitle}>${text}</a>`;
+  };
 
   return {
-    renderer: markedRenderer,
-    headerIds: true,
+    renderer: renderer,
     gfm: true,
     breaks: false,
     pedantic: false,
-    smartLists: true,
-    smartypants: false,
   };
 }
 
 // const app = initializeApp(AppConfig.firebase);
 
 @NgModule({
-  declarations: [AppComponent, LayoutAdminComponent, LayoutAuthComponent, LayoutLandingComponent, IndexView],
+  declarations: [
+    AppComponent,
+    LayoutAdminComponent,
+    LayoutAuthComponent,
+    LayoutLandingComponent,
+    IndexView,
+  ],
   exports: [],
   bootstrap: [AppComponent],
   imports: [
@@ -192,6 +237,12 @@ export function markedOptionsFactory(): object {
     TableVirtualScrollModule,
     DragDropModule,
   ],
-  providers: [UtilityService, CookieService, UserTrackingService, ScreenTrackingService, provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    UtilityService,
+    CookieService,
+    UserTrackingService,
+    ScreenTrackingService,
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
 })
 export class AppModule {}

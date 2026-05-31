@@ -1,5 +1,4 @@
-THUMDER
-=======
+# THUMDER
 
 <p align="center">
   <img src="./assets/favicon.256x256.png" alt="ICON" width="256px" height="256px"/>
@@ -17,18 +16,18 @@ Desarrollado sobre tecnologías web modernas (**Angular** y **Electron**), THUMD
 
 ### Características Principales
 
-- **Editor Integrado y Gestor de Ficheros:** Escribe y administra tu propio código ensamblador DLX directamente en la aplicación, definiendo puntos de ruptura (*breakpoints*) para facilitar la depuración.
+- **Editor Integrado y Gestor de Ficheros:** Escribe y administra tu propio código ensamblador DLX directamente en la aplicación, definiendo puntos de ruptura (_breakpoints_) para facilitar la depuración.
 - **Simulación Precisa:** Ejecuta programas paso a paso (instrucción a instrucción) o visualiza los cambios detallados ciclo a ciclo de reloj.
-- **Visualización del Cauce (Pipeline):** Sigue el recorrido de cada instrucción a través de las 5 etapas clásicas del procesador DLX 
+- **Visualización del Cauce (Pipeline):** Sigue el recorrido de cada instrucción a través de las 5 etapas clásicas del procesador DLX
   - **Fetch** (Búsqueda)
   - **Decode** (Decodificación)
   - **Execute** (Ejecución)
   - **Memory-Access** (Acceso a memoria)
   - **Write-Result** (Escritura de resultados)
 - **Control de Memoria y Registros:** Inspecciona y modifica el valor de los registros del procesador y de la memoria principal de forma dinámica durante la simulación.
-- **Diagrama de Ciclos de Reloj:** Analiza gráficamente la superposición de instrucciones y comprende cómo la arquitectura resuelve los adelantamientos (*forwarding*) y los riesgos estructurales, de datos y de control.
+- **Diagrama de Ciclos de Reloj:** Analiza gráficamente la superposición de instrucciones y comprende cómo la arquitectura resuelve los adelantamientos (_forwarding_) y los riesgos estructurales, de datos y de control.
 - **Análisis Estadístico:** Obtén métricas y estadísticas detalladas de rendimiento al realizar las simulaciones.
-- **Interfaz Múltiple Personalizable:** Un entorno modular (*Multiview*) que permite reorganizar las diferentes vistas (código, pipeline, memoria, diagramas) mediante un sistema flexible de arrastrar y soltar (*drag and drop*).
+- **Interfaz Múltiple Personalizable:** Un entorno modular (_Multiview_) que permite reorganizar las diferentes vistas (código, pipeline, memoria, diagramas) mediante un sistema flexible de arrastrar y soltar (_drag and drop_).
 
 ## Instalación de las dependencias
 
@@ -44,17 +43,15 @@ para ello debemos asignar al menos 4Gb de memoria `--max_old_space_size=<size>`.
 
 ## Desarrollo
 
-
 | **Commandos**                   | **Descripción**                                         |
-|:--------------------------------|:--------------------------------------------------------|
+| :------------------------------ | :------------------------------------------------------ |
 | `pnpm run ng:serve-angular:dev` | Enciende el servidor de angular en modo de desarrollo   |
 | `pnpm run ws:server`            | Enciende el servidor websocket, requiere THUMDER Server |
 
 ## Despliegue
 
-
 | **Commandos**                          | **Descripción**                                                                                   |
-|:---------------------------------------|:--------------------------------------------------------------------------------------------------|
+| :------------------------------------- | :------------------------------------------------------------------------------------------------ |
 | `pnpm install`                         | Instala las dependencias del proyecto                                                             |
 | `pnpm run postinstall`                 | Inicializa la configuración del proyecto para electro                                             |
 | `pnpm run ng:build-angular:production` | Construye la aplicación angular de navegador con las variables de producción                      |
@@ -68,9 +65,8 @@ La carpeta `/release` contiene los ficheros ejecutables con la aplicación.
 
 ## Otros comandos
 
-
 | **Commandos**                          | **Descripción** |
-|:---------------------------------------|:----------------|
+| :------------------------------------- | :-------------- |
 | `pnpm run ng:build:dev`                |                 |
 | `pnpm run ng:build:web`                |                 |
 | `pnpm run ng:build:production`         |                 |
@@ -91,7 +87,7 @@ pnpm cypress install
 ```
 
 | **Commandos**           | **Descripción**                                                                 |
-|:------------------------|:--------------------------------------------------------------------------------|
+| :---------------------- | :------------------------------------------------------------------------------ |
 | `pnpm run cypress:open` | Abre la aplicación con cypress app y configura los comandos y pruebas           |
 | `pnpm run cypress:run`  | Ejecuta las pruebas sobre el servidor (solo son visibles por linea de comandos) |
 
