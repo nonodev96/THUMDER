@@ -2,7 +2,7 @@ THUMDER
 =======
 
 <p align="center">
-  <img src="./assets/favicon.256x256.png" alt="ICON" width="10%" height="10%"/>
+  <img src="./assets/favicon.256x256.png" alt="ICON" width="256px" height="256px"/>
 </p>
 
 Página del proyecto en producción <a href="https://thumder.netlify.com">THUMDER</a>
