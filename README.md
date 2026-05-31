@@ -1,32 +1,13 @@
 THUMDER
 =======
 
-<center>
+<p align="center">
   <img src="./assets/favicon.256x256.png" alt="ICON" width="10%" height="10%"/>
-</center>
+</p>
 
-<center>
-  <a href="https://angular.io/">
-    <img src="https://www.vectorlogo.zone/logos/angular/angular-icon.svg" alt="Angular Logo" width="10%" height="10%"/>
-  </a>
-  <a href="https://electronjs.org/">
-    <img src="https://www.vectorlogo.zone/logos/electronjs/electronjs-icon.svg" alt="Electron Logo">
-  </a>
-</center>
+Página del proyecto en producción <a href="https://thumder.netlify.com">THUMDER</a>
 
-<center>
-  <a href="https://app.netlify.com/sites/thumder/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/491cdbc6-34ea-4ef0-92c0-be4f2a2ec3cb/deploy-status" alt="Netlify Status">
-  </a>
-</center>
-
-<center>
-  Página del proyecto en producción <a href="https://thumder.netlify.com">THUMDER</a><br>
-</center>
-
-<center>
-  Repositorio del servidor del proyecto <a href="https://github.com/nonodev96/THUMDER-server">THUMDER server</a>
-</center>
+Repositorio del servidor del proyecto <a href="https://github.com/nonodev96/THUMDER-server">THUMDER server</a>
 
 ## ¿Qué es THUMDER?
 
@@ -36,13 +17,18 @@ Desarrollado sobre tecnologías web modernas (**Angular** y **Electron**), THUMD
 
 ### Características Principales
 
-- 💻 **Editor Integrado y Gestor de Ficheros:** Escribe y administra tu propio código ensamblador DLX directamente en la aplicación, definiendo puntos de ruptura (*breakpoints*) para facilitar la depuración.
-- ⚙️ **Simulación Precisa:** Ejecuta programas paso a paso (instrucción a instrucción) o visualiza los cambios detallados ciclo a ciclo de reloj.
-- 📊 **Visualización del Cauce (Pipeline):** Sigue el recorrido de cada instrucción a través de las 5 etapas clásicas del procesador DLX (*Fetch, Decode, Execute, Memory-Access, Write-Result*).
-- 🧠 **Control de Memoria y Registros:** Inspecciona y modifica el valor de los registros del procesador y de la memoria principal de forma dinámica durante la simulación.
-- ⏱️ **Diagrama de Ciclos de Reloj:** Analiza gráficamente la superposición de instrucciones y comprende cómo la arquitectura resuelve los adelantamientos (*forwarding*) y los riesgos estructurales, de datos y de control.
-- 📈 **Análisis Estadístico:** Obtén métricas y estadísticas detalladas de rendimiento al realizar las simulaciones.
-- 🪟 **Interfaz Múltiple Personalizable:** Un entorno modular (*Multiview*) que permite reorganizar las diferentes vistas (código, pipeline, memoria, diagramas) mediante un sistema flexible de arrastrar y soltar (*drag and drop*).
+- **Editor Integrado y Gestor de Ficheros:** Escribe y administra tu propio código ensamblador DLX directamente en la aplicación, definiendo puntos de ruptura (*breakpoints*) para facilitar la depuración.
+- **Simulación Precisa:** Ejecuta programas paso a paso (instrucción a instrucción) o visualiza los cambios detallados ciclo a ciclo de reloj.
+- **Visualización del Cauce (Pipeline):** Sigue el recorrido de cada instrucción a través de las 5 etapas clásicas del procesador DLX 
+  - **Fetch** (Búsqueda)
+  - **Decode** (Decodificación)
+  - **Execute** (Ejecución)
+  - **Memory-Access** (Acceso a memoria)
+  - **Write-Result** (Escritura de resultados)
+- **Control de Memoria y Registros:** Inspecciona y modifica el valor de los registros del procesador y de la memoria principal de forma dinámica durante la simulación.
+- **Diagrama de Ciclos de Reloj:** Analiza gráficamente la superposición de instrucciones y comprende cómo la arquitectura resuelve los adelantamientos (*forwarding*) y los riesgos estructurales, de datos y de control.
+- **Análisis Estadístico:** Obtén métricas y estadísticas detalladas de rendimiento al realizar las simulaciones.
+- **Interfaz Múltiple Personalizable:** Un entorno modular (*Multiview*) que permite reorganizar las diferentes vistas (código, pipeline, memoria, diagramas) mediante un sistema flexible de arrastrar y soltar (*drag and drop*).
 
 ## Instalación de las dependencias
 
