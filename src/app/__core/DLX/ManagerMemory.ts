@@ -1,7 +1,7 @@
 import type { TypeDirectiveData, TypeInstructionsData, TypeMemory, TypeMemoryToUpdate } from "@app/Types";
 import { Utils } from "@app/Utils";
-import { Int32 } from "@core/TypesData";
 import type { InterfaceMemory } from "@core/DLX/interfaces";
+import { Int32 } from "@core/TypesData";
 
 export class ManagerMemory implements InterfaceMemory {
   // Bytes

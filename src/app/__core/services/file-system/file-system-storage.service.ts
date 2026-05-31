@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {
   // DocumentSnapshot,
   type CollectionReference,
@@ -26,23 +26,26 @@ import {
   updateDoc,
   where,
 } from "@angular/fire/firestore";
-import { firstValueFrom, type Observable } from "rxjs";
-import { map } from "rxjs/operators";
 import type { InterfaceUser } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
+import { firstValueFrom, type Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
 })
 export class FileSystemStorageService {
+  private httpClient = inject(HttpClient);
+  private afs = inject(Firestore);
+
   private readonly dbFileItemsPath = "/file-items";
 
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
   // https://dev.to/jdgamble555/angular-12-with-firebase-9-49a0
-  constructor(
-    private httpClient: HttpClient,
-    private afs: Firestore,
-  ) {}
+  constructor() {}
 
   // TODO
   public async isInitialize(): Promise<boolean> {
@@ -51,7 +54,7 @@ export class FileSystemStorageService {
   }
 
   public async generateDefaultFiles(force = false): Promise<number> {
-    if (!force && await this.isInitialize()) {
+    if (!force && (await this.isInitialize())) {
       return Promise.resolve(1);
     }
     const files = ["prim.s", "win-dlx.s"];
@@ -214,4 +217,3 @@ export class FileSystemStorageService {
 // create file
 // async data
 // generate 2 files by default
-

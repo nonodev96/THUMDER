@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { type Observable, Subscription, Subject } from "rxjs";
+import { Injectable, inject } from "@angular/core";
 import type { InterfaceFileItem } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
+import { type Observable, Subject, type Subscription } from "rxjs";
 
 export class FileSystemItem {
   path: string;
@@ -53,11 +53,16 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
   providedIn: "root",
 })
 export class FileSystemService {
+  fileSystemStorageService = inject(FileSystemStorageService);
+
   public items: THUMDER_FileItem[] = [];
   private updateUI$: Subject<void> = new Subject<void>();
   private subscription!: Subscription;
 
-  constructor(public fileSystemStorageService: FileSystemStorageService) { }
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   public async init(): Promise<void> {
     await this.setList_FileItems(await this.fileSystemStorageService.getFiles());
@@ -167,9 +172,7 @@ export class FileSystemService {
   }
 
   public async moveItem(item: THUMDER_FileItem, destinationDirectory: THUMDER_FileItem): Promise<void> {
-    const destPath = destinationDirectory.path
-      ? `${destinationDirectory.path}/${destinationDirectory.name}`
-      : destinationDirectory.name;
+    const destPath = destinationDirectory.path ? `${destinationDirectory.path}/${destinationDirectory.name}` : destinationDirectory.name;
 
     if (item.isDirectory) {
       const oldFullPath = item.path ? `${item.path}/${item.name}` : item.name;

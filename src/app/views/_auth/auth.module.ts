@@ -3,21 +3,16 @@ import { ScrollingModule } from "@angular/cdk/scrolling";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatSortModule } from "@angular/material/sort";
-import { MatTableModule } from "@angular/material/table";
-import { TranslateModule } from "@ngx-translate/core";
-import { GridsterModule } from "angular-gridster2";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { MatMenuModule } from "@angular/material/menu";
+import { MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from "@angular/material/table";
 import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatTooltipModule } from "@angular/material/tooltip";
-import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
-import { NgChartsModule } from "ng2-charts";
-import { MarkdownModule } from "ngx-markdown";
-import { SharedModule } from "@shared/shared.module";
 import { ComponentsModule } from "@components/components.module";
-import { DebugView } from "@views/debug/debug-view";
+import { TranslateModule } from "@ngx-translate/core";
+import { SharedModule } from "@shared/shared.module";
 import { GridViewComponent } from "@views/_auth/_grid_view/grid-view.component";
 import { MultiplesViewsComponent } from "@views/_auth/_views/multiples-views.component";
 import { AuthRoutingModule } from "@views/_auth/auth-routing.module";
@@ -34,6 +29,11 @@ import { PipelineView } from "@views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "@views/_auth/profile/profile.view";
 import { RegistersView } from "@views/_auth/registers/registers.view";
 import { StatisticsView } from "@views/_auth/statistics/statistics.view";
+import { DebugView } from "@views/debug/debug-view";
+import { GridsterModule } from "angular-gridster2";
+import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
+import { NgChartsModule } from "ng2-charts";
+import { MarkdownModule } from "ngx-markdown";
 
 @NgModule({
   declarations: [

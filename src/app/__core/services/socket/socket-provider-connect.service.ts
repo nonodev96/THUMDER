@@ -1,15 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
+import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
+import type { TypeWebSocketConfiguration } from "@app/Types";
 import { TranslateService } from "@ngx-translate/core";
 import { Socket, type SocketIoConfig } from "ngx-socket-io";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject } from "rxjs";
-import { CONFIG_WEBSOCKET, DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
-import type { TypeWebSocketConfiguration } from "@app/Types";
 
 @Injectable({
   providedIn: "root",
 })
 export class SocketProviderConnectService {
+  private translate = inject(TranslateService);
+  private toast = inject(ToastrService);
+
   public socketID!: string;
   private connect$ = new Subject<"Connect" | "Disconnect">();
   private publicMessage$ = new Subject();
@@ -17,10 +20,10 @@ export class SocketProviderConnectService {
 
   public socketIO: Socket;
 
-  constructor(
-    private translate: TranslateService,
-    private toast: ToastrService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     const configWebSocket = JSON.parse(localStorage.getItem("web_socket_configuration") ?? "{}") as TypeWebSocketConfiguration;
     const config: SocketIoConfig = CONFIG_WEBSOCKET;
     config.url = configWebSocket.socket_url;

@@ -1,6 +1,6 @@
-import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } from "@core/DLX/__OPCODES";
 import { ASCII_TABLE } from "@app/CONSTANTS";
 import type { TypeAddress } from "@app/Types";
+import { OPCODES_TYPE_I_J, OPCODES_TYPE_R_OPCODE_0, OPCODES_TYPE_R_OPCODE_1 } from "@core/DLX/__OPCODES";
 
 export namespace Utils {
   //YYYY-mm-dd HH:MM:SS

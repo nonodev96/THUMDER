@@ -5,10 +5,6 @@ import { NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatTableModule } from "@angular/material/table";
 import { RouterModule } from "@angular/router";
-import { CovalentCodeEditorModule } from "@covalent/code-editor";
-import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
-import { MarkdownModule } from "ngx-markdown";
-import { SharedModule } from "@shared/shared.module";
 import { AsideLeftComponent } from "@components/aside/aside-left/aside-left.component";
 import { AsideRightComponent } from "@components/aside/aside-right/aside-right.component";
 import { BreadcrumbComponent } from "@components/breadcrumb/breadcrumb.component";
@@ -27,6 +23,10 @@ import { PixiPipelineComponent } from "@components/pixi-pipeline/pixi-pipeline.c
 import { SidebarComponent } from "@components/sidebar/sidebar.component";
 import { DebugComponent } from "@components/windows/debug/debug.component";
 import { XtermComponent } from "@components/xterm/xterm.component";
+import { CovalentCodeEditorModule } from "@covalent/code-editor";
+import { SharedModule } from "@shared/shared.module";
+import { TableVirtualScrollModule } from "ng-table-virtual-scroll";
+import { MarkdownModule } from "ngx-markdown";
 
 @NgModule({
   imports: [

@@ -1,8 +1,8 @@
-import { Component, type OnDestroy, type OnInit } from "@angular/core";
+import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
 import { MachineService } from "@core/machine/machine.service";
 import { Globals } from "@core/services/globals/globals.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "THUMDER-windows-debug",
@@ -11,14 +11,17 @@ import { Globals } from "@core/services/globals/globals.service";
   standalone: false,
 })
 export class DebugComponent implements OnInit, OnDestroy {
+  router = inject(Router);
+  globals = inject(Globals);
+  private machine = inject(MachineService);
+
   private loggerSubscription: Subscription = new Subscription();
   public private_logger: string[] = [];
 
-  constructor(
-    public router: Router,
-    public globals: Globals,
-    private machine: MachineService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.loggerSubscription = this.machine.getLoggerObservable().subscribe((log) => {
       this.private_logger.push(log);
       if (this.private_logger.length >= 100) this.private_logger.pop();

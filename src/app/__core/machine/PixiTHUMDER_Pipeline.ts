@@ -1,5 +1,5 @@
-import * as PIXI from "pixi.js";
 import type { TypePipelineInstructions } from "@app/Types";
+import * as PIXI from "pixi.js";
 
 export type ColorType = number;
 

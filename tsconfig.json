@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "verbatimModuleSyntax": true,
     "module": "es2020",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -17,21 +18,42 @@
     "esModuleInterop": true,
     "allowJs": true,
     "paths": {
-      "mini-signals": [
-        "../node_modules/mini-signals/index.js"
+      "@app": [
+        "./src/app"
       ],
-      "@app": ["./src/app"],
-      "@app/*": ["./src/app/*"],
-      "@core": ["./src/app/__core"],
-      "@core/*": ["./src/app/__core/*"],
-      "@shared": ["./src/app/__shared"],
-      "@shared/*": ["./src/app/__shared/*"],
-      "@layout": ["./src/app/_layouts"],
-      "@layout/*": ["./src/app/_layouts/*"],
-      "@components": ["./src/app/components"],
-      "@components/*": ["./src/app/components/*"],
-      "@views": ["./src/app/views"],
-      "@views/*": ["./src/app/views/*"]
+      "@app/*": [
+        "./src/app/*"
+      ],
+      "@core": [
+        "./src/app/__core"
+      ],
+      "@core/*": [
+        "./src/app/__core/*"
+      ],
+      "@shared": [
+        "./src/app/__shared"
+      ],
+      "@shared/*": [
+        "./src/app/__shared/*"
+      ],
+      "@layout": [
+        "./src/app/_layouts"
+      ],
+      "@layout/*": [
+        "./src/app/_layouts/*"
+      ],
+      "@components": [
+        "./src/app/components"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
+      ],
+      "@views": [
+        "./src/app/views"
+      ],
+      "@views/*": [
+        "./src/app/views/*"
+      ]
     },
     "experimentalDecorators": true,
     "target": "ES2022",

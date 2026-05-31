@@ -1,9 +1,4 @@
-import { type AfterViewInit, Component, type OnInit } from "@angular/core";
-import { AppConfig } from "../../../../environments/_environment";
-import { MachineService } from "@core/machine/machine.service";
-import { Globals } from "@core/services/globals/globals.service";
-import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
-import { StorageService } from "@core/storage/storage.service";
+import { type AfterViewInit, Component, inject, type OnInit } from "@angular/core";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION,
   DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
@@ -19,6 +14,11 @@ import type {
   TypeMultiviewConfiguration,
   TypeWebSocketConfiguration,
 } from "@app/Types";
+import { MachineService } from "@core/machine/machine.service";
+import { Globals } from "@core/services/globals/globals.service";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { StorageService } from "@core/storage/storage.service";
+import { AppConfig } from "../../../../environments/_environment";
 
 interface EventTargetInput extends EventTarget {
   value: string | number | boolean;
@@ -31,6 +31,11 @@ interface EventTargetInput extends EventTarget {
   standalone: false,
 })
 export class ConfigView implements OnInit, AfterViewInit {
+  globals = inject(Globals);
+  private storage = inject(StorageService);
+  private socket = inject(SocketProviderConnectService);
+  private machine = inject(MachineService);
+
   public readonly webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
 
   public enabledForwardingConfiguration: TypeEnabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
@@ -41,12 +46,10 @@ export class ConfigView implements OnInit, AfterViewInit {
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   public webSocketConfiguration: TypeWebSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
 
-  constructor(
-    public globals: Globals,
-    private storage: StorageService,
-    private socket: SocketProviderConnectService,
-    private machine: MachineService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.enabledForwardingConfiguration =

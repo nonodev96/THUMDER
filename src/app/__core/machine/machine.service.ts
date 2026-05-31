@@ -1,8 +1,4 @@
-import { Injectable } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { type IndividualConfig, ToastrService } from "ngx-toastr";
-import { firstValueFrom, interval, type Observable, type PartialObserver, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { Injectable, inject } from "@angular/core";
 import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_ENABLED_FORWARDING_CONFIGURATION, DEFAULT_STEP_SIMULATION } from "@app/CONSTANTS";
 import {
   EnumLogLevel,
@@ -33,10 +29,14 @@ import { ManagerBreakpoints } from "@core/DLX/ManagerBreakpoints";
 import { ManagerMemory } from "@core/DLX/ManagerMemory";
 import { ManagerRegisters } from "@core/DLX/ManagerRegisters";
 import { ManagerStatistics } from "@core/DLX/ManagerStatistics";
-import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
-import { StorageService } from "@core/storage/storage.service";
 import { PixiTHUMDER_CycleClockDiagram } from "@core/machine/PixiTHUMDER_CycleClockDiagram";
 import { PixiTHUMDER_Pipeline } from "@core/machine/PixiTHUMDER_Pipeline";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { StorageService } from "@core/storage/storage.service";
+import { TranslateService } from "@ngx-translate/core";
+import { type IndividualConfig, ToastrService } from "ngx-toastr";
+import { firstValueFrom, interval, type Observable, type PartialObserver, Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
 
@@ -44,6 +44,11 @@ import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
   providedIn: "root",
 })
 export class MachineService {
+  private store = inject(StorageService);
+  private socketProviderConnect = inject(SocketProviderConnectService);
+  private translate = inject(TranslateService);
+  private toast = inject(ToastrService);
+
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
   public pipeline: PixiTHUMDER_Pipeline;
   public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
@@ -90,12 +95,10 @@ export class MachineService {
   isComplete: boolean = false;
   isBreakpoint: boolean = false;
 
-  constructor(
-    private store: StorageService,
-    private socketProviderConnect: SocketProviderConnectService,
-    private translate: TranslateService,
-    private toast: ToastrService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.level = EnumLogLevel.All;
 
     this.canSimulate = false;

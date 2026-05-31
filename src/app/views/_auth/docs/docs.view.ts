@@ -1,7 +1,7 @@
 import { CdkDrag, type CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { type AfterViewInit, Component, type OnInit, type QueryList, ViewChildren } from "@angular/core";
-import { Globals } from "@core/services/globals/globals.service";
+import { type AfterViewInit, Component, inject, type OnInit, type QueryList, ViewChildren } from "@angular/core";
 import type { TypeIdTitleFile } from "@app/Types";
+import { Globals } from "@core/services/globals/globals.service";
 // import { fetchAndActivate, getRemoteConfig, getValue } from "@angular/fire/remote-config";
 
 @Component({
@@ -11,6 +11,8 @@ import type { TypeIdTitleFile } from "@app/Types";
   standalone: false,
 })
 export class DocsView implements OnInit, AfterViewInit {
+  globals = inject(Globals);
+
   public main_list: TypeIdTitleFile[] = [
     {
       id: "README",
@@ -98,7 +100,10 @@ export class DocsView implements OnInit, AfterViewInit {
   @ViewChildren(CdkDrag)
   public draggable_list!: QueryList<CdkDrag>;
 
-  constructor(public globals: Globals) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

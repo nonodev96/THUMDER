@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { type Observable, Subject } from "rxjs";
 import {
   DEFAULT_AUTO_SAVE_CONFIGURATION,
   DEFAULT_BREAKPOINTS,
@@ -11,6 +10,7 @@ import {
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
   DEFAULT_WEB_SOCKET_CONFIGURATION,
 } from "@app/CONSTANTS";
+import { type Observable, Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",

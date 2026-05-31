@@ -1,5 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit, ViewChild } from "@angular/core";
+import { Component, inject, type OnInit, ViewChild } from "@angular/core";
 import { PixiCycleClockDiagramComponent } from "@components/pixi-cycle-clock-diagram/pixi-cycle-clock-diagram.component";
 
 @Component({
@@ -8,15 +8,17 @@ import { PixiCycleClockDiagramComponent } from "@components/pixi-cycle-clock-dia
   standalone: false,
 })
 export class CycleClockDiagramView implements OnInit {
+  private _document = inject<Document>(DOCUMENT);
+
   @ViewChild(PixiCycleClockDiagramComponent)
   public pixi_CycleClockDiagramComponent!: PixiCycleClockDiagramComponent;
 
   public inCanvas: boolean = false;
 
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

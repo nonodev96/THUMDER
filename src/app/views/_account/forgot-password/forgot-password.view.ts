@@ -1,8 +1,8 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
-import { AuthService } from "@core/auth/auth.service";
 import { AppComponent } from "@app/app.component";
+import { AuthService } from "@core/auth/auth.service";
 
 @Component({
   selector: "app-forgot-password",
@@ -10,6 +10,11 @@ import { AppComponent } from "@app/app.component";
   standalone: false,
 })
 export class ForgotPasswordView implements OnInit {
+  private _document = inject<Document>(DOCUMENT);
+  app = inject<AppComponent>(AppComponent);
+  authService = inject(AuthService);
+  formBuilder = inject(UntypedFormBuilder);
+
   public forgotPasswordForm: UntypedFormGroup;
   public error_messages = {
     password_reset_email: [
@@ -18,13 +23,10 @@ export class ForgotPasswordView implements OnInit {
     ],
   };
 
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-    @Inject(AppComponent) public app: AppComponent,
-    public authService: AuthService,
-    public formBuilder: UntypedFormBuilder,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.forgotPasswordForm = this.formBuilder.group({
       password_reset_email: new UntypedFormControl("", Validators.compose([Validators.required, Validators.email])),
     });

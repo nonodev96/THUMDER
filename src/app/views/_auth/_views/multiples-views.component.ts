@@ -1,9 +1,9 @@
 import { CdkDrag } from "@angular/cdk/drag-drop";
-import { type AfterViewInit, Component, type OnDestroy, type OnInit, type QueryList, ViewChildren } from "@angular/core";
-import { Globals } from "@core/services/globals/globals.service";
+import { type AfterViewInit, Component, inject, type OnDestroy, type OnInit, type QueryList, ViewChildren } from "@angular/core";
 import { DEFAULT_MULTIVIEW_CONFIGURATION } from "@app/CONSTANTS";
 import type { TypeMultiviewConfiguration } from "@app/Types";
 import { Utils } from "@app/Utils";
+import { Globals } from "@core/services/globals/globals.service";
 
 @Component({
   selector: "view-multiples-views",
@@ -12,23 +12,29 @@ import { Utils } from "@app/Utils";
   standalone: false,
 })
 export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy {
+  globals = inject(Globals);
+
   @ViewChildren(CdkDrag) draggable_list!: QueryList<CdkDrag>;
   public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
   public main_list_1: string[] = [];
   public main_list_2: string[] = [];
 
-  constructor(public globals: Globals) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.multiviewConfiguration =
-      (JSON.parse(localStorage.getItem("multiview_configuration") ?? "null") as TypeMultiviewConfiguration) ?? DEFAULT_MULTIVIEW_CONFIGURATION;
+      (JSON.parse(localStorage.getItem("multiview_configuration") ?? "null") as TypeMultiviewConfiguration) ??
+      DEFAULT_MULTIVIEW_CONFIGURATION;
     this.main_list_1 = this.multiviewConfiguration.list_1;
     this.main_list_2 = this.multiviewConfiguration.list_2;
   }
 
   ngAfterViewInit(): void {
     MultiplesViewsComponent.closeAllCards();
-    this.main_list_1.push(...this.draggable_list.toArray().map(d => String(d.data)));
+    this.main_list_1.push(...this.draggable_list.toArray().map((d) => String(d.data)));
     const cards: any = window.jQuery(".card").not("#card-debug");
     cards.on("expanded.lte.cardwidget", async () => {
       await Utils.wait(500);

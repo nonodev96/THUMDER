@@ -1,9 +1,9 @@
 import { ViewportScroller } from "@angular/common";
-import { Component, Input, type OnInit, Renderer2, ViewChild } from "@angular/core";
+import { Component, Input, inject, type OnInit, Renderer2, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
-import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
 import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
 import type { TypeIdTitleFile } from "@app/Types";
+import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
 
 @Component({
   selector: "THUMDER-docs-item",
@@ -12,6 +12,9 @@ import type { TypeIdTitleFile } from "@app/Types";
   standalone: false,
 })
 export class DocsItemComponent implements OnInit {
+  private scroller = inject(ViewportScroller);
+  private renderer = inject(Renderer2);
+
   @Input()
   public item!: TypeIdTitleFile;
 
@@ -20,12 +23,10 @@ export class DocsItemComponent implements OnInit {
 
   private listenObj!: ReturnType<Renderer2["listen"]>;
 
-  constructor(
-    _markdownService: MarkdownService,
-    private scroller: ViewportScroller,
-    _router: Router,
-    private renderer: Renderer2,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

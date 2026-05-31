@@ -1,8 +1,8 @@
 import { MACHINE_ALL_REGISTER_CONTROL } from "@app/CONSTANTS";
 import type { TypeRegisterControl, TypeRegisterToUpdate } from "@app/Types";
 import { Utils } from "@app/Utils";
-import { Float32, Int32 } from "@core/TypesData";
 import type { InterfaceRegisters } from "@core/DLX/interfaces";
+import { Float32, Int32 } from "@core/TypesData";
 
 export class ManagerRegisters implements InterfaceRegisters {
   PC: Int32;

@@ -1,7 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, inject } from "@angular/core";
 import { ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
-import { filter } from "rxjs/operators";
 import { Utils } from "@app/Utils";
+import { filter } from "rxjs/operators";
 
 type MenuItem = {
   label: Data;
@@ -15,13 +15,16 @@ type MenuItem = {
   standalone: false,
 })
 export class BreadcrumbComponent {
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+
   public menuItems!: MenuItem[];
   public menuItemsLoaded!: Promise<boolean>;
 
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.router.events.pipe(filter((event: Event) => event instanceof NavigationEnd)).subscribe((_$event) => {
       this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
       this.menuItemsLoaded = Promise.resolve(true);

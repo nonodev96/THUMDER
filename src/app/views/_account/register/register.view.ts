@@ -1,16 +1,16 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 import {
-  AbstractControl,
+  type AbstractControl,
   UntypedFormBuilder,
   UntypedFormControl,
   type UntypedFormGroup,
   type ValidationErrors,
   Validators,
 } from "@angular/forms";
+import { AppComponent } from "@app/app.component";
 import { AuthService } from "@core/auth/auth.service";
 import { ElectronService } from "@core/services";
-import { AppComponent } from "@app/app.component";
 
 @Component({
   selector: "app-register",
@@ -18,6 +18,12 @@ import { AppComponent } from "@app/app.component";
   standalone: false,
 })
 export class RegisterView implements OnInit {
+  private _document = inject<Document>(DOCUMENT);
+  authService = inject(AuthService);
+  app = inject(AppComponent);
+  electronService = inject(ElectronService);
+  formBuilder = inject(UntypedFormBuilder);
+
   public registerForm: UntypedFormGroup;
   public showSpinner: boolean;
 
@@ -46,13 +52,10 @@ export class RegisterView implements OnInit {
 
   public translationEnabled: boolean = false;
 
-  constructor(
-    @Inject(DOCUMENT) private _document: Document,
-    public authService: AuthService,
-    public app: AppComponent,
-    public electronService: ElectronService,
-    public formBuilder: UntypedFormBuilder,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.registerForm = this.formBuilder.group(
       {
         first_name: new UntypedFormControl(
@@ -82,7 +85,9 @@ export class RegisterView implements OnInit {
 
   static matchValues(matchTo: string): (arg: AbstractControl) => ValidationErrors | null {
     return (control: AbstractControl): ValidationErrors | null => {
-      return !!control.parent && !!control.parent.value && control.value === (control.parent.controls as Record<string, AbstractControl>)[matchTo]?.value
+      return !!control.parent &&
+        !!control.parent.value &&
+        control.value === (control.parent.controls as Record<string, AbstractControl>)[matchTo]?.value
         ? null
         : { password_not_match: true };
     };

@@ -1,5 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 
 @Component({
   selector: "app-landing",
@@ -7,10 +7,12 @@ import { Component, Inject, type OnInit } from "@angular/core";
   standalone: false,
 })
 export class LandingView implements OnInit {
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-  ) {}
+  private _document = inject<Document>(DOCUMENT);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 }

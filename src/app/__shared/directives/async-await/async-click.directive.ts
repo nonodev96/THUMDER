@@ -1,12 +1,15 @@
-import { Directive, ElementRef, HostListener, Input, type OnChanges, type OnDestroy, Renderer2 } from "@angular/core";
+import { Directive, ElementRef, HostListener, Input, inject, type OnChanges, type OnDestroy, Renderer2 } from "@angular/core";
 
-import { type Observable, Subscription } from "rxjs";
+import type { Observable, Subscription } from "rxjs";
 
 @Directive({
   selector: "[asyncClick]",
   standalone: false,
 })
 export class AsyncClickDirective implements OnChanges, OnDestroy {
+  private _renderer = inject(Renderer2);
+  private _elementRef = inject(ElementRef);
+
   private pending = true;
   private subscription!: Subscription;
 
@@ -16,10 +19,10 @@ export class AsyncClickDirective implements OnChanges, OnDestroy {
   @Input() successButtonClass = "";
   @Input() warningButtonClass = "";
 
-  constructor(
-    private _renderer: Renderer2,
-    private _elementRef: ElementRef,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this._renderer.setAttribute(this._elementRef.nativeElement, "class", "");
   }
 

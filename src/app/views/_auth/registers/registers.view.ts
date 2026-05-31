@@ -1,10 +1,10 @@
-import { type AfterViewInit, Component, type OnInit, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
-import { MachineService } from "@core/machine/machine.service";
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "@app/CONSTANTS";
-import { EditRegisterBinary32Component } from "@components/modals/edit-register-binary32/edit-register-binary32.component";
 import type { TypeData, TypeDataRepresentation, TypeRegisterControl } from "@app/Types";
+import { EditRegisterBinary32Component } from "@components/modals/edit-register-binary32/edit-register-binary32.component";
+import { MachineService } from "@core/machine/machine.service";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 
 @Component({
   selector: "view-registers",
@@ -13,6 +13,8 @@ import type { TypeData, TypeDataRepresentation, TypeRegisterControl } from "@app
   standalone: false,
 })
 export class RegistersView implements OnInit, AfterViewInit {
+  machine = inject(MachineService);
+
   @ViewChild(MatSort, { static: true })
   public sort!: MatSort;
 
@@ -32,7 +34,10 @@ export class RegistersView implements OnInit, AfterViewInit {
   public displayedColumnsF: string[] = ["Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Float"];
   public displayedColumnsD: string[] = ["Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Double"];
 
-  constructor(public machine: MachineService) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.dataSource.filter = "";

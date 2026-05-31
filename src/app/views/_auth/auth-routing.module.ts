@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, type Routes } from "@angular/router";
-import { DebugView } from "@views/debug/debug-view";
 import { GridViewComponent } from "@views/_auth/_grid_view/grid-view.component";
 import { MultiplesViewsComponent } from "@views/_auth/_views/multiples-views.component";
 import { CalculatorView } from "@views/_auth/calculator/calculator.view";
@@ -16,6 +15,7 @@ import { PipelineView } from "@views/_auth/pixi-pipeline/pipeline.view";
 import { ProfileView } from "@views/_auth/profile/profile.view";
 import { RegistersView } from "@views/_auth/registers/registers.view";
 import { StatisticsView } from "@views/_auth/statistics/statistics.view";
+import { DebugView } from "@views/debug/debug-view";
 
 const routes: Routes = [
   { path: "", redirectTo: "account", pathMatch: "full" },

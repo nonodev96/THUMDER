@@ -1,11 +1,11 @@
-import { type AfterViewInit, Component, type OnInit, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
-import { TranslateService } from "@ngx-translate/core";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
+import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
 import { StorageService } from "@core/storage/storage.service";
-import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
-import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
+import { TranslateService } from "@ngx-translate/core";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
 
 @Component({
   selector: "view-memory",
@@ -14,6 +14,9 @@ import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
   standalone: false,
 })
 export class MemoryView implements OnInit, AfterViewInit {
+  machine = inject(MachineService);
+  private storage = inject(StorageService);
+
   @ViewChild(MatSort, { static: true })
   public sort!: MatSort;
 
@@ -26,11 +29,10 @@ export class MemoryView implements OnInit, AfterViewInit {
   public typeDataSelected: TypeDataDisplayColumn = "Word";
   public maxHeightCard: string = "75vh";
 
-  constructor(
-    public machine: MachineService,
-    _translate: TranslateService,
-    private storage: StorageService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.dataSourceMemory.filter = "";
     this.dataSourceMemory.sort = this.sort;
   }

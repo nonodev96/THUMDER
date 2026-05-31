@@ -1,12 +1,12 @@
-import { ChangeDetectorRef, Component, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
 import { DomSanitizer, type SafeHtml } from "@angular/platform-browser";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-import { firstValueFrom } from "rxjs";
-import { MachineService } from "@core/machine/machine.service";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "@app/CONSTANTS";
 import type { TypeData } from "@app/Types";
 import { Utils } from "@app/Utils";
+import { MachineService } from "@core/machine/machine.service";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
+import { firstValueFrom } from "rxjs";
 
 @Component({
   selector: "THUMDER-edit-memory-binary32",
@@ -15,6 +15,12 @@ import { Utils } from "@app/Utils";
   standalone: false,
 })
 export class EditMemoryBinary32Component implements OnInit {
+  machine = inject(MachineService);
+  private translate = inject(TranslateService);
+  private ref = inject(ChangeDetectorRef);
+  private toastService = inject(ToastrService);
+  private sanitized = inject(DomSanitizer);
+
   public readonly MAX_VALUE_TYPE_DATA = MAX_VALUE_TYPE_DATA;
 
   /**
@@ -143,15 +149,12 @@ export class EditMemoryBinary32Component implements OnInit {
     return this._binaryValue.padStart(64, "0");
   }
 
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
   // =================================================================================================================
 
-  constructor(
-    public machine: MachineService,
-    private translate: TranslateService,
-    private ref: ChangeDetectorRef,
-    private toastService: ToastrService,
-    private sanitized: DomSanitizer,
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {}
 

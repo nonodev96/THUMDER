@@ -1,5 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit, ViewChild } from "@angular/core";
+import { Component, inject, type OnInit, ViewChild } from "@angular/core";
 import { PixiPipelineComponent } from "@components/pixi-pipeline/pixi-pipeline.component";
 
 @Component({
@@ -9,13 +9,15 @@ import { PixiPipelineComponent } from "@components/pixi-pipeline/pixi-pipeline.c
   standalone: false,
 })
 export class PipelineView implements OnInit {
+  private _document = inject<Document>(DOCUMENT);
+
   @ViewChild(PixiPipelineComponent)
   public pixi_PipelineComponent!: PixiPipelineComponent;
 
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 }

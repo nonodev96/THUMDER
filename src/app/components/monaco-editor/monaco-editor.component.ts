@@ -1,13 +1,13 @@
 import { type AfterViewInit, Component, Input, type OnDestroy, type OnInit } from "@angular/core";
+import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "@app/Types";
+import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
 import * as monaco from "monaco-editor";
 import { type Observable, Subject } from "rxjs";
-import MonacoConfig from "../../../monaco-config";
-import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
-import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "@app/Types";
+import MonacoConfig from "../../monaco-config";
 
-import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
-import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
-import EditorOption = monaco.editor.EditorOption;
+type IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
+type IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
+const EditorOption = monaco.editor.EditorOption;
 
 @Component({
   selector: "THUMDER-monaco-editor",
@@ -94,7 +94,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD, () => {
       this.toggleDebuggerTag();
     });
-    this.editor.onDidChangeCursorSelection((_$event) => {});
+    this.editor.onDidChangeCursorSelection((_$event) => { });
     this.editor.onDidChangeModelDecorations((_$event) => {
       this.breakpoints = this.getAllBreakpoints();
       this.breakpoints$.next(this.breakpoints);

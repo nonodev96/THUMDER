@@ -1,10 +1,10 @@
-import { type AfterViewInit, Component, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import { MatSort } from "@angular/material/sort";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
-import { Subscription } from "rxjs";
-import { MachineService } from "@core/machine/machine.service";
 import type { TypeAddress, TypeAddressStage, TypeInstructionsData, TypeInstructionsData_Table, TypeStage } from "@app/Types";
 import { Utils } from "@app/Utils";
+import { MachineService } from "@core/machine/machine.service";
+import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "view-code",
@@ -13,6 +13,8 @@ import { Utils } from "@app/Utils";
   standalone: false,
 })
 export class CodeView implements OnInit, AfterViewInit, OnDestroy {
+  machine = inject(MachineService);
+
   @ViewChild(MatSort, { static: true })
   public sort!: MatSort;
 
@@ -27,7 +29,10 @@ export class CodeView implements OnInit, AfterViewInit, OnDestroy {
   private resetSimulationSubscription: Subscription = new Subscription();
   public stepSimulation: any;
 
-  constructor(public machine: MachineService) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.dataSourceCode.filter = "";
     this.dataSourceCode.sort = this.sort;
   }

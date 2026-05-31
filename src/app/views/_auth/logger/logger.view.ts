@@ -1,7 +1,7 @@
-import { Component, type OnInit, ViewChild } from "@angular/core";
-import { MachineService } from "@core/machine/machine.service";
-import { XtermComponent } from "@components/xterm/xterm.component";
+import { Component, inject, type OnInit, ViewChild } from "@angular/core";
 import type { TypeOnKeyEvent } from "@app/Types";
+import { XtermComponent } from "@components/xterm/xterm.component";
+import { MachineService } from "@core/machine/machine.service";
 
 @Component({
   selector: "view-logger",
@@ -10,11 +10,16 @@ import type { TypeOnKeyEvent } from "@app/Types";
   standalone: false,
 })
 export class LoggerView implements OnInit {
+  machine = inject(MachineService);
+
   @ViewChild(XtermComponent)
   public xtermComponent!: XtermComponent;
   public text: string = "";
 
-  constructor(public machine: MachineService) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

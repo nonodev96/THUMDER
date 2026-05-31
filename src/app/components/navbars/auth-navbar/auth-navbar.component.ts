@@ -1,13 +1,13 @@
 import { DOCUMENT } from "@angular/common";
-import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit } from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnDestroy, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { AppConfig } from "../../../../environments/_environment";
-import { AuthService } from "@core/auth/auth.service";
-import { MachineService } from "@core/machine/machine.service";
 import { AppComponent } from "@app/app.component";
 import { AUTH_ROUTES } from "@app/CONSTANTS";
 import type { PublicRoutes } from "@app/Types";
+import { AuthService } from "@core/auth/auth.service";
+import { MachineService } from "@core/machine/machine.service";
+import { Subscription } from "rxjs";
+import { AppConfig } from "../../../../environments/_environment";
 
 @Component({
   selector: "THUMDER-auth-navbar",
@@ -15,6 +15,12 @@ import type { PublicRoutes } from "@app/Types";
   standalone: false,
 })
 export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
+  private _document = inject<Document>(DOCUMENT);
+  private router = inject(Router);
+  app = inject<AppComponent>(AppComponent);
+  machine = inject(MachineService);
+  authService = inject(AuthService);
+
   public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);
   public readonly isDEV = AppConfig.environment === "DEV";
 
@@ -23,13 +29,10 @@ export class AuthNavbarComponent implements OnInit, OnDestroy, AfterViewInit {
   public isWebsocketStatusConnect: boolean = false;
   private isRunningSubscription: Subscription = new Subscription();
 
-  constructor(
-    @Inject(DOCUMENT) private _document: Document,
-    private router: Router,
-    @Inject(AppComponent) public app: AppComponent,
-    public machine: MachineService,
-    public authService: AuthService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.isRunningSubscription = this.machine.getIsRunningObservable().subscribe((isRunning) => {

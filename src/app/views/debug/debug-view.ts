@@ -1,8 +1,4 @@
-import { type AfterViewInit, Component, type OnInit } from "@angular/core";
-import { ToastrService } from "ngx-toastr";
-import { ElectronService } from "@core/services";
-import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
-import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { type AfterViewInit, Component, inject, type OnInit } from "@angular/core";
 import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
 import type {
   TypeAddress,
@@ -17,6 +13,10 @@ import type {
   TypeSimulationInitRequest,
 } from "@app/Types";
 import { Utils } from "@app/Utils";
+import { ElectronService } from "@core/services";
+import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
+import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-debug",
@@ -25,6 +25,10 @@ import { Utils } from "@app/Utils";
   standalone: false,
 })
 export class DebugView implements OnInit, AfterViewInit {
+  private toast = inject(ToastrService);
+  private electronService = inject(ElectronService);
+  socketProviderConnect = inject(SocketProviderConnectService);
+
   public testCodeRequest: string = [
     "main:",
     "ADDI   R1, R0, #0",
@@ -63,11 +67,10 @@ export class DebugView implements OnInit, AfterViewInit {
   public testCodeResponse_directives: TypeDirectiveData[] = [];
   i = 0;
 
-  constructor(
-    private toast: ToastrService,
-    private electronService: ElectronService,
-    public socketProviderConnect: SocketProviderConnectService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     console.log("ioSocket: ", this.socketProviderConnect.socketIO.ioSocket);
   }
 

@@ -1,5 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 import { AuthService } from "@core/auth/auth.service";
 
 @Component({
@@ -9,10 +9,13 @@ import { AuthService } from "@core/auth/auth.service";
   standalone: false,
 })
 export class ProfileView implements OnInit {
-  constructor(
-    @Inject(DOCUMENT) private _document: Document,
-    public authService: AuthService,
-  ) {}
+  private _document = inject<Document>(DOCUMENT);
+  authService = inject(AuthService);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

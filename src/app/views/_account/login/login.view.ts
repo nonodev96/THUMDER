@@ -1,10 +1,10 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, Inject, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 import { UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { AppComponent } from "@app/app.component";
 import { AuthService } from "@core/auth/auth.service";
 import { ElectronService } from "@core/services";
-import { AppComponent } from "@app/app.component";
 
 @Component({
   selector: "app-login",
@@ -12,6 +12,13 @@ import { AppComponent } from "@app/app.component";
   standalone: false,
 })
 export class LoginView implements OnInit {
+  private _document = inject<Document>(DOCUMENT);
+  electronService = inject(ElectronService);
+  authService = inject(AuthService);
+  router = inject(Router);
+  app = inject(AppComponent);
+  formBuilder = inject(UntypedFormBuilder);
+
   public loginForm: UntypedFormGroup;
   public showSpinner: boolean = false;
 
@@ -27,14 +34,10 @@ export class LoginView implements OnInit {
     ],
   };
 
-  constructor(
-    @Inject(DOCUMENT) private _document: Document,
-    public electronService: ElectronService,
-    public authService: AuthService,
-    public router: Router,
-    public app: AppComponent,
-    public formBuilder: UntypedFormBuilder,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.loginForm = this.formBuilder.group(
       {
         email: new UntypedFormControl("", Validators.compose([Validators.required, Validators.email])),

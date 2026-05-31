@@ -1,8 +1,4 @@
-import { Component, type OnInit } from "@angular/core";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-import { firstValueFrom } from "rxjs";
-import { MachineService } from "@core/machine/machine.service";
+import { Component, inject, type OnInit } from "@angular/core";
 import {
   DEFAULT_BINARY_32_BITS,
   DEFAULT_BINARY_64_BITS,
@@ -14,6 +10,10 @@ import {
 } from "@app/CONSTANTS";
 import type { TypeRegister, TypeRegisterToEdit } from "@app/Types";
 import { Utils } from "@app/Utils";
+import { MachineService } from "@core/machine/machine.service";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
+import { firstValueFrom } from "rxjs";
 
 @Component({
   selector: "THUMDER-edit-register-binary32",
@@ -22,6 +22,10 @@ import { Utils } from "@app/Utils";
   standalone: false,
 })
 export class EditRegisterBinary32Component implements OnInit {
+  machine = inject(MachineService);
+  private translate = inject(TranslateService);
+  private toastService = inject(ToastrService);
+
   readonly MACHINE_TYPE_REGISTERS = MACHINE_TYPE_REGISTERS;
 
   public aliasTypeRegister: string = "";
@@ -78,11 +82,10 @@ export class EditRegisterBinary32Component implements OnInit {
     this._registerToEdit_binary = Utils.convertIEEE754_Number_To_Binary64Bits(double);
   }
 
-  constructor(
-    public machine: MachineService,
-    private translate: TranslateService,
-    private toastService: ToastrService,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 

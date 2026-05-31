@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from "@angular/core";
+import { Injectable, inject, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
 
 //import { AngularFirestore, AngularFirestoreDocument } from "@angular/fire/compat/firestore";
@@ -7,7 +7,7 @@ import { Router } from "@angular/router";
 // import { Auth } from '@angular/fire/auth';
 // import { setPersistence, inMemoryPersistence, browserSessionPersistence, Persistence, } from '@firebase/auth';
 
-import type { FirebaseError } from "@angular/fire/app";
+import { FirebaseError } from "@angular/fire/app";
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -24,43 +24,39 @@ import {
   // browserLocalPersistence, browserSessionPersistence, inMemoryPersistence
 } from "@angular/fire/auth";
 import { doc, Firestore, setDoc } from "@angular/fire/firestore";
-import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
-import { type Observable, Subject, Subscription } from "rxjs";
 import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
 import type { InterfaceUser } from "@app/Types";
 import { ElectronService } from "@core/services";
+import { TranslateService } from "@ngx-translate/core";
+import { ToastrService } from "ngx-toastr";
+import { type Observable, Subject, Subscription } from "rxjs";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
+  private afs = inject(Firestore);
+  private afAuth = inject(Auth);
+  private ngZone = inject(NgZone);
+  private router = inject(Router);
+  private toast = inject(ToastrService);
+  private translate = inject(TranslateService);
+  private electronService = inject(ElectronService);
+
   public isLogging$: Subject<boolean> = new Subject<boolean>();
 
   public userData!: InterfaceUser; // Save logged in user data
   private subscriptions$ = new Subscription();
 
-  constructor(
-    private afs: Firestore, // Inject Firestore service
-    private afAuth: Auth, // Inject Firebase auth service
-    private ngZone: NgZone, // NgZone service to remove outside scope warning
-    private router: Router,
-    private toast: ToastrService,
-    private translate: TranslateService,
-    // private auth: Auth,
-    private electronService: ElectronService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.subscriptions$.add(
       this.afAuth.onAuthStateChanged((user) => {
         if (user) {
           window.document.body.className = "";
-          window.document.body.classList.add(
-            "dx-viewport",
-            "sidebar-mini",
-            "layout-fixed",
-            "layout-footer-fixed",
-            "layout-navbar-fixed",
-          );
+          window.document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");
 
           this.userData = user as unknown as InterfaceUser;
           localStorage.setItem("user", JSON.stringify(this.userData));

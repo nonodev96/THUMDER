@@ -1,14 +1,13 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, type Routes } from "@angular/router";
-
-import { PageNotFoundComponent } from "@shared/components";
-// Guards
-import { AuthGuard } from "@shared/guard/auth.guard";
+// components
+import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
 // _layouts
 import { LayoutAdminComponent } from "@layout/admin/layout-admin.component";
 import { LayoutAuthComponent } from "@layout/auth/layout-auth.component";
-// components
-import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
+import { PageNotFoundComponent } from "@shared/components";
+// Guards
+import { AuthGuard } from "@shared/guard/auth.guard";
 // Index view
 import { IndexView } from "@views/_index/index.view";
 

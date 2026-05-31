@@ -1,5 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import { type AfterViewInit, Component, Inject } from "@angular/core";
+import { type AfterViewInit, Component, inject } from "@angular/core";
 import { Globals } from "@core/services/globals/globals.service";
 
 @Component({
@@ -8,11 +8,13 @@ import { Globals } from "@core/services/globals/globals.service";
   standalone: false,
 })
 export class LayoutAuthComponent implements AfterViewInit {
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-    public globals: Globals,
-  ) {}
+  private _document = inject<Document>(DOCUMENT);
+  globals = inject(Globals);
+
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngAfterViewInit(): void {
     this._document.body.classList.add("dx-viewport", "sidebar-mini", "layout-fixed", "layout-footer-fixed", "layout-navbar-fixed");

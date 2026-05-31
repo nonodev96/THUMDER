@@ -1,8 +1,8 @@
 ﻿import { DOCUMENT } from "@angular/common";
-import { ChangeDetectorRef, Component, Inject, NgZone, type OnDestroy, type OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, inject, NgZone, type OnDestroy, type OnInit } from "@angular/core";
 import { type NavigationExtras, Router } from "@angular/router";
+import { FileSystemItem, FileSystemService, type THUMDER_FileItem } from "@core/services/file-system/file-system.service";
 import { Subscription } from "rxjs";
-import { type THUMDER_FileItem, FileSystemItem, FileSystemService } from "@core/services/file-system/file-system.service";
 
 @Component({
   selector: "view-file-manager",
@@ -11,6 +11,12 @@ import { type THUMDER_FileItem, FileSystemItem, FileSystemService } from "@core/
   standalone: false,
 })
 export class FileManagerView implements OnInit, OnDestroy {
+  private _document = inject<Document>(DOCUMENT);
+  fileSystemService = inject(FileSystemService);
+  private router = inject(Router);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
+
   public show: boolean = false;
   public showUID: boolean = false;
   public currentPath: string = "";
@@ -25,14 +31,10 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   private updateUISubscription: Subscription = new Subscription();
 
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-    public fileSystemService: FileSystemService,
-    private router: Router,
-    private ngZone: NgZone,
-    private cdr: ChangeDetectorRef,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.updateUISubscription = this.fileSystemService.getUpdateUIObservable().subscribe(() => {
       // Items update reactively via fileSystemService.items
     });

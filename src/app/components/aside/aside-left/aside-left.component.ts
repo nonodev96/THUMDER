@@ -1,8 +1,8 @@
-import { Component, type OnInit } from "@angular/core";
+import { Component, inject, type OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { AppConfig } from "../../../../environments/_environment";
 import { AuthService } from "@core/auth/auth.service";
 import { ElectronService } from "@core/services";
+import { AppConfig } from "../../../../environments/_environment";
 
 @Component({
   selector: "THUMDER-aside-left",
@@ -11,13 +11,15 @@ import { ElectronService } from "@core/services";
   standalone: false,
 })
 export class AsideLeftComponent implements OnInit {
+  authService = inject(AuthService);
+  electronService = inject(ElectronService);
+
   public readonly isProduction = !AppConfig.production;
 
-  constructor(
-    public authService: AuthService,
-    public electronService: ElectronService,
-    _router: Router,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 }

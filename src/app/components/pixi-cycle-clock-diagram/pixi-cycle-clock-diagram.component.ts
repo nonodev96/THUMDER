@@ -4,15 +4,16 @@ import {
   type ElementRef,
   EventEmitter,
   HostListener,
+  inject,
   type OnDestroy,
   type OnInit,
   Output,
   ViewChild,
 } from "@angular/core";
+import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
+import { MachineService } from "@core/machine/machine.service";
 import * as PIXI from "pixi.js";
 import { Subscription } from "rxjs";
-import { MachineService } from "@core/machine/machine.service";
-import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
 
 @Component({
   selector: "THUMDER-pixi-cycle-clock-diagram",
@@ -21,6 +22,8 @@ import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
   standalone: false,
 })
 export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, OnDestroy {
+  machine = inject(MachineService);
+
   @ViewChild("pixiCycleContainer")
   public pixiContainer!: ElementRef<HTMLDivElement>;
 
@@ -34,13 +37,17 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   private stepSimulationSubscription: Subscription = new Subscription();
   private readonly idCanvas: string = "pixi-cycle-clock-diagram-id";
 
-  constructor(public machine: MachineService) {
-  }
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((stepSimulation) => {
       if (stepSimulation.isNewInstruction === true) {
-        this.machine.cycleClockDiagram.addInstruction(this.machine.code.getOrDefaultValue(stepSimulation.pipeline.IF.address)?.instruction ?? "");
+        this.machine.cycleClockDiagram.addInstruction(
+          this.machine.code.getOrDefaultValue(stepSimulation.pipeline.IF.address)?.instruction ?? "",
+        );
       }
       for (const arrow of stepSimulation.pipeline.arrows) {
         const arrowDraw = {

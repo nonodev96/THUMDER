@@ -24,7 +24,6 @@
             "allowedCommonJsDependencies": [
               "@covalent/code-editor",
               "chart.js",
-              "mini-signals",
               "@firebase/app-check",
               "socket.io-client",
               "datastructures-js",

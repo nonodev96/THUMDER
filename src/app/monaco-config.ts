@@ -1,9 +1,9 @@
 import * as monaco from "monaco-editor";
-import { OPCODES } from "./app/__core/DLX/__OPCODES";
-import { DLX_DOCUMENTATION } from "./app/__core/DLX/Documentation";
-import { AppConfig } from "./environments/_environment";
+import { AppConfig } from "../environments/_environment";
+import { OPCODES } from "./__core/DLX/__OPCODES";
+import { DLX_DOCUMENTATION } from "./__core/DLX/Documentation";
 
-import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
+type IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
 type TypeMonacoConfig = {
   baseUrl: string;

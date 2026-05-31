@@ -1,13 +1,10 @@
-import type { SocketIoConfig } from "ngx-socket-io";
-import type { IndividualConfig } from "ngx-toastr";
-import npm from "../../package.json";
-import { AppConfig } from "../environments/_environment";
 import type {
   InterfaceFileItem,
   PublicRoutes,
   PublicRoutesList,
   TypeCycleCell,
   TypeCycleCellUnit,
+  TypeData,
   TypeDataStatistics,
   TypeEnabledForwardingConfiguration,
   TypeFloatingPointStageConfiguration,
@@ -20,8 +17,11 @@ import type {
   TypeRegisterToEdit,
   TypeSimulationStep,
   TypeWebSocketConfiguration,
-  TypeData,
 } from "@app/Types";
+import type { SocketIoConfig } from "ngx-socket-io";
+import type { IndividualConfig } from "ngx-toastr";
+import npm from "../../package.json";
+import { AppConfig } from "../environments/_environment";
 
 export const NPM_VERSION = npm.version.toString();
 

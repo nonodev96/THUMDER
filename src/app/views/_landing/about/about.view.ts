@@ -1,19 +1,13 @@
 import { ViewportScroller } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import {
-  type AfterViewInit,
-  Component,
-  type OnInit,
-  Renderer2,
-  ViewChild,
-} from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnInit, Renderer2, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
+import { ElectronService } from "@core/services";
 import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
 import type { IPackageJson } from "package-json-type";
 import { firstValueFrom } from "rxjs";
 import npm from "../../../../../package.json";
-import { ElectronService } from "@core/services";
-import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
 
 @Component({
   selector: "app-about",
@@ -22,16 +16,15 @@ import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
   standalone: false,
 })
 export class AboutView implements OnInit, AfterViewInit {
+  electronService = inject(ElectronService);
+  private scroller = inject(ViewportScroller);
+  private renderer = inject(Renderer2);
+  private httpClient = inject(HttpClient);
+
   private readonly SERVER_API = "https://unpkg.com/";
 
-  public dependencies = Object.entries(npm.dependencies) as unknown as [
-    string,
-    string,
-  ];
-  public devDependencies = Object.entries(npm.devDependencies) as unknown as [
-    string,
-    string,
-  ];
+  public dependencies = Object.entries(npm.dependencies) as unknown as [string, string];
+  public devDependencies = Object.entries(npm.devDependencies) as unknown as [string, string];
   public dependenciesData: IPackageJson[] = [];
   public devDependenciesData: IPackageJson[] = [];
 
@@ -48,18 +41,14 @@ export class AboutView implements OnInit, AfterViewInit {
   private markdownComponentID_COOKIES!: MarkdownComponent;
 
   @ViewChild("markdownComponentID_CHANGELOG", { static: false })
-  private markdownComponentID_CHANGELOG!:    MarkdownComponent;
+  private markdownComponentID_CHANGELOG!: MarkdownComponent;
 
   private listenObj!: ReturnType<Renderer2["listen"]>;
 
-  constructor(
-    public electronService: ElectronService,
-    _markdownService: MarkdownService,
-    private scroller: ViewportScroller,
-    _router: Router,
-    private renderer: Renderer2,
-    private httpClient: HttpClient,
-  ) {}
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {}
 
   ngOnInit(): void {}
 
@@ -73,30 +62,21 @@ export class AboutView implements OnInit, AfterViewInit {
     const dependenciesData_Promises: Promise<IPackageJson>[] = [];
     const devDependenciesData_Promises: Promise<IPackageJson>[] = [];
     for (const dependency of this.dependencies) {
-      dependenciesData_Promises.push(
-        this.queryNPMPackage(dependency[0], dependency[1]),
-      );
+      dependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
     }
     for (const dependency of this.devDependencies) {
-      devDependenciesData_Promises.push(
-        this.queryNPMPackage(dependency[0], dependency[1]),
-      );
+      devDependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
     }
     this.dependenciesData = await Promise.all(dependenciesData_Promises);
     this.devDependenciesData = await Promise.all(devDependenciesData_Promises);
   }
 
-  private async queryNPMPackage(
-    package_name: string,
-    version: string,
-  ): Promise<IPackageJson> {
+  private async queryNPMPackage(package_name: string, version: string): Promise<IPackageJson> {
     return new Promise((resolve) => {
       const QUERY = `${this.SERVER_API + package_name}@${version}/package.json`;
-      firstValueFrom(this.httpClient.get<IPackageJson>(QUERY)).then(
-        (response) => {
-          resolve(JSON.parse(JSON.stringify(response)));
-        },
-      );
+      firstValueFrom(this.httpClient.get<IPackageJson>(QUERY)).then((response) => {
+        resolve(JSON.parse(JSON.stringify(response)));
+      });
     });
   }
 
@@ -125,21 +105,17 @@ export class AboutView implements OnInit, AfterViewInit {
       console.error("MarkdownComponent not found for id:", id);
       return;
     }
-    this.listenObj = this.renderer.listen(
-      markdownComponent.element.nativeElement,
-      "click",
-      (e: Event) => {
-        if (e.target && (e.target as any).tagName === "A") {
-          const el = e.target as HTMLElement;
-          const linkURL = el.getAttribute?.("href");
-          if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
-            e.preventDefault();
-            const id = linkURL.replace("#", "");
-            this.scrollToAnchor(id);
-          }
+    this.listenObj = this.renderer.listen(markdownComponent.element.nativeElement, "click", (e: Event) => {
+      if (e.target && (e.target as any).tagName === "A") {
+        const el = e.target as HTMLElement;
+        const linkURL = el.getAttribute?.("href");
+        if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
+          e.preventDefault();
+          const id = linkURL.replace("#", "");
+          this.scrollToAnchor(id);
         }
-      },
-    );
+      }
+    });
   }
 
   scrollToAnchor(scrollToAnchor: string) {

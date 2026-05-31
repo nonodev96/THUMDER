@@ -1,10 +1,10 @@
 import { type AfterViewInit, Component, type ElementRef, EventEmitter, Input, type OnInit, Output, ViewChild } from "@angular/core";
+import type { TypeOnKeyEvent } from "@app/Types";
 // import { LigaturesAddon } from "@xterm/addon-ligatures";
 import { SearchAddon } from "@xterm/addon-search";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import { WebglAddon } from "@xterm/addon-webgl";
 import { Terminal } from "@xterm/xterm";
-import type { TypeOnKeyEvent } from "@app/Types";
 
 const PIKACHU = `
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -147,7 +147,9 @@ export class XtermComponent implements OnInit, AfterViewInit {
           [
             "Welcome to xterm.js! Try some of the commands below.",
             "",
-            ...Object.keys(this.commands).map((e) => `  ${e.padEnd(10)} ${(this.commands as Record<string, { description: string; f: () => void }>)[e].description}`),
+            ...Object.keys(this.commands).map(
+              (e) => `  ${e.padEnd(10)} ${(this.commands as Record<string, { description: string; f: () => void }>)[e].description}`,
+            ),
           ].join("\n\r"),
         );
         this.prompt();

@@ -1,8 +1,13 @@
-import { type AfterViewInit, Component, type ElementRef, HostListener, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
-import * as PIXI from "pixi.js";
-import { Subscription } from "rxjs";
-import { MachineService } from "@core/machine/machine.service";
-import type { PixiTHUMDER_Pipeline } from "@core/machine/PixiTHUMDER_Pipeline";
+import {
+  type AfterViewInit,
+  Component,
+  type ElementRef,
+  HostListener,
+  inject,
+  type OnDestroy,
+  type OnInit,
+  ViewChild,
+} from "@angular/core";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
 import type {
   TypeCycleCell,
@@ -11,6 +16,10 @@ import type {
   TypeInstructionPipelineRepresentation,
   TypePipelineInstructions,
 } from "@app/Types";
+import { MachineService } from "@core/machine/machine.service";
+import type { PixiTHUMDER_Pipeline } from "@core/machine/PixiTHUMDER_Pipeline";
+import * as PIXI from "pixi.js";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "THUMDER-pixi-pipeline",
@@ -19,6 +28,8 @@ import type {
   standalone: false,
 })
 export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
+  private machine = inject(MachineService);
+
   @ViewChild("pixiPipelineContainer")
   public pixiContainer!: ElementRef<HTMLDivElement>;
 
@@ -28,7 +39,10 @@ export class PixiPipelineComponent implements OnInit, AfterViewInit, OnDestroy {
   private stepSimulationSubscription: Subscription = new Subscription();
   private readonly idCanvas: string = "pixi-pipeline";
 
-  constructor(private machine: MachineService) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.pipeline = this.machine.pipeline;
   }
 

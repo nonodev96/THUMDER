@@ -1,15 +1,15 @@
 import { DOCUMENT } from "@angular/common";
-import { type AfterViewInit, Component, Inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
+import { DEFAULT_INTERFACE_FILE_ITEM } from "@app/CONSTANTS";
+import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "@app/Types";
+import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
+import { MachineService } from "@core/machine/machine.service";
+import { FileSystemService, type THUMDER_FileItem } from "@core/services/file-system/file-system.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subscription } from "rxjs";
 import * as env from "../../../../environments/_environment";
-import { MachineService } from "@core/machine/machine.service";
-import { type THUMDER_FileItem, FileSystemService } from "@core/services/file-system/file-system.service";
-import { DEFAULT_INTERFACE_FILE_ITEM } from "@app/CONSTANTS";
-import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
-import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "@app/Types";
 
 @Component({
   selector: "view-editor",
@@ -18,6 +18,13 @@ import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeEx
   standalone: false,
 })
 export class EditorView implements OnInit, AfterViewInit, OnDestroy {
+  private _document = inject<Document>(DOCUMENT);
+  private router = inject(Router);
+  private machine = inject(MachineService);
+  private fileSystem = inject(FileSystemService);
+  private translate = inject(TranslateService);
+  private toastService = inject(ToastrService);
+
   public env = env.AppConfig;
 
   @ViewChild(MonacoEditorComponent)
@@ -34,15 +41,10 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   public date: Date = new Date();
   public isMaximize = false;
 
-  constructor(
-    @Inject(DOCUMENT)
-    private _document: Document,
-    private router: Router,
-    private machine: MachineService,
-    private fileSystem: FileSystemService,
-    private translate: TranslateService,
-    private toastService: ToastrService,
-  ) {
+  /** Inserted by Angular inject() migration for backwards compatibility */
+  constructor(...args: unknown[]);
+
+  constructor() {
     this.extrasIDE = this.router.currentNavigation()?.extras.state as TypeExtrasIDE;
     setInterval(() => {
       this.date = new Date();
@@ -63,7 +65,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.initializedSubscription = this.monacoEditorComponent.getInitializedObservable().subscribe(async (isInitialized) => {
       if (isInitialized) {
-        let interfaceFileItem_storaged = localStorage.getItem("interfaceFileItem");
+        const interfaceFileItem_storaged = localStorage.getItem("interfaceFileItem");
         if (!interfaceFileItem_storaged) {
           throw new Error("No interface file item found in local storage");
         }

@@ -24,9 +24,24 @@ import { MatTableModule } from "@angular/material/table";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
+// import { CONFIG_WEBSOCKET } from "./CONSTANTS";
+import { AppComponent } from "@app/app.component";
+import { AppRoutingModule } from "@app/app-routing.module";
+// MODULES
+import { ComponentsModule } from "@components/components.module";
+import { CoreModule } from "@core/core.module";
+// Services
+import { UtilityService } from "@core/services/utility/utility.service";
+// _layouts
+import { LayoutAdminComponent } from "@layout/admin/layout-admin.component";
+import { LayoutAuthComponent } from "@layout/auth/layout-auth.component";
+import { LayoutLandingComponent } from "@layout/landing/layout-landing.component";
 // NG Translate
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+import { SharedModule } from "@shared/shared.module";
+// Index
+import { IndexView } from "@views/_index/index.view";
 // angular-gridster2
 import { GridsterModule } from "angular-gridster2";
 // SOCKET
@@ -45,22 +60,6 @@ import { MARKED_OPTIONS, MarkdownModule, MarkedRenderer } from "ngx-markdown";
 import { ToastrModule } from "ngx-toastr";
 // APP
 import { AppConfig } from "../environments/_environment";
-import { CoreModule } from "@core/core.module";
-// Services
-import { UtilityService } from "@core/services/utility/utility.service";
-import { SharedModule } from "@shared/shared.module";
-// _layouts
-import { LayoutAdminComponent } from "@layout/admin/layout-admin.component";
-import { LayoutAuthComponent } from "@layout/auth/layout-auth.component";
-import { LayoutLandingComponent } from "@layout/landing/layout-landing.component";
-// import { CONFIG_WEBSOCKET } from "./CONSTANTS";
-import { AppComponent } from "@app/app.component";
-import { AppRoutingModule } from "@app/app-routing.module";
-// MODULES
-import { ComponentsModule } from "@components/components.module";
-
-// Index
-import { IndexView } from "@views/_index/index.view";
 
 // AoT requires an exported function for factories
 
