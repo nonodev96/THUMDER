@@ -4,7 +4,6 @@ import type { InterfaceFileItem } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
 
-// Replaces devextreme/file_management/file_system_item
 export class FileSystemItem {
   path: string;
   isDirectory: boolean;
@@ -24,7 +23,6 @@ export class FileSystemItem {
   }
 }
 
-// Replaces devextreme/file_management/upload_info
 export type UploadInfo = {
   chunkIndex: number;
   chunkCount: number;
@@ -59,7 +57,7 @@ export class FileSystemService {
   private updateUI$: Subject<void> = new Subject<void>();
   private subscription!: Subscription;
 
-  constructor(public fileSystemStorageService: FileSystemStorageService) {}
+  constructor(public fileSystemStorageService: FileSystemStorageService) { }
 
   public async init(): Promise<void> {
     await this.setList_FileItems(await this.fileSystemStorageService.getFiles());

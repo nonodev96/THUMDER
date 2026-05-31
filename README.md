@@ -28,11 +28,29 @@ THUMDER
   Repositorio del servidor del proyecto <a href="https://github.com/nonodev96/THUMDER-server">THUMDER server</a>
 </center>
 
+## ¿Qué es THUMDER?
+
+**THUMDER** es un simulador visual interactivo y entorno de desarrollo (IDE) diseñado para la arquitectura del repertorio de instrucciones **DLX**. Su objetivo principal es facilitar el estudio y la comprensión del funcionamiento interno de un procesador segmentado, permitiendo a estudiantes y desarrolladores observar en tiempo real cómo se ejecutan las instrucciones y cómo interactúan los distintos componentes de la arquitectura.
+
+Desarrollado sobre tecnologías web modernas (**Angular** y **Electron**), THUMDER ofrece una interfaz gráfica multiplataforma (Windows, Linux, macOS) que se apoya en un motor de simulación gestionado por [THUMDER Server](https://github.com/nonodev96/THUMDER-server).
+
+### Características Principales
+
+- 💻 **Editor Integrado y Gestor de Ficheros:** Escribe y administra tu propio código ensamblador DLX directamente en la aplicación, definiendo puntos de ruptura (*breakpoints*) para facilitar la depuración.
+- ⚙️ **Simulación Precisa:** Ejecuta programas paso a paso (instrucción a instrucción) o visualiza los cambios detallados ciclo a ciclo de reloj.
+- 📊 **Visualización del Cauce (Pipeline):** Sigue el recorrido de cada instrucción a través de las 5 etapas clásicas del procesador DLX (*Fetch, Decode, Execute, Memory-Access, Write-Result*).
+- 🧠 **Control de Memoria y Registros:** Inspecciona y modifica el valor de los registros del procesador y de la memoria principal de forma dinámica durante la simulación.
+- ⏱️ **Diagrama de Ciclos de Reloj:** Analiza gráficamente la superposición de instrucciones y comprende cómo la arquitectura resuelve los adelantamientos (*forwarding*) y los riesgos estructurales, de datos y de control.
+- 📈 **Análisis Estadístico:** Obtén métricas y estadísticas detalladas de rendimiento al realizar las simulaciones.
+- 🪟 **Interfaz Múltiple Personalizable:** Un entorno modular (*Multiview*) que permite reorganizar las diferentes vistas (código, pipeline, memoria, diagramas) mediante un sistema flexible de arrastrar y soltar (*drag and drop*).
+
 ## Instalación de las dependencias
 
 ```bash
-sudo npm install -g  @angular/cli@12.5.0  # Instala la herramienta de desarrollo
-npm install                               # Instala las dependencias
+# Instala la herramienta de desarrollo
+sudo pnpm install -g @angular/cli
+# Instala las dependencias
+pnpm install
 ```
 
 Tu necesitas aumenta la memoria de node, para ello se debe modificar la variable de entorno de node (`NODE_OPTIONS`),
@@ -41,20 +59,20 @@ para ello debemos asignar al menos 4Gb de memoria `--max_old_space_size=<size>`.
 ## Desarrollo
 
 
-| **Commandos**                  | **Descripción**                                         |
-|:-------------------------------|:--------------------------------------------------------|
-| `npm run ng:serve-angular:dev` | Enciende el servidor de angular en modo de desarrollo   |
-| `npm run ws:server`            | Enciende el servidor websocket, requiere THUMDER Server |
+| **Commandos**                   | **Descripción**                                         |
+|:--------------------------------|:--------------------------------------------------------|
+| `pnpm run ng:serve-angular:dev` | Enciende el servidor de angular en modo de desarrollo   |
+| `pnpm run ws:server`            | Enciende el servidor websocket, requiere THUMDER Server |
 
 ## Despliegue
 
 
-| **Commandos**                         | **Descripción**                                                                                   |
-|:--------------------------------------|:--------------------------------------------------------------------------------------------------|
-| `npm install`                         | Instala las dependencias del proyecto                                                             |
-| `npm run postinstall`                 | Inicializa la configuración del proyecto para electro                                             |
-| `npm run ng:build-angular:production` | Construye la aplicación angular de navegador con las variables de producción                      |
-| `npm run electron:build`              | Construye la aplicación angular y encapsula la aplicación dentro electron generando un ejecutable |
+| **Commandos**                          | **Descripción**                                                                                   |
+|:---------------------------------------|:--------------------------------------------------------------------------------------------------|
+| `pnpm install`                         | Instala las dependencias del proyecto                                                             |
+| `pnpm run postinstall`                 | Inicializa la configuración del proyecto para electro                                             |
+| `pnpm run ng:build-angular:production` | Construye la aplicación angular de navegador con las variables de producción                      |
+| `pnpm run electron:build`              | Construye la aplicación angular y encapsula la aplicación dentro electron generando un ejecutable |
 
 El despliegue genera las carpetas `/dist`, `/dist-angular` y `/release`.
 
@@ -65,40 +83,54 @@ La carpeta `/release` contiene los ficheros ejecutables con la aplicación.
 ## Otros comandos
 
 
-| **Commandos**                         | **Descripción** |
-|:--------------------------------------|:----------------|
-| `npm run ng:build:dev`                |                 |
-| `npm run ng:build:web`                |                 |
-| `npm run ng:build:production`         |                 |
-| `npm run ng:build-angular:dev`        |                 |
-| `npm run ng:build-angular:web`        |                 |
-| `npm run ng:build-angular:production` |                 |
-| `npm run ng:serve:dev`                |                 |
-| `npm run ng:serve:web`                |                 |
-| `npm run ng:serve:production`         |                 |
-| `npm run ng:serve-angular:dev`        |                 |
-| `npm run ng:serve-angular:web`        |                 |
-| `npm run ng:serve-angular:production` |                 |
+| **Commandos**                          | **Descripción** |
+|:---------------------------------------|:----------------|
+| `pnpm run ng:build:dev`                |                 |
+| `pnpm run ng:build:web`                |                 |
+| `pnpm run ng:build:production`         |                 |
+| `pnpm run ng:build-angular:dev`        |                 |
+| `pnpm run ng:build-angular:web`        |                 |
+| `pnpm run ng:build-angular:production` |                 |
+| `pnpm run ng:serve:dev`                |                 |
+| `pnpm run ng:serve:web`                |                 |
+| `pnpm run ng:serve:production`         |                 |
+| `pnpm run ng:serve-angular:dev`        |                 |
+| `pnpm run ng:serve-angular:web`        |                 |
+| `pnpm run ng:serve-angular:production` |                 |
 
 ## Server e2e
 
 
-| **Commandos**          | **Descripción**                                                                 |
-|:-----------------------|:--------------------------------------------------------------------------------|
-| `npm run cypress:open` | Abre la aplicación con cypress app y configura los comandos y pruebas           |
-| `npm run cypress:run`  | Ejecuta las pruebas sobre el servidor (solo son visibles por linea de comandos) |
+| **Commandos**           | **Descripción**                                                                 |
+|:------------------------|:--------------------------------------------------------------------------------|
+| `pnpm run cypress:open` | Abre la aplicación con cypress app y configura los comandos y pruebas           |
+| `pnpm run cypress:run`  | Ejecuta las pruebas sobre el servidor (solo son visibles por linea de comandos) |
 
 ### Cobertura de navegadores
 
 ```bash
-npx browserslist
-npx browserslist --coverage
+pnpm exec browserslist
+pnpm exec browserslist --coverage
 ```
 
 These browsers account for 86.79% of all users globally
 
-## Versión actual de las dependencias
+## Documentación (Wiki)
 
-- Angular v12.5.0
-- Electron v16.2.6
-- Electron Builder v23.0.3
+La documentación detallada sobre el uso y funcionamiento de la aplicación se encuentra en el directorio `wiki/`:
+
+- [Instalación](wiki/0.Installation.md)
+- [Cuenta](wiki/00.Account.md)
+- [Ejecución de instrucciones](wiki/00.TheExecutionOfInstructions.md)
+- [La ventana de los registros](wiki/01.TheRegisterWindow.md)
+- [La memoria](wiki/02.TheMemoryWindow.md)
+- [La ventana de código](wiki/03.TheCodeWindow.md)
+- [La ventana del diagrama de ciclos de reloj](wiki/04.TheClockCycleDiagramWindow.md)
+- [La ventana del cauce de ejecución (Pipeline)](wiki/04.ThePipelineWindow.md)
+- [Estadísticas](wiki/05.TheStatisticsWindow.md)
+- [Puntos de ruptura (breakpoints)](wiki/06.TheBreakpoints.md)
+- [El proceso de simulación](wiki/07.TheExecutionProcess.md)
+- [Editar configuración](wiki/08.TheConfiguration.md)
+- [Gestor de ficheros](wiki/09.FileManager.md)
+- [Editor de ficheros](wiki/10.FileEditor.md)
+- [Vista múltiple](wiki/11.Multiview.md)
