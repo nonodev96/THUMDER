@@ -101,8 +101,6 @@
     "ngx-toastr": "20.0.5",
     "package-json-type": "1.0.3",
     "pixi.js": "7.4.3",
-    "pixi.js-keyboard": "^1.1.6",
-    "pixi.js-mouse": "^1.1.6",
     "rxfire": "6.0.3",
     "rxjs": "7.8.1",
     "string-to-argv": "1.0.0",

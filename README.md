@@ -86,6 +86,9 @@ La carpeta `/release` contiene los ficheros ejecutables con la aplicación.
 
 ## Server e2e
 
+```bash
+pnpm cypress install
+```
 
 | **Commandos**           | **Descripción**                                                                 |
 |:------------------------|:--------------------------------------------------------------------------------|

@@ -1,5 +1,5 @@
 import { enableProdMode } from "@angular/core";
-import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
+import { platformBrowser } from "@angular/platform-browser";
 import * as PIXI from "pixi.js";
 
 import { AppModule } from "./app/app.module";
@@ -10,10 +10,10 @@ if (AppConfig.production) {
 }
 
 // PIXI global settings (must run before any PIXI usage)
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
-PIXI.settings.SORTABLE_CHILDREN = true;
+PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST;
+PIXI.Container.defaultSortableChildren = true;
 
-platformBrowserDynamic()
+platformBrowser()
   .bootstrapModule(AppModule, {
     preserveWhitespaces: false,
   })

@@ -1,14 +1,6 @@
 /* SystemJS module definition */
 declare const nodeModule: NodeModule;
 
-declare module "pixi.js-keyboard" {
-  export function update(): void;
-  export function isKeyDown(...keys: string[]): boolean;
-  export function isKeyUp(...keys: string[]): boolean;
-  export function isKeyPressed(...keys: string[]): boolean;
-  export function isKeyReleased(...keys: string[]): boolean;
-}
-
 interface NodeModule {
   id: string;
 }

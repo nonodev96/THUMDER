@@ -10,7 +10,6 @@ import {
   ViewChild,
 } from "@angular/core";
 import * as PIXI from "pixi.js";
-import * as Keyboard from "pixi.js-keyboard";
 import { Subscription } from "rxjs";
 import { MachineService } from "@core/machine/machine.service";
 import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
@@ -31,12 +30,11 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
   public pApp!: PIXI.Application;
   private inCanvas: boolean = false;
   private ticker!: PIXI.Ticker;
-  private keyboard;
+  private keysDown = new Set<string>();
   private stepSimulationSubscription: Subscription = new Subscription();
   private readonly idCanvas: string = "pixi-cycle-clock-diagram-id";
 
   constructor(public machine: MachineService) {
-    this.keyboard = Keyboard;
   }
 
   ngOnInit(): void {
@@ -96,23 +94,22 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   private gameLoop(delta: number): void {
     this.play(delta);
-    this.keyboard.update();
   }
 
   private play(_delta: number): void {
-    if (this.keyboard.isKeyDown("ArrowLeft", "KeyJ")) {
+    if (this.keysDown.has("ArrowLeft") || this.keysDown.has("KeyJ")) {
       this.machine.cycleClockDiagram.moveRight();
     }
-    if (this.keyboard.isKeyDown("ArrowRight", "KeyL")) {
+    if (this.keysDown.has("ArrowRight") || this.keysDown.has("KeyL")) {
       this.machine.cycleClockDiagram.moveLeft();
     }
-    if (this.keyboard.isKeyDown("ArrowUp", "KeyI")) {
+    if (this.keysDown.has("ArrowUp") || this.keysDown.has("KeyI")) {
       this.machine.cycleClockDiagram.moveBottom();
     }
-    if (this.keyboard.isKeyDown("ArrowDown", "KeyK")) {
+    if (this.keysDown.has("ArrowDown") || this.keysDown.has("KeyK")) {
       this.machine.cycleClockDiagram.moveTop();
     }
-    if (this.keyboard.isKeyDown("KeyR")) {
+    if (this.keysDown.has("KeyR")) {
       this.machine.cycleClockDiagram.reset();
     }
   }
@@ -126,12 +123,22 @@ export class PixiCycleClockDiagramComponent implements OnInit, AfterViewInit, On
 
   @HostListener("document:keydown", ["$event"])
   public handleKeyboardEvent(event: KeyboardEvent): void {
-    if (this.inCanvas && event.key === "ArrowDown") {
-      event.preventDefault();
+    if (this.inCanvas) {
+      this.keysDown.add(event.code);
+      if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+        event.preventDefault();
+      }
     }
-    if (this.inCanvas && event.key === "ArrowUp") {
-      event.preventDefault();
-    }
+  }
+
+  @HostListener("document:keyup", ["$event"])
+  public handleKeyUpEvent(event: KeyboardEvent): void {
+    this.keysDown.delete(event.code);
+  }
+
+  @HostListener("window:blur")
+  public onWindowBlur(): void {
+    this.keysDown.clear();
   }
 
   @HostListener("document:click", ["$event", "$event.target"])
