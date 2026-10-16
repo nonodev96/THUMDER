@@ -34,6 +34,14 @@ describe("validateConfig", () => {
     expect(multiview.code).toBe(DEFAULT_MULTIVIEW_CONFIGURATION.code);
   });
 
+  it("adds the datapath to a multiview saved before it existed", () => {
+    const saved = { list_1: ["code", "cycle_clock_diagram", "memory", "pipeline"], list_2: ["registers", "calculator", "statistics"], statistics: true };
+    const multiview = validateConfig({ multiview: saved }).multiview;
+    expect(multiview.list_2).toEqual(["registers", "calculator", "statistics", "datapath"]);
+    expect(multiview.datapath).toBe(true);
+    expect(multiview.statistics).toBe(true);
+  });
+
   it("knows which changes load the program again", () => {
     const config = defaultConfig();
     expect(changesMachine(config, { ...config, delay: 10, autoSave: false })).toBe(false);

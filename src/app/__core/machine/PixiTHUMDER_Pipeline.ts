@@ -1,5 +1,6 @@
 import type { TypePipelineInstructions } from "@app/Types";
 import { PIXI } from "@core/machine/pixi";
+import { cssColour, cssColourNumber } from "@core/services/theme/palette";
 
 export type ColorType = number;
 
@@ -11,8 +12,7 @@ export type CoordsType = {
 const styleFontTextPipe = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 16,
-  fill: "black",
-  stroke: "#000000",
+  fill: "#0f172a",
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -24,8 +24,7 @@ const styleFontTextPipe = new PIXI.TextStyle({
 const styleFontTextBox = new PIXI.TextStyle({
   fontFamily: "Arial",
   fontSize: 16,
-  fill: "black",
-  stroke: "#000000",
+  fill: "#0f172a",
   // strokeThickness: 0,
   // dropShadow: true,
   // dropShadowColor: "#000000",
@@ -52,7 +51,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
 
   constructor(faddEX_count = 1, fmultEX_count = 8, fdivEX_count = 8) {
     super();
-    this.InstStages_text = new PIXI.Text("Inst-Stages");
+    this.InstStages_text = new PIXI.Text("Inst-Stages", styleFontTextPipe);
     this.IF_text = new PIXI.Text("null", styleFontTextBox);
     this.ID_text = new PIXI.Text("null", styleFontTextBox);
     this.intEX_text = new PIXI.Text("null", styleFontTextBox);
@@ -74,6 +73,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     for (let i = 0; i < this.fdivEX_count; i++) {
       this.fdivEX_array[i] = new PIXI.Text("null", styleFontTextBox);
     }
+    this.paint();
     this.initBoxes();
     this.initArrows();
     this.initTexts();
@@ -140,29 +140,39 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     this.drawArrow({ x: 300, y: 375 }, { x: 175, y: 375 });
   }
 
+  /** The lines and the names are of the colour of the text of the theme (theme.scss); the texts in the boxes, dark */
+  private ink: ColorType = 0x334155;
+
+  private paint(): void {
+    this.ink = cssColourNumber("text-2", "#334155");
+    styleFontTextPipe.fill = cssColour("text", "#0f172a");
+    styleFontTextBox.fill = cssColour("on-stage", "#0f172a");
+  }
+
   private initBoxes() {
-    this.drawBox(0xffff00, { x: 100, y: 100 }, "IF");
-    this.drawBox(0xffa200, { x: 100, y: 200 }, "ID");
-    this.drawBox(0xff001c, { x: 100, y: 300 }, "intEX");
-    this.drawBox(0x00ff00, { x: 100, y: 400 }, "MEM");
-    this.drawBox(0xa2a2ff, { x: 100, y: 500 }, "WB");
+    const stage = (name: string) => cssColourNumber(`stage-${name}`);
+    this.drawBox(stage("if"), { x: 100, y: 100 }, "IF");
+    this.drawBox(stage("id"), { x: 100, y: 200 }, "ID");
+    this.drawBox(stage("ex"), { x: 100, y: 300 }, "intEX");
+    this.drawBox(stage("mem"), { x: 100, y: 400 }, "MEM");
+    this.drawBox(stage("wb"), { x: 100, y: 500 }, "WB");
 
     for (let i = 0; i < this.faddEX_count; i++) {
-      this.drawBox(0xffc3ff, { x: 400, y: 100 + i * 100 }, `faddEX[${i}]`);
+      this.drawBox(stage("fadd"), { x: 400, y: 100 + i * 100 }, `faddEX[${i}]`);
     }
     for (let i = 0; i < this.fmultEX_count; i++) {
-      this.drawBox(0xc3ffc3, { x: 650, y: 100 + i * 100 }, `fmultEX[${i}]`);
+      this.drawBox(stage("fmult"), { x: 650, y: 100 + i * 100 }, `fmultEX[${i}]`);
     }
     for (let i = 0; i < this.fdivEX_count; i++) {
-      this.drawBox(0xffcb8e, { x: 900, y: 100 + i * 100 }, `fdivEX[${i}]`);
+      this.drawBox(stage("fdiv"), { x: 900, y: 100 + i * 100 }, `fdivEX[${i}]`);
     }
   }
 
   private drawBox(color: ColorType, positionStart: CoordsType, text: string) {
     const rectangle = new PIXI.Graphics();
-    rectangle.lineStyle(2, 0x002200, 1);
+    rectangle.lineStyle(1.5, cssColourNumber("on-stage", "#0f172a"), 0.35);
     rectangle.beginFill(color);
-    rectangle.drawRect(positionStart.x, positionStart.y, 150, 50);
+    rectangle.drawRoundedRect(positionStart.x, positionStart.y, 150, 50, 6);
     rectangle.endFill();
     rectangle.zIndex = 1;
 
@@ -179,7 +189,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     const to_x = to.x;
     const to_y = to.y;
     const bezierArrow = new PIXI.Graphics();
-    bezierArrow.lineStyle(2, 0x000000);
+    bezierArrow.lineStyle(2, this.ink);
     bezierArrow.moveTo(start_x, start_y);
     bezierArrow.lineTo(to_x, to_y);
 
@@ -200,7 +210,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     const y4 = to_y + (15 / L1) * ((start_y - to_y) * Math.abs(Math.cos(angle)) + (start_x - to_x) * Math.abs(Math.sin(angle)));
 
     const bezierArrow = new PIXI.Graphics();
-    bezierArrow.lineStyle(2, 0x000000);
+    bezierArrow.lineStyle(2, this.ink);
     bezierArrow.moveTo(start_x, start_y);
     bezierArrow.lineTo(to_x, to_y);
     bezierArrow.moveTo(x3, y3);
@@ -274,6 +284,7 @@ export class PixiTHUMDER_Pipeline extends PIXI.Container {
     this.MEM_text.text = "";
     this.WB_text.text = "";
 
+    this.paint();
     this.initBoxes();
     this.initArrows();
     this.initTexts();

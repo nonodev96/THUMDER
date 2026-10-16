@@ -620,6 +620,7 @@ export type TypeMultiviewConfiguration = {
   registers: boolean;
   code: boolean;
   statistics: boolean;
+  datapath: boolean;
   list_1: string[];
   list_2: string[];
 };

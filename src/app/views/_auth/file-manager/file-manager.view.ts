@@ -2,15 +2,19 @@ import { DatePipe, DecimalPipe } from "@angular/common";
 import { ChangeDetectorRef, Component, type ElementRef, inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { type NavigationExtras, Router } from "@angular/router";
-import { DEFAULT_CONFIG_TOAST, DLX_EXAMPLES } from "@app/CONSTANTS";
+import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
 import { AuthService } from "@core/auth/auth.service";
+import { ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
+import { MachineService } from "@core/machine/machine.service";
+import { type BuiltinData, copyFolderOf, isBuiltin, isBuiltinPath } from "@core/services/file-system/builtin-files";
 import { nameError } from "@core/services/file-system/file-names";
 import {
   FileSystemItem,
   FileSystemService,
   IMPORT_EXTENSIONS,
   InvalidNameError,
+  ReadOnlyError,
   type THUMDER_FileItem,
 } from "@core/services/file-system/file-system.service";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
@@ -27,7 +31,8 @@ const DELETE_MODAL = "fileManagerDeleteModal";
 /**
  * The file manager: the DLX programs of the person, in folders. They are kept in the browser and, with an account,
  * synchronised (FileSystemStorageService). Files can be imported (.s, .txt and .zip, with the button or dropping them
- * on the list) and downloaded (a .s, or a .zip with the folders).
+ * on the list) and downloaded (a .s, or a .zip with the folders). The folders of THUMDER (the examples and the guided
+ * exercises) are always there, read only: their programs can be opened, downloaded and copied.
  */
 @Component({
   selector: "view-file-manager",
@@ -44,13 +49,14 @@ export class FileManagerView implements OnInit, OnDestroy {
   private modals = inject(ModalService);
   private translate = inject(TranslateService);
   private toast = inject(ToastrService);
+  private exercises = inject(ExerciseService);
+  private machine = inject(MachineService);
 
   @ViewChild("importInput") private importInput?: ElementRef<HTMLInputElement>;
 
   public show = false;
   public currentPath = "";
   public selectedItems: THUMDER_FileItem[] = [];
-  public readonly examplesCount = DLX_EXAMPLES.length;
   public readonly accept = IMPORT_EXTENSIONS.join(",");
 
   /** The modal of the names: a new folder, or a rename of `renaming` */
@@ -77,11 +83,34 @@ export class FileManagerView implements OnInit, OnDestroy {
     });
   }
 
-  /** The folders first, then the files, by name */
+  /** The folders of THUMDER first, then the folders and then the files, by name */
   get currentItems(): THUMDER_FileItem[] {
     return this.fileSystemService.items
       .filter((item) => item.path === this.currentPath)
-      .sort((a, b) => Number(b.isDirectory) - Number(a.isDirectory) || a.name.localeCompare(b.name));
+      .sort(
+        (a, b) =>
+          Number(isBuiltin(b)) - Number(isBuiltin(a)) || Number(b.isDirectory) - Number(a.isDirectory) || a.name.localeCompare(b.name),
+      );
+  }
+
+  /** Whether an item is of THUMDER (read only) */
+  public isBuiltin(item: THUMDER_FileItem): boolean {
+    return isBuiltin(item);
+  }
+
+  /** The folder shown is of THUMDER: nothing can be created in it */
+  get readOnlyHere(): boolean {
+    return isBuiltinPath(this.currentPath);
+  }
+
+  /** Where the copies of the programs of the folder shown go */
+  get copyFolder(): string {
+    return copyFolderOf(this.currentPath);
+  }
+
+  /** Something of THUMDER is selected: the selection cannot be renamed nor deleted */
+  get builtinSelected(): boolean {
+    return this.selectedItems.some((item) => isBuiltin(item));
   }
 
   get pathSegments(): string[] {
@@ -107,7 +136,12 @@ export class FileManagerView implements OnInit, OnDestroy {
 
   private fail(error: unknown): void {
     logger.error(error);
-    const text = error instanceof InvalidNameError ? this.message(`NAME_${error.reason}`) : String(error);
+    const text =
+      error instanceof InvalidNameError
+        ? this.message(`NAME_${error.reason}`)
+        : error instanceof ReadOnlyError
+          ? this.message("READ_ONLY_ERROR")
+          : String(error);
     this.toast.error(text, this.message("ERROR"), DEFAULT_CONFIG_TOAST);
   }
 
@@ -151,11 +185,26 @@ export class FileManagerView implements OnInit, OnDestroy {
     this.selectedItems = [];
   }
 
-  public openItem(item: THUMDER_FileItem): void {
-    const interfaceFileItem = this.fileSystemService.items.find((value) => item.key === value.key);
+  public async openItem(item: THUMDER_FileItem): Promise<void> {
+    let interfaceFileItem = this.fileSystemService.items.find((value) => item.key === value.key);
     if (interfaceFileItem === undefined) return;
+    // A program of the guided exercises: the exercise starts, with its statement and its configuration
+    const exerciseId = isBuiltin(interfaceFileItem) ? (interfaceFileItem.dataItem as BuiltinData | null)?.exercise : undefined;
+    if (exerciseId !== undefined) {
+      try {
+        const exercise = (await this.storage.fetchExercises()).find((value) => value.id === exerciseId);
+        if (exercise !== undefined) {
+          const english = (this.translate.getCurrentLang() ?? this.translate.getFallbackLang()) === "en";
+          interfaceFileItem = await this.exercises.startGuided(exercise, english ? exercise.statement.en : exercise.statement.es);
+          await this.machine.resetMachineStatus();
+        }
+      } catch (error) {
+        this.fail(error);
+        return;
+      }
+    }
     const extras: NavigationExtras = { state: { interfaceFileItem } };
-    void this.router.navigateByUrl("/auth/editor", extras);
+    await this.router.navigateByUrl("/auth/editor", extras);
   }
 
   // ── New files and folders, rename and delete ─────────────────────────────────────────────────────────────────
@@ -181,6 +230,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   public askRename(item: THUMDER_FileItem, opener: EventTarget | null): void {
+    if (isBuiltin(item)) return;
     this.nameMode = "rename";
     this.renaming = item;
     this.nameValue = item.name;
@@ -210,7 +260,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   }
 
   public askDelete(items: THUMDER_FileItem[], opener: EventTarget | null): void {
-    if (items.length === 0) return;
+    if (items.length === 0 || items.some((item) => isBuiltin(item))) return;
     this.toDelete = [...items];
     this.modals.open(DELETE_MODAL, opener as HTMLElement | null);
   }
@@ -226,10 +276,11 @@ export class FileManagerView implements OnInit, OnDestroy {
     this.toDelete = [];
   }
 
-  public async addExamples(): Promise<void> {
+  /** Copies a program or a folder of THUMDER to the files of the person, and shows where it went */
+  public async copyToMine(item: THUMDER_FileItem): Promise<void> {
     try {
-      this.currentPath = await this.fileSystemService.addExamples(this.currentPath);
-      this.selectedItems = [];
+      const folder = await this.fileSystemService.copyToMine(item);
+      this.toast.success(this.message("COPIED", { path: folder }), this.message("COPY_TO_MINE"), DEFAULT_CONFIG_TOAST);
     } catch (error) {
       this.fail(error);
     }
@@ -267,6 +318,11 @@ export class FileManagerView implements OnInit, OnDestroy {
   // ── Drag & Drop (internal) ─────────────────────────────────────────────────────────────────────────────────────
 
   public onDragStart(event: DragEvent, item: THUMDER_FileItem): void {
+    // What is of THUMDER does not move
+    if (isBuiltin(item)) {
+      event.preventDefault();
+      return;
+    }
     this.isDraggingInternal = true;
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = "move";
@@ -283,6 +339,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   private canDropInto(folder: FileSystemItem): boolean {
     if (!this.isDraggingInternal || !this.draggingItem || !folder.isDirectory || this.draggingItem.key === folder.key) return false;
     const target = FileSystemService.join(folder.path, folder.name);
+    if (isBuiltinPath(target)) return false;
     const dragged = FileSystemService.join(this.draggingItem.path, this.draggingItem.name);
     return !(this.draggingItem.isDirectory && FileSystemService.isInside(target, dragged)) && this.draggingItem.path !== target;
   }

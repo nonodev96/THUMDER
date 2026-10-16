@@ -1,4 +1,5 @@
 import { computed, DOCUMENT, effect, Injectable, inject, signal } from "@angular/core";
+import { cssColourNumber } from "./palette";
 
 export type ThemeChoice = "light" | "dark" | "system";
 
@@ -7,7 +8,8 @@ const CHOICES: ThemeChoice[] = ["light", "dark", "system"];
 
 /**
  * The theme of THUMDER (UI-07): light, dark or the one of the system (prefers-color-scheme, the default). The dark one
- * is the `dark-mode` of AdminLTE on the body; Monaco, the canvases and the views of THUMDER follow `dark`.
+ * is `data-theme="dark"` on the html element (the variables of theme.scss) and the `dark-mode` of AdminLTE on the
+ * body; Monaco, the canvases and the views of THUMDER follow `dark`.
  */
 @Injectable({ providedIn: "root" })
 export class ThemeService {
@@ -19,13 +21,29 @@ export class ThemeService {
   public readonly dark = computed(() => this.choice() === "dark" || (this.choice() === "system" && this.systemDark()));
 
   constructor() {
-    this.media?.addEventListener?.("change", (event) => this.systemDark.set(event.matches));
-    effect(() => {
-      const dark = this.dark();
-      this.document.body.classList.toggle("dark-mode", dark);
-      // The scrollbars, the inputs and the menus of the browser
-      this.document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    this.media?.addEventListener?.("change", (event) => {
+      this.systemDark.set(event.matches);
+      this.apply();
     });
+    this.apply();
+    effect(() => this.apply());
+  }
+
+  /**
+   * The theme on the page. It is applied as soon as it changes (not only in the effect), so the canvases that redraw
+   * with the change already read the colours of the new one
+   */
+  private apply(): void {
+    const dark = this.dark();
+    this.document.body.classList.toggle("dark-mode", dark);
+    this.document.documentElement.dataset["theme"] = dark ? "dark" : "light";
+    // The scrollbars, the inputs and the menus of the browser
+    this.document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  }
+
+  /** A colour of theme.scss that changes with the theme (`--thumder-<name>-light` or `-dark`), as a number for PixiJS */
+  public colour(name: string, light: string, dark: string): number {
+    return this.dark() ? cssColourNumber(`${name}-dark`, dark) : cssColourNumber(`${name}-light`, light);
   }
 
   private static saved(): ThemeChoice {
@@ -44,5 +62,6 @@ export class ThemeService {
       // Without storage the choice lasts until the page closes
     }
     this.choice.set(choice);
+    this.apply();
   }
 }

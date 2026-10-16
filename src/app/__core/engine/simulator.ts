@@ -94,8 +94,9 @@ const SEVERITY_WARNING = 4;
 const hex = (value: number, digits = 8) => `0x${(value >>> 0).toString(16).toUpperCase().padStart(digits, "0")}`;
 const address = (value: number) => hex(value) as `0x${string}`;
 
-const FORWARDING_COLOR = 0x00aa00;
-const STALL_COLOR = 0xff0000;
+// The colours of the arrows: --thumder-forwarding and --thumder-stall-arrow of theme.scss (the Web Worker has no styles)
+const FORWARDING_COLOR = 0x16a34a;
+const STALL_COLOR = 0xdc2626;
 
 export class DLXSimulator {
   private config: MachineConfig = { ...DEFAULT_MACHINE_CONFIG };

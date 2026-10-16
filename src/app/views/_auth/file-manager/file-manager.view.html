@@ -45,7 +45,8 @@
 
         <div class="file-manager-actions">
           <div class="dropdown d-inline-block" thumderDropdown>
-            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" id="fileManagerNew" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" id="fileManagerNew" aria-haspopup="true" aria-expanded="false"
+              [disabled]="readOnlyHere">
               <i class="fas fa-plus" aria-hidden="true"></i> {{ 'FILE_MANAGER.NEW' | translate }}
             </button>
             <div class="dropdown-menu" aria-labelledby="fileManagerNew">
@@ -55,12 +56,9 @@
               <button type="button" class="dropdown-item" (click)="askNewFolder($event.currentTarget)">
                 <i class="fas fa-folder-plus fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.NEW_FOLDER' | translate }}
               </button>
-              <button type="button" class="dropdown-item" (click)="addExamples()">
-                <i class="fas fa-graduation-cap fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.EXAMPLES' | translate: { count: examplesCount } }}
-              </button>
             </div>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="chooseFiles()">
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="chooseFiles()" [disabled]="readOnlyHere">
             <i class="fas fa-file-import" aria-hidden="true"></i> {{ 'FILE_MANAGER.IMPORT' | translate }}
           </button>
           <input #importInput type="file" class="d-none" multiple [accept]="accept" (change)="onImportInput(importInput)"
@@ -70,15 +68,21 @@
             {{ (selectedItems.length ? 'FILE_MANAGER.DOWNLOAD_SELECTED' : 'FILE_MANAGER.DOWNLOAD_ALL') | translate }}
           </button>
           <button type="button" class="btn btn-sm btn-outline-secondary" (click)="askRename(selectedItems[0], $event.currentTarget)"
-            [disabled]="selectedItems.length !== 1" [title]="'FILE_MANAGER.RENAME' | translate" [attr.aria-label]="'FILE_MANAGER.RENAME' | translate">
+            [disabled]="selectedItems.length !== 1 || builtinSelected" [title]="'FILE_MANAGER.RENAME' | translate" [attr.aria-label]="'FILE_MANAGER.RENAME' | translate">
             <i class="fas fa-i-cursor" aria-hidden="true"></i>
           </button>
           <button type="button" class="btn btn-sm btn-outline-danger" (click)="askDelete(selectedItems, $event.currentTarget)"
-            [disabled]="selectedItems.length === 0" [title]="'FILE_MANAGER.DELETE' | translate" [attr.aria-label]="'FILE_MANAGER.DELETE' | translate">
+            [disabled]="selectedItems.length === 0 || builtinSelected" [title]="'FILE_MANAGER.DELETE' | translate" [attr.aria-label]="'FILE_MANAGER.DELETE' | translate">
             <i class="fas fa-trash-alt" aria-hidden="true"></i>
           </button>
         </div>
       </div>
+
+      @if (readOnlyHere) {
+        <p class="file-manager-read-only small mb-2" id="fileManagerReadOnly">
+          <i class="fas fa-lock mr-1" aria-hidden="true"></i>{{ 'FILE_MANAGER.READ_ONLY_HELP' | translate: { folder: copyFolder } }}
+        </p>
+      }
 
       <!-- The list: the files of the computer can be dropped on it -->
       <div class="file-manager-content" [class.external-drag-over]="isExternalDragOver" [attr.data-drop-text]="'FILE_MANAGER.DROP_HERE' | translate"
@@ -97,7 +101,7 @@
             @for (item of currentItems; track item.key) {
               <tr tabindex="0" [attr.aria-selected]="isSelected(item)" [class.table-active]="isSelected(item)"
                 [class.drop-target]="item.isDirectory && dragOverFolderKey === item.key" [class.dragging]="draggingItem?.key === item.key"
-                draggable="true" (dragstart)="onDragStart($event, item)" (dragover)="onDragOver($event, item)" (dragleave)="onDragLeave(item)"
+                [class.builtin]="isBuiltin(item)" [attr.draggable]="isBuiltin(item) ? 'false' : 'true'" (dragstart)="onDragStart($event, item)" (dragover)="onDragOver($event, item)" (dragleave)="onDragLeave(item)"
                 (drop)="onDrop($event, item)" (dragend)="onDragEnd()" (click)="onRowClick(item, $event)" (dblclick)="onItemDoubleClick(item)"
                 (keydown)="onRowKeydown($event, item)">
                 <td class="file-icon">
@@ -105,8 +109,13 @@
                     [class.fa-file-code]="!item.isDirectory" [class.text-primary]="!item.isDirectory" aria-hidden="true"></i>
                   <span class="sr-only">{{ (item.isDirectory ? 'FILE_MANAGER.FOLDER' : 'FILE_MANAGER.FILE') | translate }}</span>
                 </td>
-                <td class="file-name">{{ item.name }}</td>
-                <td class="d-none d-md-table-cell text-nowrap">{{ item.dateModified | date: 'short' }}</td>
+                <td class="file-name-cell">
+                  <span class="file-name">{{ item.name }}</span>
+                  @if (isBuiltin(item) && item.isDirectory) {
+                    <span class="badge file-badge ml-1"><i class="fas fa-lock mr-1" aria-hidden="true"></i>{{ 'FILE_MANAGER.READ_ONLY' | translate }}</span>
+                  }
+                </td>
+                <td class="d-none d-md-table-cell text-nowrap">{{ isBuiltin(item) ? '' : (item.dateModified | date: 'short') }}</td>
                 <td class="d-none d-sm-table-cell text-right text-nowrap">{{ item.isDirectory ? '' : (item.size | number) + ' B' }}</td>
                 <td class="file-actions" (click)="$event.stopPropagation()" (dblclick)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
                   <div class="dropdown" thumderDropdown>
@@ -122,12 +131,18 @@
                       <button type="button" class="dropdown-item" (click)="download([item])">
                         <i class="fas fa-file-download fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.DOWNLOAD' | translate }}
                       </button>
-                      <button type="button" class="dropdown-item" (click)="askRename(item, $event.currentTarget)">
-                        <i class="fas fa-i-cursor fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.RENAME' | translate }}
-                      </button>
-                      <button type="button" class="dropdown-item text-danger" (click)="askDelete([item], $event.currentTarget)">
-                        <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.DELETE' | translate }}
-                      </button>
+                      @if (isBuiltin(item)) {
+                        <button type="button" class="dropdown-item" (click)="copyToMine(item)">
+                          <i class="fas fa-copy fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.COPY_TO_MINE' | translate }}
+                        </button>
+                      } @else {
+                        <button type="button" class="dropdown-item" (click)="askRename(item, $event.currentTarget)">
+                          <i class="fas fa-i-cursor fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.RENAME' | translate }}
+                        </button>
+                        <button type="button" class="dropdown-item text-danger" (click)="askDelete([item], $event.currentTarget)">
+                          <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i> {{ 'FILE_MANAGER.DELETE' | translate }}
+                        </button>
+                      }
                     </div>
                   </div>
                 </td>

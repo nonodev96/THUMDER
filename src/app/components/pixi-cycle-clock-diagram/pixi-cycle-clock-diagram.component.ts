@@ -15,6 +15,7 @@ import { DEFAULT_CANVAS_HEIGHT, DEFAULT_CANVAS_WIDTH } from "@app/CONSTANTS";
 import type { DiagramLabel } from "@core/machine/cycle-diagram.model";
 import { MachineService } from "@core/machine/machine.service";
 import { PIXI } from "@core/machine/pixi";
+import { cssColourNumber, LABEL_COLOURS } from "@core/services/theme/palette";
 import { ThemeService } from "@core/services/theme/theme.service";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -29,23 +30,22 @@ const CELL_MARGIN = (COLUMN - CELL_WIDTH) / 2;
 const ROW_MARGIN = (ROW - CELL_HEIGHT) / 2;
 const MOVE = 10; // what the arrows, the buttons and the keys move
 
-/** The colour of the border of each cell: each stage has its own, and the stalls are shades of yellow */
-const COLOURS: Record<DiagramLabel, number> = {
-  IF: 0xffff00,
-  ID: 0xff9900,
-  intEX: 0xff0000,
-  MEM: 0x00ff00,
-  WB: 0xff00ff,
-  faddEX: 0x00ccff,
-  fmultEX: 0x3399ff,
-  fdivEX: 0x9966ff,
-  Aborted: 0xcccccc,
-  "R-Stall": 0xffaf00,
-  "T-Stall": 0xffbf00,
-  "W-Stall": 0xffcf00,
-  Stall: 0xffdf00,
-  "S-Stall": 0xffef00,
-};
+/** The colours of the diagram (theme.scss): each stage has its own, and the stalls are shades of amber */
+function palette() {
+  const labels = Object.fromEntries(Object.entries(LABEL_COLOURS).map(([label, name]) => [label, cssColourNumber(name)])) as Record<
+    DiagramLabel,
+    number
+  >;
+  return {
+    labels,
+    cellText: cssColourNumber("on-stage", "#0f172a"),
+    headerBg: cssColourNumber("diagram-header-bg", "#1e293b"),
+    labelBg: cssColourNumber("diagram-label-bg", "#e0e7ff"),
+    labelBorder: cssColourNumber("diagram-label-border", "#6366f1"),
+    labelText: cssColourNumber("diagram-label-text", "#1e1b4b"),
+    selected: cssColourNumber("diagram-selected", "#4f46e5"),
+  };
+}
 
 const FONT = "thumder-diagram";
 
@@ -116,9 +116,9 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
 
   private theme = inject(ThemeService);
 
-  /** The colour of the canvas: light grey, or dark with the dark theme */
+  /** The colour of the canvas, which follows the theme */
   private background(): number {
-    return this.theme.dark() ? 0x2b3035 : 0xeeeeee;
+    return this.theme.colour("canvas-bg", "#f8fafc", "#0f172a");
   }
 
   constructor() {
@@ -411,7 +411,9 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
     const x = (cycle: number) => LEFT + CELL_MARGIN + (cycle - first) * COLUMN - this.scrollX;
     const y = (row: number) => TOP + ROW_MARGIN + row * ROW - this.scrollY;
 
-    // The cells
+    const colours = palette();
+
+    // The cells: the colour of their stage or stall
     this.cells.clear();
     const labels: [DiagramLabel, number, number][] = [];
     for (let row = firstRow; row <= lastRow; row++) {
@@ -419,16 +421,16 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
         const label = diagram.cell(row, cycle);
         if (label === undefined) continue;
         this.cells
-          .lineStyle(2.5, COLOURS[label] ?? 0xcccccc, 1)
-          .beginFill(0xd9d9d9)
-          .drawRect(x(cycle), y(row), CELL_WIDTH, CELL_HEIGHT)
+          .lineStyle(1.5, colours.cellText, 0.25)
+          .beginFill(colours.labels[label] ?? colours.labels.Aborted)
+          .drawRoundedRect(x(cycle), y(row), CELL_WIDTH, CELL_HEIGHT, 4)
           .endFill();
         labels.push([label, x(cycle), y(row)]);
       }
     }
     const cellTexts = PixiCycleClockDiagramComponent.texts(this.cellTexts, this.cellLayer, labels.length);
     labels.forEach(([label, cellX, cellY], i) => {
-      PixiCycleClockDiagramComponent.place(cellTexts[i], label, cellX, cellY, CELL_WIDTH, CELL_HEIGHT, 0x111111);
+      PixiCycleClockDiagramComponent.place(cellTexts[i], label, cellX, cellY, CELL_WIDTH, CELL_HEIGHT, colours.cellText);
     });
 
     // The chosen cell (gone with its row, or with a new program)
@@ -437,7 +439,9 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
       this.selected = null;
       this.cellSelected.emit(null);
     } else if (this.selected !== null && chosen >= firstRow && chosen <= lastRow) {
-      this.cells.lineStyle(4, 0x000000, 1).drawRect(x(this.selected.cycle) - 3, y(chosen) - 3, CELL_WIDTH + 6, CELL_HEIGHT + 6);
+      this.cells
+        .lineStyle(4, colours.selected, 1)
+        .drawRoundedRect(x(this.selected.cycle) - 4, y(chosen) - 4, CELL_WIDTH + 8, CELL_HEIGHT + 8, 6);
     }
 
     // The arrows that touch what is visible
@@ -470,8 +474,8 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
     const width = this.width / this.scale;
     const height = this.height / this.scale;
     this.headers.clear();
-    this.headers.lineStyle(2.5, 0x222222, 1).beginFill(0x333333).drawRect(0, 0, width, TOP).endFill();
-    this.headers.lineStyle(2.5, 0x222222, 1).beginFill(0x333333).drawRect(0, 0, LEFT, height).endFill();
+    this.headers.lineStyle(0).beginFill(colours.headerBg).drawRect(0, 0, width, TOP).endFill();
+    this.headers.lineStyle(0).beginFill(colours.headerBg).drawRect(0, 0, LEFT, height).endFill();
     const visibleCycles = Math.max(0, lastColumn - firstColumn + 1);
     const cycleTexts = PixiCycleClockDiagramComponent.texts(this.cycleTexts, this.headerLayer, visibleCycles);
     for (let i = 0; i < visibleCycles; i++) {
@@ -482,11 +486,19 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
         continue;
       }
       this.headers
-        .lineStyle(2.5, 0x0033ff, 1)
-        .beginFill(0x66ccff)
+        .lineStyle(1.5, colours.labelBorder, 1)
+        .beginFill(colours.labelBg)
         .drawRect(cellX, TOP / 2 - CELL_HEIGHT / 2, CELL_WIDTH, CELL_HEIGHT)
         .endFill();
-      PixiCycleClockDiagramComponent.place(cycleTexts[i], `${cycle}`, cellX, TOP / 2 - CELL_HEIGHT / 2, CELL_WIDTH, CELL_HEIGHT, 0x002244);
+      PixiCycleClockDiagramComponent.place(
+        cycleTexts[i],
+        `${cycle}`,
+        cellX,
+        TOP / 2 - CELL_HEIGHT / 2,
+        CELL_WIDTH,
+        CELL_HEIGHT,
+        colours.labelText,
+      );
     }
     const visibleRows = Math.max(0, lastRow - firstRow + 1);
     const rowTexts = PixiCycleClockDiagramComponent.texts(this.rowTexts, this.headerLayer, visibleRows);
@@ -498,14 +510,14 @@ export class PixiCycleClockDiagramComponent implements AfterViewInit, OnDestroy 
         continue;
       }
       this.headers
-        .lineStyle(2.5, 0x0033ff, 1)
-        .beginFill(0x66ccff)
+        .lineStyle(1.5, colours.labelBorder, 1)
+        .beginFill(colours.labelBg)
         .drawRect(12.5, cellY, LEFT - 25, CELL_HEIGHT)
         .endFill();
-      PixiCycleClockDiagramComponent.place(rowTexts[i], diagram.rows[row], 12.5, cellY, LEFT - 25, CELL_HEIGHT, 0x002244);
+      PixiCycleClockDiagramComponent.place(rowTexts[i], diagram.rows[row], 12.5, cellY, LEFT - 25, CELL_HEIGHT, colours.labelText);
     }
     // The corner covers the headers that go under it
-    this.headers.lineStyle(2.5, 0x222222, 1).beginFill(0x333333).drawRect(0, 0, LEFT, TOP).endFill();
+    this.headers.lineStyle(0).beginFill(colours.headerBg).drawRect(0, 0, LEFT, TOP).endFill();
     this.headerLayer.setChildIndex(this.title, this.headerLayer.children.length - 1);
     this.title.position.set((LEFT - this.title.width) / 2, (TOP - this.title.height) / 2);
     this.pApp.render();

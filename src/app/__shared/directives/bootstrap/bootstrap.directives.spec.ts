@@ -18,6 +18,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
     </div>
     <button type="button" id="outside">Outside</button>
 
+    <div id="scroller" style="overflow-x: auto; overflow-y: auto; height: 100px">
+      <div class="dropdown" thumderDropdown id="rowDropdown">
+        <button type="button" class="dropdown-toggle" id="rowToggle" aria-expanded="false">Options</button>
+        <div class="dropdown-menu dropdown-menu-right" id="rowMenu">
+          <button type="button" class="dropdown-item">Rename</button>
+        </div>
+      </div>
+    </div>
+
     <a href="#one" id="toggle-one" [thumderCollapseToggle]="one">One</a>
     <div id="one" class="collapse" thumderCollapse #one="thumderCollapse" thumderCollapseGroup="g" [thumderCollapseOpen]="true">1</div>
     <a href="#two" id="toggle-two" [thumderCollapseToggle]="two">Two</a>
@@ -86,6 +95,47 @@ describe("Bootstrap directives without jQuery", () => {
       key(el("es"), "Escape");
       expect(menu().classList).not.toContain("show");
       expect(document.activeElement?.id).toBe("toggle");
+    });
+  });
+
+  describe("DropdownDirective in a container with scroll", () => {
+    const rect = (top: number, left: number, width: number, height: number) =>
+      ({ top, left, width, height, right: left + width, bottom: top + height, x: left, y: top, toJSON: () => ({}) }) as DOMRect;
+
+    beforeEach(() => {
+      vi.spyOn(el("scroller"), "getBoundingClientRect").mockReturnValue(rect(0, 0, 300, 100));
+      vi.spyOn(el("rowToggle"), "getBoundingClientRect").mockReturnValue(rect(70, 260, 30, 20));
+      // In its place the menu would go below the container; placed over the page, (0, 0) is where it says
+      vi.spyOn(el("rowMenu"), "getBoundingClientRect").mockImplementation(() =>
+        el("rowMenu").style.position === "fixed" ? rect(0, 0, 120, 60) : rect(92, 170, 120, 60),
+      );
+    });
+
+    afterEach(() => vi.restoreAllMocks());
+
+    it("goes over the page, next to its button, and back to its place when it closes", () => {
+      el("rowToggle").click();
+      const menu = el("rowMenu");
+      expect(menu.style.position).toBe("fixed");
+      // Aligned to the right of the button, below it
+      expect(menu.style.left).toBe(`${290 - 120}px`);
+      expect(menu.style.top).toBe(`${90 + 2}px`);
+      el("rowToggle").click();
+      expect(menu.style.position).toBe("");
+      expect(menu.style.top).toBe("");
+    });
+
+    it("closes when the container scrolls", () => {
+      el("rowToggle").click();
+      el("scroller").dispatchEvent(new Event("scroll"));
+      expect(el("rowMenu").classList).not.toContain("show");
+      expect(el("rowMenu").style.position).toBe("");
+    });
+
+    it("stays in its place when the container does not cut it", () => {
+      vi.spyOn(el("scroller"), "getBoundingClientRect").mockReturnValue(rect(0, 0, 300, 400));
+      el("rowToggle").click();
+      expect(el("rowMenu").style.position).toBe("");
     });
   });
 

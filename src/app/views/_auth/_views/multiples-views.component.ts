@@ -11,6 +11,7 @@ import { TranslatePipe } from "@ngx-translate/core";
 import { CardRegistry } from "@shared/directives/card/card.directive";
 import { CalculatorView } from "../calculator/calculator.view";
 import { CodeView } from "../code/code.view";
+import { DatapathView } from "../datapath/datapath.view";
 import { MemoryView } from "../memory/memory.view";
 import { CycleClockDiagramView } from "../pixi-cycle-clock-diagram/cycle-clock-diagram.view";
 import { PipelineView } from "../pixi-pipeline/pipeline.view";
@@ -35,6 +36,7 @@ import { StatisticsView } from "../statistics/statistics.view";
     CycleClockDiagramView,
     MemoryView,
     CodeView,
+    DatapathView,
     TranslatePipe,
   ],
 })

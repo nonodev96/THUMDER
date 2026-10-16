@@ -5,64 +5,59 @@
   font-family: Arial, sans-serif;
 
   .block {
-    stroke: #333;
+    stroke: var(--thumder-border-strong);
     stroke-width: 1.5;
+  }
+
+  // The boxes without a stage (the registers, the memories, the ALU...)
+  .box {
+    fill: var(--thumder-surface);
   }
 
   .stage-title {
     font-size: 15px;
     font-weight: bold;
-    fill: #222;
+    fill: var(--thumder-text);
   }
 
   .label {
     font-size: 11px;
-    fill: #333;
+    fill: var(--thumder-text-2);
+
+    // On a box with the colour of its stage
+    &.on-stage {
+      fill: var(--thumder-on-stage);
+    }
   }
 
+  // Inside the coloured boxes: dark, as on every stage colour
   .occupant {
     font-size: 11px;
     font-family: "Courier New", monospace;
-    fill: #000;
+    fill: var(--thumder-on-stage);
   }
 
   .latch {
-    fill: #bbb;
-    stroke: #555;
+    fill: var(--thumder-border-strong);
+    stroke: var(--thumder-muted);
   }
 
   .wire {
-    stroke: #777;
+    stroke: var(--thumder-muted);
     stroke-width: 2;
     fill: none;
   }
 
   .forward {
-    stroke: #bbb;
+    stroke: var(--thumder-border-strong);
     stroke-width: 2;
     stroke-dasharray: 6 4;
     fill: none;
 
     &.active {
-      stroke: #00aa00;
+      stroke: var(--thumder-forwarding);
       stroke-width: 4;
       stroke-dasharray: none;
     }
-  }
-}
-
-// The dark theme: the white boxes and the texts outside the coloured ones
-:host-context(body.dark-mode) .datapath-svg {
-  .block[fill="#fff"] {
-    fill: #3a3f44;
-  }
-
-  .stage-title,
-  .label {
-    fill: #e9ecef;
-  }
-
-  .latch {
-    fill: #6c757d;
   }
 }

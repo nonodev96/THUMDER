@@ -53,12 +53,12 @@ export class VirtualTableColumnDirective {
       :host(.fill) { height: 100%; }
       :host(.fill) .thumder-table-scroll, :host(.fill) .thumder-table { height: 100%; display: flex; flex-direction: column; }
       :host(.fill) .thumder-table-body { flex: 1 1 auto; min-height: 0; }
-      .thumder-table-scroll { overflow-x: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; }
+      .thumder-table-scroll { overflow-x: auto; border: 1px solid var(--thumder-border); border-radius: 0.25rem; }
       .thumder-table { font-family: monospace; }
-      .thumder-table-row { display: grid; align-items: center; border-bottom: 1px solid #dee2e6; }
-      .thumder-table-header { font-family: Arial, Helvetica, sans-serif; font-weight: bold; background: #f8f9fa; min-height: 2.5rem; border-bottom-width: 2px; }
+      .thumder-table-row { display: grid; align-items: center; border-bottom: 1px solid var(--thumder-border); }
+      .thumder-table-header { font-family: Arial, Helvetica, sans-serif; font-weight: bold; background: var(--thumder-surface-2); color: var(--thumder-text-2); min-height: 2.5rem; border-bottom-width: 2px; }
       .thumder-table-cell { padding: 0 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .thumder-table-body:focus-visible { outline: 2px solid #007bff; outline-offset: -2px; }
+      .thumder-table-body:focus-visible { outline: 2px solid var(--thumder-primary); outline-offset: -2px; }
     `,
   ],
 })

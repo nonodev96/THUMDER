@@ -1,5 +1,5 @@
 import { Component, inject, type OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from "@core/auth/auth.service";
 import { ElectronService } from "@core/services";
 import { TranslatePipe } from "@ngx-translate/core";
@@ -9,7 +9,7 @@ import { AppConfig } from "../../../../environments/_environment";
   selector: "THUMDER-aside-left",
   templateUrl: "./aside-left.component.html",
   styleUrls: ["./aside-left.component.scss"],
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, RouterLinkActive, TranslatePipe],
 })
 export class AsideLeftComponent implements OnInit {
   authService = inject(AuthService);

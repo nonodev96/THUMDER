@@ -81,8 +81,9 @@ const MonacoConfig: TypeMonacoConfig = {
     });
 
     // The same colours, light enough for a dark background
+    // On the background of the dark theme (--thumder-bg of theme.scss: Monaco needs the value), where its colours keep 4.5:1
     monaco.editor.defineTheme("thumderThemeDark", {
-      colors: {},
+      colors: { "editor.background": "#0f172a", "editorGutter.background": "#0f172a" },
       encodedTokensColors: [],
       base: "vs-dark",
       inherit: true,

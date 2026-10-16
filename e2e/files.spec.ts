@@ -97,3 +97,83 @@ test.describe("gestor de ficheros", () => {
     expect(bytes.includes(Buffer.from("practica/bucle.s"))).toBe(true);
   });
 });
+
+test.describe("carpetas de THUMDER", () => {
+  test.use({ seed: { files: [fileItem("prim.s"), fileItem("bucle.s", "loop: j loop\n", "practica")], open: null, delay: 1, cookiesAnswered: true } });
+
+  test("los ejemplos y los ejercicios están siempre, son de solo lectura y se pueden copiar", async ({ page }) => {
+    await go(page, "/auth/file-manager");
+    const rows = page.locator(".file-manager tbody tr");
+    await expect(rows.nth(0).locator(".file-name")).toContainText("ejemplos");
+    await expect(rows.nth(1).locator(".file-name")).toContainText("ejercicios");
+    await expect(row(page, "ejemplos").locator(".file-badge")).toHaveText("Solo lectura");
+
+    // Their options: open, download and copy, but not rename nor delete
+    await row(page, "ejemplos").locator(".dropdown-toggle").click();
+    await expect(row(page, "ejemplos").getByRole("button", { name: "Renombrar" })).toHaveCount(0);
+    await row(page, "ejemplos").getByRole("button", { name: "Copiar a mis ficheros" }).click();
+    await expect(page.locator(".ngx-toastr", { hasText: "Copiado en «mis ejemplos»" })).toBeVisible();
+    await expect(row(page, "mis ejemplos")).toBeVisible();
+
+    // Inside, nothing can be created, renamed or deleted
+    await row(page, "ejemplos").dblclick();
+    await expect(page.locator("#fileManagerReadOnly")).toContainText("mis ejemplos");
+    await expect(page.locator("#fileManagerNew")).toBeDisabled();
+    await row(page, "15-hanoi.s").click();
+    await expect(page.locator(".file-manager-actions button[aria-label='Eliminar']")).toBeDisabled();
+    await row(page, "15-hanoi.s").press("Delete");
+    await expect(page.locator("#fileManagerDeleteModal")).toBeHidden();
+
+    // They are not files of the person
+    const stored = await storedFiles(page);
+    expect(stored.some((file) => file.key.startsWith("thumder:"))).toBe(false);
+    expect(stored.filter((file) => file.path === "mis ejemplos")).toHaveLength(21);
+  });
+
+  test("las opciones de la última fila se ven enteras sobre la lista y se pueden usar", async ({ page }) => {
+    await go(page, "/auth/file-manager");
+    const last = page.locator(".file-manager tbody tr").last();
+    await last.locator(".dropdown-toggle").click();
+    const menu = last.locator(".dropdown-menu");
+    await expect(menu).toBeVisible();
+    // Nothing covers it nor cuts it: the last option gets the click
+    const option = menu.locator(".dropdown-item").last();
+    const box = await option.boundingBox();
+    const hit = await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.closest(".dropdown-item")?.textContent?.trim(), [
+      (box?.x ?? 0) + (box?.width ?? 0) / 2,
+      (box?.y ?? 0) + (box?.height ?? 0) / 2,
+    ]);
+    expect(hit).toBe("Eliminar");
+    await option.click();
+    await expect(page.locator("#fileManagerDeleteModal")).toBeVisible();
+  });
+
+  test("cambiar un ejemplo guarda una copia en «mis ejemplos» y el editor sigue con ella", async ({ page }) => {
+    await go(page, "/auth/file-manager");
+    await row(page, "ejemplos").dblclick();
+    await row(page, "01-hola-mundo.s").dblclick();
+    await expect(page).toHaveURL(/\/auth\/editor$/);
+    await expect(page.locator("#editorReadOnly")).toBeVisible();
+    await page.locator("thumder-monaco-editor .view-lines").click();
+    await page.keyboard.press("Control+Home");
+    // The first line is a comment: written at its start, without Enter (which could take a suggestion)
+    await page.keyboard.insertText("; mi cambio ");
+    await page.keyboard.press("Control+s");
+    await expect(page.locator(".ngx-toastr", { hasText: "Copiado en «mis ejemplos/01-hola-mundo.s»" })).toBeVisible();
+    await expect(page.locator("#editorReadOnly")).toBeHidden();
+    // Saving again changes the copy: no more copies
+    await page.keyboard.insertText("; otro ");
+    await page.keyboard.press("Control+s");
+    await expect.poll(async () => (await storedFiles(page)).find((file) => file.name === "01-hola-mundo.s")?.content).toContain("; otro");
+    const copies = (await storedFiles(page)).filter((file) => file.path === "mis ejemplos").map((file) => file.name).sort();
+    expect(copies).toEqual(["01-hola-mundo.s", "input.s"]);
+  });
+
+  test("un ejercicio se abre desde su carpeta con su enunciado y su configuración", async ({ page }) => {
+    await go(page, "/auth/file-manager");
+    await row(page, "ejercicios").dblclick();
+    await row(page, "sin-adelantamiento.s").dblclick();
+    await expect(page).toHaveURL(/\/auth\/editor$/);
+    await expect(page.locator("#editorExercise")).toContainText("Adelantamiento");
+  });
+});

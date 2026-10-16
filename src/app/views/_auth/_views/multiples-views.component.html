@@ -99,6 +99,15 @@
         </view-code>
       }
     }
+    @case ('datapath') {
+      @if (multiviewConfiguration.datapath) {
+        <view-datapath>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
+            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+          </button>
+        </view-datapath>
+      }
+    }
   }
 </ng-template>
 

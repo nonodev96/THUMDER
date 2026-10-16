@@ -45,10 +45,11 @@ test("el editor se maximiza y se restaura", async ({ page }) => {
   await expect(page.locator("html")).not.toHaveClass(/maximized-card/);
 });
 
-test("la vista múltiple empieza con todas las ventanas plegadas", async ({ page }) => {
+test("la vista múltiple empieza con todas las ventanas plegadas, también la ruta de datos", async ({ page }) => {
   await go(page, "/auth/multiview");
   const cards = page.locator(".content-wrapper .card");
   await expect.poll(() => cards.count()).toBeGreaterThan(3);
+  await expect(page.locator("view-datapath #datapathCard")).toBeVisible();
   await expect(page.locator(".content-wrapper .card:not(.collapsed-card)")).toHaveCount(0);
   await cards.first().locator(".card-tools button:has(.fa-plus)").first().click();
   await expect(cards.first().locator(".card-body")).toBeVisible();

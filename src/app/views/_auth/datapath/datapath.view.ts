@@ -6,20 +6,20 @@ import { CardDirective, CardWidgetDirective } from "../../../__shared/directives
 
 type Occupant = { text: string; stall: TypeStall | null };
 
-/** The colours of the stages, as in the cycle clock diagram */
+/** The colours of the stages, as in the cycle clock diagram (the variables of theme.scss) */
 const COLOURS: Record<string, string> = {
-  IF: "#ffff00",
-  ID: "#ff9900",
-  intEX: "#ff6666",
-  faddEX: "#00ccff",
-  fmultEX: "#3399ff",
-  fdivEX: "#9966ff",
-  MEM: "#00ff00",
-  WB: "#ff00ff",
+  IF: "var(--thumder-stage-if)",
+  ID: "var(--thumder-stage-id)",
+  intEX: "var(--thumder-stage-ex)",
+  faddEX: "var(--thumder-stage-fadd)",
+  fmultEX: "var(--thumder-stage-fmult)",
+  fdivEX: "var(--thumder-stage-fdiv)",
+  MEM: "var(--thumder-stage-mem)",
+  WB: "var(--thumder-stage-wb)",
 };
 
 /** The colour of the arrows of forwarding of the simulator (simulator.ts) */
-const FORWARDING = 0x00aa00;
+const FORWARDING = 0x16a34a;
 
 /**
  * The datapath of the pipeline of THUMDER (EDU-05), drawn for its model: IF, ID (where the branches are resolved),
@@ -83,8 +83,8 @@ export class DatapathView {
   public readonly isBusy = (cell: Occupant | null): cell is Occupant => cell !== null;
 
   public fill(stage: string, occupant: Occupant | null): string {
-    if (occupant === null) return "#f4f4f4";
-    return occupant.stall ? "#ffcf66" : COLOURS[stage];
+    if (occupant === null) return "var(--thumder-surface-2)";
+    return occupant.stall ? "var(--thumder-stall-w)" : COLOURS[stage];
   }
 
   /** The text of a box: the instruction, cut to fit */

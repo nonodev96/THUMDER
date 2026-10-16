@@ -57,18 +57,17 @@ test.describe("con entrada por la consola", () => {
 test.describe("ejemplos", () => {
   test.use({ seed: { files: [], open: null, delay: 1, cookiesAnswered: true } });
 
-  test("el gestor de ficheros añade los 20 ejemplos, y Hanoi y la media se ejecutan", async ({ page }) => {
+  test("los 20 ejemplos están siempre en el gestor de ficheros, y Hanoi y la media se ejecutan", async ({ page }) => {
     await go(page, "/auth/file-manager");
-    await page.locator("#fileManagerNew").click();
-    await page.getByRole("button", { name: /Ejemplos DLX/ }).click();
-    await expect(page.getByText("15-hanoi.s")).toBeVisible();
-    const files = await storedFiles(page);
-    expect(files.filter((file) => !file.isDirectory && file.path === "ejemplos")).toHaveLength(21);
-
     const run = async (name: string, lines: string[], expected: string) => {
-      const file = files.find((item) => item.name === name);
-      await page.evaluate((file) => localStorage.setItem("interfaceFileItem", JSON.stringify(file)), file);
-      await go(page, "/auth/code");
+      await go(page, "/auth/file-manager");
+      await page.locator("tbody tr", { has: page.locator(".file-name", { hasText: /^ejemplos$/ }) }).dblclick();
+      await page.locator("tbody tr", { hasText: name }).dblclick();
+      await expect(page).toHaveURL(/\/auth\/editor$/);
+      await expect(page.locator("#editorReadOnly")).toContainText("mis ejemplos");
+      // Leaving the editor keeps the file open for the simulator (and, without changes, copies nothing)
+      await page.locator(".main-sidebar a", { hasText: "Código" }).first().click();
+      await expect(page).toHaveURL(/\/auth\/code$/);
       await controls(page).load.click();
       await expect(controls(page).run).toBeEnabled();
       await controls(page).run.click();
@@ -81,6 +80,8 @@ test.describe("ejemplos", () => {
     };
     await run("15-hanoi.s", [], "Movimientos: 7");
     await run("20-media-entrada.s", ["4", "8", "15", "16", "23", "42", "0"], "6 numeros, suma 108, media 18");
+    // Opened and run without changes: nothing was copied
+    expect((await storedFiles(page)).filter((file) => file.name.endsWith(".s"))).toHaveLength(2);
   });
 });
 

@@ -48,9 +48,9 @@ export class PixiPipelineComponent implements AfterViewInit, OnDestroy {
 
   private theme = inject(ThemeService);
 
-  /** The colour of the canvas: light grey, or dark with the dark theme */
+  /** The colour of the canvas, which follows the theme */
   private background(): number {
-    return this.theme.dark() ? 0x2b3035 : 0xeeeeee;
+    return this.theme.colour("canvas-bg", "#f8fafc", "#0f172a");
   }
 
   constructor() {
@@ -61,10 +61,12 @@ export class PixiPipelineComponent implements AfterViewInit, OnDestroy {
     });
     const units = this.machine.state.units();
     this.pipeline = new PixiTHUMDER_Pipeline(units.fadd, units.fmul, units.fdiv);
-    // A new configuration can add or remove floating point units, and with them columns of the drawing
+    // A new configuration can add or remove floating point units, and with them columns of the drawing; a new theme
+    // changes the colours of its lines and names
     effect(() => {
       const { fadd, fmul, fdiv } = this.machine.state.units();
       this.machine.state.loads();
+      this.theme.dark();
       untracked(() => {
         this.pipeline.reset(fadd, fmul, fdiv);
         const instructions = this.machine.state.pipeline();

@@ -2,8 +2,8 @@ import { Injectable, inject } from "@angular/core";
 import type { InterfaceFileItem } from "@app/Types";
 import { defaultConfig, type ThumderConfig, validateConfig } from "@core/config/config";
 import { ConfigService } from "@core/config/config.service";
+import { exerciseKey } from "@core/services/file-system/builtin-files";
 import { FileSystemItem, FileSystemService } from "@core/services/file-system/file-system.service";
-import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
 import { StorageService } from "@core/storage/storage.service";
 import type { Exercise } from "./exercises";
 import type { Lockable, SharedExercise } from "./share";
@@ -14,9 +14,6 @@ export type ExerciseLock = { locked: Lockable[]; values: Pick<ThumderConfig, Loc
 /** The folder of the shared exercises in the file manager */
 export const SHARED_FOLDER = "compartidos";
 
-/** The folder of the guided exercises (EDU-04) */
-export const GUIDED_FOLDER = "ejercicios";
-
 /** How a guided exercise goes: its file and the answers written (storage: "exercise_progress", by exercise) */
 export type ExerciseProgress = { fileKey: string; answers: Record<string, string>; checked: boolean };
 
@@ -26,7 +23,6 @@ export class ExerciseService {
   private storage = inject(StorageService);
   private config = inject(ConfigService);
   private fileSystem = inject(FileSystemService);
-  private files = inject(FileSystemStorageService);
 
   private get locks(): Record<string, ExerciseLock> {
     return (this.storage.getItem("exercise_locks") as Record<string, ExerciseLock> | null) ?? {};
@@ -67,19 +63,17 @@ export class ExerciseService {
   }
 
   /**
-   * Starts (or goes on with) a guided exercise (EDU-04): its program in the folder "ejercicios", its configuration
-   * saved and locked for its file, and its statement in the editor. Returns the file, to open it in the editor
+   * Starts (or goes on with) a guided exercise (EDU-04): its program of the folder "ejercicios" of THUMDER (or the copy
+   * of it the person changed), its configuration saved and locked for its file, and its statement in the editor.
+   * Returns the file, to open it in the editor
    */
   public async startGuided(exercise: Exercise, statement: string): Promise<InterfaceFileItem> {
     await this.fileSystem.init();
     const saved = this.progress()[exercise.id];
-    let file: InterfaceFileItem | undefined = saved ? await this.files.getFile(saved.fileKey) : undefined;
+    let file: InterfaceFileItem | undefined = saved ? await this.fileSystem.find(saved.fileKey) : undefined;
     if (file === undefined) {
-      const folder = await this.folder(GUIDED_FOLDER);
-      const content = await this.files.fetchExample(exercise.file);
-      const name = (exercise.file.split("/").pop() as string).replace(/\.s$/i, "");
-      const created = await this.fileSystem.createFile(folder, ".s", name);
-      file = await this.fileSystem.editFileItem({ ...created, content });
+      file = await this.fileSystem.find(exerciseKey(exercise.id));
+      if (file === undefined) throw new Error(`The program of the exercise ${exercise.id} could not be read`);
       this.saveProgress(exercise.id, { fileKey: file.key, answers: {}, checked: false });
     }
     const config = validateConfig({ ...defaultConfig(), ...exercise.config });
@@ -91,6 +85,23 @@ export class ExerciseService {
     this.storage.setItem("exercise_locks", { ...this.locks, [file.key]: { locked, values, statement } });
     this.storage.setItem("interfaceFileItem", file);
     return file;
+  }
+
+  /**
+   * A file of an exercise saved with another key (a program of THUMDER that was changed and went as a copy to the
+   * files of the person, or a file created again): the exercise, its lock and its progress go on in it
+   */
+  public adopt(fromKey: string, toKey: string): void {
+    const lock = this.locks[fromKey];
+    if (lock) this.storage.setItem("exercise_locks", { ...this.locks, [toKey]: lock });
+    const progress = this.progress();
+    const moved = Object.entries(progress).filter(([, value]) => value.fileKey === fromKey);
+    if (moved.length > 0) {
+      this.storage.setItem("exercise_progress", {
+        ...progress,
+        ...Object.fromEntries(moved.map(([id, value]) => [id, { ...value, fileKey: toKey }])),
+      });
+    }
   }
 
   /**

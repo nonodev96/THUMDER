@@ -13,6 +13,7 @@ import { ConfigService } from "@core/config/config.service";
 import { type ExerciseLock, ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
+import { copyFolderOf, isBuiltin } from "@core/services/file-system/builtin-files";
 import { FileSystemService, type THUMDER_FileItem } from "@core/services/file-system/file-system.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ModalOpenDirective } from "@shared/directives/bootstrap/modal.directive";
@@ -59,6 +60,9 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   private exercises = inject(ExerciseService);
   /** The exercise of the file, if it is a shared one (EDU-07) */
   public readonly lock = signal<ExerciseLock | null>(null);
+  /** The file is a program of THUMDER (read only: a change is saved as a copy) */
+  public readonly builtin = signal(false);
+  public readonly copyFolder = signal("");
 
   public interfaceFileItem: InterfaceFileItem = DEFAULT_INTERFACE_FILE_ITEM;
   private initializedSubscription: Subscription = new Subscription();
@@ -69,6 +73,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
   private readonly extrasIDE: TypeExtrasIDE;
   public isMaximize = false;
+  private destroyed = false;
 
   constructor() {
     this.extrasIDE = this.router.currentNavigation()?.extras.state as TypeExtrasIDE;
@@ -111,7 +116,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
           JSON.parse(interfaceFileItem_storaged) ??
           DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
 
-        this.lock.set(this.exercises.lockOf(this.interfaceFileItem.key));
+        this.showFile(this.interfaceFileItem);
         await this.monacoEditorComponent.setEditorFile(this.interfaceFileItem);
         await this.monacoEditorComponent.setEditorContent(this.interfaceFileItem.content);
 
@@ -132,6 +137,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async ngOnDestroy(): Promise<void> {
+    this.destroyed = true;
     if (this.config.value().autoSave) {
       const breakpoints = this.monacoEditorComponent.getBreakpoints();
       localStorage.setItem("breakpoints", JSON.stringify(breakpoints));
@@ -143,6 +149,13 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.breakpointSubscription.unsubscribe();
     this.fileSaveSubscription.unsubscribe();
     return Promise.resolve();
+  }
+
+  /** What the editor says about the file: its exercise, and whether it is a program of THUMDER */
+  private showFile(file: InterfaceFileItem): void {
+    this.lock.set(this.exercises.lockOf(file.key));
+    this.builtin.set(isBuiltin(file));
+    this.copyFolder.set(copyFolderOf(file.path));
   }
 
   public toggleDebuggerTag(): void {
@@ -166,13 +179,29 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
 
   /** Saves the file in the file manager (in the browser and, with an account, in it too) */
   private async saveFileInCloudStorage(editorFile: THUMDER_FileItem): Promise<void> {
+    // The editor keeps one object for its file, which changes when it goes on with a copy
+    const key = editorFile.key;
+    const wasBuiltin = isBuiltin(editorFile);
     try {
       const saved = await this.fileSystem.editFileItem(editorFile);
-      // A file that was not in the file manager any more is created again, with a new key
-      if (saved.key !== editorFile.key) await EditorView.saveFileInLocalStorage(saved);
+      // A program of THUMDER without changes: there is nothing to save
+      if (isBuiltin(saved)) return;
+      // A program of THUMDER that was changed (saved as a copy), or a file that was not in the file manager any more
+      // (created again): it has a new key, and the editor and its exercise go on with it
+      if (saved.key !== key) {
+        this.exercises.adopt(key, saved.key);
+        await EditorView.saveFileInLocalStorage(saved);
+        if (!this.destroyed) {
+          this.interfaceFileItem = saved;
+          await this.monacoEditorComponent.setEditorFile(saved);
+          this.showFile(saved);
+        }
+      }
 
       const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SAVE_FILE"));
-      const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SAVE_FILE"));
+      const message = wasBuiltin
+        ? await firstValueFrom(this.translate.get("FILE_MANAGER.COPIED", { path: FileSystemService.join(saved.path, saved.name) }))
+        : await firstValueFrom(this.translate.get("TOAST.MESSAGE_SAVE_FILE"));
       this.toastService.success(message, title, TOAST.success);
     } catch (error) {
       logger.error(error);

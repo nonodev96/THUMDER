@@ -4,8 +4,10 @@ import { collection, deleteDoc, doc, Firestore, getDocs, query, setDoc, where } 
 import { LOCAL_USER } from "@app/CONSTANTS";
 import type { InterfaceFileItem } from "@app/Types";
 import { Utils } from "@app/Utils";
+import type { Exercise } from "@core/exercises/exercises";
 import { logger } from "@core/logger/logger";
 import { BehaviorSubject, firstValueFrom, type Observable } from "rxjs";
+import { isBuiltin } from "./builtin-files";
 import { IndexedDbFileStore, mergePlan, missingFolders, normalizeFile, remoteFile } from "./file-store";
 
 /** Where the files were kept before IndexedDB (moved to it the first time) */
@@ -105,10 +107,12 @@ export class FileSystemStorageService {
     return (await this.getFiles()).find((item) => item.key === key);
   }
 
-  /** Creates or replaces files, here and in the account */
+  /** Creates or replaces files, here and in the account (the files of THUMDER are never saved) */
   public async save(items: InterfaceFileItem[]): Promise<void> {
     await this.ready;
-    const files = items.map((item) => normalizeFile({ ...item, e1_uid: this.owner, $key: item.$key || item.key }));
+    const files = items
+      .filter((item) => !isBuiltin(item))
+      .map((item) => normalizeFile({ ...item, e1_uid: this.owner, $key: item.$key || item.key }));
     try {
       await this.local.put(files);
     } catch (error) {
@@ -123,8 +127,9 @@ export class FileSystemStorageService {
   }
 
   /** Deletes files, here and in the account */
-  public async remove(items: InterfaceFileItem[]): Promise<void> {
+  public async remove(all: InterfaceFileItem[]): Promise<void> {
     await this.ready;
+    const items = all.filter((item) => !isBuiltin(item));
     try {
       await this.local.remove(items.map((item) => item.key));
       await this.refresh();
@@ -287,6 +292,11 @@ export class FileSystemStorageService {
   /** The text of a file of src/assets/examples-dlx (for example "ejemplos/01-hola-mundo.s") */
   public async fetchExample(path: string): Promise<string> {
     return firstValueFrom(this.httpClient.get(`assets/examples-dlx/${path}`, { responseType: "text" }));
+  }
+
+  /** The catalogue of the guided exercises (src/assets/exercises/exercises.json) */
+  public async fetchExercises(): Promise<Exercise[]> {
+    return firstValueFrom(this.httpClient.get<Exercise[]>("assets/exercises/exercises.json"));
   }
 
   /** The first time (no files at all), two classic programs to start with */

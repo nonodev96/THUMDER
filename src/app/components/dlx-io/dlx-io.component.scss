@@ -6,7 +6,7 @@
   z-index: 1040;
   width: min(32rem, calc(100vw - 2rem));
   margin: 0;
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
+  box-shadow: var(--thumder-shadow-lg);
 }
 
 .thumder-dlx-io-output {
@@ -16,6 +16,6 @@
   padding: 0.5rem 0.75rem;
   white-space: pre-wrap;
   word-break: break-word;
-  color: #e9ecef;
-  background-color: #1e1e1e;
+  color: var(--thumder-console-text);
+  background-color: var(--thumder-console-bg);
 }

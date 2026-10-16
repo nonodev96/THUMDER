@@ -35,6 +35,12 @@
       </div>
     }
 
+    @if (builtin()) {
+      <p class="small text-muted mb-2" id="editorReadOnly">
+        <i class="fas fa-lock mr-1" aria-hidden="true"></i>{{ 'FILE_MANAGER.READ_ONLY_EDITOR' | translate: { folder: copyFolder() } }}
+      </p>
+    }
+
     <THUMDER-monaco-editor [inputLanguage]="'thumderLanguage'" [inputTheme]="'thumderTheme'"></THUMDER-monaco-editor>
 
   </div>

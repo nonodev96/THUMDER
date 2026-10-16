@@ -1,6 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import type { InterfaceFileItem } from "@app/Types";
-import { FileSystemItem, FileSystemService, InvalidNameError } from "@core/services/file-system/file-system.service";
+import { exerciseKey } from "@core/services/file-system/builtin-files";
+import { FileSystemItem, FileSystemService, InvalidNameError, ReadOnlyError } from "@core/services/file-system/file-system.service";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
 import { BehaviorSubject } from "rxjs";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -37,6 +38,14 @@ class FakeStorage {
 
   async fetchExample(path: string) {
     return `; ${path}`;
+  }
+
+  async fetchExercises() {
+    return [{ id: "riesgos", file: "ejemplos/02-suma-vector.s" }];
+  }
+
+  async generateDefaultFiles() {
+    return 1;
   }
 }
 
@@ -145,5 +154,80 @@ describe("FileSystemService", () => {
     const all = service.exportItems([]);
     expect(all.name).toBe("thumder.zip");
     expect(await readZip(await all.blob.arrayBuffer())).toHaveLength(3);
+  });
+
+  describe("the folders of THUMDER", () => {
+    const builtin = (path: string, name: string) =>
+      service.items.find((value) => value.path === path && value.name === name) as InterfaceFileItem;
+    const stored = () => storage.items$.value;
+
+    beforeEach(() => service.init());
+
+    it("are at the root for everyone, with the examples, their module and the exercises, and are never saved", () => {
+      expect(service.namesIn("")).toEqual(expect.arrayContaining(["ejemplos", "ejercicios", "practica", "otro.s"]));
+      expect(service.namesIn("ejemplos")).toHaveLength(21);
+      expect(builtin("ejemplos", "input.s").content).toBe("; input.s");
+      expect(builtin("ejercicios", "riesgos.s")).toMatchObject({ key: exerciseKey("riesgos"), content: "; ejemplos/02-suma-vector.s" });
+      expect(stored().some((value) => value.key.startsWith("thumder:"))).toBe(false);
+    });
+
+    it("are read only: nothing is renamed, deleted, moved or created in them", async () => {
+      const folder = builtin("", "ejemplos");
+      const inside = new FileSystemItem("ejemplos", true, ["ejemplos"]);
+      inside.name = "";
+      await expect(service.renameItem(folder, "otros")).rejects.toBeInstanceOf(ReadOnlyError);
+      await expect(service.deleteItem(builtin("ejemplos", "15-hanoi.s") as FileSystemItem)).rejects.toBeInstanceOf(ReadOnlyError);
+      await expect(service.moveItem(builtin("ejemplos", "15-hanoi.s") as never, root)).rejects.toBeInstanceOf(ReadOnlyError);
+      await expect(service.moveItem(byName("otro.s") as never, folder as FileSystemItem)).rejects.toBeInstanceOf(ReadOnlyError);
+      await expect(service.createFile(inside, ".s")).rejects.toBeInstanceOf(ReadOnlyError);
+      await expect(service.importFiles([new File(["x"], "x.s")], "ejemplos")).rejects.toBeInstanceOf(ReadOnlyError);
+      expect(storage.removed).toEqual([]);
+      // Their names are taken at the root
+      await expect(service.createDirectory(root, "ejemplos")).rejects.toBeInstanceOf(InvalidNameError);
+    });
+
+    it("a program without changes is not saved; changed, it goes as a copy to «mis ejemplos» with the module", async () => {
+      const hanoi = builtin("ejemplos", "15-hanoi.s");
+      expect(await service.editFileItem({ ...hanoi })).toMatchObject({ key: hanoi.key });
+      expect(stored().some((value) => value.name === "15-hanoi.s")).toBe(false);
+
+      const copy = await service.editFileItem({ ...hanoi, content: "cambiado" });
+      expect(copy).toMatchObject({ path: "mis ejemplos", name: "15-hanoi.s", content: "cambiado" });
+      expect(copy.key.startsWith("thumder:")).toBe(false);
+      expect(service.namesIn("mis ejemplos").sort()).toEqual(["15-hanoi.s", "input.s"]);
+      // Changed again from THUMDER: another copy, in the same folder
+      await service.editFileItem({ ...hanoi, content: "otra vez" });
+      expect(service.namesIn("mis ejemplos").sort()).toEqual(["15-hanoi (2).s", "15-hanoi.s", "input.s"]);
+      expect(builtin("ejemplos", "15-hanoi.s").content).toBe("; ejemplos/15-hanoi.s");
+    });
+
+    it("its programs use the modules of their folder", async () => {
+      expect(await service.programFiles(builtin("ejemplos", "20-media-entrada.s"))).toEqual([{ name: "input.s", content: "; input.s" }]);
+      expect(await service.programFiles(builtin("ejercicios", "riesgos.s"))).toEqual([]);
+    });
+
+    it("a folder is copied to the files of the person, and only their files are downloaded as everything", async () => {
+      expect(await service.copyToMine(builtin("", "ejemplos") as FileSystemItem)).toBe("mis ejemplos");
+      expect(service.namesIn("mis ejemplos")).toHaveLength(21);
+      expect(await service.copyToMine(builtin("", "ejemplos") as FileSystemItem)).toBe("mis ejemplos (2)");
+      const all = await readZip(await service.exportItems([]).blob.arrayBuffer());
+      expect(all.every((entry) => !entry.path.startsWith("ejemplos/") && !entry.path.startsWith("ejercicios/"))).toBe(true);
+    });
+  });
+});
+
+describe("FileSystemService with a folder made by an older version", () => {
+  afterEach(() => TestBed.resetTestingModule());
+
+  it("renames the folders of the person with the name of a folder of THUMDER", async () => {
+    const storage = new FakeStorage();
+    TestBed.configureTestingModule({ providers: [{ provide: FileSystemStorageService, useValue: storage }] });
+    const service = TestBed.inject(FileSystemService);
+    await storage.save([item("", "ejercicios", true), item("ejercicios", "02-suma-vector.s", false, "mio")]);
+    await service.init();
+    const mine = storage.items$.value.find((value) => value.name === "02-suma-vector.s");
+    expect(mine).toMatchObject({ path: "mis ejercicios", content: "mio" });
+    expect(storage.items$.value.find((value) => value.isDirectory)?.name).toBe("mis ejercicios");
+    expect(service.namesIn("ejercicios")).toEqual(["riesgos.s"]);
   });
 });

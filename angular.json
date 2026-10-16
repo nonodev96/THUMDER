@@ -90,7 +90,8 @@
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css",
-              "node_modules/cookieconsent/build/cookieconsent.min.css"
+              "node_modules/cookieconsent/build/cookieconsent.min.css",
+              "src/theme.scss"
             ],
             "scripts": [
               "node_modules/prismjs/prism.js",

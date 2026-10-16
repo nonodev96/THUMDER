@@ -1,24 +1,8 @@
-import type { CycleDiagramModel, DiagramLabel } from "@core/machine/cycle-diagram.model";
+import type { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
+import { cssColour, LABEL_COLOURS } from "@core/services/theme/palette";
 
 // The cycle clock diagram for the reports of the practicals (EDU-06): a table (CSV) and a drawing (SVG), of every cycle
-// it keeps, with the colours of the canvas
-
-const COLOURS: Record<DiagramLabel, string> = {
-  IF: "#ffff00",
-  ID: "#ff9900",
-  intEX: "#ff0000",
-  MEM: "#00ff00",
-  WB: "#ff00ff",
-  faddEX: "#00ccff",
-  fmultEX: "#3399ff",
-  fdivEX: "#9966ff",
-  Aborted: "#cccccc",
-  "R-Stall": "#ffaf00",
-  "T-Stall": "#ffbf00",
-  "W-Stall": "#ffcf00",
-  Stall: "#ffdf00",
-  "S-Stall": "#ffef00",
-};
+// it keeps, with the colours of the canvas (the variables of theme.scss, as in the light theme: a white sheet)
 
 /** A field of CSV: in quotes when it has a separator, a quote or a line break */
 const field = (value: string | number) => {
@@ -43,6 +27,8 @@ const escapeXml = (text: string) => text.replace(/&/g, "&amp;").replace(/</g, "&
 
 /** The diagram as a drawing: the instructions on the left, the cycles above, the cells and the arrows */
 export function diagramToSvg(diagram: CycleDiagramModel): string {
+  const labelText = cssColour("diagram-label-text", "#1e1b4b");
+  const cellText = cssColour("on-stage", "#0f172a");
   const [left, top, column, row, cellWidth, cellHeight] = [200, 50, 60, 28, 54, 22];
   const columns = cycles(diagram);
   const width = left + columns.length * column + 10;
@@ -54,14 +40,14 @@ export function diagramToSvg(diagram: CycleDiagramModel): string {
     `<rect width="${width}" height="${height}" fill="#ffffff"/>`,
   ];
   for (const cycle of columns) {
-    parts.push(`<text x="${x(cycle) + cellWidth / 2}" y="${top - 18}" text-anchor="middle" fill="#002244">${cycle}</text>`);
+    parts.push(`<text x="${x(cycle) + cellWidth / 2}" y="${top - 18}" text-anchor="middle" fill="${labelText}">${cycle}</text>`);
   }
   diagram.rows.forEach((text, index) => {
-    parts.push(`<text x="8" y="${y(index) + cellHeight / 2 + 4}" fill="#002244">${escapeXml(text)}</text>`);
+    parts.push(`<text x="8" y="${y(index) + cellHeight / 2 + 4}" fill="${labelText}">${escapeXml(text)}</text>`);
     for (const [cycle, label] of diagram.cellsOf(index)) {
       parts.push(
-        `<rect x="${x(cycle)}" y="${y(index)}" width="${cellWidth}" height="${cellHeight}" fill="#e6e6e6" stroke="${COLOURS[label] ?? "#cccccc"}" stroke-width="2"/>`,
-        `<text x="${x(cycle) + cellWidth / 2}" y="${y(index) + cellHeight / 2 + 4}" text-anchor="middle" fill="#111111">${escapeXml(label)}</text>`,
+        `<rect x="${x(cycle)}" y="${y(index)}" width="${cellWidth}" height="${cellHeight}" rx="4" fill="${cssColour(LABEL_COLOURS[label])}" stroke="${cellText}" stroke-opacity="0.25"/>`,
+        `<text x="${x(cycle) + cellWidth / 2}" y="${y(index) + cellHeight / 2 + 4}" text-anchor="middle" fill="${cellText}">${escapeXml(label)}</text>`,
       );
     }
   });

@@ -25,12 +25,16 @@ const cookieConfig: NgcCookieConsentConfig = {
   cookie: {
     domain: window.location.hostname,
   },
+  // The colours of theme.scss (cookieconsent writes them in its own styles: it needs the values)
   palette: {
     popup: {
-      background: "#000",
+      background: "#0f172a",
+      text: "#e2e8f0",
+      link: "#a5b4fc",
     },
     button: {
-      background: "#f1d600",
+      background: "#4f46e5",
+      text: "#ffffff",
     },
   },
   theme: "edgeless",

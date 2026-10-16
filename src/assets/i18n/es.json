@@ -429,7 +429,6 @@
     "NEW_FILE": "Programa DLX (.s)",
     "NEW_FILE_NAME": "nuevo",
     "NEW_FOLDER": "Nueva carpeta",
-    "EXAMPLES": "Ejemplos DLX ({{count}})",
     "IMPORT": "Importar",
     "IMPORT_DONE": "{{count}} ficheros importados.",
     "IMPORT_NOTHING": "No había programas (.s o .txt) que importar.",
@@ -459,7 +458,13 @@
     "NAME_TOO_LONG": "El nombre es demasiado largo (100 caracteres como mucho).",
     "NAME_INVALID_CHARACTERS": "El nombre no puede llevar \\ / : * ? \" < > |",
     "NAME_RESERVED": "Ese nombre está reservado por el sistema.",
-    "NAME_TAKEN": "Ya hay un elemento con ese nombre en esta carpeta."
+    "NAME_TAKEN": "Ya hay un elemento con ese nombre en esta carpeta.",
+    "READ_ONLY": "Solo lectura",
+    "READ_ONLY_HELP": "Carpeta de THUMDER, de solo lectura: puedes abrir, ejecutar y descargar sus programas. Si cambias uno, se guarda una copia en «{{folder}}».",
+    "READ_ONLY_EDITOR": "Programa de THUMDER, de solo lectura: si lo cambias, al guardar se crea una copia en «{{folder}}».",
+    "READ_ONLY_ERROR": "Las carpetas de THUMDER son de solo lectura",
+    "COPY_TO_MINE": "Copiar a mis ficheros",
+    "COPIED": "Copiado en «{{path}}»"
   },
   "PROBLEMS": {
     "TITLE": "Problemas",

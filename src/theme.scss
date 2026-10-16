@@ -1,0 +1,720 @@
+// ─── The colours of THUMDER ──────────────────────────────────────────────────────────────────────────────────────────
+// Every colour of the interface is a variable of :root: the light theme here, and the dark one under
+// :root[data-theme="dark"] (ThemeService). The canvases (PixiJS), the exports and the datapath read the same variables.
+//
+// This file is loaded after Bootstrap and AdminLTE (angular.json): its rules start with `:root body`, which wins over
+// theirs, also over the `.dark-mode` ones of AdminLTE. Text on its background keeps 4.5:1 (WCAG AA, A11Y-04).
+
+:root {
+  // The brand: indigo. `primary` is the background of the buttons (white text on it), `primary-text` the links and the
+  // texts of that colour on the surfaces
+  --thumder-primary: #4f46e5;
+  --thumder-primary-hover: #4338ca;
+  --thumder-primary-active: #3730a3;
+  --thumder-primary-text: #4338ca;
+  --thumder-primary-soft: #eef2ff;
+  --thumder-on-primary: #ffffff;
+  // The second colour of the brand (violet), for gradients with the first one
+  --thumder-accent: #6d28d9;
+  --thumder-focus-ring: 0 0 0 0.2rem rgba(79, 70, 229, 0.35);
+
+  // Neutrals (slate): the page, the surfaces (cards, navbar, menus, dialogs), the borders and the texts
+  --thumder-bg: #f1f5f9;
+  --thumder-surface: #ffffff;
+  --thumder-surface-2: #f8fafc;
+  --thumder-surface-hover: #f1f5f9;
+  --thumder-border: #e2e8f0;
+  --thumder-border-strong: #cbd5e1;
+  --thumder-text: #0f172a;
+  --thumder-text-2: #334155;
+  --thumder-muted: #475569;
+  --thumder-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.1);
+  --thumder-shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+  --thumder-radius: 0.5rem;
+
+  // States: the background of a button or a badge (`-bg`, with white text) and the colour of a text on the surfaces
+  --thumder-success-bg: #15803d;
+  --thumder-success-text: #15803d;
+  --thumder-success-soft: #dcfce7;
+  --thumder-danger-bg: #b91c1c;
+  --thumder-danger-text: #b91c1c;
+  --thumder-danger-soft: #fee2e2;
+  --thumder-warning-bg: #f59e0b;
+  --thumder-on-warning: #1f2937;
+  --thumder-warning-text: #b45309;
+  --thumder-warning-soft: #fef3c7;
+  --thumder-info-bg: #0369a1;
+  --thumder-info-text: #0369a1;
+  --thumder-info-soft: #e0f2fe;
+
+  // The sidebar: dark in both themes
+  --thumder-sidebar-bg: #0f172a;
+  --thumder-sidebar-border: #1e293b;
+  --thumder-sidebar-text: #cbd5e1;
+  --thumder-sidebar-heading: #94a3b8;
+  --thumder-sidebar-hover-bg: rgba(148, 163, 184, 0.14);
+  --thumder-sidebar-hover-text: #ffffff;
+  --thumder-sidebar-active-bg: #4f46e5;
+  --thumder-sidebar-active-text: #ffffff;
+
+  // The console of the programs and the code blocks
+  --thumder-console-bg: #0f172a;
+  --thumder-console-text: #e2e8f0;
+
+  // The canvases: their background in each theme (the TypeScript reads both), and the parts of the cycle diagram
+  --thumder-canvas-bg-light: #f8fafc;
+  --thumder-canvas-bg-dark: #0f172a;
+  --thumder-canvas-bg: var(--thumder-canvas-bg-light);
+  --thumder-diagram-header-bg: #1e293b;
+  --thumder-diagram-label-bg: #e0e7ff;
+  --thumder-diagram-label-border: #6366f1;
+  --thumder-diagram-label-text: #1e1b4b;
+  --thumder-diagram-cell-bg: #f1f5f9;
+  --thumder-diagram-cell-text: #0f172a;
+  --thumder-diagram-selected: #4f46e5;
+
+  // The stages of the pipeline (as in WinDLX: IF yellow, ID orange, EX red, MEM green, WB violet) and the stalls (shades
+  // of amber), the same in both themes: their texts are dark
+  --thumder-stage-if: #facc15;
+  --thumder-stage-id: #fb923c;
+  --thumder-stage-ex: #f87171;
+  --thumder-stage-fadd: #38bdf8;
+  --thumder-stage-fmult: #60a5fa;
+  --thumder-stage-fdiv: #a78bfa;
+  --thumder-stage-mem: #4ade80;
+  --thumder-stage-wb: #e879f9;
+  --thumder-stage-aborted: #cbd5e1;
+  --thumder-stall-r: #f59e0b;
+  --thumder-stall-t: #fbbf24;
+  --thumder-stall-w: #fcd34d;
+  --thumder-stall: #fde047;
+  --thumder-stall-s: #fef08a;
+  --thumder-on-stage: #0f172a;
+  // The arrows of the cycle diagram (the simulator writes these values: engine/simulator.ts)
+  --thumder-forwarding: #16a34a;
+  --thumder-stall-arrow: #dc2626;
+
+  // The line of the instruction just fetched, in the editor
+  --thumder-debug-line: #dcfce7;
+  --thumder-debug-line-mark: #16a34a;
+}
+
+:root[data-theme="dark"] {
+  --thumder-primary-text: #a5b4fc;
+  --thumder-primary-soft: rgba(129, 140, 248, 0.16);
+  --thumder-focus-ring: 0 0 0 0.2rem rgba(165, 180, 252, 0.4);
+
+  --thumder-bg: #0f172a;
+  --thumder-surface: #1e293b;
+  --thumder-surface-2: #273449;
+  --thumder-surface-hover: #334155;
+  --thumder-border: #334155;
+  --thumder-border-strong: #475569;
+  --thumder-text: #e2e8f0;
+  --thumder-text-2: #cbd5e1;
+  --thumder-muted: #94a3b8;
+  --thumder-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --thumder-shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+
+  --thumder-success-text: #4ade80;
+  --thumder-success-soft: rgba(74, 222, 128, 0.14);
+  --thumder-danger-text: #fca5a5;
+  --thumder-danger-soft: rgba(248, 113, 113, 0.16);
+  --thumder-warning-text: #fcd34d;
+  --thumder-warning-soft: rgba(251, 191, 36, 0.14);
+  --thumder-info-text: #7dd3fc;
+  --thumder-info-soft: rgba(56, 189, 248, 0.14);
+
+  --thumder-sidebar-bg: #020617;
+  --thumder-sidebar-border: #1e293b;
+
+  --thumder-console-bg: #020617;
+  --thumder-canvas-bg: var(--thumder-canvas-bg-dark);
+  --thumder-diagram-selected: #a5b4fc;
+
+  --thumder-debug-line: #0f2a24;
+  --thumder-debug-line-mark: #2fd8a8;
+}
+
+// ─── Bootstrap and AdminLTE with these colours ───────────────────────────────────────────────────────────────────────
+
+:root body {
+  background-color: var(--thumder-bg);
+  color: var(--thumder-text);
+
+  ::selection {
+    background-color: var(--thumder-primary);
+    color: var(--thumder-on-primary);
+  }
+
+  .content-wrapper {
+    background-color: var(--thumder-bg);
+    color: var(--thumder-text);
+  }
+
+  .content-header h1,
+  .content-header .m-0,
+  .text-dark {
+    color: var(--thumder-text) !important;
+  }
+
+  // Links: underlined inside a text (styles.scss), coloured everywhere
+  a {
+    color: var(--thumder-primary-text);
+
+    &:hover {
+      color: var(--thumder-primary-hover);
+    }
+  }
+
+  &.dark-mode a:not(.btn):hover {
+    color: var(--thumder-text);
+  }
+
+  .text-muted {
+    color: var(--thumder-muted) !important;
+  }
+
+  .text-primary {
+    color: var(--thumder-primary-text) !important;
+  }
+
+  .text-success {
+    color: var(--thumder-success-text) !important;
+  }
+
+  .text-danger {
+    color: var(--thumder-danger-text) !important;
+  }
+
+  .text-warning {
+    color: var(--thumder-warning-text) !important;
+  }
+
+  .text-info {
+    color: var(--thumder-info-text) !important;
+  }
+
+  .bg-primary,
+  .bg-blue {
+    background-color: var(--thumder-primary) !important;
+    color: var(--thumder-on-primary) !important;
+  }
+
+  hr {
+    border-top-color: var(--thumder-border);
+  }
+
+  // The boxes of the home page: indigo to violet (white text keeps more than 6:1 on both)
+  .small-box {
+    border-radius: var(--thumder-radius);
+    box-shadow: var(--thumder-shadow);
+    overflow: hidden;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &.bg-blue,
+    &.bg-primary {
+      background-image: linear-gradient(135deg, var(--thumder-primary) 0%, var(--thumder-accent) 100%);
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--thumder-shadow-lg);
+    }
+
+    > .small-box-footer {
+      background-color: rgba(15, 23, 42, 0.18);
+    }
+  }
+
+  // ── The navbar ──
+  .main-header {
+    background-color: var(--thumder-surface);
+    border-bottom: 1px solid var(--thumder-border);
+    box-shadow: var(--thumder-shadow);
+
+    .navbar-nav .nav-link,
+    .navbar-nav .btn-link {
+      color: var(--thumder-text-2);
+
+      &:hover,
+      &:focus {
+        color: var(--thumder-primary-text);
+      }
+    }
+  }
+
+  .navbar-light .navbar-nav .nav-link,
+  .navbar-light .navbar-nav .btn-link,
+  .main-header .btn:not([class*="btn-"]) {
+    color: var(--thumder-text-2);
+  }
+
+  // The controls of the simulation (auth-navbar): green while they can be used
+  .main-header .btn.sim-control {
+    color: var(--thumder-success-text);
+
+    &:disabled {
+      color: var(--thumder-muted);
+    }
+  }
+
+  // ── The sidebar ──
+  .main-sidebar,
+  [class*="sidebar-dark-"] {
+    background-color: var(--thumder-sidebar-bg);
+  }
+
+  &.layout-navbar-fixed .wrapper .sidebar-dark-primary .brand-link:not([class*="navbar"]),
+  .main-sidebar .brand-link {
+    background-color: var(--thumder-sidebar-bg);
+  }
+
+  [class*="sidebar-dark"] {
+    .brand-link {
+      color: var(--thumder-sidebar-hover-text);
+      border-bottom-color: var(--thumder-sidebar-border);
+
+      &:hover {
+        color: var(--thumder-sidebar-hover-text);
+      }
+    }
+
+    .user-panel {
+      border-bottom-color: var(--thumder-sidebar-border);
+
+      a {
+        color: var(--thumder-sidebar-text);
+      }
+    }
+
+    .nav-header {
+      color: var(--thumder-sidebar-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  }
+
+  [class*="sidebar-dark-"] .nav-sidebar > .nav-item > .nav-link {
+    color: var(--thumder-sidebar-text);
+    border-radius: var(--thumder-radius);
+
+    &:hover,
+    &:focus {
+      background-color: var(--thumder-sidebar-hover-bg);
+      color: var(--thumder-sidebar-hover-text);
+    }
+  }
+
+  .sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+  .sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: var(--thumder-sidebar-active-bg);
+    color: var(--thumder-sidebar-active-text);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  // ── Cards ──
+  .card {
+    background-color: var(--thumder-surface);
+    color: var(--thumder-text);
+    border: 1px solid var(--thumder-border);
+    border-radius: var(--thumder-radius);
+    box-shadow: var(--thumder-shadow);
+
+    .card {
+      background-color: var(--thumder-surface-2);
+    }
+
+    .card-header {
+      background-color: transparent;
+      border-bottom-color: var(--thumder-border);
+    }
+
+    .card-footer {
+      background-color: var(--thumder-surface-2);
+      border-top: 1px solid var(--thumder-border);
+    }
+  }
+
+  .card-primary.card-outline {
+    border-top: 3px solid var(--thumder-primary);
+  }
+
+  .card-primary:not(.card-outline) > .card-header {
+    background-color: var(--thumder-primary);
+    color: var(--thumder-on-primary);
+  }
+
+  .card-title {
+    color: var(--thumder-text);
+  }
+
+  .callout {
+    background-color: var(--thumder-surface-2);
+    border-left-color: var(--thumder-border-strong);
+    color: var(--thumder-text);
+    box-shadow: none;
+
+    &.callout-info {
+      border-left-color: var(--thumder-info-text);
+      background-color: var(--thumder-info-soft);
+    }
+
+    &.callout-warning {
+      border-left-color: var(--thumder-warning-bg);
+      background-color: var(--thumder-warning-soft);
+    }
+
+    &.callout-danger {
+      border-left-color: var(--thumder-danger-text);
+      background-color: var(--thumder-danger-soft);
+    }
+
+    &.callout-success {
+      border-left-color: var(--thumder-success-text);
+      background-color: var(--thumder-success-soft);
+    }
+  }
+
+  // ── Buttons ──
+  .btn:focus,
+  .btn.focus,
+  .form-control:focus,
+  .custom-select:focus {
+    box-shadow: var(--thumder-focus-ring);
+  }
+
+  .btn-primary,
+  .btn-primary:disabled,
+  .btn-primary.disabled {
+    background-color: var(--thumder-primary);
+    border-color: var(--thumder-primary);
+    color: var(--thumder-on-primary);
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: var(--thumder-primary-hover);
+    border-color: var(--thumder-primary-hover);
+    color: var(--thumder-on-primary);
+  }
+
+  .btn-primary:not(:disabled):not(.disabled):active,
+  .btn-primary:not(:disabled):not(.disabled).active {
+    background-color: var(--thumder-primary-active);
+    border-color: var(--thumder-primary-active);
+    color: var(--thumder-on-primary);
+  }
+
+  .btn-outline-primary {
+    color: var(--thumder-primary-text);
+    border-color: var(--thumder-primary-text);
+    background-color: transparent;
+
+    &:hover,
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      color: var(--thumder-on-primary);
+      background-color: var(--thumder-primary);
+      border-color: var(--thumder-primary);
+    }
+  }
+
+  .btn-secondary,
+  .btn-default {
+    background-color: var(--thumder-surface-2);
+    border-color: var(--thumder-border-strong);
+    color: var(--thumder-text);
+
+    &:hover,
+    &:focus,
+    &:not(:disabled):not(.disabled):active {
+      background-color: var(--thumder-surface-hover);
+      border-color: var(--thumder-border-strong);
+      color: var(--thumder-text);
+    }
+  }
+
+  .btn-outline-secondary {
+    color: var(--thumder-text-2);
+    border-color: var(--thumder-border-strong);
+    background-color: transparent;
+
+    &:hover,
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      color: var(--thumder-text);
+      background-color: var(--thumder-surface-hover);
+      border-color: var(--thumder-border-strong);
+    }
+  }
+
+  .btn-light,
+  &.dark-mode .btn-light:disabled,
+  &.dark-mode .btn-light.disabled {
+    background-color: var(--thumder-surface-2);
+    border-color: var(--thumder-border);
+    color: var(--thumder-text);
+
+    &:hover,
+    &:focus,
+    &:not(:disabled):not(.disabled):active {
+      background-color: var(--thumder-surface-hover);
+      border-color: var(--thumder-border-strong);
+      color: var(--thumder-text);
+    }
+  }
+
+  .btn-success {
+    background-color: var(--thumder-success-bg);
+    border-color: var(--thumder-success-bg);
+    color: #fff;
+  }
+
+  .btn-danger {
+    background-color: var(--thumder-danger-bg);
+    border-color: var(--thumder-danger-bg);
+    color: #fff;
+  }
+
+  .btn-outline-danger {
+    color: var(--thumder-danger-text);
+    border-color: var(--thumder-danger-text);
+    background-color: transparent;
+
+    &:hover,
+    &:not(:disabled):not(.disabled):active {
+      color: #fff;
+      background-color: var(--thumder-danger-bg);
+      border-color: var(--thumder-danger-bg);
+    }
+  }
+
+  .btn-warning {
+    background-color: var(--thumder-warning-bg);
+    border-color: var(--thumder-warning-bg);
+    color: var(--thumder-on-warning);
+  }
+
+  .btn-info {
+    background-color: var(--thumder-info-bg);
+    border-color: var(--thumder-info-bg);
+    color: #fff;
+  }
+
+  .btn-link {
+    color: var(--thumder-primary-text);
+
+    &:hover {
+      color: var(--thumder-primary-hover);
+    }
+  }
+
+  &.dark-mode .btn-link:hover {
+    color: var(--thumder-text);
+  }
+
+  .btn-tool {
+    color: var(--thumder-muted);
+  }
+
+  .btn-tool:hover,
+  .btn-tool.btn--active,
+  .btn--active,
+  .btn--active > span {
+    color: var(--thumder-primary-text);
+  }
+
+  // ── Forms ──
+  .form-control,
+  .custom-select,
+  &.dark-mode .form-control:not(.form-control-navbar):not(.form-control-sidebar),
+  &.dark-mode .custom-select {
+    background-color: var(--thumder-surface);
+    border-color: var(--thumder-border-strong);
+    color: var(--thumder-text);
+
+    &:focus {
+      border-color: var(--thumder-primary);
+    }
+
+    &::placeholder {
+      color: var(--thumder-muted);
+    }
+
+    &:disabled,
+    &[readonly] {
+      background-color: var(--thumder-surface-2);
+    }
+  }
+
+  .input-group-text,
+  &.dark-mode .input-group-text {
+    background-color: var(--thumder-surface-2);
+    border-color: var(--thumder-border-strong);
+    color: var(--thumder-text-2);
+  }
+
+  .form-check-input,
+  .custom-control-input,
+  input[type="range"] {
+    accent-color: var(--thumder-primary);
+  }
+
+  // ── Tables ──
+  .table {
+    color: var(--thumder-text);
+
+    th,
+    td {
+      border-top-color: var(--thumder-border);
+    }
+
+    thead th {
+      border-bottom-color: var(--thumder-border);
+      color: var(--thumder-text-2);
+    }
+  }
+
+  .table-bordered,
+  .table-bordered th,
+  .table-bordered td {
+    border-color: var(--thumder-border);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: var(--thumder-surface-hover);
+    color: var(--thumder-text);
+  }
+
+  .table-active,
+  .table-active > th,
+  .table-active > td {
+    background-color: var(--thumder-primary-soft);
+  }
+
+  // ── Menus, dialogs, lists and the rest ──
+  .dropdown-menu {
+    background-color: var(--thumder-surface);
+    border: 1px solid var(--thumder-border);
+    border-radius: var(--thumder-radius);
+    box-shadow: var(--thumder-shadow-lg);
+    color: var(--thumder-text);
+  }
+
+  .dropdown-item {
+    color: var(--thumder-text);
+
+    &:hover,
+    &:focus {
+      background-color: var(--thumder-surface-hover);
+      color: var(--thumder-text);
+    }
+
+    &.active,
+    &:active {
+      background-color: var(--thumder-primary);
+      color: var(--thumder-on-primary);
+    }
+
+    &.text-danger {
+      color: var(--thumder-danger-text) !important;
+    }
+  }
+
+  .dropdown-divider {
+    border-top-color: var(--thumder-border);
+  }
+
+  .modal-content {
+    background-color: var(--thumder-surface);
+    border: 1px solid var(--thumder-border);
+    border-radius: var(--thumder-radius);
+    box-shadow: var(--thumder-shadow-lg);
+    color: var(--thumder-text);
+  }
+
+  .modal-header,
+  .modal-footer {
+    border-color: var(--thumder-border);
+  }
+
+  .close {
+    color: var(--thumder-text);
+    text-shadow: none;
+  }
+
+  .list-group-item {
+    background-color: var(--thumder-surface);
+    border-color: var(--thumder-border);
+    color: var(--thumder-text);
+  }
+
+  .nav-pills .nav-link {
+    color: var(--thumder-text-2);
+
+    &.active,
+    .show > & {
+      background-color: var(--thumder-primary);
+      color: var(--thumder-on-primary);
+    }
+  }
+
+  .breadcrumb-item,
+  .breadcrumb-item.active,
+  .breadcrumb-item + .breadcrumb-item::before,
+  &.dark-mode .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--thumder-muted);
+  }
+
+  .badge-primary {
+    background-color: var(--thumder-primary);
+    color: var(--thumder-on-primary);
+  }
+
+  .badge-secondary {
+    background-color: var(--thumder-surface-hover);
+    color: var(--thumder-text);
+  }
+
+  .main-footer {
+    background-color: var(--thumder-surface);
+    border-top-color: var(--thumder-border);
+    color: var(--thumder-muted);
+
+    strong {
+      color: var(--thumder-text-2);
+    }
+  }
+
+  pre {
+    color: var(--thumder-text);
+  }
+
+  // ── Notifications (ngx-toastr) ──
+  .toast-success {
+    background-color: var(--thumder-success-bg);
+  }
+
+  .toast-error {
+    background-color: var(--thumder-danger-bg);
+  }
+
+  .toast-info {
+    background-color: var(--thumder-info-bg);
+  }
+
+  .toast-warning {
+    background-color: #b45309;
+  }
+
+  #toast-container > div {
+    border-radius: var(--thumder-radius);
+    box-shadow: var(--thumder-shadow-lg);
+    opacity: 1;
+  }
+}

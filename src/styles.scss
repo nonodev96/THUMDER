@@ -55,12 +55,12 @@ body.layout-fixed .main-sidebar .sidebar {
 
 .debug-line {
   // The line of the instruction just fetched: a pale green that keeps the colours of the code readable (A11Y-04)
-  background: #e8fff7;
-  box-shadow: inset 4px 0 0 #00a07a;
+  background: var(--thumder-debug-line);
+  box-shadow: inset 4px 0 0 var(--thumder-debug-line-mark);
 }
 
 .color-red {
-  color: red;
+  color: var(--thumder-danger-text);
 }
 
 .like-pre::first-line {
@@ -74,7 +74,7 @@ body.layout-fixed .main-sidebar .sidebar {
 
 
 .btn--active {
-  color: #495057 !important;
+  color: var(--thumder-primary-text) !important;
 }
 
 .width-05 {
@@ -126,39 +126,39 @@ body.layout-fixed .main-sidebar .sidebar {
 }
 
 .stage-IF {
-  background-color: #fffe04;
+  background-color: var(--thumder-stage-if);
 }
 
 .stage-ID {
-  background-color: #ffa200;
+  background-color: var(--thumder-stage-id);
 }
 
 .stage-EX {
-  background-color: #ff001b;
+  background-color: var(--thumder-stage-ex);
 }
 
 .stage-intEX {
-  background-color: #ff001b;
+  background-color: var(--thumder-stage-ex);
 }
 
 .faddEX_1, .faddEX_2, .faddEX_3, .faddEX_4, .faddEX_5, .faddEX_6, .faddEX_7, .faddEX_8 {
-  background-color: #ff001b;
+  background-color: var(--thumder-stage-fadd);
 }
 
 .fmultEX_1, .fmultEX_2, .fmultEX_3, .fmultEX_4, .fmultEX_5, .fmultEX_6, .fmultEX_7, .fmultEX_8 {
-  background-color: #ff001b;
+  background-color: var(--thumder-stage-fmult);
 }
 
 .fdivEX_1, .fdivEX_2, .fdivEX_3, .fdivEX_4, .fdivEX_5, .fdivEX_6, .fdivEX_7, .fdivEX_8 {
-  background-color: #ff001b;
+  background-color: var(--thumder-stage-fdiv);
 }
 
 .stage-MEM {
-  background-color: #01ff1b;
+  background-color: var(--thumder-stage-mem);
 }
 
 .stage-WB {
-  background-color: #a2a2ff;
+  background-color: var(--thumder-stage-wb);
 }
 
 .stage- {
@@ -251,7 +251,7 @@ span.underline-text:after {
   height: 100%;
   top: 100%;
   left: 0;
-  border-top: 1px solid black;
+  border-top: 1px solid currentColor;
   text-align: center;
   font-size: 10px;
   line-height: 10px;
@@ -325,14 +325,14 @@ span.underline-text:after {
 .example-custom-placeholder {
   min-height: 64px;
   width: 100%;
-  background: #ccc;
-  border: dotted 3px #999;
+  background: var(--thumder-surface-hover);
+  border: dashed 2px var(--thumder-border-strong);
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .example-custom-placeholder-registers {
-  background: #ccc;
-  border: dotted 3px #999;
+  background: var(--thumder-surface-hover);
+  border: dashed 2px var(--thumder-border-strong);
   width: 100%;
   min-height: 256px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
@@ -349,8 +349,8 @@ span.underline-text:after {
 }
 
 .form-check-custom-placeholder {
-  background: #ccc;
-  border: dotted 3px #999;
+  background: var(--thumder-surface-hover);
+  border: dashed 2px var(--thumder-border-strong);
   min-height: 30px;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
@@ -399,7 +399,7 @@ markdown pre {
 
 /* LOGIN */
 .error-messages {
-  color: red;
+  color: var(--thumder-danger-text);
 }
 
 /* BADGE BETA */
@@ -414,7 +414,7 @@ markdown pre {
   right: -1.5em;
   border-radius: 0.25em;
   bottom: 0;
-  background-color: red;
+  background-color: var(--thumder-danger-bg);
   padding-left: 0.4em;
   padding-right: 0.4em;
 }
@@ -443,10 +443,6 @@ markdown pre {
 
 :root {
   --slider-width: 400px;
-}
-
-body {
-  background-color: gray;
 }
 
 .slider {
@@ -595,8 +591,8 @@ body .main-header .navbar-nav {
   }
 }
 
-// ─── The dark theme (UI-07) ──────────────────────────────────────────────────────────────────────────────────────────
-// AdminLTE darkens its parts with `body.dark-mode` (ThemeService); these are the parts of THUMDER
+// ─── Colours ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+// The palette, light and dark (UI-07), is in theme.scss: here only the variables it defines are used
 
 // The rows of the code keep the colour of their stage with black text (readable on the bright colours)
 [class*="stage-"].thumder-row,
@@ -606,81 +602,7 @@ body .main-header .navbar-nav {
 .stage-intEX,
 .stage-MEM,
 .stage-WB {
-  color: #000;
-}
-
-body.dark-mode {
-  thumder-virtual-table .thumder-table-scroll {
-    border-color: #4b545c;
-  }
-
-  thumder-virtual-table .thumder-table-row {
-    border-color: #4b545c;
-  }
-
-  thumder-virtual-table .thumder-table-header {
-    background: #343a40;
-    color: #fff;
-  }
-
-  .callout {
-    background-color: #3f474e;
-  }
-
-  .breadcrumb .btn-link,
-  .btn-tool {
-    color: #ced4da;
-  }
-}
-
-// ─── Contrast (A11Y-04, WCAG AA: 4.5:1 for text) ──────────────────────────────────────────────────────────────────────
-// Bootstrap's blue (#007bff) has 3.97:1 on white and AdminLTE greys less: darker tones for the text and the buttons
-body:not(.dark-mode) {
-  a,
-  .btn-link {
-    color: #0056b3;
-  }
-
-  .btn-primary,
-  .bg-primary,
-  .bg-blue,
-  .badge-primary {
-    background-color: #0062cc !important;
-    border-color: #005cbf;
-    color: #fff !important;
-  }
-
-  .btn-outline-primary {
-    color: #0056b3;
-    border-color: #0056b3;
-
-    &:hover,
-    &.active {
-      color: #fff;
-      background-color: #0056b3;
-    }
-  }
-
-  .navbar-light .navbar-nav .nav-link {
-    color: rgba(0, 0, 0, 0.7);
-  }
-
-  .main-footer,
-  .main-footer strong {
-    color: #5a6268;
-  }
-
-  .btn-tool {
-    color: #5a6268;
-  }
-
-  .text-muted {
-    color: #5a6268 !important;
-  }
-
-  .main-footer a {
-    color: #0056b3;
-  }
+  color: var(--thumder-on-stage);
 }
 
 // Links inside a text are underlined, not only coloured (WCAG 1.4.1)
@@ -688,75 +610,4 @@ body:not(.dark-mode) {
 .content-wrapper p a,
 .content-wrapper li a:not(.nav-link):not(.btn) {
   text-decoration: underline;
-}
-
-body.dark-mode .debug-line {
-  background: #0f2a24;
-  box-shadow: inset 4px 0 0 #2fd8a8;
-}
-
-// The dark theme of AdminLTE 3.1 leaves the navbar white and some texts and links dark: the rest, with 4.5:1 (A11Y-04)
-body.dark-mode {
-  .main-header.navbar-white {
-    background-color: #343a40;
-    border-bottom-color: #4b545c;
-  }
-
-  .navbar-light .navbar-nav .nav-link,
-  .navbar-light .navbar-nav .btn-link {
-    color: #e9ecef;
-  }
-
-  .content-header h1,
-  .content-header .m-0,
-  .text-dark,
-  pre {
-    color: #e9ecef !important;
-  }
-
-  a,
-  .btn-link,
-  #title-app {
-    color: #9fc5ff;
-  }
-
-  .main-footer,
-  .main-footer strong {
-    color: #ced4da;
-  }
-
-  .btn-outline-primary {
-    color: #9fc5ff;
-    border-color: #9fc5ff;
-
-    &:hover,
-    &.active {
-      color: #212529;
-      background-color: #9fc5ff;
-    }
-  }
-
-  .btn-outline-secondary {
-    color: #e9ecef;
-    border-color: #adb5bd;
-  }
-
-  .btn-tool,
-  .btn-tool.btn--active,
-  .btn--active,
-  .btn--active > span {
-    color: #e9ecef !important;
-  }
-
-  .text-danger {
-    color: #ff8a95 !important;
-  }
-
-  .text-success {
-    color: #6fdc8c !important;
-  }
-
-  .text-primary {
-    color: #9fc5ff !important;
-  }
 }

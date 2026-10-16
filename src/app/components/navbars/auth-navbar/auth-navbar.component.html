@@ -61,34 +61,29 @@
       <li class="nav-item d-flex flex-nowrap align-items-center ml-2">
         <div class="btn-group" role="group" [attr.aria-label]="'SIMULATION.CONTROLS' | translate"
           [title]="'SIMULATION.SHORTCUTS' | translate">
-          <button type="button" class="btn" (click)="reset()"
-            [attr.aria-label]="'SIMULATION.LOAD' | translate" [title]="('SIMULATION.LOAD' | translate) + ' (Shift+F5)'"
-            style="color: #28a745">
+          <button type="button" class="btn sim-control" (click)="reset()"
+            [attr.aria-label]="'SIMULATION.LOAD' | translate" [title]="('SIMULATION.LOAD' | translate) + ' (Shift+F5)'">
             <i class="fas fa-exchange-alt" aria-hidden="true"></i>
           </button>
-          <button type="button" class="btn" (click)="togglePlayPause()"
+          <button type="button" class="btn sim-control" (click)="togglePlayPause()"
             [attr.aria-label]="(machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate"
             [title]="((machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate) + ' (F5)'"
-            [disabled]="!machine.state.canSimulate()"
-            [style.color]="machine.state.canSimulate() ? '#28a745' : '#ffc107'">
+            [disabled]="!machine.state.canSimulate()">
             <i class="fas" [class.fa-pause]="machine.state.running()" [class.fa-play]="!machine.state.running()" aria-hidden="true"></i>
           </button>
-          <button type="button" class="btn" (click)="stepBack()" id="simulationStepBack"
+          <button type="button" class="btn sim-control" (click)="stepBack()" id="simulationStepBack"
             [attr.aria-label]="'SIMULATION.STEP_BACK' | translate" [title]="('SIMULATION.STEP_BACK' | translate) + ' (Shift+F10)'"
-            [disabled]="machine.state.cycles() === 0 || machine.state.running()"
-            [style.color]="machine.state.cycles() > 0 ? '#28a745' : '#ffc107'">
+            [disabled]="machine.state.cycles() === 0 || machine.state.running()">
             <i class="fas fa-angle-left" aria-hidden="true"></i>
           </button>
-          <button type="button" class="btn" (click)="nextStep()"
+          <button type="button" class="btn sim-control" (click)="nextStep()"
             [attr.aria-label]="'SIMULATION.STEP' | translate" [title]="('SIMULATION.STEP' | translate) + ' (F10)'"
-            [disabled]="!machine.state.canSimulate() || machine.state.running()"
-            [style.color]="machine.state.canSimulate() ? '#28a745' : '#ffc107'">
+            [disabled]="!machine.state.canSimulate() || machine.state.running()">
             <i class="fas fa-angle-right" aria-hidden="true"></i>
           </button>
-          <button type="button" class="btn d-none d-sm-inline-block" (click)="runToEnd()" id="simulationRunToEnd"
+          <button type="button" class="btn sim-control d-none d-sm-inline-block" (click)="runToEnd()" id="simulationRunToEnd"
             [attr.aria-label]="'SIMULATION.RUN_TO_END' | translate" [title]="('SIMULATION.RUN_TO_END' | translate) + ' (F8)'"
-            [disabled]="!machine.state.canSimulate() || machine.state.running()"
-            [style.color]="machine.state.canSimulate() ? '#28a745' : '#ffc107'">
+            [disabled]="!machine.state.canSimulate() || machine.state.running()">
             <i class="fas fa-fast-forward" aria-hidden="true"></i>
           </button>
         </div>

@@ -29,6 +29,7 @@ La arquitectura del simulador y el protocolo entre la página y el Web Worker es
 
 - **Angular sin módulos**: componentes independientes, `inject()`, *signals* y `OnPush` en las vistas que leen `MachineService.state`. Ninguna vista guarda una copia del estado de la máquina.
 - **Interfaz**: AdminLTE 3 y Bootstrap 4 (solo CSS) con el CDK de Angular y las directivas propias de `__shared/directives` (sin jQuery ni Angular Material).
+- **Colores**: todos son variables de `:root` en `src/theme.scss` (el tema claro, y el oscuro en `:root[data-theme="dark"]`). Los componentes usan `var(--thumder-...)`; los lienzos de PixiJS y las exportaciones leen las mismas variables con `palette.ts`. Solo llevan el valor escrito los sitios que no pueden leer variables (el tema de Monaco, el aviso de cookies y las flechas que genera el simulador), con un comentario que dice a qué variable corresponden.
 - **Textos**: todos los de la interfaz en `src/assets/i18n/es.json` y `en.json`, con las mismas claves (una prueba lo comprueba). Los botones de icono llevan `title` y `aria-label` traducidos.
 - **Accesibilidad**: cada vista pasa axe (WCAG 2.1 A y AA) en los temas claro y oscuro (`e2e/a11y.spec.ts`), sin reglas desactivadas. Contraste de 4,5:1 y nada que se distinga solo por el color.
 - **Seguridad**: la CSP de `src/index.html` no permite `eval` ni scripts en línea. La página de Electron no tiene Node.js: lo que necesita lo expone `preload.ts`.
