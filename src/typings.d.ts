@@ -20,5 +20,5 @@ declare module "*.s" {
 
 // Monaco without its 80 languages and their workers (REN-02): the editor and its features, with the API of editor.api
 declare module "monaco-editor/esm/vs/editor/edcore.main.js" {
-  export * from "monaco-editor/esm/vs/editor/editor.api";
+  export * from "monaco-editor/esm/vs/editor/editor.api.js";
 }
