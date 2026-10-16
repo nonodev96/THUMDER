@@ -1,0 +1,117 @@
+@let f = format();
+@let d = decoded();
+<section class="ieee" aria-labelledby="ieeeTitle">
+  <div class="ieee-head">
+    <h4 class="ieee-title" id="ieeeTitle">{{ 'IEEE.TITLE' | translate }}</h4>
+    <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'IEEE.FORMAT' | translate">
+      @for (option of formats; track option.bits) {
+        <button type="button" class="btn btn-outline-secondary" [id]="'ieeeFormat' + option.bits" [class.active]="f === option"
+          [attr.aria-pressed]="f === option" (click)="setFormat(option)">
+          {{ (option.bits === 32 ? 'IEEE.SINGLE' : 'IEEE.DOUBLE') | translate }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- The number in decimal, hexadecimal and binary -->
+  <div class="row">
+    <div class="col-12 col-lg-4 form-group">
+      <label for="ieee754_number">{{ 'IEEE.DECIMAL' | translate }}</label>
+      <input type="text" inputmode="decimal" class="form-control" id="ieee754_number" autocomplete="off" spellcheck="false"
+        [value]="decimalText()" (input)="onDecimal($any($event.target).value)" [class.is-invalid]="decimalInvalid()"
+        aria-describedby="ieeeDecimalHelp">
+      <small class="form-text text-muted" id="ieeeDecimalHelp">{{ 'IEEE.DECIMAL_HELP' | translate }}</small>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3 form-group">
+      <label for="ieee754_hex">{{ 'IEEE.HEXADECIMAL' | translate }}</label>
+      <div class="input-group">
+        <div class="input-group-prepend"><span class="input-group-text">0x</span></div>
+        <input type="text" class="form-control text-monospace" id="ieee754_hex" autocomplete="off" spellcheck="false"
+          [value]="hexText()" (input)="onHex($any($event.target).value)" [class.is-invalid]="hexInvalid()" [attr.maxlength]="f.bits / 4">
+      </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-5 form-group">
+      <label for="ieee754_binary">{{ 'IEEE.BINARY' | translate }}</label>
+      <div class="input-group">
+        <div class="input-group-prepend"><span class="input-group-text">0b</span></div>
+        <input type="text" class="form-control text-monospace" id="ieee754_binary" autocomplete="off" spellcheck="false"
+          [value]="binaryText()" (input)="onBinary($any($event.target).value)" [class.is-invalid]="binaryInvalid()" [attr.maxlength]="f.bits">
+      </div>
+    </div>
+  </div>
+  @if (decimalInvalid() || hexInvalid() || binaryInvalid()) {
+    <p class="text-danger small" role="alert">{{ 'IEEE.INVALID' | translate: { bits: f.bits } }}</p>
+  }
+
+  <!-- The bits, by field: a click changes one -->
+  <div class="ieee-bits" id="ieeeBits">
+    @for (field of fields; track field) {
+      <div class="ieee-field" [class]="'ieee-field-' + field">
+        <div class="ieee-field-name">
+          {{ ('IEEE.' + field.toUpperCase()) | translate }}
+          <small>{{ (cellsOf(field).length === 1 ? 'IEEE.ONE_BIT' : 'IEEE.BITS_COUNT') | translate: { count: cellsOf(field).length } }}</small>
+        </div>
+        <div class="ieee-field-bits" role="group" [attr.aria-label]="('IEEE.' + field.toUpperCase()) | translate">
+          @for (cell of cellsOf(field); track cell.index) {
+            <button type="button" class="ieee-bit" [class.ieee-bit-gap]="cell.gap" [attr.aria-pressed]="cell.bit === '1'"
+              [attr.aria-label]="'IEEE.BIT' | translate: { position: cell.position, value: cell.bit }"
+              [title]="'IEEE.BIT' | translate: { position: cell.position, value: cell.bit }" (click)="toggle(cell.index)">{{ cell.bit }}</button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+  <p class="small text-muted mt-1">{{ 'IEEE.TOGGLE_HELP' | translate }}</p>
+
+  <!-- What the fields mean -->
+  <dl class="ieee-decoded" id="ieeeDecoded">
+    <div>
+      <dt>{{ 'IEEE.SIGN' | translate }}</dt>
+      <dd>s = {{ d.sign }} → {{ (d.sign === 0 ? 'IEEE.POSITIVE' : 'IEEE.NEGATIVE') | translate }}</dd>
+    </div>
+    <div>
+      <dt>{{ 'IEEE.EXPONENT' | translate }}</dt>
+      <dd>
+        e = <span class="text-monospace">{{ d.exponentBits }}</span> = {{ d.storedExponent }}
+        @switch (d.kind) {
+          @case ('normal') { → {{ d.storedExponent }} − {{ f.bias }} = <strong>{{ d.exponent }}</strong> }
+          @case ('subnormal') { → {{ 'IEEE.EXPONENT_SUBNORMAL' | translate: { exponent: d.exponent, bias: f.bias } }} }
+          @case ('zero') { → {{ 'IEEE.EXPONENT_ZERO' | translate }} }
+          @default { → {{ 'IEEE.EXPONENT_SPECIAL' | translate }} }
+        }
+      </dd>
+    </div>
+    <div>
+      <dt>{{ 'IEEE.FRACTION' | translate }}</dt>
+      <dd>
+        @if (d.kind === 'nan') {
+          {{ 'IEEE.FRACTION_NAN' | translate }}
+        } @else if (d.kind === 'infinity') {
+          {{ 'IEEE.FRACTION_INFINITY' | translate }}
+        } @else {
+          {{ d.kind === 'normal' ? '1.f' : '0.f' }} = {{ format_(d.significand) }}
+          <small class="text-muted">({{ (d.kind === 'normal' ? 'IEEE.HIDDEN_ONE' : 'IEEE.NO_HIDDEN_ONE') | translate }})</small>
+        }
+      </dd>
+    </div>
+    <div>
+      <dt>{{ 'IEEE.KIND' | translate }}</dt>
+      <dd id="ieeeKind">{{ ('IEEE.KIND_' + d.kind.toUpperCase()) | translate }}</dd>
+    </div>
+    @if (d.kind === 'normal' || d.kind === 'subnormal') {
+      <div>
+        <dt>{{ 'IEEE.FORMULA' | translate }}</dt>
+        <dd class="ieee-formula">(−1)<sup>{{ d.sign }}</sup> × {{ format_(d.significand) }} × 2<sup>{{ d.exponent }}</sup></dd>
+      </div>
+    }
+    <div class="ieee-exact">
+      <dt>{{ 'IEEE.EXACT' | translate }}</dt>
+      <dd id="ieeeExact">{{ format_(d.exact) }}</dd>
+    </div>
+  </dl>
+  @if (rounded()) {
+    <p class="ieee-note" id="ieeeRounded" role="status">
+      <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>{{ 'IEEE.ROUNDED' | translate: { bits: f.bits } }}
+    </p>
+  }
+</section>

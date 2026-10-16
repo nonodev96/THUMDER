@@ -73,57 +73,112 @@
     "BY": "por"
   },
   "ST": {
-    "TOTAL": {
-      "TITLE": "Total",
-      "CYCLES_EXECUTED": "{{ cycles }} Cycle(s) Ejecutados",
-      "ID_EXECUTED": "ID Ejecutados  {{ instructions }} por instruction(es)",
-      "INSTRUCTIONS_IN_PIPELINE": "{{ instructions_in_pipeline }} Instruction(es) actualmente en el Pipeline"
+    "EXPORT_CSV": "Descargar las estadísticas (CSV)",
+    "EMPTY": "Carga un programa (Mayúsculas+F5) y ejecútalo para ver sus estadísticas.",
+    "OF_CYCLES": "de los ciclos",
+    "OF_RAW": "de las detenciones RAW",
+    "TABS": {
+      "SUMMARY": "Resumen",
+      "STALLS": "Detenciones",
+      "INSTRUCTIONS": "Instrucciones",
+      "COMPARE": "Con y sin adelantamiento"
     },
-    "HARDWARE": {
-      "TITLE": "Configuración del hardware",
-      "MEMORY_SIZE": "Tamaño de la memoria: {{ size }} Bytes",
-      "FADD_EX_STAGES": "faddEx-Stages: {{ num }}, ciclos requeridos: {{ cycles }}",
-      "FMULT_EX_STAGES": "fmultEx-Stages: {{ num }}, ciclos requeridos: {{ cycles }}",
-      "FDIV_EX_STAGES": "fdivEx-Stages: {{ num }}, ciclos requeridos: {{ cycles }}",
-      "FORWARDING": "Reenvío"
+    "KPI": {
+      "CYCLES": "Ciclos",
+      "INSTRUCTIONS": "Instrucciones ejecutadas",
+      "CPI": "CPI (ciclos por instrucción)",
+      "STALLS": "Ciclos de detención",
+      "IN_PIPELINE": "Instrucciones en el pipeline",
+      "HELP": "Cada instrucción que pasa por la etapa ID cuenta como ejecutada. En un pipeline ideal de 5 etapas el CPI se acerca a 1: cada ciclo de detención lo aleja."
     },
-    "STALLS": {
-      "TITLE": "Riesgos",
-      "RAW_STALLS": "Riesgos RAW: {{ num }} ({{ per }}% de todos los ciclos)",
-      "LD_STALLS": "Riesgos LD: {{ num }} ({{ per }}% of RAW riesgos)",
-      "BRANCH_STALLS": "Riesgos Branch/Jump: {{ num }} ({{ per }}% of RAW riesgos)",
-      "FLOATING_POINT_STALLS": "Riesgos de operaciones de punto flotante: {{ num }} ({{ per }}% of RAW riesgos)",
-      "WAW_STALLS": "Riesgos LD: {{ num }} ({{ per }}% de todos los ciclos)",
-      "STRUCTURAL_STALLS": "Riesgos Structural: {{ num }} ({{ per }}% de todos los ciclos)",
-      "CONTROL_STALLS": "Riesgos Control: {{ num }} ({{ per }}% de todos los ciclos)",
-      "TRAP_STALLS": "Riesgos Trap: {{ num }} ({{ per }}% de todos los ciclos)",
-      "TOTAL": "TOTAL: {{ num }} Riesgo(s) ({{ per }}% de todos los ciclos)"
+    "CYCLES": {
+      "TITLE": "¿En qué se van los ciclos?",
+      "FREE": "Sin detención",
+      "RAW": "Detenciones RAW",
+      "WAW": "Detenciones WAW",
+      "STRUCTURAL": "Detenciones estructurales",
+      "CONTROL": "Detenciones de control",
+      "TRAP": "Detenciones por traps",
+      "MAIN_CAUSE": "Lo que más detiene el pipeline son las {{cause}}: {{per}} % de los ciclos. La pestaña «Detenciones» explica cómo reducirlas.",
+      "NO_STALLS": "No hay detenciones: el pipeline avanza en todos los ciclos."
     },
-    "CONDITIONAL": {
-      "TITLE": "Ramas condicionales",
-      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)",
-      "TAKEN": "Tomadas: {{ num }} ({{ per }}% de todas las ramas condicionales)",
-      "NOT_TAKEN": "No tomadas: {{ num }} ({{ per }}% de todas las ramas condicionales)"
+    "STALL": {
+      "INTRO": "{{total}} ciclos de detención ({{per}} % de los ciclos). Una detención es un ciclo en que una instrucción no puede avanzar de etapa.",
+      "RAW": {
+        "NAME": "detenciones RAW (dependencias de datos)",
+        "HELP": "Una instrucción necesita un resultado que otra todavía no ha calculado (lectura después de escritura). El adelantamiento evita muchas; separar la instrucción que produce el dato de la que lo usa evita las demás."
+      },
+      "WAW": {
+        "NAME": "detenciones WAW",
+        "HELP": "Una instrucción escribiría un registro antes que otra más antigua que escribe el mismo (escritura después de escritura). Ocurre con unidades de coma flotante de varios ciclos: usa otro registro de destino."
+      },
+      "STRUCTURAL": {
+        "NAME": "detenciones estructurales",
+        "HELP": "Dos instrucciones quieren la misma unidad funcional o escribir a la vez en WB. Más unidades de coma flotante en la configuración, o separar las operaciones, las reducen."
+      },
+      "CONTROL": {
+        "NAME": "detenciones de control",
+        "HELP": "Cada salto tomado descarta la instrucción que se buscó después (el pipeline predice que no se toma). Menos saltos tomados (por ejemplo, desenrollando bucles) las reducen."
+      },
+      "TRAP": {
+        "NAME": "detenciones por traps",
+        "HELP": "Un trap espera a que las instrucciones anteriores terminen antes de hablar con el exterior (entrada, salida o fin del programa)."
+      }
     },
-    "LOAD_STORE": {
-      "TITLE": "Instrucciones de carga y guardado",
-      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)",
-      "LOADS": "Cargas: {{ num }} ({{ per }}% de Instrucciones de carga y guardado)",
-      "STORES": "Guardado: {{ num }} ({{ per }}% de Instrucciones de carga y guardado)"
+    "RAW": {
+      "TITLE": "¿Por qué esperan los datos? (detenciones RAW)",
+      "LOAD": {
+        "NAME": "Tras una carga",
+        "HELP": "Una instrucción usa el dato de un load justo después: el dato llega en MEM, un ciclo tarde incluso con adelantamiento. Pon otra instrucción entre las dos."
+      },
+      "BRANCH": {
+        "NAME": "En un salto",
+        "HELP": "El salto se resuelve en ID y necesita allí su registro, antes de que la instrucción anterior lo calcule en EX."
+      },
+      "FLOATING": {
+        "NAME": "De una operación de varios ciclos",
+        "HELP": "El dato lo produce una suma, multiplicación o división de coma flotante, o una multiplicación o división entera, que en DLX usan las mismas unidades y tardan varios ciclos."
+      },
+      "OTHER": {
+        "NAME": "Otras",
+        "HELP": "El resto de dependencias entre instrucciones enteras (sin adelantamiento, casi todas)."
+      }
+    },
+    "MIX": {
+      "INTRO": "Las {{total}} instrucciones ejecutadas, por tipo.",
+      "LOADS": "Cargas",
+      "STORES": "Almacenamientos",
+      "BRANCHES": "Saltos condicionales",
+      "FLOATING": "Coma flotante y mult./div.",
+      "TRAPS": "Traps",
+      "OTHER": "Enteras y otras"
+    },
+    "BRANCHES": {
+      "TITLE": "Saltos condicionales",
+      "TAKEN": "Tomados",
+      "NOT_TAKEN": "No tomados",
+      "HELP": "El pipeline predice que los saltos no se toman: cada salto tomado cuesta un ciclo de detención de control.",
+      "NONE": "El programa no ha ejecutado saltos condicionales."
     },
     "FLOATING": {
-      "TITLE": "Instrucciones de punto flotante",
-      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)",
-      "ADDITIONS": "Sumas: {{ num }} ({{ per }}% de instruciones de punto flotante.)",
-      "MULTIPLICATIONS": "Multiplicaciones: {{ num }} ({{ per }}% instrucciones de punto flotante.)",
-      "DIVISIONS": "Divisiones: {{ num }} ({{ per }}% instrucciones de punto flotante.)"
+      "TITLE": "Operaciones en las unidades de coma flotante",
+      "ADDITIONS": "Sumas y restas",
+      "MULTIPLICATIONS": "Multiplicaciones",
+      "DIVISIONS": "Divisiones",
+      "NONE": "El programa no ha ejecutado operaciones de coma flotante.",
+      "HELP": "En DLX, la multiplicación y la división enteras (mult, multu, div, divu) también usan estas unidades y cuentan aquí."
     },
-    "TRAPS": {
-      "TITLE": "Traps",
-      "TOTAL": "Total: {{ num }} ({{ per }}% de todas las instrucciones)"
+    "HARDWARE": {
+      "TITLE": "La máquina",
+      "FORWARDING": "Adelantamiento",
+      "ON": "activado",
+      "OFF": "desactivado",
+      "MEMORY": "Memoria",
+      "FADD": "Unidades de suma",
+      "FMUL": "Unidades de multiplicación",
+      "FDIV": "Unidades de división",
+      "UNITS": "{{num}} × {{cycles}} ciclos"
     },
-    "KEY": "VALUE",
-    "EXPORT_CSV": "Descargar las estadísticas (CSV)",
     "COMPARE": {
       "BUTTON": "Comparar con y sin adelantamiento",
       "HELP": "Ejecuta el programa hasta el final con las dos opciones (y el resto de la configuración) y muestra la diferencia.",
@@ -141,7 +196,9 @@
       "TOTAL": "Atascos en total",
       "STOPPED_INPUT": "Una de las ejecuciones se ha parado al pedir datos por la consola: la comparación llega hasta ahí.",
       "STOPPED_ERROR": "Una de las ejecuciones ha terminado con un error: {{error}}",
-      "STOPPED_LIMIT": "Una de las ejecuciones ha llegado al límite de 1.000.000 de ciclos."
+      "STOPPED_LIMIT": "Una de las ejecuciones ha llegado al límite de 1.000.000 de ciclos.",
+      "FASTER": "Con adelantamiento, el programa tarda {{cycles}} ciclos menos: es {{times}} veces más rápido.",
+      "SAME": "El adelantamiento no cambia el número de ciclos de este programa."
     }
   },
   "MACHINE": {
@@ -651,5 +708,41 @@
   "MULTIVIEW": {
     "FLOAT": "Sacar como ventana flotante (se mueve por su título y cambia de tamaño desde los bordes; Alt+flechas la mueven y Alt+Mayús+flechas cambian su tamaño)",
     "DOCK": "Devolver la ventana a su columna"
+  },
+  "IEEE": {
+    "TITLE": "IEEE 754: números en coma flotante",
+    "FORMAT": "Formato",
+    "SINGLE": "Simple (32 bits)",
+    "DOUBLE": "Doble (64 bits)",
+    "DECIMAL": "Número",
+    "DECIMAL_HELP": "Por ejemplo 3,14, -0,1, 1e-3, Infinity o NaN.",
+    "HEXADECIMAL": "Hexadecimal",
+    "BINARY": "Binario",
+    "INVALID": "Ese valor no es válido: escribe un número, o hasta {{bits}} bits en binario o en hexadecimal.",
+    "SIGN": "Signo",
+    "EXPONENT": "Exponente",
+    "FRACTION": "Mantisa (fracción)",
+    "BITS_COUNT": "{{count}} bits",
+    "BIT": "Bit {{position}}: {{value}}",
+    "TOGGLE_HELP": "Pulsa un bit para cambiarlo y ver cómo cambia el número.",
+    "POSITIVE": "positivo",
+    "NEGATIVE": "negativo",
+    "EXPONENT_SUBNORMAL": "subnormal: el exponente es el del menor normal, 1 − {{bias}} = {{exponent}}",
+    "EXPONENT_ZERO": "cero (con la mantisa a cero)",
+    "EXPONENT_SPECIAL": "todo unos: infinito o NaN",
+    "FRACTION_NAN": "no es cero: NaN (no es un número)",
+    "FRACTION_INFINITY": "es cero: infinito",
+    "HIDDEN_ONE": "con el 1 oculto delante",
+    "NO_HIDDEN_ONE": "sin el 1 oculto",
+    "KIND": "Tipo",
+    "KIND_NORMAL": "Normal",
+    "KIND_SUBNORMAL": "Subnormal (más cerca de cero que cualquier normal)",
+    "KIND_ZERO": "Cero",
+    "KIND_INFINITY": "Infinito",
+    "KIND_NAN": "NaN (no es un número)",
+    "FORMULA": "Valor = (−1)^s × mantisa × 2^exponente",
+    "EXACT": "Valor que guardan los bits (exacto)",
+    "ROUNDED": "El número escrito no cabe exactamente en {{bits}} bits: se guarda el más cercano, que es el valor exacto de arriba.",
+    "ONE_BIT": "1 bit"
   }
 }

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { controls, example, expect, fileItem, go, loadAndStep, machineState, test } from "./fixtures";
 
-// The tools to learn with (fase F de TODO-cierre.md): speed, running without drawing, stepping back, why each
+// The tools to learn with: speed, running without drawing, stepping back, why each
 // instruction stalls, comparing forwarding, the problems, symbols and breakpoints of the program, the guided and the
 // shared exercises, the datapath and the exports
 
@@ -25,7 +25,9 @@ test.describe("simulación", () => {
     const state = await machineState(page);
     expect(state.step).toBeGreaterThan(100);
     await sidebar(page, "Estadísticas");
-    await expect(page.locator("view-statistics pre")).toContainText(String(state.step + 1));
+    await page.locator("#statisticsTab-summary").click();
+    await expect.poll(async () => (await page.locator("#statisticsCycles").innerText()).replace(/\D/g, "")).toBe(String(state.step + 1));
+    await expect(page.locator("#statisticsConclusion")).not.toBeEmpty();
   });
 
   test("el paso atrás vuelve exactamente al ciclo anterior", async ({ page }) => {
@@ -64,17 +66,41 @@ test.describe("el diagrama de ciclos", () => {
 });
 
 test.describe("estadísticas", () => {
+  test("las estadísticas se leen por pestañas: resumen, detenciones e instrucciones", async ({ page }) => {
+    await go(page, "/auth/statistics");
+    await expect(page.locator("#statisticsEmpty")).toBeVisible();
+    await expect(page.getByRole("tab")).toHaveText(["Resumen", "Detenciones", "Instrucciones", "Con y sin adelantamiento"]);
+    await controls(page).load.click();
+    await expect(controls(page).step).toBeEnabled();
+    await page.locator("#simulationRunToEnd").click();
+    await expect.poll(async () => (await machineState(page)).complete, { timeout: 20_000 }).toBe(true);
+
+    await expect(page.locator("#statisticsCpi")).not.toHaveText("0");
+    await expect(page.locator("#statisticsConclusion")).toContainText("% de los ciclos");
+    // The arrows go to the next tab
+    await page.locator("#statisticsTab-summary").focus();
+    await page.keyboard.press("ArrowRight");
+    await expect(page.locator("#statisticsTab-stalls")).toBeFocused();
+    await expect(page.locator("#statisticsStalls > li")).toHaveCount(5);
+    await expect(page.locator("#statisticsStalls")).toContainText("detenciones RAW");
+    await page.locator("#statisticsTab-instructions").click();
+    await expect(page.locator("#statisticsMix > li")).toHaveCount(6);
+    await expect(page.locator("#statisticsMix")).toContainText("Cargas");
+  });
+
   test("compara el programa con y sin adelantamiento", async ({ page }) => {
     await go(page, "/auth/code");
     await controls(page).load.click();
     await expect(controls(page).step).toBeEnabled();
     await sidebar(page, "Estadísticas");
+    await page.locator("#statisticsTab-compare").click();
     await page.locator("#statisticsCompare").click();
     const table = page.locator("#statisticsComparison");
     await expect(table).toBeVisible({ timeout: 20_000 });
     const cycles = table.locator("tbody tr").first().locator("td");
     const [withForwarding, without] = [Number((await cycles.nth(0).innerText()).replace(/\D/g, "")), Number((await cycles.nth(1).innerText()).replace(/\D/g, ""))];
     expect(without).toBeGreaterThan(withForwarding);
+    await expect(page.locator("#statisticsSpeedup")).toContainText("veces más rápido");
   });
 });
 
@@ -213,3 +239,31 @@ test.describe("la ruta de datos", () => {
     await expect(page.locator(".datapath-svg")).toBeVisible();
   });
 });
+
+test.describe("la calculadora", () => {
+  test("IEEE 754: los campos de un número, su valor exacto, sus bits y los dos formatos", async ({ page }) => {
+    await go(page, "/auth/calculator");
+    await page.locator("#ieee754_number").fill("0.1");
+    await expect(page.locator("#ieee754_hex")).toHaveValue("3DCCCCCD");
+    await expect(page.locator("#ieeeExact")).toHaveText("0,100000001490116119384765625");
+    await expect(page.locator("#ieeeRounded")).toBeVisible();
+    await expect(page.locator("#ieeeDecoded")).toContainText("123 − 127 = -4");
+
+    // The number written, in double precision
+    await page.locator("#ieeeFormat64").click();
+    await expect(page.locator("#ieee754_hex")).toHaveValue("3FB999999999999A");
+    await expect(page.locator("#ieeeExact")).toHaveText("0,1000000000000000055511151231257827021181583404541015625");
+
+    // A click on the sign bit changes the sign
+    await page.locator("#ieeeBits button").first().click();
+    await expect(page.locator("#ieee754_number")).toHaveValue("-0.1");
+    await expect(page.locator("#ieeeBits button").first()).toHaveAttribute("aria-pressed", "true");
+
+    // Hexadecimal and the special values
+    await page.locator("#ieee754_hex").fill("7FF0000000000000");
+    await expect(page.locator("#ieeeKind")).toHaveText("Infinito");
+    await page.locator("#ieee754_hex").fill("zz");
+    await expect(page.locator("#ieee754_hex")).toHaveClass(/is-invalid/);
+  });
+});
+

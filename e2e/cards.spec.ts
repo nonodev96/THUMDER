@@ -67,7 +67,8 @@ test("el nombre del registro se queda al desplazar la tabla en horizontal", asyn
     element.scrollLeft = 200;
   });
   await expect.poll(async () => Math.round(hex - (await x(1)))).toBe(200);
-  expect(Math.round(await x(0))).toBe(Math.round(name));
+  // The name follows the scroll in the next frame (the scroll event)
+  await expect.poll(async () => Math.round(await x(0))).toBe(Math.round(name));
   await expect(cells.nth(0)).toHaveText("F0-F1");
 });
 

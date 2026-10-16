@@ -1,7 +1,6 @@
 import { Component, type OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "@app/CONSTANTS";
-import { bitsToFloat32, bitsToFloat64, float32ToBits, float64ToBits } from "@core/numbers";
+import { Ieee754Component } from "@components/ieee754/ieee754.component";
 import { TranslatePipe } from "@ngx-translate/core";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
@@ -9,15 +8,13 @@ import { CardDirective, CardWidgetDirective } from "../../../__shared/directives
   selector: "view-calculator",
   templateUrl: "./calculator.view.html",
   styleUrls: [],
-  imports: [CardDirective, CardWidgetDirective, FormsModule, TranslatePipe],
+  imports: [CardDirective, CardWidgetDirective, FormsModule, TranslatePipe, Ieee754Component],
 })
 export class CalculatorView implements OnInit {
   private _valueByte: Uint8Array = new Uint8Array([0]);
   private _valueHalfWord: Uint16Array = new Uint16Array([0]);
   private _valueWord: Uint32Array = new Uint32Array([0]);
   private _valueIntWord: Int32Array = new Int32Array([0]);
-  private _value32Float: string = DEFAULT_BINARY_32_BITS;
-  private _value64Double: string = DEFAULT_BINARY_64_BITS;
 
   // region Byte
   get binary08_Value(): number {
@@ -137,60 +134,6 @@ export class CalculatorView implements OnInit {
   // endregion
 
   // ==================================================================================================================
-
-  // region IEEE754 32 bits
-  get binary32_IEEE754_Value(): number {
-    return bitsToFloat32(this._value32Float);
-  }
-
-  set binary32_IEEE754_Value(value: number) {
-    this._value32Float = float32ToBits(value);
-  }
-
-  get binary32_IEEE754_Hexadecimal(): string {
-    return parseInt(this._value32Float, 2).toString(16).padStart(8, "0").toUpperCase();
-  }
-
-  set binary32_IEEE754_Hexadecimal(value: string) {
-    this._value32Float = parseInt(value, 16).toString(2).padStart(32, "0");
-  }
-
-  get binary32_IEEE754_Binary(): string {
-    return this._value32Float;
-  }
-
-  set binary32_IEEE754_Binary(binary: string) {
-    this._value32Float = binary.padStart(32, "0");
-  }
-
-  // endregion
-
-  // ==================================================================================================================
-
-  // region IEEE754 32 bits
-  get binary64_IEEE754_Value(): number {
-    return bitsToFloat64(this._value64Double);
-  }
-
-  set binary64_IEEE754_Value(value: number) {
-    this._value64Double = float64ToBits(value);
-  }
-
-  get binary64_IEEE754_Hexadecimal(): string {
-    return parseInt(this._value64Double, 2).toString(16).padStart(16, "0").toUpperCase();
-  }
-
-  set binary64_IEEE754_Hexadecimal(value: string) {
-    this._value64Double = parseInt(value, 16).toString(2).padStart(64, "0");
-  }
-
-  get binary64_IEEE754_Binary(): string {
-    return this._value64Double;
-  }
-
-  set binary64_IEEE754_Binary(binary: string) {
-    this._value64Double = binary.padStart(64, "0");
-  }
 
   ngOnInit(): void {}
 }

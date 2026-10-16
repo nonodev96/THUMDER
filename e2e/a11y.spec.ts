@@ -24,7 +24,7 @@ const ROUTES = [
   "/auth/shared?d=invalid",
 ];
 
-/** Rules that still fail (none since phase G of TODO-cierre.md): a rule that fails again has to be fixed, not added here */
+/** Rules that still fail (none): a rule that fails again has to be fixed, not added here */
 const PENDING: string[] = [];
 
 for (const theme of ["light", "dark"] as const) {

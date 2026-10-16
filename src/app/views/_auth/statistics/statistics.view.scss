@@ -1,0 +1,251 @@
+// The statistics: tabs, figures, bars and the legends of the charts (their colours are variables of theme.scss)
+.statistics-body {
+  padding-top: 0.5rem;
+}
+
+.statistics-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 1rem;
+
+  .nav-link {
+    white-space: nowrap;
+  }
+}
+
+.statistics-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--thumder-muted);
+}
+
+.statistics-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.statistics-help,
+.statistics-bar-help {
+  color: var(--thumder-muted);
+  font-size: 0.875rem;
+}
+
+.statistics-bar-help {
+  margin: 0.25rem 0 0;
+}
+
+// The figures of the summary
+.statistics-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.statistics-kpi {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+
+  dt {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--thumder-muted);
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--thumder-text);
+    font-variant-numeric: tabular-nums;
+
+    small {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--thumder-muted);
+    }
+  }
+}
+
+// A bar split in the parts of a whole
+.statistics-stack {
+  display: flex;
+  height: 1.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--thumder-surface-hover);
+}
+
+.statistics-stack-part {
+  height: 100%;
+
+  & + & {
+    box-shadow: inset 2px 0 0 var(--thumder-surface);
+  }
+}
+
+.statistics-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.25rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+}
+
+.statistics-swatch {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.35rem;
+  vertical-align: -0.05rem;
+  border-radius: 3px;
+}
+
+.statistics-conclusion {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.85rem;
+  border-left: 4px solid var(--thumder-primary);
+  border-radius: 0 var(--thumder-radius) var(--thumder-radius) 0;
+  background-color: var(--thumder-primary-soft);
+  color: var(--thumder-text);
+}
+
+// The lists of bars: a name, a number and a bar as long as its part of the longest one
+.statistics-bars {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.statistics-bar-item {
+  padding: 0.6rem 0;
+
+  & + & {
+    border-top: 1px solid var(--thumder-border);
+  }
+}
+
+.statistics-bar-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.statistics-bar-value {
+  color: var(--thumder-text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.statistics-bar {
+  flex: 1 1 auto;
+  height: 0.65rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--thumder-surface-hover);
+
+  > span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+  }
+}
+
+.statistics-compare-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.3rem;
+
+  .statistics-bar-value {
+    min-width: 4rem;
+    text-align: right;
+  }
+}
+
+.statistics-compare-name {
+  flex: 0 0 11rem;
+  font-size: 0.875rem;
+  color: var(--thumder-muted);
+}
+
+.statistics-hardware {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--thumder-border);
+  }
+
+  dt {
+    font-weight: 500;
+    color: var(--thumder-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+// The colours of the charts
+.chart-FREE {
+  background-color: var(--thumder-chart-free);
+}
+
+.chart-RAW,
+.chart-1 {
+  background-color: var(--thumder-chart-1);
+}
+
+.chart-WAW,
+.chart-2 {
+  background-color: var(--thumder-chart-2);
+}
+
+.chart-STRUCTURAL,
+.chart-3 {
+  background-color: var(--thumder-chart-3);
+}
+
+.chart-CONTROL,
+.chart-4 {
+  background-color: var(--thumder-chart-4);
+}
+
+.chart-TRAP,
+.chart-5 {
+  background-color: var(--thumder-chart-5);
+}
+
+.chart-6 {
+  background-color: var(--thumder-chart-6);
+}
+
+.chart-TAKEN {
+  background-color: var(--thumder-chart-4);
+}
+
+.chart-NOT_TAKEN {
+  background-color: var(--thumder-chart-free);
+}
+
+@media (max-width: 575.98px) {
+  .statistics-compare-name {
+    flex-basis: 7rem;
+  }
+}

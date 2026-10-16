@@ -23,7 +23,7 @@ THUMDER simula en el propio navegador o en la aplicación de escritorio: ya no h
 
 ### Correcciones
 
-* Los fallos de la versión anterior en las conversiones de números, los registros dobles, el diagrama de ciclos, la configuración y los ficheros (el detalle, en TODO-mejoras.md).
+* Los fallos de la versión anterior en las conversiones de números, los registros dobles, el diagrama de ciclos, la configuración y los ficheros.
 
 
 

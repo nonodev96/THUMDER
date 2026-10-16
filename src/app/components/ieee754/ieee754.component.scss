@@ -1,0 +1,136 @@
+// IEEE 754: the bits of each field in its colour (a tint of the colours of the charts of theme.scss)
+.ieee {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--thumder-border);
+}
+
+.ieee-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ieee-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ieee-bits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ieee-field {
+  --ieee-tint: var(--thumder-chart-1);
+
+  &-sign {
+    --ieee-tint: var(--thumder-chart-4);
+  }
+
+  &-exponent {
+    --ieee-tint: var(--thumder-chart-2);
+  }
+
+  &-fraction {
+    flex: 1 1 18rem;
+  }
+}
+
+.ieee-field-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+
+  small {
+    font-weight: 400;
+    color: var(--thumder-muted);
+  }
+}
+
+.ieee-field-bits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.ieee-bit {
+  width: 1.4rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ieee-tint) 55%, transparent);
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: var(--thumder-text);
+  background-color: color-mix(in srgb, var(--ieee-tint) 12%, var(--thumder-surface));
+  cursor: pointer;
+
+  &[aria-pressed="true"] {
+    font-weight: 700;
+    background-color: color-mix(in srgb, var(--ieee-tint) 32%, var(--thumder-surface));
+  }
+
+  &:hover {
+    border-color: var(--ieee-tint);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+
+  // A small space every four bits
+  &-gap {
+    margin-right: 0.35rem;
+  }
+}
+
+.ieee-decoded {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.25rem 1.5rem;
+  margin: 1rem 0 0;
+
+  > div {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--thumder-border);
+  }
+
+  dt {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--thumder-muted);
+  }
+
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+.ieee-exact {
+  grid-column: 1 / -1;
+
+  dd {
+    font-family: monospace;
+    font-size: 1rem;
+  }
+}
+
+.ieee-formula {
+  font-size: 1.05rem;
+}
+
+.ieee-note {
+  margin: 1rem 0 0;
+  padding: 0.6rem 0.85rem;
+  border-left: 4px solid var(--thumder-info-text);
+  border-radius: 0 var(--thumder-radius) var(--thumder-radius) 0;
+  background-color: var(--thumder-info-soft);
+}

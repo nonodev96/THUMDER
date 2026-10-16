@@ -1,5 +1,5 @@
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { type ApplicationConfig, importProvidersFrom, SecurityContext } from "@angular/core";
+import { type ApplicationConfig, ErrorHandler, importProvidersFrom, inject, provideAppInitializer, SecurityContext } from "@angular/core";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getAuth, provideAuth } from "@angular/fire/auth";
 import { getFirestore, provideFirestore } from "@angular/fire/firestore";
@@ -8,6 +8,7 @@ import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideRouter } from "@angular/router";
 import { routes } from "@app/app.routes";
 import { FIREBASE_ENABLED } from "@app/CONSTANTS";
+import { ErrorReporter, listenToWindowErrors, ThumderErrorHandler } from "@core/errors/error-reporter.service";
 import { UtilityService } from "@core/services/utility/utility.service";
 import { provideTranslateService } from "@ngx-translate/core";
 import { provideTranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -130,5 +131,8 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(NgcCookieConsentModule.forRoot(cookieConfig)),
     UtilityService,
     ...FIREBASE_PROVIDERS,
+    // The errors nobody catches, to Firestore (client-errors) in the production builds
+    { provide: ErrorHandler, useClass: ThumderErrorHandler },
+    provideAppInitializer(() => listenToWindowErrors(inject(ErrorReporter))),
   ],
 };

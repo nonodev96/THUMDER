@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestEnvironment } from "@firebase/rules-unit-testing";
-import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
 import { afterAll, beforeAll, beforeEach, describe, it } from "vitest";
+import { ERRORS_COLLECTION, errorReport } from "../src/app/__core/errors/error-report";
 import { normalizeFile, remoteFile } from "../src/app/__core/services/file-system/file-store";
 
 // The rules of firestore.rules, against the Firestore emulator: pnpm test:rules. The documents are the ones THUMDER
@@ -137,3 +138,39 @@ describe("users", () => {
     await assertFails(getDoc(doc(db, "other/x")));
   });
 });
+
+describe("client-errors, as ErrorReporter sends them", () => {
+  /** An error as THUMDER sends it, with the time of the server */
+  const report = (extra: Record<string, unknown> = {}) => ({
+    ...errorReport(new TypeError("x is undefined"), { path: "/auth/editor?x=1", version: "1.7.1", userAgent: "Mozilla/5.0 Electron/38", lang: "es" }),
+    createdAt: serverTimestamp(),
+    ...extra,
+  });
+
+  it("anyone sends an error, with or without an account", async () => {
+    await assertSucceeds(addDoc(collection(env.unauthenticatedContext().firestore(), ERRORS_COLLECTION), report()));
+    await assertSucceeds(addDoc(collection(env.authenticatedContext("ana").firestore(), ERRORS_COLLECTION), report()));
+  });
+
+  it("nobody reads, changes or deletes them (they are read in the console of Firebase)", async () => {
+    await env.withSecurityRulesDisabled(async (context) => {
+      await setDoc(doc(context.firestore(), `${ERRORS_COLLECTION}/e1`), { ...report(), createdAt: new Date() });
+    });
+    const db = env.authenticatedContext("ana").firestore();
+    await assertFails(getDoc(doc(db, `${ERRORS_COLLECTION}/e1`)));
+    await assertFails(getDocs(collection(db, ERRORS_COLLECTION)));
+    await assertFails(updateDoc(doc(db, `${ERRORS_COLLECTION}/e1`), { message: "otro" }));
+    await assertFails(deleteDoc(doc(db, `${ERRORS_COLLECTION}/e1`)));
+  });
+
+  it("only the fields of an error, with their limits and the time of the server", async () => {
+    const errors = collection(env.unauthenticatedContext().firestore(), ERRORS_COLLECTION);
+    await assertFails(addDoc(errors, report({ uid: "ana" })));
+    await assertFails(addDoc(errors, report({ message: "" })));
+    await assertFails(addDoc(errors, report({ message: "x".repeat(501) })));
+    await assertFails(addDoc(errors, report({ stack: "x".repeat(4001) })));
+    await assertFails(addDoc(errors, report({ platform: "android" })));
+    await assertFails(addDoc(errors, report({ createdAt: new Date(0) })));
+  });
+});
+

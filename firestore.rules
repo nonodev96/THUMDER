@@ -1,7 +1,8 @@
 rules_version = '2';
 
 // The rules of the Firestore of THUMDER (SEG-04). Each person reads and writes only their own data: their profile
-// (users/{uid}) and their files (file-items, with e1_uid = their uid). Tests: pnpm test:rules (Firestore emulator).
+// (users/{uid}) and their files (file-items, with e1_uid = their uid); the errors of the application are only written
+// (client-errors). Tests: pnpm test:rules (Firestore emulator).
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -36,6 +37,27 @@ service cloud.firestore {
         && profile.uid == uid
         && profile.email is string && profile.displayName is string && profile.photoURL is string
         && profile.emailVerified is bool;
+    }
+
+    // An error of THUMDER as ErrorReporter sends it (src/app/__core/errors/error-report.ts): technical data only, with
+    // the limits of ERROR_LIMITS and the time of the server
+    function validError(report) {
+      return report.keys().hasOnly(['message', 'name', 'stack', 'path', 'version', 'platform', 'userAgent', 'lang', 'createdAt'])
+        && report.keys().hasAll(['message', 'version', 'platform', 'createdAt'])
+        && report.message is string && report.message.size() > 0 && report.message.size() <= 500
+        && (!('name' in report) || (report.name is string && report.name.size() <= 100))
+        && (!('stack' in report) || (report.stack is string && report.stack.size() <= 4000))
+        && (!('path' in report) || (report.path is string && report.path.size() <= 200))
+        && report.version is string && report.version.size() <= 20
+        && report.platform in ['web', 'electron']
+        && (!('userAgent' in report) || (report.userAgent is string && report.userAgent.size() <= 300))
+        && (!('lang' in report) || (report.lang is string && report.lang.size() <= 10))
+        && report.createdAt == request.time;
+    }
+
+    // The errors are only written (with or without an account) and are read in the console of Firebase
+    match /client-errors/{id} {
+      allow create: if validError(request.resource.data);
     }
 
     match /users/{uid} {

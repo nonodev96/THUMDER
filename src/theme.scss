@@ -94,6 +94,16 @@
   --thumder-forwarding: #16a34a;
   --thumder-stall-arrow: #dc2626;
 
+  // The charts (statistics): the cycles without stalls and six colours that can be told apart; the numbers are always
+  // written next to them
+  --thumder-chart-free: #22c55e;
+  --thumder-chart-1: #6366f1;
+  --thumder-chart-2: #0ea5e9;
+  --thumder-chart-3: #f59e0b;
+  --thumder-chart-4: #ef4444;
+  --thumder-chart-5: #a855f7;
+  --thumder-chart-6: #14b8a6;
+
   // The line of the instruction just fetched, in the editor
   --thumder-debug-line: #dcfce7;
   --thumder-debug-line-mark: #16a34a;

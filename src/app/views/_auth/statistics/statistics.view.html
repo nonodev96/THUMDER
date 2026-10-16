@@ -1,114 +1,267 @@
-<div thumderCard class="card">
+<div thumderCard class="card" id="statisticsCard">
   <div class="card-header">
     <h3 class="card-title">
       <!-- Drag button -->
       <ng-content></ng-content>
 
-      <span thumderCardWidget="collapse">{{'NAVIGATION.STATISTICS' | translate}}</span>
+      <span thumderCardWidget="collapse">{{ 'NAVIGATION.STATISTICS' | translate }}</span>
     </h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" (click)="exportCsv()" [title]="'ST.EXPORT_CSV' | translate" [attr.aria-label]="'ST.EXPORT_CSV' | translate">
         <i class="fas fa-file-csv" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" thumderCardWidget="maximize">
+      <button type="button" class="btn btn-tool" thumderCardWidget="maximize" [title]="'FORMS.MAXIMIZE' | translate" [attr.aria-label]="'FORMS.MAXIMIZE' | translate">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" thumderCardWidget="collapse">
+      <button type="button" class="btn btn-tool" thumderCardWidget="collapse" [title]="'FORMS.COLLAPSE' | translate" [attr.aria-label]="'FORMS.COLLAPSE' | translate">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
 
-  <div class="card-body">
-    <div class="row">
-      <div class="col-12">
-        <!-- @formatter:off -->
-<pre>
-{{ 'ST.TOTAL.TITLE' | translate }}:
-  {{ ('ST.TOTAL.CYCLES_EXECUTED' | translate: {cycles: data().TOTAL.CYCLES_EXECUTED.cycles}) }}
-  {{ ('ST.TOTAL.ID_EXECUTED' | translate: {instructions: data().TOTAL.ID_EXECUTED.instructions}) }}
-  {{ ('ST.TOTAL.INSTRUCTIONS_IN_PIPELINE' | translate: {instructions_in_pipeline: data().TOTAL.INSTRUCTIONS_IN_PIPELINE.instructions_in_pipeline}) }}
+  <div class="card-body statistics-body">
+    <ul class="nav nav-tabs statistics-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.STATISTICS' | translate">
+      @for (item of tabs; track item.id; let index = $index) {
+        <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link" role="tab" [id]="'statisticsTab-' + item.id" [class.active]="tab() === item.id"
+            [attr.aria-selected]="tab() === item.id" [attr.aria-controls]="tab() === item.id ? 'statisticsPanel-' + item.id : null"
+            [tabIndex]="tab() === item.id ? 0 : -1" (click)="select(item.id)" (keydown)="onTabKeydown($event, index)">
+            {{ item.label | translate }}
+          </button>
+        </li>
+      }
+    </ul>
 
-{{ ('ST.HARDWARE.TITLE' | translate) }}:
-  {{ ('ST.HARDWARE.MEMORY_SIZE' | translate: {size: data().HARDWARE.MEMORY_SIZE.size}) }}
-  {{ ('ST.HARDWARE.FADD_EX_STAGES' | translate: {num: data().HARDWARE.FADD_EX_STAGES.num, cycles: data().HARDWARE.FADD_EX_STAGES.cycles}) }}
-  {{ ('ST.HARDWARE.FMULT_EX_STAGES' | translate: {num: data().HARDWARE.FMULT_EX_STAGES.num, cycles: data().HARDWARE.FMULT_EX_STAGES.cycles}) }}
-  {{ ('ST.HARDWARE.FDIV_EX_STAGES' | translate: {num: data().HARDWARE.FDIV_EX_STAGES.num, cycles: data().HARDWARE.FDIV_EX_STAGES.cycles}) }}
-  {{ ('ST.HARDWARE.FORWARDING' | translate) }}
+    <div class="statistics-panel" role="tabpanel" [id]="'statisticsPanel-' + tab()" [attr.aria-labelledby]="'statisticsTab-' + tab()">
+      @if (!hasData() && tab() !== 'compare') {
+        <p class="statistics-empty" id="statisticsEmpty">
+          <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>{{ 'ST.EMPTY' | translate }}
+        </p>
+      } @else {
+        @let s = summary();
+        @switch (tab()) {
+          @case ('summary') {
+            <!-- Summary: the counts, what the cycles are and the machine -->
+            <dl class="statistics-kpis">
+              <div class="statistics-kpi">
+                <dt>{{ 'ST.KPI.CYCLES' | translate }}</dt>
+                <dd id="statisticsCycles">{{ format(s.cycles) }}</dd>
+              </div>
+              <div class="statistics-kpi">
+                <dt>{{ 'ST.KPI.INSTRUCTIONS' | translate }}</dt>
+                <dd id="statisticsInstructions">{{ format(s.instructions) }}</dd>
+              </div>
+              <div class="statistics-kpi">
+                <dt>{{ 'ST.KPI.CPI' | translate }}</dt>
+                <dd id="statisticsCpi">{{ format(s.cpi, 2) }}</dd>
+              </div>
+              <div class="statistics-kpi">
+                <dt>{{ 'ST.KPI.STALLS' | translate }}</dt>
+                <dd>{{ format(s.stalls) }} <small>({{ format(s.stallsPer, 1) }} %)</small></dd>
+              </div>
+              <div class="statistics-kpi">
+                <dt>{{ 'ST.KPI.IN_PIPELINE' | translate }}</dt>
+                <dd>{{ format(s.inPipeline) }}</dd>
+              </div>
+            </dl>
+            <p class="statistics-help">{{ 'ST.KPI.HELP' | translate }}</p>
 
-{{ ('ST.STALLS.TITLE' | translate) }}:
-  {{ ('ST.STALLS.RAW_STALLS' | translate: {num: data().STALLS.RAW_STALLS.num, per: data().STALLS.RAW_STALLS.per}) }}
-    {{ ('ST.STALLS.LD_STALLS' | translate: {num: data().STALLS.LD_STALLS.num, per: data().STALLS.LD_STALLS.per}) }}
-    {{ ('ST.STALLS.BRANCH_STALLS' | translate: {num: data().STALLS.BRANCH_STALLS.num, per: data().STALLS.BRANCH_STALLS.per}) }}
-    {{ ('ST.STALLS.FLOATING_POINT_STALLS' | translate: {num: data().STALLS.FLOATING_POINT_STALLS.num, per: data().STALLS.FLOATING_POINT_STALLS.per}) }}
-  {{ ('ST.STALLS.WAW_STALLS' | translate: {num: data().STALLS.WAW_STALLS.num, per: data().STALLS.WAW_STALLS.per}) }}
-  {{ ('ST.STALLS.STRUCTURAL_STALLS' | translate: {num: data().STALLS.STRUCTURAL_STALLS.num, per: data().STALLS.STRUCTURAL_STALLS.per}) }}
-  {{ ('ST.STALLS.CONTROL_STALLS' | translate: {num: data().STALLS.CONTROL_STALLS.num, per: data().STALLS.CONTROL_STALLS.per}) }}
-  {{ ('ST.STALLS.TRAP_STALLS' | translate: {num: data().STALLS.TRAP_STALLS.num, per: data().STALLS.TRAP_STALLS.per}) }}
-  {{ ('ST.STALLS.TOTAL' | translate: {num: data().STALLS.TOTAL.num, per: data().STALLS.TOTAL.per}) }}
+            <h4 class="statistics-heading">{{ 'ST.CYCLES.TITLE' | translate }}</h4>
+            <div class="statistics-stack" aria-hidden="true">
+              @for (share of cycles(); track share.key) {
+                @if (share.value > 0) {
+                  <span class="statistics-stack-part" [class]="'chart-' + share.key" [style.width.%]="share.per"></span>
+                }
+              }
+            </div>
+            <ul class="statistics-legend">
+              @for (share of cycles(); track share.key) {
+                <li>
+                  <span class="statistics-swatch" [class]="'chart-' + share.key" aria-hidden="true"></span>
+                  {{ ('ST.CYCLES.' + share.key) | translate }}: <strong>{{ format(share.value) }}</strong> ({{ format(share.per, 1) }} %)
+                </li>
+              }
+            </ul>
+            <p class="statistics-conclusion" id="statisticsConclusion">
+              <i class="fas fa-lightbulb mr-1" aria-hidden="true"></i>
+              @if (s.mainCause; as cause) {
+                {{ 'ST.CYCLES.MAIN_CAUSE' | translate: { cause: (('ST.STALL.' + cause.key + '.NAME') | translate), per: format(cause.per, 1) } }}
+              } @else {
+                {{ 'ST.CYCLES.NO_STALLS' | translate }}
+              }
+            </p>
 
-{{ ('ST.CONDITIONAL.TITLE' | translate) }}:
-  {{ ('ST.CONDITIONAL.TOTAL' | translate: {num: data().CONDITIONAL.TOTAL.num, per: data().CONDITIONAL.TOTAL.per}) }}
-    {{ ('ST.CONDITIONAL.TAKEN' | translate: {num: data().CONDITIONAL.TAKEN.num, per: data().CONDITIONAL.TAKEN.per}) }}
-    {{ ('ST.CONDITIONAL.NOT_TAKEN' | translate: {num: data().CONDITIONAL.NOT_TAKEN.num, per: data().CONDITIONAL.NOT_TAKEN.per}) }}
+            @let h = hardware();
+            <h4 class="statistics-heading">{{ 'ST.HARDWARE.TITLE' | translate }}</h4>
+            <dl class="statistics-hardware">
+              <div><dt>{{ 'ST.HARDWARE.FORWARDING' | translate }}</dt><dd>{{ (h.FORWARDING.enabled ? 'ST.HARDWARE.ON' : 'ST.HARDWARE.OFF') | translate }}</dd></div>
+              <div><dt>{{ 'ST.HARDWARE.MEMORY' | translate }}</dt><dd>{{ format(h.MEMORY_SIZE.size) }} B</dd></div>
+              <div><dt>{{ 'ST.HARDWARE.FADD' | translate }}</dt><dd>{{ 'ST.HARDWARE.UNITS' | translate: { num: h.FADD_EX_STAGES.num, cycles: h.FADD_EX_STAGES.cycles } }}</dd></div>
+              <div><dt>{{ 'ST.HARDWARE.FMUL' | translate }}</dt><dd>{{ 'ST.HARDWARE.UNITS' | translate: { num: h.FMULT_EX_STAGES.num, cycles: h.FMULT_EX_STAGES.cycles } }}</dd></div>
+              <div><dt>{{ 'ST.HARDWARE.FDIV' | translate }}</dt><dd>{{ 'ST.HARDWARE.UNITS' | translate: { num: h.FDIV_EX_STAGES.num, cycles: h.FDIV_EX_STAGES.cycles } }}</dd></div>
+            </dl>
+          }
 
-{{ ('ST.LOAD_STORE.TITLE' | translate) }}:
-  {{ ('ST.LOAD_STORE.TOTAL' | translate: {num: data().LOAD_STORE.TOTAL.num, per: data().LOAD_STORE.TOTAL.per}) }}
-    {{ ('ST.LOAD_STORE.LOADS' | translate: {num: data().LOAD_STORE.LOADS.num, per: data().LOAD_STORE.LOADS.per}) }}
-    {{ ('ST.LOAD_STORE.STORES' | translate: {num: data().LOAD_STORE.STORES.num, per: data().LOAD_STORE.STORES.per}) }}
+          @case ('stalls') {
+            <!-- Stalls: each kind, what it is and how to avoid it -->
+            <p class="statistics-help">{{ 'ST.STALL.INTRO' | translate: { total: format(s.stalls), per: format(s.stallsPer, 1) } }}</p>
+            <ul class="statistics-bars" id="statisticsStalls">
+              @for (share of stalls(); track share.key) {
+                <li class="statistics-bar-item">
+                  <div class="statistics-bar-label">
+                    <span class="statistics-swatch" [class]="'chart-' + share.key" aria-hidden="true"></span>
+                    <strong>{{ ('ST.STALL.' + share.key + '.NAME') | translate }}</strong>
+                    <span class="statistics-bar-value">{{ format(share.value) }} ({{ format(share.per, 1) }} % {{ 'ST.OF_CYCLES' | translate }})</span>
+                  </div>
+                  <div class="statistics-bar" aria-hidden="true"><span [class]="'chart-' + share.key" [style.width.%]="bar(share, maxStall())"></span></div>
+                  <p class="statistics-bar-help">{{ ('ST.STALL.' + share.key + '.HELP') | translate }}</p>
+                </li>
+              }
+            </ul>
 
-{{ ('ST.FLOATING.TITLE' | translate) }}:
-  {{ ('ST.FLOATING.TOTAL' | translate: {num: data().FLOATING.TOTAL.num, per: data().FLOATING.TOTAL.per}) }}
-    {{ ('ST.FLOATING.ADDITIONS' | translate: {num: data().FLOATING.ADDITIONS.num, per: data().FLOATING.ADDITIONS.per}) }}
-    {{ ('ST.FLOATING.MULTIPLICATIONS' | translate: {num: data().FLOATING.MULTIPLICATIONS.num, per: data().FLOATING.MULTIPLICATIONS.per}) }}
-    {{ ('ST.FLOATING.DIVISIONS' | translate: {num: data().FLOATING.DIVISIONS.num, per: data().FLOATING.DIVISIONS.per}) }}
+            <h4 class="statistics-heading">{{ 'ST.RAW.TITLE' | translate }}</h4>
+            <ul class="statistics-bars">
+              @for (share of raw(); track share.key) {
+                <li class="statistics-bar-item">
+                  <div class="statistics-bar-label">
+                    <strong>{{ ('ST.RAW.' + share.key + '.NAME') | translate }}</strong>
+                    <span class="statistics-bar-value">{{ format(share.value) }} ({{ format(share.per, 1) }} % {{ 'ST.OF_RAW' | translate }})</span>
+                  </div>
+                  <div class="statistics-bar" aria-hidden="true"><span class="chart-RAW" [style.width.%]="bar(share, maxRaw())"></span></div>
+                  <p class="statistics-bar-help">{{ ('ST.RAW.' + share.key + '.HELP') | translate }}</p>
+                </li>
+              }
+            </ul>
+          }
 
-{{ ('ST.TRAPS.TITLE' | translate) }}:
-  {{ ('ST.TRAPS.TOTAL' | translate: {num: data().TRAPS.TOTAL.num, per: data().TRAPS.TOTAL.per}) }}
-</pre>
-        <!-- @formatter:on -->
-      </div>
-    </div>
-  </div>
-  <div class="card-footer">
-    <!-- The same program with and without forwarding (EDU-02) -->
-    <button type="button" class="btn btn-sm btn-outline-primary" id="statisticsCompare" (click)="compare()" [disabled]="comparing()">
-      @if (comparing()) { <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> }
-      {{ 'ST.COMPARE.BUTTON' | translate }}
-    </button>
-    <p class="small text-muted mb-2 mt-1">{{ 'ST.COMPARE.HELP' | translate }}</p>
-    @if (comparisonFailed()) {
-      <p class="text-danger small" role="alert">{{ 'ST.COMPARE.FAILED' | translate }}</p>
-    }
-    @if (comparison(); as result) {
-      <div class="table-responsive">
-        <table class="table table-sm table-bordered mb-1" id="statisticsComparison">
-          <caption class="sr-only">{{ 'ST.COMPARE.BUTTON' | translate }}</caption>
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" class="text-right">{{ 'ST.COMPARE.WITH' | translate }}</th>
-              <th scope="col" class="text-right">{{ 'ST.COMPARE.WITHOUT' | translate }}</th>
-              <th scope="col" class="text-right">{{ 'ST.COMPARE.DIFFERENCE' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (row of compared; track row.key) {
-              <tr>
-                <th scope="row">{{ row.label | translate }}</th>
-                <td class="text-right">{{ result.withForwarding[row.key] | number }}</td>
-                <td class="text-right">{{ result.withoutForwarding[row.key] | number }}</td>
-                <td class="text-right">{{ difference(row.key) | number }}</td>
-              </tr>
+          @case ('instructions') {
+            <!-- Instructions: the mix of the program, the branches and the floating point operations -->
+            <p class="statistics-help">{{ 'ST.MIX.INTRO' | translate: { total: format(s.instructions) } }}</p>
+            <div class="statistics-stack" aria-hidden="true">
+              @for (share of mix(); track share.key; let index = $index) {
+                @if (share.value > 0) {
+                  <span class="statistics-stack-part" [class]="'chart-' + (index + 1)" [style.width.%]="share.per"></span>
+                }
+              }
+            </div>
+            <ul class="statistics-legend" id="statisticsMix">
+              @for (share of mix(); track share.key; let index = $index) {
+                <li>
+                  <span class="statistics-swatch" [class]="'chart-' + (index + 1)" aria-hidden="true"></span>
+                  {{ ('ST.MIX.' + share.key) | translate }}: <strong>{{ format(share.value) }}</strong> ({{ format(share.per, 1) }} %)
+                </li>
+              }
+            </ul>
+
+            <h4 class="statistics-heading">{{ 'ST.BRANCHES.TITLE' | translate }}</h4>
+            @if (data().CONDITIONAL.TOTAL.num > 0) {
+              <div class="statistics-stack" aria-hidden="true">
+                @for (share of branches(); track share.key) {
+                  @if (share.value > 0) {
+                    <span class="statistics-stack-part" [class]="'chart-' + share.key" [style.width.%]="share.per"></span>
+                  }
+                }
+              </div>
+              <ul class="statistics-legend">
+                @for (share of branches(); track share.key) {
+                  <li>
+                    <span class="statistics-swatch" [class]="'chart-' + share.key" aria-hidden="true"></span>
+                    {{ ('ST.BRANCHES.' + share.key) | translate }}: <strong>{{ format(share.value) }}</strong> ({{ format(share.per, 1) }} %)
+                  </li>
+                }
+              </ul>
+              <p class="statistics-bar-help">{{ 'ST.BRANCHES.HELP' | translate }}</p>
+            } @else {
+              <p class="statistics-bar-help">{{ 'ST.BRANCHES.NONE' | translate }}</p>
             }
-          </tbody>
-        </table>
-      </div>
-      @for (run of [result.withForwarding, result.withoutForwarding]; track $index) {
-        @if (run.stoppedBy !== 'complete') {
-          <p class="small text-warning mb-0">{{ ('ST.COMPARE.STOPPED_' + run.stoppedBy.toUpperCase()) | translate: { error: run.error ?? '' } }}</p>
+
+            <h4 class="statistics-heading">{{ 'ST.FLOATING.TITLE' | translate }}</h4>
+            @if (data().FLOATING.TOTAL.num > 0) {
+              <ul class="statistics-bars">
+                @for (share of floating(); track share.key) {
+                  <li class="statistics-bar-item">
+                    <div class="statistics-bar-label">
+                      <strong>{{ ('ST.FLOATING.' + share.key) | translate }}</strong>
+                      <span class="statistics-bar-value">{{ format(share.value) }} ({{ format(share.per, 1) }} %)</span>
+                    </div>
+                    <div class="statistics-bar" aria-hidden="true"><span class="chart-4" [style.width.%]="bar(share, maxFloating())"></span></div>
+                  </li>
+                }
+              </ul>
+              <p class="statistics-bar-help">{{ 'ST.FLOATING.HELP' | translate }}</p>
+            } @else {
+              <p class="statistics-bar-help">{{ 'ST.FLOATING.NONE' | translate }}</p>
+            }
+          }
+
+          @case ('compare') {
+            <!-- The same program with and without forwarding (EDU-02) -->
+            <p class="statistics-help">{{ 'ST.COMPARE.HELP' | translate }}</p>
+            <button type="button" class="btn btn-sm btn-primary mb-3" id="statisticsCompare" (click)="compare()" [disabled]="comparing()">
+              @if (comparing()) { <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> }
+              {{ 'ST.COMPARE.BUTTON' | translate }}
+            </button>
+            @if (comparisonFailed()) {
+              <p class="text-danger small" role="alert">{{ 'ST.COMPARE.FAILED' | translate }}</p>
+            }
+            @if (comparison(); as result) {
+              <p class="statistics-conclusion" id="statisticsSpeedup">
+                <i class="fas fa-lightbulb mr-1" aria-hidden="true"></i>
+                @if (difference('cycles') > 0) {
+                  {{ 'ST.COMPARE.FASTER' | translate: { cycles: format(difference('cycles')), times: format(speedup(), 2) } }}
+                } @else {
+                  {{ 'ST.COMPARE.SAME' | translate }}
+                }
+              </p>
+              <ul class="statistics-bars">
+                @for (key of comparedBars; track key) {
+                  <li class="statistics-bar-item">
+                    <div class="statistics-bar-label"><strong>{{ comparedLabel(key) | translate }}</strong></div>
+                    <div class="statistics-compare-row">
+                      <span class="statistics-compare-name">{{ 'ST.COMPARE.WITH' | translate }}</span>
+                      <div class="statistics-bar" aria-hidden="true"><span class="chart-FREE" [style.width.%]="comparedBar(key, 'withForwarding')"></span></div>
+                      <span class="statistics-bar-value">{{ format(comparedValue(key, 'withForwarding')) }}</span>
+                    </div>
+                    <div class="statistics-compare-row">
+                      <span class="statistics-compare-name">{{ 'ST.COMPARE.WITHOUT' | translate }}</span>
+                      <div class="statistics-bar" aria-hidden="true"><span class="chart-CONTROL" [style.width.%]="comparedBar(key, 'withoutForwarding')"></span></div>
+                      <span class="statistics-bar-value">{{ format(comparedValue(key, 'withoutForwarding')) }}</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered mb-1" id="statisticsComparison">
+                  <caption class="sr-only">{{ 'ST.COMPARE.BUTTON' | translate }}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col"></th>
+                      <th scope="col" class="text-right">{{ 'ST.COMPARE.WITH' | translate }}</th>
+                      <th scope="col" class="text-right">{{ 'ST.COMPARE.WITHOUT' | translate }}</th>
+                      <th scope="col" class="text-right">{{ 'ST.COMPARE.DIFFERENCE' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of compared; track row.key) {
+                      <tr>
+                        <th scope="row">{{ row.label | translate }}</th>
+                        <td class="text-right">{{ format(comparedValue(row.key, 'withForwarding'), 2) }}</td>
+                        <td class="text-right">{{ format(comparedValue(row.key, 'withoutForwarding'), 2) }}</td>
+                        <td class="text-right">{{ format(difference(row.key), 2) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+              @for (run of [result.withForwarding, result.withoutForwarding]; track $index) {
+                @if (run.stoppedBy !== 'complete') {
+                  <p class="small text-warning mb-0">{{ ('ST.COMPARE.STOPPED_' + run.stoppedBy.toUpperCase()) | translate: { error: run.error ?? '' } }}</p>
+                }
+              }
+            }
+          }
         }
       }
-    }
+    </div>
   </div>
 </div>
