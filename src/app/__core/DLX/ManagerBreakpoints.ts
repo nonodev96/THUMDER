@@ -1,5 +1,6 @@
 import type { TypeBreakpoints } from "@app/Types";
 import type { InterfaceBreakpoints } from "@core/DLX/interfaces";
+import { logger } from "@core/logger/logger";
 
 export class ManagerBreakpoints implements InterfaceBreakpoints {
   public breakpoints: TypeBreakpoints = {};
@@ -22,7 +23,7 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
 
   public updateManager(breakpoints: TypeBreakpoints): void {
     if (breakpoints === null || breakpoints === undefined) {
-      console.warn("Error, breakpoints null");
+      logger.warn("Error, breakpoints null");
       return;
     }
     this.breakpoints = {};
@@ -35,8 +36,11 @@ export class ManagerBreakpoints implements InterfaceBreakpoints {
     return this.breakpoints;
   }
 
+  /** The lines with an active breakpoint (the editor keeps the removed ones with `false`) */
   public getAllLinesWithBreakpoints(): number[] {
-    return Object.keys(this.breakpoints).map((k) => parseInt(k, 10));
+    return Object.entries(this.breakpoints)
+      .filter(([, enabled]) => enabled)
+      .map(([line]) => parseInt(line, 10));
   }
 
   public isBreakpoint(line: number): boolean {

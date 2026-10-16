@@ -1,12 +1,15 @@
 import { Component, type OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { DEFAULT_BINARY_32_BITS, DEFAULT_BINARY_64_BITS } from "@app/CONSTANTS";
-import { Utils } from "@app/Utils";
+import { bitsToFloat32, bitsToFloat64, float32ToBits, float64ToBits } from "@core/numbers";
+import { TranslatePipe } from "@ngx-translate/core";
+import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 @Component({
   selector: "view-calculator",
   templateUrl: "./calculator.view.html",
   styleUrls: [],
-  standalone: false,
+  imports: [CardDirective, CardWidgetDirective, FormsModule, TranslatePipe],
 })
 export class CalculatorView implements OnInit {
   private _valueByte: Uint8Array = new Uint8Array([0]);
@@ -137,11 +140,11 @@ export class CalculatorView implements OnInit {
 
   // region IEEE754 32 bits
   get binary32_IEEE754_Value(): number {
-    return Utils.convertIEEE754_Binary32Bits_To_Number(this._value32Float);
+    return bitsToFloat32(this._value32Float);
   }
 
   set binary32_IEEE754_Value(value: number) {
-    this._value32Float = Utils.convertIEEE754_Number_To_Binary32Bits(value);
+    this._value32Float = float32ToBits(value);
   }
 
   get binary32_IEEE754_Hexadecimal(): string {
@@ -166,11 +169,11 @@ export class CalculatorView implements OnInit {
 
   // region IEEE754 32 bits
   get binary64_IEEE754_Value(): number {
-    return Utils.convertIEEE754_Binary64Bits_To_Number(this._value64Double);
+    return bitsToFloat64(this._value64Double);
   }
 
   set binary64_IEEE754_Value(value: number) {
-    this._value64Double = Utils.convertIEEE754_Number_To_Binary64Bits(value);
+    this._value64Double = float64ToBits(value);
   }
 
   get binary64_IEEE754_Hexadecimal(): string {

@@ -1,66 +1,66 @@
-;*********** WINDLX EX.1: READ A POSITIVE INTEGER NUMBER *************
-;*********** (C) 1991 GüNTHER RAIDL			             *************
-;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR		     *************
+;*********** WINDLX Ex.1: Read a positive integer number *************
+;*********** (c) 1991 Günther Raidl                       *************
+;*********** Modified 1992 Maziar Khosravipour            *************
 
 ;-----------------------------------------------------------------------------
-;SUBPROGRAM CALL BY SYMBOL "INPUTUNSIGNED"
-;EXPECT THE ADDRESS OF A ZERO-TERMINATED PROMPT STRING IN R1
-;RETURNS THE READ VALUE IN R1
-;CHANGES THE CONTENTS OF REGISTERS R1, R13, R14
+;Subprogram call by symbol "InputUnsigned"
+;expect the address of a zero-terminated prompt string in R1
+;returns the read value in R1
+;changes the contents of registers R1,R13,R14
 ;-----------------------------------------------------------------------------
 
-		.DATA
+                .data
 
-		;*** DATA FOR READ-TRAP
-READBUFFER:	.SPACE		80
-READPAR:	.WORD		0, READBUFFER, 80
+                ;*** Data for Read-Trap
+ReadBuffer:     .space  80
+ReadPar:        .word   0,ReadBuffer,80
 
-		;*** DATA FOR PRINTF-TRAP
-PRINTFPAR:	.SPACE		4
+                ;*** Data for Printf-Trap
+PrintfPar:      .space  4
 
-SAVER2:		.SPACE		4
-SAVER3:		.SPACE		4
-SAVER4:		.SPACE		4
-SAVER5:		.SPACE		4
+SaveR2:         .space  4
+SaveR3:         .space  4
+SaveR4:         .space  4
+SaveR5:         .space  4
 
 
-		.TEXT
+                .text
 
-		.GLOBAL		INPUTUNSIGNED
-INPUTUNSIGNED:	
-		;*** SAVE REGISTER CONTENTS
-		SW		    SAVER2, R2
-		SW		    SAVER3, R3
-		SW		    SAVER4, R4
-		SW		    SAVER5, R5
+                .global InputUnsigned
+InputUnsigned:
+                ;*** save register contents
+                sw      SaveR2,r2
+                sw      SaveR3,r3
+                sw      SaveR4,r4
+                sw      SaveR5,r5
 
-		;*** PROMPT
-		SW		    PRINTFPAR, R1
-		ADDI		R14, R0, PRINTFPAR
-		TRAP		5
+                ;*** Prompt
+                sw      PrintfPar,r1
+                addi    r14,r0,PrintfPar
+                trap    5
 
-		;*** CALL TRAP-3 TO READ LINE
-		ADDI		R14, R0, READPAR
-		TRAP		3
+                ;*** call Trap-3 to read line
+                addi    r14,r0,ReadPar
+                trap    3
 
-		;*** DETERMINE VALUE
-		ADDI		R2, R0, READBUFFER
-		ADDI		R1, R0, 0
-		ADDI		R4, R0, 10	;DECIMAL SYSTEM
+                ;*** determine value
+                addi    r2,r0,ReadBuffer
+                addi    r1,r0,0
+                addi    r4,r0,10        ;Decimal system
 
-LOOP:		;*** READS DIGITS TO END OF LINE
-		LBU		    R3, 0(R2)
-		SEQI		R5, R3, 10	;LF -> EXIT
-		BNEZ		R5, FINISH
-		SUBI		R3, R3, 48	;�0�
-		MULTU		R1, R1, R4	;SHIFT DECIMAL
-		ADD		    R1, R1, R3
-		ADDI		R2, R2, 1 	;INCREMENT POINTER
-		J		    LOOP
-		
-FINISH: 	;*** RESTORE OLD REGISTER CONTENTS
-		LW		    R2, SAVER2
-		LW		    R3, SAVER3
-		LW		    R4, SAVER4
-		LW		    R5, SAVER5
-		JR		    R31		; RETURN
+Loop:           ;*** reads digits to end of line
+                lbu     r3,0(r2)
+                seqi    r5,r3,10        ;LF -> Exit
+                bnez    r5,Finish
+                subi    r3,r3,48        ;´0´
+                multu   r1,r1,r4        ;Shift decimal
+                add     r1,r1,r3
+                addi    r2,r2,1         ;increment pointer
+                j       Loop
+
+Finish:         ;*** restore old register contents
+                lw      r2,SaveR2
+                lw      r3,SaveR3
+                lw      r4,SaveR4
+                lw      r5,SaveR5
+                jr      r31             ; Return

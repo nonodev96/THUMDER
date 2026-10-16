@@ -1,109 +1,50 @@
-import { CdkDrag, type CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
+import {
+  CdkDrag,
+  type CdkDragDrop,
+  CdkDragHandle,
+  CdkDragPlaceholder,
+  CdkDropList,
+  CdkDropListGroup,
+  moveItemInArray,
+} from "@angular/cdk/drag-drop";
 import { type AfterViewInit, Component, inject, type OnInit, type QueryList, ViewChildren } from "@angular/core";
 import type { TypeIdTitleFile } from "@app/Types";
 import { Globals } from "@core/services/globals/globals.service";
+import { TranslatePipe } from "@ngx-translate/core";
+import { DocsItemComponent } from "../../../components/docs-item/docs-item.component";
 // import { fetchAndActivate, getRemoteConfig, getValue } from "@angular/fire/remote-config";
 
 @Component({
   selector: "view-docs",
   templateUrl: "./docs.view.html",
   styleUrls: [],
-  standalone: false,
+  imports: [CdkDropListGroup, CdkDropList, CdkDrag, CdkDragPlaceholder, DocsItemComponent, CdkDragHandle, TranslatePipe],
 })
 export class DocsView implements OnInit, AfterViewInit {
   globals = inject(Globals);
 
   public main_list: TypeIdTitleFile[] = [
-    {
-      id: "README",
-      title: "README",
-      file: "assets/docs.md",
-    },
-    {
-      id: "Tabla",
-      title: "Tabla DLX - OPCODES",
-      file: "assets/md/DLX-TABLE-Instructions.md",
-    },
-    {
-      id: "Account",
-      title: "Account",
-      file: "assets/wiki/00.Account.md",
-    },
-    {
-      id: "Instructions",
-      title: "Instructions",
-      file: "assets/wiki/00.TheExecutionOfInstructions.md",
-    },
-    {
-      id: "TheRegisterWindow",
-      title: "The Register window",
-      file: "assets/wiki/01.TheRegisterWindow.md",
-    },
-    {
-      id: "TheMemoryWindow",
-      title: "The Memory Window",
-      file: "assets/wiki/02.TheMemoryWindow.md",
-    },
-    {
-      id: "TheCodeWindow",
-      title: "The Code Window",
-      file: "assets/wiki/03.TheCodeWindow.md",
-    },
-    {
-      id: "ThePipelineWindow",
-      title: "The Pipeline Window",
-      file: "assets/wiki/04.ThePipelineWindow.md",
-    },
-    {
-      id: "TheClockCycleDiagramWindow",
-      title: "The Clock Cycle Diagram Window",
-      file: "assets/wiki/04.TheClockCycleDiagramWindow.md",
-    },
-    {
-      id: "TheStatisticsWindow",
-      title: "The Statistics Window",
-      file: "assets/wiki/05.TheStatisticsWindow.md",
-    },
-    {
-      id: "TheBreakpoints",
-      title: "The Breakpoints",
-      file: "assets/wiki/06.TheBreakpoints.md",
-    },
-    {
-      id: "TheExecutionProcess",
-      title: "The Execution Process",
-      file: "assets/wiki/07.TheExecutionProcess.md",
-    },
-    {
-      id: "TheConfiguration",
-      title: "The Configuration",
-      file: "assets/wiki/08.TheConfiguration.md",
-    },
-    {
-      id: "FileManager",
-      title: "File Manager",
-      file: "assets/wiki/09.FileManager.md",
-    },
-    {
-      id: "FileEditor",
-      title: "File Editor",
-      file: "assets/wiki/10.FileEditor.md",
-    },
-    {
-      id: "Multiview",
-      title: "Multiview",
-      file: "assets/wiki/11.Multiview.md",
-    },
+    { id: "README", title: "DOCS.T_INSTRUCTION_SET", file: "assets/docs.md", lang: "en" },
+    { id: "Tabla", title: "DOCS.T_OPCODES", file: "assets/md/DLX-TABLE-Instructions.md", lang: "en" },
+    { id: "Account", title: "DOCS.T_ACCOUNT", file: "assets/wiki/00.Account.md", lang: "es" },
+    { id: "Instructions", title: "DOCS.T_EXECUTION", file: "assets/wiki/00.TheExecutionOfInstructions.md", lang: "es" },
+    { id: "TheRegisterWindow", title: "DOCS.T_REGISTERS", file: "assets/wiki/01.TheRegisterWindow.md", lang: "es" },
+    { id: "TheMemoryWindow", title: "DOCS.T_MEMORY", file: "assets/wiki/02.TheMemoryWindow.md", lang: "es" },
+    { id: "TheCodeWindow", title: "DOCS.T_CODE", file: "assets/wiki/03.TheCodeWindow.md", lang: "es" },
+    { id: "ThePipelineWindow", title: "DOCS.T_PIPELINE", file: "assets/wiki/04.ThePipelineWindow.md", lang: "es" },
+    { id: "TheClockCycleDiagramWindow", title: "DOCS.T_DIAGRAM", file: "assets/wiki/04.TheClockCycleDiagramWindow.md", lang: "es" },
+    { id: "TheStatisticsWindow", title: "DOCS.T_STATISTICS", file: "assets/wiki/05.TheStatisticsWindow.md", lang: "es" },
+    { id: "TheBreakpoints", title: "DOCS.T_BREAKPOINTS", file: "assets/wiki/06.TheBreakpoints.md", lang: "es" },
+    { id: "TheExecutionProcess", title: "DOCS.T_PROCESS", file: "assets/wiki/07.TheExecutionProcess.md", lang: "es" },
+    { id: "TheConfiguration", title: "DOCS.T_CONFIG", file: "assets/wiki/08.TheConfiguration.md", lang: "es" },
+    { id: "FileManager", title: "DOCS.T_FILES", file: "assets/wiki/09.FileManager.md", lang: "es" },
+    { id: "FileEditor", title: "DOCS.T_EDITOR", file: "assets/wiki/10.FileEditor.md", lang: "es" },
+    { id: "Multiview", title: "DOCS.T_MULTIVIEW", file: "assets/wiki/11.Multiview.md", lang: "es" },
   ];
   // public docsEnabled: string = "";
 
   @ViewChildren(CdkDrag)
   public draggable_list!: QueryList<CdkDrag>;
-
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
-  constructor() {}
 
   ngOnInit(): void {}
 
@@ -113,7 +54,7 @@ export class DocsView implements OnInit, AfterViewInit {
     // fetchAndActivate(remoteConfig)
     //   .then((s) => {
     //     this.docsEnabled = JSON.parse(getValue(remoteConfig, "docs").asString()) as string;
-    //     console.log("activar?", this.docsEnabled)
+    //     logger.info("activar?", this.docsEnabled)
     //   })
     //   .catch((err) => {
     //     // ...

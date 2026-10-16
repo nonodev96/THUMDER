@@ -1,17 +1,29 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, inject, type OnInit } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormControl, type UntypedFormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Component, DestroyRef, inject, type OnInit } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+  UntypedFormControl,
+  type UntypedFormGroup,
+  Validators,
+} from "@angular/forms";
+import { Router, RouterLink } from "@angular/router";
 import { AppComponent } from "@app/app.component";
 import { AuthService } from "@core/auth/auth.service";
+import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
+import { TranslatePipe } from "@ngx-translate/core";
+import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdown.directive";
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.view.html",
-  standalone: false,
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, DropdownDirective, TranslatePipe],
 })
 export class LoginView implements OnInit {
+  private destroyRef = inject(DestroyRef);
   private _document = inject<Document>(DOCUMENT);
   electronService = inject(ElectronService);
   authService = inject(AuthService);
@@ -34,9 +46,6 @@ export class LoginView implements OnInit {
     ],
   };
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
   constructor() {
     this.loginForm = this.formBuilder.group(
       {
@@ -46,11 +55,14 @@ export class LoginView implements OnInit {
       {},
     );
 
-    this.authService.getIsLoggingObservable().subscribe(async (isLogging) => {
-      if (isLogging) {
-        await this.router.navigateByUrl("/");
-      }
-    });
+    this.authService
+      .getIsLoggingObservable()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(async (isLogging) => {
+        if (isLogging) {
+          await this.router.navigateByUrl("/");
+        }
+      });
   }
 
   ngOnInit(): void {}
@@ -65,7 +77,7 @@ export class LoginView implements OnInit {
       }
       // =====
     } catch (e) {
-      console.error(e);
+      logger.error(e);
     } finally {
       this.showSpinner = false;
     }
@@ -79,7 +91,7 @@ export class LoginView implements OnInit {
       await this.authService.GoogleAuth();
       // =====
     } catch (e) {
-      console.error(e);
+      logger.error(e);
     } finally {
       this.showSpinner = false;
     }
@@ -93,7 +105,7 @@ export class LoginView implements OnInit {
       await this.authService.GithubAuth();
       // =====
     } catch (e) {
-      console.error(e);
+      logger.error(e);
     } finally {
       this.showSpinner = false;
     }

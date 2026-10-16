@@ -1,8 +1,9 @@
 <div class="card card-primary card-outline">
   <div class="card-header">
     <h4 class="card-title">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapse_{{item.id}}">
-        {{ item.title }}
+      <a class="d-block w-100" href="#collapse_{{item.id}}" [thumderCollapseToggle]="panel">
+        {{ item.title | translate }}
+        @if (item.lang !== lang()) { <span class="badge badge-secondary ml-2" [attr.lang]="null">{{ (item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate }}</span> }
       </a>
     </h4>
     <div class="card-tools">
@@ -10,8 +11,8 @@
     </div>
   </div>
 
-  <div id="collapse_{{item.id}}" class="collapse " data-parent="#accordion">
-    <div class="card-body">
+  <div id="collapse_{{item.id}}" class="collapse" thumderCollapse #panel="thumderCollapse" thumderCollapseGroup="docs">
+    <div class="card-body" [attr.lang]="item.lang">
       <markdown [src]="item.file" (load)="onMarkdownLoad()" #markdownComponentID></markdown>
     </div>
   </div>

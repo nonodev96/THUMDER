@@ -10,8 +10,15 @@ interface Window {
   process: any;
   // biome-ignore lint/suspicious/noExplicitAny: Electron runtime require
   require: any;
-  // biome-ignore lint/suspicious/noExplicitAny: jQuery has separate @types but Window augmentation needs any
-  jQuery: any;
-  // biome-ignore lint/suspicious/noExplicitAny: jQuery shorthand
-  $: any;
+}
+
+// DLX programs imported as text (angular.json: "loader": { ".s": "text" })
+declare module "*.s" {
+  const content: string;
+  export default content;
+}
+
+// Monaco without its 80 languages and their workers (REN-02): the editor and its features, with the API of editor.api
+declare module "monaco-editor/esm/vs/editor/edcore.main.js" {
+  export * from "monaco-editor/esm/vs/editor/editor.api";
 }

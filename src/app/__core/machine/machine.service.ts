@@ -1,13 +1,12 @@
-import { Injectable, inject } from "@angular/core";
-import { CONFIG_WEBSOCKET, DEFAULT_CODE, DEFAULT_ENABLED_FORWARDING_CONFIGURATION, DEFAULT_STEP_SIMULATION } from "@app/CONSTANTS";
+import { Injectable, inject, type Signal, signal } from "@angular/core";
+import { DEFAULT_CODE, TOAST } from "@app/CONSTANTS";
 import {
   EnumLogLevel,
   type InterfaceFileItem,
   type TypeAddress,
-  type TypeAllMemory,
-  type TypeAllRegisters,
   type TypeBreakpoints,
   type TypeConfigurationMachine,
+  type TypeCycleCell,
   type TypeDataStatistics,
   type TypeEnabledForwardingConfiguration,
   type TypeErrorInCode,
@@ -15,531 +14,739 @@ import {
   type TypeInstructionsData,
   type TypeLogger,
   type TypeMemoryToUpdate,
-  type TypePipelineToProcess,
+  type TypeMemoryToUpdateResponse,
+  type TypePipelineInstructions,
   type TypeRegisterToUpdate,
-  type TypeSimulationInitRequest,
-  type TypeSimulationInitResponse,
+  type TypeRegisterToUpdateResponse,
   type TypeSimulationStep,
   type TypeStage,
   type TypeStatusMachine,
 } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { UtilsDataStructures } from "@app/UtilsDataStructures";
+import { ConfigService } from "@core/config/config.service";
 import { ManagerBreakpoints } from "@core/DLX/ManagerBreakpoints";
 import { ManagerMemory } from "@core/DLX/ManagerMemory";
 import { ManagerRegisters } from "@core/DLX/ManagerRegisters";
 import { ManagerStatistics } from "@core/DLX/ManagerStatistics";
-import { PixiTHUMDER_CycleClockDiagram } from "@core/machine/PixiTHUMDER_CycleClockDiagram";
-import { PixiTHUMDER_Pipeline } from "@core/machine/PixiTHUMDER_Pipeline";
-import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
+import type { JournalEntry, StageBreakpoint, Watchpoint } from "@core/engine/runner";
+import type {
+  BreakpointHit,
+  BreakpointStage,
+  CompareResponse,
+  LocalSimulationInitRequest,
+  LocalSimulationInitResponse,
+  SimulationStepExtra,
+  SymbolInfo,
+} from "@core/engine/simulator";
+import { ExerciseService } from "@core/exercises/exercise.service";
+import { logger } from "@core/logger/logger";
+import { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
+import { FileSystemService } from "@core/services/file-system/file-system.service";
+import { LocalSimulatorService } from "@core/services/simulator/local-simulator.service";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateService } from "@ngx-translate/core";
-import { type IndividualConfig, ToastrService } from "ngx-toastr";
-import { firstValueFrom, interval, type Observable, type PartialObserver, Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { ToastrService } from "ngx-toastr";
+import { firstValueFrom, type Observable, Subject } from "rxjs";
 
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
+
+type Step = TypeSimulationStep & SimulationStepExtra;
+
+/** The number of floating point units of each kind of the program loaded (the pipeline view draws one box for each) */
+export type FloatingPointUnits = { fadd: number; fmul: number; fdiv: number };
+
+/** Where each instruction of the code is in the pipeline in this cycle, by address */
+export type StagesByAddress = ReadonlyMap<TypeAddress, TypeStage>;
+
+/** The stage of the breakpoint of each line that does not stop in IF (storage: "breakpoint_stages") */
+export type BreakpointStages = Record<string, BreakpointStage>;
+
+/** The modules chosen for each program, by the key of its file (storage: "program_modules"); without one, automatic */
+export type ProgramModules = Record<string, string[]>;
+
+/**
+ * A change of the user during a run (a line of input, a register, the memory): the simulator makes it again when the
+ * run is repeated to step back, and `replay` makes it again in the page
+ */
+type JournalRecord = JournalEntry & { replay: () => void };
+
+/**
+ * The state of the machine that the views read. Only MachineService writes it, and the views follow its signals: no view
+ * keeps a copy of its own. The registers and the memory are big mutable objects (ManagerRegisters, ManagerMemory):
+ * `values` changes every time they change.
+ */
+export type MachineState = {
+  /** The cycle the simulation is in (0 before the first one) */
+  step: Signal<number>;
+  /** The line of the main file of the instruction just fetched (or the newest one in the pipeline) */
+  line: Signal<number>;
+  running: Signal<boolean>;
+  complete: Signal<boolean>;
+  /** Stopped at a breakpoint */
+  breakpoint: Signal<boolean>;
+  /** A program without errors is loaded and has not finished */
+  canSimulate: Signal<boolean>;
+  /** The program waits for a line of the console (trap 3) */
+  waitingForInput: Signal<boolean>;
+  /** Everything the program has written in the console (DLX-I/O) */
+  output: Signal<string>;
+  /** The errors of the assembler, with their line */
+  errors: Signal<TypeErrorInCode[]>;
+  /** The instructions of the program loaded */
+  code: Signal<TypeInstructionsData[]>;
+  stages: Signal<StagesByAddress>;
+  /** The pipeline of this cycle, with the text of each instruction */
+  pipeline: Signal<TypePipelineInstructions | null>;
+  units: Signal<FloatingPointUnits>;
+  statistics: Signal<TypeDataStatistics>;
+  /** Changes when the registers or the memory change */
+  values: Signal<number>;
+  /** Changes when the cycle clock diagram (`MachineService.diagram`) changes */
+  diagram: Signal<number>;
+  /** Changes every time a program is loaded */
+  loads: Signal<number>;
+  /** The cycles run since the program was loaded (stepping back goes to one less) */
+  cycles: Signal<number>;
+  /** Running to the end without drawing each cycle (the views are drawn when it stops) */
+  quiet: Signal<boolean>;
+  /** The breakpoint of the last stop: a line (and its stage), or a read or a write of a watched address */
+  hit: Signal<BreakpointHit | null>;
+  /** The labels of the program loaded (WinDLX: Memory → Symbols) */
+  symbols: Signal<SymbolInfo[]>;
+  /** The modules loaded with the program */
+  modules: Signal<string[]>;
+  /** The key of the file loaded (the file manager) */
+  fileKey: Signal<string>;
+};
 
 @Injectable({
   providedIn: "root",
 })
 export class MachineService {
   private store = inject(StorageService);
-  private socketProviderConnect = inject(SocketProviderConnectService);
+  private config = inject(ConfigService);
+  private exercises = inject(ExerciseService);
+  // The simulator of THUMDER, in its Web Worker (src/app/__core/engine)
+  private simulator = inject(LocalSimulatorService);
+  private fileSystem = inject(FileSystemService);
   private translate = inject(TranslateService);
   private toast = inject(ToastrService);
 
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
-  public pipeline: PixiTHUMDER_Pipeline;
-  public cycleClockDiagram: PixiTHUMDER_CycleClockDiagram;
-
-  // La memoria se organiza de directions de 4 bits en 4 bits
-  public dataStatistics: ManagerStatistics;
-  public registers: ManagerRegisters;
-  public memory: ManagerMemory;
   public memorySize: number;
-  public enabledForwarding: TypeEnabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
+  public enabledForwarding: TypeEnabledForwardingConfiguration;
 
-  public breakpointManager: ManagerBreakpoints;
-  // address --> TypeCode
-
+  public readonly dataStatistics = new ManagerStatistics();
+  public readonly registers = new ManagerRegisters();
+  public readonly memory: ManagerMemory;
+  public readonly breakpointManager = new ManagerBreakpoints();
+  /** The cycle clock diagram, from the start of the simulation (drawn by its view) */
+  public readonly diagram = new CycleDiagramModel();
+  // address --> instruction
   public code: THUMDER_Map<TypeAddress, TypeInstructionsData> = new THUMDER_Map();
-  // Vector con los pasos de la simulación
-  public canSimulate: boolean;
-  private statusMachineInStep: TypeSimulationStep | null = null;
-  // Line
-  public isBreakpoint$: Subject<number> = new Subject<number>();
-  public codeSimulation$: Subject<TypeInstructionsData[]> = new Subject<TypeInstructionsData[]>();
-  public stepSimulation$: Subject<TypeSimulationStep> = new Subject<TypeSimulationStep>();
-  public dataStatistics$: Subject<TypeDataStatistics> = new Subject<TypeDataStatistics>();
-  public errorsInCode$: Subject<TypeErrorInCode[]> = new Subject<TypeErrorInCode[]>();
 
+  private readonly stepSignal = signal(0);
+  private readonly lineSignal = signal(0);
+  private readonly runningSignal = signal(false);
+  private readonly completeSignal = signal(false);
+  private readonly breakpointSignal = signal(false);
+  private readonly canSimulateSignal = signal(false);
+  private readonly waitingForInputSignal = signal(false);
+  private readonly outputSignal = signal("");
+  private readonly errorsSignal = signal<TypeErrorInCode[]>([]);
+  private readonly codeSignal = signal<TypeInstructionsData[]>([]);
+  private readonly stagesSignal = signal<StagesByAddress>(new Map());
+  private readonly pipelineSignal = signal<TypePipelineInstructions | null>(null);
+  private readonly unitsSignal = signal<FloatingPointUnits>({ fadd: 1, fmul: 1, fdiv: 1 });
+  private readonly statisticsSignal = signal<TypeDataStatistics>(this.dataStatistics.getData());
+  private readonly valuesSignal = signal(0);
+  private readonly diagramSignal = signal(0);
+  private readonly loadsSignal = signal(0);
+  private readonly cyclesSignal = signal(0);
+  private readonly quietSignal = signal(false);
+  private readonly hitSignal = signal<BreakpointHit | null>(null);
+  private readonly symbolsSignal = signal<SymbolInfo[]>([]);
+  private readonly modulesSignal = signal<string[]>([]);
+  private readonly fileKeySignal = signal("");
+
+  public readonly state: MachineState = {
+    step: this.stepSignal.asReadonly(),
+    line: this.lineSignal.asReadonly(),
+    running: this.runningSignal.asReadonly(),
+    complete: this.completeSignal.asReadonly(),
+    breakpoint: this.breakpointSignal.asReadonly(),
+    canSimulate: this.canSimulateSignal.asReadonly(),
+    waitingForInput: this.waitingForInputSignal.asReadonly(),
+    output: this.outputSignal.asReadonly(),
+    errors: this.errorsSignal.asReadonly(),
+    code: this.codeSignal.asReadonly(),
+    stages: this.stagesSignal.asReadonly(),
+    pipeline: this.pipelineSignal.asReadonly(),
+    units: this.unitsSignal.asReadonly(),
+    statistics: this.statisticsSignal.asReadonly(),
+    values: this.valuesSignal.asReadonly(),
+    diagram: this.diagramSignal.asReadonly(),
+    loads: this.loadsSignal.asReadonly(),
+    cycles: this.cyclesSignal.asReadonly(),
+    quiet: this.quietSignal.asReadonly(),
+    hit: this.hitSignal.asReadonly(),
+    symbols: this.symbolsSignal.asReadonly(),
+    modules: this.modulesSignal.asReadonly(),
+    fileKey: this.fileKeySignal.asReadonly(),
+  };
+
+  /** The log of the simulation, for the debug window and the log view */
   public logger: string = "";
-  private readonly level: EnumLogLevel;
-  private privateStep: number = 0;
-  private privateLine: number = 0;
-  private timer: Observable<number> | null = null;
-  private readonly timerObserver: PartialObserver<number>;
+  private readonly logger$ = new Subject<string>();
+  private readonly level: EnumLogLevel = EnumLogLevel.All;
 
-  public reset$: Subject<void> = new Subject<void>();
-  public logger$: Subject<string> = new Subject<string>();
-  public step$: Subject<number> = new Subject<number>();
-  public line$: Subject<number> = new Subject<number>();
+  // The cycle waiting for the answer of the simulator: there is never more than one, so two quick F10 run two cycles
+  private stepping: Promise<void> | null = null;
+  // Changes when the simulation is paused, finished or reset: a running loop with an older value stops
+  private runId = 0;
+  // The run of the simulator (in its worker) that is going on, if any
+  private localRun: Promise<unknown> | null = null;
 
-  // stopClick$ = new Subject<void>();
-  public isRunning$ = new Subject<boolean>();
-  public isComplete$ = new Subject<boolean>();
-
-  // Por defecto parado y sin completar
-  isRunning: boolean = false;
-  isComplete: boolean = false;
-  isBreakpoint: boolean = false;
-
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
+  /** What was sent to load the program (stepping back loads it again as it was, even if the editor changed it) */
+  private lastInit: LocalSimulationInitRequest | null = null;
+  /** The changes of the user since the program was loaded, with the cycle they were made at */
+  private journal: JournalRecord[] = [];
+  /** Running without drawing: the views are updated when the run stops */
+  private quiet = false;
+  /** Repeating the run to step back: no stops, toasts or new journal entries */
+  private replaying = false;
+  private pendingOutput = "";
+  private lastStep: Step | null = null;
 
   constructor() {
-    this.level = EnumLogLevel.All;
-
-    this.canSimulate = false;
-
-    this.floatingPointStageConfiguration = this.store.getItem("floating_point_stage_configuration");
-    this.pipeline = new PixiTHUMDER_Pipeline(
-      this.floatingPointStageConfiguration.addition.count,
-      this.floatingPointStageConfiguration.multiplication.count,
-      this.floatingPointStageConfiguration.division.count,
-    );
-    this.cycleClockDiagram = new PixiTHUMDER_CycleClockDiagram();
-
-    this.memorySize = this.store.getItem("memory_size_configuration");
+    const config = this.config.value();
+    this.floatingPointStageConfiguration = config.floatingPoint;
+    this.enabledForwarding = config.forwarding;
+    this.unitsSignal.set(MachineService.unitsOf(this.floatingPointStageConfiguration));
+    this.memorySize = config.memorySize;
     this.memory = new ManagerMemory(this.memorySize);
-    this.registers = new ManagerRegisters();
-    this.breakpointManager = new ManagerBreakpoints();
-    this.dataStatistics = new ManagerStatistics();
+  }
 
-    this.privateStep = 0;
-    this.privateLine = 0;
+  // The names the rest of THUMDER used before the signals
+  public get step(): number {
+    return this.stepSignal();
+  }
 
-    //  this.socketProviderConnect.socket.on("SimulationInitResponse", (response) => {
-    //    const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
-    //    console.debug("Simulation Init", simulationInit);
-    //  });
-    //  this.socketProviderConnect.socket.on("SimulationNextStepResponse", (response) => {
-    //    const simulationStep = JSON.parse(response) as TypeSimulationStep;
-    //    console.debug("Simulation Step", simulationStep);
-    //  });
-    // TODO CHECK
-    this.socketProviderConnect.socketIO.on("UpdateRegisterResponse", (response: string) => {
-      const registers = JSON.parse(response) as TypeRegisterToUpdate[];
-      this.registers.processRegisterToUpdateArray(registers);
-      console.debug("Registers update", registers);
-    });
-    // TODO CHECK
-    this.socketProviderConnect.socketIO.on("UpdateMemoryResponse", (response: string) => {
-      const memory = JSON.parse(response) as TypeMemoryToUpdate[];
-      this.memory.processMemoryToUpdateArray(memory);
-      console.debug("Memory update", memory);
-    });
-    this.socketProviderConnect.socketIO.on("GetAllRegistersResponse", (response: string) => {
-      const allRegisters = JSON.parse(response) as TypeAllRegisters;
-      console.debug("GetAllRegisters", allRegisters);
-    });
-    this.socketProviderConnect.socketIO.on("GetAllMemoryResponse", (response: string) => {
-      const allMemory = JSON.parse(response) as TypeAllMemory;
-      console.debug("GetAllMemory", allMemory);
-    });
-    this.socketProviderConnect.socketIO.on("UpdateConfigurationMachineResponse", (response: string) => {
-      const configurationMachine = JSON.parse(response) as TypeConfigurationMachine;
-      console.debug("Configuration machine", configurationMachine);
-    });
+  public get line(): number {
+    return this.lineSignal();
+  }
 
-    const timeSimulation = this.store.getItem("time_simulation_configuration");
-    this.timer = interval(timeSimulation).pipe(takeUntil(this.isRunning$), takeUntil(this.isComplete$));
+  public get isRunning(): boolean {
+    return this.runningSignal();
+  }
 
-    this.timerObserver = {
-      next: async (_: number): Promise<void> => {
-        if (this.isRunning === true) {
-          await this.SimulationNextStep();
-        }
-        return Promise.resolve();
-      },
+  public get isComplete(): boolean {
+    return this.completeSignal();
+  }
+
+  public get isBreakpoint(): boolean {
+    return this.breakpointSignal();
+  }
+
+  public get canSimulate(): boolean {
+    return this.canSimulateSignal();
+  }
+
+  private static unitsOf(configuration: TypeFloatingPointStageConfiguration | null): FloatingPointUnits {
+    return {
+      fadd: configuration?.addition.count ?? 1,
+      fmul: configuration?.multiplication.count ?? 1,
+      fdiv: configuration?.division.count ?? 1,
     };
   }
 
-  public async resetMachineStatus(): Promise<boolean> {
+  /**
+   * Loads the current file into the simulator: clears the state, sends the configuration and asks the simulator to
+   * assemble the file. Returns false (and shows a toast) if the simulator fails
+   */
+  public async resetMachineStatus(options: { again?: boolean } = {}): Promise<boolean> {
     try {
       this.writeToLog("RESET");
-      await this.toastMessage("TOAST.TITLE_RESET_MACHINE", "TOAST.MESSAGE_RESET_MACHINE");
-      await this.SimulationInit();
-      this.reset$.next();
+      this.stopRunning();
+      // The cycles of a run of the worker that are on their way are handled before everything is cleared
+      await this.localRun?.catch(() => undefined);
 
       this.breakpointManager.reset();
-      const breakpointsSaved = this.store.getItem("breakpoints") as TypeBreakpoints;
-      this.breakpointManager.updateManager(breakpointsSaved);
+      this.breakpointManager.updateManager(this.store.getItem("breakpoints") as TypeBreakpoints);
 
       this.registers.reset();
-
-      this.memorySize = this.store.getItem("memory_size_configuration");
+      // The configuration, with what the exercise of the file locks (EDU-07)
+      const config = this.exercises.configFor((this.store.getItem("interfaceFileItem") as InterfaceFileItem | null)?.key);
+      this.memorySize = config.memorySize;
       this.memory.setSize(this.memorySize);
-      this.memory.reset();
-
-      this.floatingPointStageConfiguration = this.store.getItem(
-        "floating_point_stage_configuration",
-      ) as TypeFloatingPointStageConfiguration;
-      this.pipeline.reset(
-        this.floatingPointStageConfiguration.addition.count,
-        this.floatingPointStageConfiguration.multiplication.count,
-        this.floatingPointStageConfiguration.division.count,
-      );
-      this.cycleClockDiagram.reset();
-
-      this.privateStep = 0;
-      this.privateLine = 0;
-      this.canSimulate = false;
-
+      this.floatingPointStageConfiguration = config.floatingPoint;
+      this.enabledForwarding = config.forwarding;
       this.dataStatistics.reset();
-      this.dataStatistics$.next(this.dataStatistics.getData());
-      this.enabledForwarding = this.store.getItem("enabled_forwarding_configuration") as TypeEnabledForwardingConfiguration;
-
-      const payload: TypeConfigurationMachine = {
-        enabledForwarding: this.enabledForwarding,
-        memorySize: this.memorySize,
-        addition: {
-          count: this.floatingPointStageConfiguration.addition.count,
-          delay: this.floatingPointStageConfiguration.addition.delay,
-        },
-        division: {
-          count: this.floatingPointStageConfiguration.division.count,
-          delay: this.floatingPointStageConfiguration.division.delay,
-        },
-        multiplication: {
-          count: this.floatingPointStageConfiguration.multiplication.count,
-          delay: this.floatingPointStageConfiguration.multiplication.delay,
-        },
-      };
-      this.socketProviderConnect.emitMessage("UpdateConfigurationMachineRequest", JSON.stringify(payload), (response: string) => {
-        // console.log(response);
-        this.writeToLog(JSON.stringify(response));
-      });
-
-      // Reset Editor
-      this.line$.next(-1);
-
+      this.diagram.reset();
+      this.diagram.limit = config.diagramHistory;
       this.code = new THUMDER_Map();
-      this.code.clear();
       this.code.setDefaultValue(DEFAULT_CODE);
-      this.isComplete = false;
-      this.isRunning = false;
-      this.isBreakpoint = false;
 
-      const timeSimulation = this.store.getItem("time_simulation_configuration") as number;
-      this.timer = null;
-      this.timer = interval(timeSimulation).pipe(takeUntil(this.isRunning$), takeUntil(this.isComplete$));
-      // await this.loadExamples();
-      return Promise.resolve(true);
+      this.stepSignal.set(0);
+      this.lineSignal.set(-1);
+      this.completeSignal.set(false);
+      this.breakpointSignal.set(false);
+      this.canSimulateSignal.set(false);
+      this.waitingForInputSignal.set(false);
+      this.outputSignal.set("");
+      this.errorsSignal.set([]);
+      this.codeSignal.set([]);
+      this.stagesSignal.set(new Map());
+      this.pipelineSignal.set(null);
+      this.unitsSignal.set(MachineService.unitsOf(this.floatingPointStageConfiguration));
+      this.statisticsSignal.set(this.dataStatistics.getData());
+      this.cyclesSignal.set(0);
+      this.hitSignal.set(null);
+      this.pendingOutput = "";
+      this.lastStep = null;
+      if (!options.again) this.journal = [];
+      this.touchValues();
+      this.diagramSignal.update((version) => version + 1);
+
+      // The configuration first: the simulator assembles the program for its memory size (a program that does not fit
+      // is an assembly error, not data out of the memory of the page)
+      await this.sendConfiguration();
+      // The answer fills the code, the memory and the registers that have just been cleared
+      await this.SimulationInit(options.again === true);
+      this.loadsSignal.update((loads) => loads + 1);
+
+      // The program loaded is in the status bar; only the errors get a toast (UI-10)
+      if (!options.again && !this.canSimulate) await this.toastAssemblyErrors();
+      return true;
     } catch (error) {
-      console.error(error);
-      return Promise.reject(error);
+      logger.error(error);
+      await this.toastSimulatorError();
+      return false;
     }
-  }
-
-  public getResetObservable(): Observable<void> {
-    return this.reset$.asObservable();
-  }
-
-  public getStepObservable(): Observable<number> {
-    return this.step$.asObservable();
-  }
-
-  public getLineObservable(): Observable<number> {
-    return this.line$.asObservable();
-  }
-
-  public getIsRunningObservable(): Observable<boolean> {
-    return this.isRunning$.asObservable();
-  }
-
-  public getIsCompleteObservable(): Observable<boolean> {
-    return this.isComplete$.asObservable();
-  }
-
-  public getStepSimulationObservable(): Observable<TypeSimulationStep> {
-    return this.stepSimulation$.asObservable();
-  }
-
-  public getCodeSimulationObservable(): Observable<TypeInstructionsData[]> {
-    return this.codeSimulation$.asObservable();
-  }
-
-  public getDebuggerObservable(): Observable<number> {
-    return this.isBreakpoint$.asObservable();
-  }
-
-  public getDataStatisticsObservable(): Observable<TypeDataStatistics> {
-    return this.dataStatistics$.asObservable();
   }
 
   public getLoggerObservable(): Observable<string> {
     return this.logger$.asObservable();
   }
 
-  public getStatusWebsocketObservable(): Observable<"Connect" | "Disconnect"> {
-    return this.socketProviderConnect.connectObservable();
-  }
-
-  public getErrorsInCodeObservable(): Observable<TypeErrorInCode[]> {
-    return this.errorsInCode$.asObservable();
-  }
-
-  public getStatusWebsocket(): "Connect" | "Disconnect" {
-    return this.socketProviderConnect.socketIO.ioSocket.id === "" ? "Disconnect" : "Connect";
-  }
-
-  public getListStatusPipeline(): TypePipelineToProcess[] {
-    if (this.statusMachineInStep === null) return [];
-    const { IF, ID, intEX, MEM, WB } = this.statusMachineInStep.pipeline;
-    const list_elements: TypePipelineToProcess[] = [];
-    if (IF.draw) list_elements.push({ ...IF, stage: "IF" });
-    if (ID.draw) list_elements.push({ ...ID, stage: "ID" });
-    if (intEX.draw) list_elements.push({ ...intEX, stage: "intEX" });
-    if (MEM.draw) list_elements.push({ ...MEM, stage: "MEM" });
-    if (WB.draw) list_elements.push({ ...WB, stage: "WB" });
-    for (const f_a of this.statusMachineInStep.pipeline.faddEX) {
-      if (f_a.draw) list_elements.push({ ...f_a, stage: "addEX" as TypeStage, unit: f_a.unit });
-    }
-    for (const f_m of this.statusMachineInStep.pipeline.fmultEX) {
-      if (f_m.draw) list_elements.push({ ...f_m, stage: "fmultEX" as TypeStage, unit: f_m.unit });
-    }
-    for (const f_d of this.statusMachineInStep.pipeline.fdivEX) {
-      if (f_d.draw) list_elements.push({ ...f_d, stage: "fdivEX" as TypeStage, unit: f_d.unit });
-    }
-    return list_elements;
-  }
-
   // Navbar
   public async reset(): Promise<void> {
     await this.resetMachineStatus();
-    return Promise.resolve();
   }
 
+  /** One cycle. While the simulation is running it does nothing (the running loop is already stepping) */
   public async nextStep(): Promise<void> {
-    await this.SimulationNextStep();
-    return Promise.resolve();
+    if (this.isRunning) return;
+    try {
+      await this.SimulationNextStep();
+    } catch (error) {
+      logger.error(error);
+      await this.toastSimulatorError();
+    }
   }
 
   public async pause(): Promise<void> {
-    this.isRunning = false;
-    this.isRunning$.next(this.isRunning);
-    return Promise.resolve();
+    this.stopRunning();
   }
 
-  public async resume(): Promise<void> {
+  /**
+   * Runs cycle after cycle (one every `delay` ms of the configuration) until a pause, a breakpoint, the end or a line
+   * of input. The simulator runs by itself in its worker (and stops there); here each cycle is drawn as it arrives. The
+   * cycles that arrive after a pause also count: the machine has run them
+   */
+  public async resume(options: { delay?: number; until?: number; journal?: JournalEntry[] } = {}): Promise<void> {
     if (this.isComplete) {
-      // this.isComplete = false;
-      console.warn("this.isComplete, can't resume");
-      return Promise.resolve();
+      logger.warn("The simulation is complete: it cannot go on");
+      return;
     }
-    this.isBreakpoint = false;
-    this.isRunning = true;
-    this.isRunning$.next(this.isRunning);
-    this.timer?.subscribe(this.timerObserver);
-    return Promise.resolve();
+    if (this.isRunning) return;
+    this.breakpointSignal.set(false);
+    this.hitSignal.set(null);
+    this.runningSignal.set(true);
+
+    const runId = ++this.runId;
+    const delay = options.delay ?? this.config.value().delay;
+    // Repeating a run to step back: no breakpoints
+    const breakpoints = options.until === undefined ? this.runBreakpoints() : { breakpoints: [] };
+    this.localRun = this.simulator.run({ delay, ...breakpoints, until: options.until, journal: options.journal }, (step) =>
+      this.handleStep(step),
+    );
+    try {
+      await this.localRun;
+    } catch (error) {
+      logger.error(error);
+      await this.toastSimulatorError();
+    } finally {
+      this.localRun = null;
+      if (runId === this.runId && this.isRunning) this.stopRunning();
+    }
+  }
+
+  /** The breakpoints of a run: the lines, the stage of those that do not stop in IF, and the watched addresses */
+  private runBreakpoints(): { breakpoints: number[]; stages: StageBreakpoint[]; watchpoints: Watchpoint[] } {
+    const breakpoints = this.breakpointManager.getAllLinesWithBreakpoints();
+    const stages = (this.store.getItem("breakpoint_stages") as BreakpointStages | null) ?? {};
+    return {
+      breakpoints,
+      stages: breakpoints.filter((line) => stages[line] && stages[line] !== "IF").map((line) => ({ line, stage: stages[line] })),
+      watchpoints: (this.store.getItem("watchpoints") as Watchpoint[] | null) ?? [],
+    };
+  }
+
+  /** The breakpoints changed (the editor, the window of the breakpoints): a run going on uses the new ones */
+  public updateRunBreakpoints(): void {
+    const { breakpoints, stages, watchpoints } = this.runBreakpoints();
+    this.simulator.setBreakpoints(breakpoints, stages, watchpoints);
+  }
+
+  /** The pace of the simulation (ms between cycles), also for the run going on (UI-04) */
+  public setSpeed(delay: number): void {
+    const saved = this.config.update({ delay }).delay;
+    if (this.localRun !== null) this.simulator.setSpeed(saved);
+  }
+
+  /** Runs to the end (or to a breakpoint) as fast as possible, drawing only where it stops (UI-04) */
+  public async runToEnd(): Promise<void> {
+    if (this.isRunning || this.isComplete || !this.canSimulate) return;
+    this.setQuiet(true);
+    try {
+      await this.resume({ delay: 0 });
+    } finally {
+      this.setQuiet(false);
+    }
+  }
+
+  /**
+   * Goes back one cycle (EDU-03): the program is loaded again as it was and run, without drawing, to the cycle before,
+   * with the changes of the user (input, registers, memory) made again at the cycle they were made
+   */
+  public async stepBack(): Promise<void> {
+    const target = this.cyclesSignal() - 1;
+    if (target < 0 || this.isRunning || this.lastInit === null) return;
+    const journal = this.journal.filter((entry) => entry.at <= target);
+    this.replaying = true;
+    this.setQuiet(true);
+    try {
+      if (!(await this.resetMachineStatus({ again: true }))) return;
+      this.journal = journal;
+      // The changes made before the first cycle
+      for (const entry of journal.filter((entry) => entry.at === 0)) {
+        await this.simulator.request(entry.event, entry.payload);
+        entry.replay();
+      }
+      const later = journal.filter((entry) => entry.at > 0).map(({ at, event, payload }) => ({ at, event, payload }));
+      if (target > 0) await this.resume({ delay: 0, until: target, journal: later });
+    } finally {
+      this.replaying = false;
+      this.setQuiet(false);
+    }
+  }
+
+  private setQuiet(quiet: boolean): void {
+    this.quiet = quiet;
+    this.quietSignal.set(quiet);
+    if (!quiet) this.publish();
+  }
+
+  /** After running without drawing: the views get the state where it stopped */
+  private publish(): void {
+    if (this.pendingOutput) this.outputSignal.update((output) => output + this.pendingOutput);
+    this.pendingOutput = "";
+    const step = this.lastStep;
+    if (step !== null) {
+      this.stepSignal.set(step.step);
+      this.lineSignal.set(step.line);
+      if (step.pipeline) this.publishPipeline(step);
+      // Waiting for input, unless the input it waits for was already given
+      const answered = this.journal.some((entry) => entry.event === "SimulationInputRequest" && entry.at === step.step + 1);
+      this.waitingForInputSignal.set(step.waitingForInput === true && !answered);
+    }
+    this.statisticsSignal.set(this.dataStatistics.getData());
+    this.touchValues();
+    this.diagramSignal.update((version) => version + 1);
+  }
+
+  /** The same program with and without forwarding, to the end, with the rest of the configuration (EDU-02) */
+  public async compareForwarding(): Promise<CompareResponse> {
+    const init = this.lastInit ?? (await this.initRequest());
+    return this.simulator.request<CompareResponse>("CompareForwardingRequest", { init, configuration: this.configuration() });
   }
 
   public async end(): Promise<void> {
-    this.privateStep = -1;
-    this.isRunning = false;
-    this.isComplete = true;
-
-    this.isRunning$.next(this.isRunning);
-    return Promise.resolve();
+    this.stopRunning();
+    this.completeSignal.set(true);
   }
 
-  private async SimulationInit(): Promise<boolean> {
-    try {
-      this.writeToLog("SimulationInit");
-      const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
-      const content = file.content;
-      const payload = JSON.stringify({
-        id: this.socketProviderConnect.socketIO.ioSocket.id,
-        filename: file.name,
-        date: Utils.dateToStringFormat(new Date()),
-        content: content,
-        registers: [],
-        memory: [],
-        breakpoints: [],
-      } as TypeSimulationInitRequest);
-      this.socketProviderConnect.emitMessage("SimulationInitRequest", payload, (response: string) => {
-        const simulationInit = JSON.parse(response) as TypeSimulationInitResponse;
-
-        this.errorsInCode$.next(simulationInit.errors);
-
-        this.canSimulate = simulationInit.canSimulate;
-
-        this.memory.processResponseMachineDirectives(simulationInit.machineDirectives);
-        this.memory.processResponseMachineInstructions(simulationInit.machineInstructions);
-
-        const code_data_array: TypeInstructionsData[] = [];
-        for (const instruction of simulationInit.machineInstructions) {
-          this.code.set(Utils.stringToAddress(instruction.address), { ...instruction });
-          code_data_array.push({ ...instruction });
-        }
-
-        for (const step of simulationInit.runner) {
-          this.memory.processMemoryToUpdateArray(step.memory);
-          this.registers.processRegisterToUpdateArray(step.registers);
-        }
-
-        this.codeSimulation$.next(code_data_array);
-        return Promise.resolve(true);
-      });
-      return Promise.resolve(false);
-    } catch (error) {
-      console.error(error);
-      return Promise.reject((error as Error).message);
-    }
+  private stopRunning() {
+    this.runningSignal.set(false);
+    this.runId++;
+    if (this.localRun !== null) this.simulator.pause();
   }
 
-  private async SimulationNextStep(): Promise<void> {
-    try {
-      const payload = JSON.stringify({
-        step: this.privateStep + 1,
-      });
-      this.writeToLog("payload S: {0}", EnumLogLevel.Debug, [{ index: 0, value: this.privateStep }]);
-      this.socketProviderConnect.emitMessage("SimulationNextStepRequest", payload, async (response: string) => {
-        this.statusMachineInStep = DEFAULT_STEP_SIMULATION;
-        this.statusMachineInStep = JSON.parse(response) as TypeSimulationStep;
-        const canNextInstruction = await this.CheckConditions();
-        if (canNextInstruction) {
-          await this.ProcessStep();
-          this.writeToLog("SimulationNextStep S: {0} L: {1} JSON: {2}", EnumLogLevel.Debug, [
-            { index: 0, value: this.privateStep },
-            { index: 1, value: this.privateLine },
-            { index: 2, value: this.statusMachineInStep },
-          ]);
-        }
-        // console.log("MachineInStep: ", this.statusMachineInStep);
-      });
-      return Promise.resolve();
-    } catch (error) {
-      console.error(error);
-      return Promise.reject((error as Error).message);
-    }
+  /** What loads the file open in the editor: its text and the modules it may use */
+  private async initRequest(): Promise<LocalSimulationInitRequest> {
+    const file = this.store.getItem("interfaceFileItem") as InterfaceFileItem;
+    const chosen = (this.store.getItem("program_modules") as ProgramModules | null)?.[file.key];
+    return {
+      id: "thumder",
+      filename: file.name,
+      date: Utils.dateToStringFormat(new Date()),
+      content: file.content,
+      registers: [],
+      memory: [],
+      breakpoints: [],
+      // The modules it may need: the ones chosen (NUC-10) or, without a choice, those that define its missing symbols
+      files: await this.fileSystem.programFiles(file),
+      ...(chosen ? { modules: chosen } : {}),
+    } as LocalSimulationInitRequest;
   }
 
-  private async CheckConditions(): Promise<boolean> {
-    if (this.statusMachineInStep === null) {
-      console.warn("End of status of machine");
-      return Promise.resolve(false);
+  private async SimulationInit(again = false): Promise<boolean> {
+    this.writeToLog("SimulationInit");
+    const request = again && this.lastInit ? this.lastInit : await this.initRequest();
+    if (!again) this.fileKeySignal.set((this.store.getItem("interfaceFileItem") as InterfaceFileItem | null)?.key ?? "");
+    this.lastInit = request;
+    const simulationInit = await this.simulator.request<LocalSimulationInitResponse>("SimulationInitRequest", JSON.stringify(request));
+
+    this.memory.processResponseMachineDirectives(simulationInit.machineDirectives);
+    this.memory.processResponseMachineInstructions(simulationInit.machineInstructions);
+    for (const instruction of simulationInit.machineInstructions) {
+      this.code.set(Utils.stringToAddress(instruction.address), { ...instruction });
     }
-    this.isComplete = this.statusMachineInStep.isComplete ?? false;
-    this.isBreakpoint = this.statusMachineInStep.isBreakpoint || this.breakpointManager.isBreakpoint(this.statusMachineInStep.line);
-    this.privateStep = this.statusMachineInStep.step;
-    this.privateLine = this.statusMachineInStep.line;
-    if (this.isComplete) {
-      this.isComplete$.next(this.isComplete);
-      this.canSimulate = false;
-      this.isRunning = false;
-      this.isRunning$.next(this.isRunning);
+    for (const step of simulationInit.runner) {
+      this.memory.processMemoryToUpdateArray(step.memory);
+      this.registers.processRegisterToUpdateArray(step.registers);
+    }
+
+    this.errorsSignal.set(simulationInit.errors);
+    this.symbolsSignal.set(simulationInit.symbols ?? []);
+    this.modulesSignal.set(simulationInit.modules ?? []);
+    this.codeSignal.set(simulationInit.machineInstructions.map((instruction) => ({ ...instruction })));
+    this.canSimulateSignal.set(simulationInit.canSimulate);
+    this.touchValues();
+    return simulationInit.canSimulate;
+  }
+
+  private configuration(): TypeConfigurationMachine {
+    return {
+      enabledForwarding: this.enabledForwarding,
+      memorySize: this.memorySize,
+      addition: { ...this.floatingPointStageConfiguration.addition },
+      division: { ...this.floatingPointStageConfiguration.division },
+      multiplication: { ...this.floatingPointStageConfiguration.multiplication },
+    };
+  }
+
+  private async sendConfiguration(): Promise<void> {
+    const payload = this.configuration();
+    const response = await this.simulator.request<TypeConfigurationMachine>("UpdateConfigurationMachineRequest", JSON.stringify(payload));
+    this.writeToLog("UpdateConfigurationMachine: {0}", EnumLogLevel.Debug, [{ index: 0, value: response }]);
+  }
+
+  // Waits for the answer of the simulator; a second call while a cycle is on its way gets that same cycle
+  private SimulationNextStep(): Promise<void> {
+    if (this.stepping !== null) return this.stepping;
+    this.stepping = (async () => {
+      try {
+        const payload = JSON.stringify({ step: this.step + 1 });
+        await this.handleStep(await this.simulator.request<Step>("SimulationNextStepRequest", payload));
+      } finally {
+        this.stepping = null;
+      }
+    })();
+    return this.stepping;
+  }
+
+  /** A cycle of the simulator: the console, the end, the breakpoints and what changed */
+  private async handleStep(step: Step): Promise<void> {
+    this.lastStep = step;
+    this.cyclesSignal.set(step.step + 1);
+    if (step.output) {
+      if (this.quiet) this.pendingOutput += step.output;
+      else this.outputSignal.update((output) => output + step.output);
+    }
+    if (this.replaying) {
+      // The changes the user made at this point of the original run
+      for (const entry of this.journal) if (entry.at === step.step + 1) entry.replay();
+      this.completeSignal.set(step.isComplete ?? false);
+      if (step.isComplete) this.canSimulateSignal.set(false);
+      this.processStep(step);
+      return;
+    }
+    if (step.waitingForInput) {
+      // The program waits for a line (trap 3): stop until it is typed in the console
+      this.stopRunning();
+      this.waitingForInputSignal.set(true);
+    }
+    if (step.error) await this.toastProgramError(step.error);
+
+    const complete = step.isComplete ?? false;
+    // A breakpoint stops the simulation when its instruction is fetched (not again while it waits in IF)
+    const breakpoint = step.isBreakpoint === true || (step.isNewInstruction && this.breakpointManager.isBreakpoint(step.line));
+    this.completeSignal.set(complete);
+    this.breakpointSignal.set(breakpoint);
+    if (!this.quiet) {
+      this.stepSignal.set(step.step);
+      this.lineSignal.set(step.line);
+    }
+    if (complete) {
+      this.canSimulateSignal.set(false);
+      this.stopRunning();
+      this.processStep(step);
       await this.toastMessage("TOAST.TITLE_END_SIMULATION", "TOAST.MESSAGE_END_SIMULATION");
-      return Promise.resolve(false);
+      return;
     }
-    if (this.isBreakpoint) {
-      this.isRunning = false;
-      this.line$.next(this.statusMachineInStep.line);
-      this.isRunning$.next(this.isRunning);
-      this.isBreakpoint$.next(this.statusMachineInStep.line);
-      await this.toastMessage("TOAST.TITLE_BREAKPOINT_SIMULATION", "TOAST.MESSAGE_BREAKPOINT_SIMULATION");
-      return Promise.resolve(true);
+    if (breakpoint) {
+      this.stopRunning();
+      this.hitSignal.set(step.hit ?? { kind: "line", line: step.line, stage: "IF" });
+      await this.toastBreakpoint(step.hit ?? { kind: "line", line: step.line, stage: "IF" });
     }
-    return Promise.resolve(true);
+    this.processStep(step);
+    this.writeToLog("SimulationNextStep S: {0} L: {1}", EnumLogLevel.Debug, [
+      { index: 0, value: step.step },
+      { index: 1, value: step.line },
+    ]);
   }
 
-  private async ProcessStep(): Promise<void> {
-    if (this.isComplete === true || this.statusMachineInStep === null) {
-      console.warn("isComplete or statusMachineInStep is null");
-      return Promise.resolve();
+  /** What a cycle changes: registers, memory, statistics, the pipeline and the cycle clock diagram */
+  private processStep(step: Step): void {
+    if (step.registers?.length > 0) this.registers.processRegisterToUpdateArray(step.registers);
+    if (step.memory?.length > 0) this.memory.processMemoryToUpdateArray(step.memory);
+    if (step.statistics && Object.keys(step.statistics).length > 0) {
+      this.dataStatistics.processResponse(step.statistics);
+      if (!this.quiet) this.statisticsSignal.set(this.dataStatistics.getData());
     }
-    if (this.statusMachineInStep.pipeline) {
-      this.processResponsePipeline();
-    }
-    if (this.statusMachineInStep.registers && this.statusMachineInStep.registers.length > 0) {
-      this.registers.processRegisterToUpdateArray(this.statusMachineInStep.registers);
-    }
-    if (this.statusMachineInStep.memory && this.statusMachineInStep.memory.length > 0) {
-      this.memory.processMemoryToUpdateArray(this.statusMachineInStep.memory);
-    }
-    if (this.statusMachineInStep.statistics && Object.keys(this.statusMachineInStep.statistics).length > 0) {
-      this.dataStatistics.processResponse(this.statusMachineInStep.statistics);
-    }
-    this.stepSimulation$.next(this.statusMachineInStep);
-    this.dataStatistics$.next(this.dataStatistics.getData());
-    this.step$.next(this.statusMachineInStep.step);
-    this.line$.next(this.statusMachineInStep.line);
-    return Promise.resolve();
+    if (!this.quiet && (step.registers?.length > 0 || step.memory?.length > 0)) this.touchValues();
+    if (step.pipeline) this.updatePipeline(step);
   }
 
-  public async updateRegisterInServer(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean> {
-    try {
-      const payload = JSON.stringify(registersToUpdate);
-      this.socketProviderConnect.emitMessage("UpdateRegisterRequest", payload, (response) => {
-        console.log(response);
+  // The pipeline and the cycle clock diagram live here (not in their views), so they are complete when a view opens
+  private updatePipeline(step: Step): void {
+    const { pipeline } = step;
+    if (step.isNewInstruction === true) {
+      this.diagram.addInstruction(this.code.getOrDefaultValue(pipeline.IF.address)?.instruction ?? "");
+    }
+    for (const arrow of pipeline.arrows ?? []) {
+      // A number, or a hexadecimal string in older versions
+      const color = typeof arrow.color === "number" ? arrow.color : parseInt(String(arrow.color), 16);
+      this.diagram.addArrow({
+        fromRow: arrow.fromAddressRow,
+        fromCycle: arrow.fromStep,
+        toRow: arrow.toAddressRow,
+        toCycle: arrow.toStep,
+        color,
       });
-      return Promise.resolve(true);
-    } catch (error) {
-      console.error(error);
-      return Promise.reject((error as Error).message);
     }
+    this.diagram.addCycle(pipeline, step.step);
+    if (step.stalls) this.diagram.addStalls(step.stalls);
+    if (this.quiet) return;
+    this.publishPipeline(step);
+    this.diagramSignal.update((version) => version + 1);
   }
 
-  public async updateMemoryInServer(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean> {
-    try {
-      const payload = JSON.stringify(memoryToUpdate);
-      this.socketProviderConnect.emitMessage("UpdateMemoryRequest", payload, (response) => {
-        console.log(response);
-      });
-      return Promise.resolve(true);
-    } catch (error) {
-      console.error(error);
-      return Promise.reject((error as Error).message);
-    }
+  /** The pipeline of a cycle and where each instruction is, for the views */
+  private publishPipeline(step: TypeSimulationStep): void {
+    const { pipeline } = step;
+    const unit = (cell: TypeCycleCell & { unit?: number }) => ({ unit: cell.unit ?? 0, ...this.instructionInCell(cell) });
+    this.pipelineSignal.set({
+      IF: this.instructionInCell(pipeline.IF),
+      ID: this.instructionInCell(pipeline.ID),
+      intEX: this.instructionInCell(pipeline.intEX),
+      MEM: this.instructionInCell(pipeline.MEM),
+      WB: this.instructionInCell(pipeline.WB),
+      faddEX: pipeline.faddEX.map(unit),
+      fmultEX: pipeline.fmultEX.map(unit),
+      fdivEX: pipeline.fdivEX.map(unit),
+    });
+
+    // Where each instruction is: one Map for the whole code table
+    const stages = new Map<TypeAddress, TypeStage>();
+    const place = (cell: TypeCycleCell, stage: TypeStage) => {
+      if (cell.draw !== false && cell.address) stages.set(cell.address, stage);
+    };
+    for (const stage of ["IF", "ID", "intEX", "MEM", "WB"] as const) place(pipeline[stage], stage);
+    for (const stage of ["faddEX", "fmultEX", "fdivEX"] as const) for (const cell of pipeline[stage]) place(cell, stage);
+    this.stagesSignal.set(stages);
+  }
+
+  private instructionInCell(cell: TypeCycleCell): { text: string; draw: TypeCycleCell["draw"] } {
+    if (cell.address === undefined || (cell.address as string).length === 0) return { text: "", draw: cell.draw };
+    return { text: this.getCode(cell.address).instruction, draw: cell.draw };
+  }
+
+  /** The registers or the memory changed (they are mutable objects) */
+  private touchValues(): void {
+    this.valuesSignal.update((version) => version + 1);
+  }
+
+  /** The line typed in the console for the program (trap 3); it goes on where it stopped */
+  public async provideInput(text: string): Promise<void> {
+    const payload = JSON.stringify({ text });
+    await this.simulator.request("SimulationInputRequest", payload);
+    this.outputSignal.update((output) => `${output}${text}\n`);
+    this.waitingForInputSignal.set(false);
+    this.record("SimulationInputRequest", payload, () => {
+      this.pendingOutput += `${text}\n`;
+    });
+  }
+
+  /** A change of the user, to make it again when stepping back */
+  private record(event: string, payload: string, replay: () => void): void {
+    if (!this.replaying) this.journal.push({ at: this.cyclesSignal(), event, payload, replay });
+  }
+
+  /** Clears the console of the program */
+  public clearOutput(): void {
+    this.outputSignal.set("");
+  }
+
+  /** Sends the registers to the simulator and applies the values it has stored. Returns whether all were accepted */
+  public async updateRegisters(registersToUpdate: TypeRegisterToUpdate[]): Promise<boolean> {
+    const payload = JSON.stringify(registersToUpdate);
+    const response = await this.simulator.request<TypeRegisterToUpdateResponse>("UpdateRegisterRequest", payload);
+    this.registers.processRegisterToUpdateArray(response.registerToUpdates);
+    this.touchValues();
+    this.record("UpdateRegisterRequest", payload, () => this.registers.processRegisterToUpdateArray(response.registerToUpdates));
+    return response.allOK;
+  }
+
+  /** Sends the memory to the simulator and applies the values it has stored. Returns whether all were accepted */
+  public async updateMemory(memoryToUpdate: TypeMemoryToUpdate[]): Promise<boolean> {
+    const payload = JSON.stringify(memoryToUpdate);
+    const response = await this.simulator.request<TypeMemoryToUpdateResponse>("UpdateMemoryRequest", payload);
+    this.memory.processMemoryToUpdateArray(response.memoryToUpdates);
+    this.touchValues();
+    this.record("UpdateMemoryRequest", payload, () => this.memory.processMemoryToUpdateArray(response.memoryToUpdates));
+    return response.allOK;
   }
 
   public writeToLog(msg: string, level: EnumLogLevel = EnumLogLevel.Debug, params: TypeLogger[] = []) {
     if (this.shouldLog(level)) {
-      this.logger = "";
-      this.logger = `${new Date().toLocaleString()} - `;
-      this.logger += `Type: ${EnumLogLevel[this.level]}`;
-      this.logger += ` - ${this.stringFormat(msg, params)}`;
-      console.debug(this.logger);
+      this.logger = `${new Date().toLocaleString()} - Type: ${EnumLogLevel[this.level]} - ${MachineService.stringFormat(msg, params)}`;
+      logger.debug(this.logger);
       this.logger$.next(this.logger);
     }
   }
 
-  private stringFormat(msg: string, params: TypeLogger[]) {
-    return msg.replace(/{([0-9]+)}/g, (match: string, index) => {
-      const logValue: TypeLogger = params.filter((v) => v.index === index)[0] ?? { index: -1, value: "" };
-      // console.log("msg", msg, "params", params, "logValue", logValue, "match", match, "index", index);
-      if (typeof logValue.value === "object") {
-        return JSON.stringify(logValue.value);
-      }
-      return typeof logValue.value === "undefined" ? match : logValue.value;
+  /** Replaces each {n} of the message with the value of the parameter with index n (objects as JSON) */
+  public static stringFormat(msg: string, params: TypeLogger[]): string {
+    return msg.replace(/{([0-9]+)}/g, (match: string, index: string) => {
+      const logValue = params.find((v) => v.index === Number(index));
+      if (logValue === undefined || typeof logValue.value === "undefined") return match;
+      if (typeof logValue.value === "object") return JSON.stringify(logValue.value);
+      return String(logValue.value);
     });
   }
 
   private shouldLog(level: EnumLogLevel): boolean {
-    let ret: boolean = false;
-    if ((level >= this.level && level !== EnumLogLevel.Off) || this.level === EnumLogLevel.All) {
-      ret = true;
-    }
-    return ret;
+    return (level >= this.level && level !== EnumLogLevel.Off) || this.level === EnumLogLevel.All;
   }
 
   public getCode(address: TypeAddress): TypeInstructionsData {
     const code = this.code.get(address);
     if (code === undefined) {
-      console.warn("Error, address of memory not valid '%s' | %o", address, this.code.get(address));
-      console.warn("Code: %o", Array.from(this.code.getMap()));
+      logger.warn("Not an address of the code: %s", address);
       return DEFAULT_CODE;
     }
     return code;
@@ -554,22 +761,43 @@ export class MachineService {
     };
   }
 
-  public resetConnection() {
-    this.socketProviderConnect.socketIO.ioSocket.connect(CONFIG_WEBSOCKET.url, { "force new connection": true });
-  }
-
   private async toastMessage(key_title: string = "TOAST.LOGIN_FALSE", key_message: string = "TOAST.ACCESS_DENIED"): Promise<void> {
-    const config: Partial<IndividualConfig> = {
-      timeOut: 500,
-      positionClass: "toast-bottom-left",
-    };
     const message = await firstValueFrom(this.translate.get(key_message));
     const title = await firstValueFrom(this.translate.get(key_title));
-    this.toast.info(message, title, config);
-    return Promise.resolve();
+    this.toast.info(message, title, TOAST.info);
   }
 
-  private processResponsePipeline() {
-    Utils.voidF();
+  /** Where it stopped: the line (and the stage, if it is not IF), or the address read or written */
+  private async toastBreakpoint(hit: BreakpointHit): Promise<void> {
+    const title = await firstValueFrom(this.translate.get("TOAST.TITLE_BREAKPOINT_SIMULATION"));
+    const message =
+      hit.kind === "line"
+        ? await firstValueFrom(
+            this.translate.get(hit.stage === "IF" ? "TOAST.MESSAGE_BREAKPOINT_LINE" : "TOAST.MESSAGE_BREAKPOINT_STAGE", hit),
+          )
+        : await firstValueFrom(
+            this.translate.get(hit.kind === "read" ? "TOAST.MESSAGE_WATCH_READ" : "TOAST.MESSAGE_WATCH_WRITE", {
+              address: `0x${hit.address.toString(16).toUpperCase().padStart(8, "0")}`,
+            }),
+          );
+    this.toast.info(message, title, TOAST.info);
+  }
+
+  // The errors are marked on their lines in the editor
+  private async toastAssemblyErrors(): Promise<void> {
+    const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ASSEMBLY_ERRORS"));
+    const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ASSEMBLY_ERRORS"));
+    this.toast.warning(message, title, TOAST.warning);
+  }
+
+  private async toastProgramError(message: string): Promise<void> {
+    const title = await firstValueFrom(this.translate.get("TOAST.TITLE_PROGRAM_ERROR"));
+    this.toast.error(message, title, TOAST.error);
+  }
+
+  private async toastSimulatorError(): Promise<void> {
+    const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SIMULATOR_ERROR"));
+    const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SIMULATOR_ERROR"));
+    this.toast.warning(message, title, TOAST.warning);
   }
 }

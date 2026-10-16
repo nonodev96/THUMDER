@@ -1,22 +1,52 @@
-import { type AfterViewInit, Component, inject, type OnInit, ViewChild } from "@angular/core";
-import { MatSort } from "@angular/material/sort";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, ViewChild } from "@angular/core";
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "@app/CONSTANTS";
 import type { TypeData, TypeDataRepresentation, TypeRegisterControl } from "@app/Types";
 import { EditRegisterBinary32Component } from "@components/modals/edit-register-binary32/edit-register-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { TranslatePipe } from "@ngx-translate/core";
+import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
+import {
+  Binary32ToASCIIPipe,
+  Binary32ToBytesPipe,
+  Binary32ToDecimal_IEEE754Pipe,
+  Binary32ToHalfWordPipe,
+  Binary32ToWordPipe,
+  Binary64ToDecimal_IEEE754Pipe,
+  BinaryByteToNumberPipe,
+  BinaryToHexadecimal_FormatPipe,
+  Uint_IEEE754_32_Pipe,
+  Uint_IEEE754_64_Pipe,
+} from "@shared/pipes/numbers/numbers.pipes";
+import { ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
+import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 @Component({
   selector: "view-registers",
   templateUrl: "./registers.view.html",
   styleUrls: [],
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CardDirective,
+    CardWidgetDirective,
+    ModalOpenDirective,
+    TranslatePipe,
+    Binary32ToASCIIPipe,
+    Binary32ToBytesPipe,
+    Binary32ToWordPipe,
+    Binary32ToHalfWordPipe,
+    Binary32ToDecimal_IEEE754Pipe,
+    Binary64ToDecimal_IEEE754Pipe,
+    BinaryToHexadecimal_FormatPipe,
+    Uint_IEEE754_32_Pipe,
+    Uint_IEEE754_64_Pipe,
+    BinaryByteToNumberPipe,
+    VirtualTableComponent,
+    VirtualTableColumnDirective,
+  ],
 })
-export class RegistersView implements OnInit, AfterViewInit {
+export class RegistersView {
   machine = inject(MachineService);
-
-  @ViewChild(MatSort, { static: true })
-  public sort!: MatSort;
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(EditRegisterBinary32Component)
   public editRegisterBinary32Component!: EditRegisterBinary32Component;
@@ -25,91 +55,54 @@ export class RegistersView implements OnInit, AfterViewInit {
   public typeDataSelected: TypeData = "Byte";
   public typeDataSelectedFloat: TypeDataRepresentation = "Binary";
   public typeDataSelectedDouble: TypeDataRepresentation = "Binary";
-  public dataSource = new TableVirtualScrollDataSource<TypeRegisterControl>(MACHINE_REGISTERS_C as TypeRegisterControl[]);
-  public dataSourceR = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_R as number[]);
-  public dataSourceF = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_F as number[]);
-  public dataSourceD = new TableVirtualScrollDataSource<number>(MACHINE_REGISTERS_D as number[]);
+  public dataSource: TypeRegisterControl[] = [...(MACHINE_REGISTERS_C as TypeRegisterControl[])];
+  public dataSourceR: number[] = [...(MACHINE_REGISTERS_R as number[])];
+  public dataSourceF: number[] = [...(MACHINE_REGISTERS_F as number[])];
+  public dataSourceD: number[] = [...(MACHINE_REGISTERS_D as number[])];
   public displayedColumns: string[] = ["Register", "Hexadecimal", "Binary", "Byte"];
   public displayedColumnsR: string[] = ["Register", "Hexadecimal", "Binary", "Integer"];
   public displayedColumnsF: string[] = ["Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Float"];
   public displayedColumnsD: string[] = ["Register", "Hexadecimal", "Binary" /*Binary or Uint8Array*/, "Double"];
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
-  constructor() {}
-
-  ngOnInit(): void {
-    this.dataSource.filter = "";
-    this.dataSource.sort = this.sort;
+  constructor() {
+    // The tables read the registers of MachineService: they are drawn again when the values change (a cycle, an edit)
+    effect(() => {
+      this.machine.state.values();
+      this.machine.state.loads();
+      this.cdr.markForCheck();
+    });
   }
 
-  ngAfterViewInit(): void {
-    const list_cards = ["registers_R_id", "registers_F_id", "registers_D_id"];
-    for (const card_id of list_cards) {
-      window.jQuery(`#${card_id}`).CardWidget("collapse");
-    }
-
-    window
-      .jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
-      .on("expanded.lte.cardwidget", (/*$event*/) => {
-        this.resizeCards("60vh");
-      });
-    window
-      .jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
-      .on("minimized.lte.cardwidget", (/*$event*/) => {
-        this.resizeCards("60vh");
-      });
-    window
-      .jQuery("#registers_Control_id, #registers_R_id, #registers_F_id, #registers_D_id")
-      .on("maximized.lte.cardwidget", (/*$event*/) => {
-        this.resizeCards("100%");
-      });
-  }
-
+  // A new array of columns: the table only sees a change of the array, not of one of its items
   public changeTypeDataInTableRegisters(typeData: TypeData): void {
     this.typeDataSelected = typeData;
-    this.displayedColumns[3] = typeData.toString();
+    this.displayedColumns = ["Register", "Hexadecimal", "Binary", typeData.toString()];
   }
 
   public changeTypeDataInTableFloatRegisters(typeData: TypeDataRepresentation): void {
     this.typeDataSelectedFloat = typeData;
-    this.displayedColumnsF[2] = typeData.toString();
+    this.displayedColumnsF = ["Register", "Hexadecimal", typeData.toString(), "Float"];
   }
 
   public changeTypeDataInTableDoubleRegisters(typeData: TypeDataRepresentation): void {
     this.typeDataSelectedDouble = typeData;
-    this.displayedColumnsD[2] = typeData.toString();
+    this.displayedColumnsD = ["Register", "Hexadecimal", typeData.toString(), "Double"];
   }
 
   public refresh(): void {
-    this.dataSource.filter = "";
-    this.dataSource.data = [...this.dataSource.data];
-
-    this.dataSourceR.filter = "";
-    this.dataSourceR.data = [...this.dataSourceR.data];
-
-    this.dataSourceF.filter = "";
-    this.dataSourceF.data = [...this.dataSourceF.data];
-
-    this.dataSourceD.filter = "";
-    this.dataSourceD.data = [...this.dataSourceD.data];
-
-    window.dispatchEvent(new Event("resize"));
+    this.dataSource = [...this.dataSource];
+    this.dataSourceR = [...this.dataSourceR];
+    this.dataSourceF = [...this.dataSourceF];
+    this.dataSourceD = [...this.dataSourceD];
+    this.cdr.markForCheck();
   }
 
-  // test(): void {
-  //   this.dataSource.data.push('PC');
-  //   console.log(this.dataSource.data);
-  // }
   // applyFilter(filterValue: string): void {
   //   this.dataSource.filter = filterValue.trim().toLowerCase();
   // }
 
-  private resizeCards(height: string): void {
+  /** The height of the table when its card unfolds, is restored or fills the screen (it measures itself: ViewportResizeDirective) */
+  public resizeCards(height: string): void {
     this.maxHeightCard = height;
-    setTimeout(() => {
-      window.dispatchEvent(new Event("resize"));
-    }, 500);
   }
 }

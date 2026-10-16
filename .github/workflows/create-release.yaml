@@ -1,150 +1,79 @@
 name: Build/release
 
+# A tag v* publishes a draft release with the desktop applications of the three systems (CI-03):
+# Linux (AppImage), Windows (installer and portable) and macOS (dmg and zip), with the latest*.yml files of
+# electron-builder for the automatic updates and the notes of CHANGELOG.md (scripts/release-notes.mjs). The binaries
+# are not signed (there are no certificates): the notes say so.
+
 on:
   push:
     tags:
-      - 'v*'
-#    branches: [ dev ]
+      - "v*"
+
+permissions:
+  contents: write
 
 jobs:
-  Make_GitHub_Release:
+  create-release:
     name: Create Release
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.step_version.outputs.version }}
+      version: ${{ steps.version.outputs.version }}
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - uses: actions/checkout@v4
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
+      - id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
-      - name: Read package.json
-        uses: tyankatsu0105/read-package-version-actions@v1
-        id: package_version
+      - name: Release notes
+        run: node scripts/release-notes.mjs "${{ steps.version.outputs.version }}" > release-notes.md
 
       - name: Create Release
-        id: create_release
-        run: |
-          gh release create "${{ env.VERSION }}" -n "${{ env.MESSAGE }}" -t "${{ env.NAME }}" -p
+        run: gh release create "$GITHUB_REF_NAME" --title "THUMDER $GITHUB_REF_NAME" --notes-file release-notes.md --draft
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: "v${{ steps.package_version.outputs.version }}"
-          MESSAGE: "Pre release v${{ steps.package_version.outputs.version }}"
-          NAME: "Pre release v${{ steps.package_version.outputs.version }}"
-
-      - id: step_version
-        run: echo "::set-output name=version::${{ steps.package_version.outputs.version }}"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release:
-    needs: Make_GitHub_Release
-    name: Build And Upload Release
+    name: Build And Upload Release (${{ matrix.os }})
+    needs: create-release
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        include:
-          - os: ubuntu-latest
-            artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
-            asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.AppImage"
-            asset_content_type: application/zip
-          - os: windows-latest
-            artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.exe"
-            asset_content_type: application/exe
-          # - os: macos-latest-large
-          #   artifact_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-          #   asset_name: "THUMDER-v${{ needs.Make_GitHub_Release.outputs.version }}.dmg"
-          #   asset_content_type: application/x-apple-diskimage
-
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 22
+          cache: pnpm
 
-      - name: Read package.json
-        uses: tyankatsu0105/read-package-version-actions@v1
-        id: package_version
-
-      - name: Secrets And Envirotment
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: 'environment.production.ts'
-          fileDir: './src/environments/'
-          encodedString: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
-
-      - name: Context
+      - name: Production environment
+        shell: bash
+        run: echo "$ENVIRONMENT_PRODUCTION" | base64 --decode > src/environments/environment.production.ts
         env:
-          RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
-        run: |
-          echo "$RUNNER_CONTEXT"
-          echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
+          ENVIRONMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
 
-      - run: npm install
-      - run: npm run postinstall
-      - run: npm run electron:build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: pnpm install --frozen-lockfile
 
-      - name: Upload Release Asset
-        id: upload_release_asset
+      - name: Build
+        shell: bash
+        # Without certificates electron-builder does not try to sign (macOS)
+        run: pnpm run build:prod && pnpm exec electron-builder build --publish never
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FILES: "./release/${{ matrix.artifact_name }}#${{ matrix.asset_name }}"
           NODE_OPTIONS: "--max-old-space-size=4096"
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Upload Release Assets
+        shell: bash
         run: |
-          gh release upload "v${{ steps.package_version.outputs.version }}" "${{ env.FILES }}"
-
-  deploy:
-    name: 'Deploy to Netlify'
-    needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-
-      - name: Read package.json
-        uses: tyankatsu0105/read-package-version-actions@v1
-        id: package_version
-
-      - name: Secrets And Envirotment
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: 'environment.production.ts'
-          fileDir: './src/environments/'
-          encodedString: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
-
-      - name: Context
+          shopt -s nullglob
+          files=(release/*.AppImage release/*.exe release/*.dmg release/*.zip release/*.yml release/*.blockmap)
+          gh release upload "$GITHUB_REF_NAME" "${files[@]}" --clobber
         env:
-          RUNNER_CONTEXT: ${{ toJson( needs.Make_GitHub_Release ) }}
-        run: |
-          echo "$RUNNER_CONTEXT"
-          echo "Version is ${{ needs.Make_GitHub_Release.outputs.version }}"
-
-      - run: npm install
-      - run: npm run postinstall
-      - run: npm run ng:build-angular:production
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: jsmrcaga/action-netlify-deploy@v2.4.0
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          NETLIFY_DEPLOY_MESSAGE: "Deploy ${{ github.ref_name }}"
-          NETLIFY_DEPLOY_TO_PROD: true
-          BUILD_DIRECTORY: 'dist-angular'
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

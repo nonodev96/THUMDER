@@ -1,8 +1,20 @@
-import { type AfterViewInit, Component, Input, type OnDestroy, type OnInit } from "@angular/core";
+import {
+  type AfterViewInit,
+  Component,
+  type ElementRef,
+  effect,
+  Input,
+  inject,
+  type OnDestroy,
+  type OnInit,
+  ViewChild,
+} from "@angular/core";
 import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "@app/Types";
 import { THUMDER_FileItem } from "@core/services/file-system/file-system.service";
-import * as monaco from "monaco-editor";
-import { type Observable, Subject } from "rxjs";
+import { ThemeService } from "@core/services/theme/theme.service";
+// The editor without the languages of Monaco (THUMDER has its own: DLX)
+import * as monaco from "monaco-editor/esm/vs/editor/edcore.main.js";
+import { type Observable, ReplaySubject, Subject } from "rxjs";
 import MonacoConfig from "../../monaco-config";
 
 type IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
@@ -13,7 +25,6 @@ const EditorOption = monaco.editor.EditorOption;
   selector: "THUMDER-monaco-editor",
   templateUrl: "./monaco-editor.component.html",
   styleUrls: ["./monaco-editor.component.scss"],
-  standalone: false,
 })
 export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input()
@@ -32,14 +43,30 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private oldDecorationDebugLine: string[] = [];
   private oldDecorationDebugTag_targetId: string[] = [];
 
-  public initialized$: Subject<boolean> = new Subject<boolean>();
+  // Monaco is created in ngAfterViewInit, before the view that holds it subscribes: the last value is kept for it
+  public initialized$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();
   public componentStatus$: Subject<TypeComponentStatus> = new Subject<TypeComponentStatus>();
   public editorFileSave$: Subject<THUMDER_FileItem> = new Subject<THUMDER_FileItem>();
 
+  private theme = inject(ThemeService);
+  private ready = false;
+
+  constructor() {
+    // The dark theme of DLX with the dark theme of THUMDER (UI-07)
+    effect(() => {
+      const dark = this.theme.dark();
+      if (this.ready) monaco.editor.setTheme(this.themeName(dark));
+    });
+  }
+
+  private themeName(dark = this.theme.dark()): string {
+    return dark && this.inputTheme === "thumderTheme" ? "thumderThemeDark" : this.inputTheme;
+  }
+
   set height(value: number) {
     this._height = value;
-    this.editor.layout();
+    this.editor?.layout();
   }
 
   get height(): number {
@@ -50,12 +77,32 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.componentStatus$.next("OnInit");
   }
 
+  @ViewChild("container", { static: true })
+  private container!: ElementRef<HTMLDivElement>;
+
+  /** Monaco, created in its element (it follows the size of the element by itself: automaticLayout) */
   ngAfterViewInit(): void {
     this.componentStatus$.next("AfterViewInit");
+    // The language and the theme of DLX, before the editor that uses them
+    MonacoConfig.onMonacoLoad();
+    const editor = monaco.editor.create(this.container.nativeElement, {
+      ...this.EDITOR_OPTIONS_THUMDER,
+      automaticLayout: true,
+      value: this.editorFile.content,
+      language: this.inputLanguage,
+      theme: this.themeName(),
+    });
+    this.ready = true;
+    editor.onDidChangeModelContent(() => {
+      this.editorFile.content = editor.getValue();
+    });
+    this.editorInitialized(editor);
   }
 
   ngOnDestroy(): void {
     this.componentStatus$.next("OnDestroy");
+    this.editor?.getModel()?.dispose();
+    this.editor?.dispose();
   }
 
   public getInitializedObservable(): Observable<boolean> {
@@ -74,14 +121,10 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.editorFileSave$.asObservable();
   }
 
-  public callBackFunc(_$event_text: any): void {
-    // console.log('callBackFunc', $event_text)
-  }
-
   public editorInitialized($event: IStandaloneCodeEditor): void {
     this.editor = $event;
     MonacoConfig.onMonacoLoad();
-    monaco.editor.setTheme(this.inputTheme);
+    monaco.editor.setTheme(this.themeName());
     const model = this.editor.getModel();
     if (model) {
       monaco.editor.setModelLanguage(model, this.inputLanguage);
@@ -94,6 +137,8 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyD, () => {
       this.toggleDebuggerTag();
     });
+    this.fitToWidth(this.editor.getLayoutInfo().width);
+    this.editor.onDidLayoutChange((layout) => this.fitToWidth(layout.width));
     this.editor.onDidChangeCursorSelection((_$event) => {});
     this.editor.onDidChangeModelDecorations((_$event) => {
       this.breakpoints = this.getAllBreakpoints();
@@ -102,16 +147,14 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.initialized$.next(true);
   }
 
-  public editorConfigurationChanged(): void {
-    // console.log('editorConfigurationChanged');
-  }
+  /** In a narrow editor (a phone, a small window) the code gets the room of the minimap and of the folding margin */
+  private narrow: boolean | null = null;
 
-  public editorLanguageChanged(): void {
-    // console.log('editorLanguageChanged');
-  }
-
-  public editorValueChange(): void {
-    // console.log('editorValueChange');
+  private fitToWidth(width: number): void {
+    const narrow = width > 0 && width < 600;
+    if (narrow === this.narrow) return;
+    this.narrow = narrow;
+    this.editor.updateOptions({ minimap: { enabled: !narrow }, folding: !narrow, lineNumbersMinChars: narrow ? 3 : 5 });
   }
 
   /*
@@ -179,6 +222,18 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       },
     };
     this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
+  }
+
+  /** Takes the cursor to a line, in the middle of the editor */
+  public goToLine(line: number): void {
+    this.editor.revealLineInCenter(line);
+    this.editor.setPosition({ lineNumber: line, column: 1 });
+    this.editor.focus();
+  }
+
+  /** The text written in the editor */
+  public getContent(): string {
+    return this.editor?.getValue() ?? "";
   }
 
   public printErrorsInEditor(errors: TypeErrorInCode[]): void {

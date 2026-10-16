@@ -1,46 +1,40 @@
 {
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.nonodev96.thumder",
   "productName": "THUMDER",
-  "artifactName": "${productName}-v${version}.${ext}",
+  "artifactName": "${productName}-v${version}-${os}-${arch}.${ext}",
   "asar": true,
+  "npmRebuild": false,
+  "nodeGypRebuild": false,
   "directories": {
     "output": "release/"
   },
   "files": [
-    "**/*",
-    "!**/*.ts",
-    "!*.code-workspace",
-    "!LICENSE.md",
-    "!package.json",
-    "!package-lock.json",
-    "!src/",
-    "!e2e/",
-    "!hooks/",
-    "!angular.json",
-    "!_config.yml",
-    "!karma.conf.js",
-    "!tsconfig.json",
-    "!tslint.json",
-    {
-      "from": "../dist",
-      "filter": ["**/*"]
-    }
+    "main.js",
+    "preload.js",
+    "package.json",
+    "dist/browser/**/*",
+    "!dist/browser/**/*.map",
+    "!node_modules/**/*"
   ],
+  "publish": {
+    "provider": "github",
+    "owner": "nonodev96",
+    "repo": "THUMDER",
+    "releaseType": "draft"
+  },
   "win": {
-    "icon": "dist/browser/assets/icons",
-    "target": [
-      "portable"
-    ]
+    "icon": "dist/browser/assets/icons/favicon.ico",
+    "target": ["nsis", "portable"]
   },
   "mac": {
-    "icon": "dist/browser/assets/icons",
-    "target": [
-      "dmg"
-    ]
+    "icon": "dist/browser/assets/icons/favicon.icns",
+    "category": "public.app-category.education",
+    "target": ["dmg", "zip"]
   },
   "linux": {
     "icon": "dist/browser/assets/icons",
-    "target": [
-      "AppImage"
-    ]
+    "category": "Education",
+    "target": ["AppImage"]
   }
 }

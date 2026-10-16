@@ -1,155 +1,75 @@
-import { type AfterViewInit, Component, inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
-import { MatSort } from "@angular/material/sort";
-import type { TypeAddress, TypeAddressStage, TypeInstructionsData, TypeInstructionsData_Table, TypeStage } from "@app/Types";
+import { ChangeDetectionStrategy, Component, computed, inject, signal, untracked } from "@angular/core";
+import type { TypeAddress, TypeInstructionsData_Table } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { MachineService } from "@core/machine/machine.service";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
-import { Subscription } from "rxjs";
+import { bitsToHex, toAddress } from "@core/numbers";
+import { TranslatePipe } from "@ngx-translate/core";
+import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
+import { FromBaseToBasePipe } from "@shared/pipes/numbers/numbers.pipes";
+import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 @Component({
   selector: "view-code",
   templateUrl: "./code.view.html",
   styleUrls: [],
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CardDirective, CardWidgetDirective, VirtualTableComponent, VirtualTableColumnDirective, TranslatePipe, FromBaseToBasePipe],
 })
-export class CodeView implements OnInit, AfterViewInit, OnDestroy {
+export class CodeView {
   machine = inject(MachineService);
 
-  @ViewChild(MatSort, { static: true })
-  public sort!: MatSort;
-
   public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction"];
-  public dataSourceCode: TableVirtualScrollDataSource<TypeInstructionsData_Table> =
-    new TableVirtualScrollDataSource<TypeInstructionsData_Table>();
-  public listRowActives: TypeAddressStage[] = [];
   public maxHeightCard: string = "75vh";
-  private stepSubscription: Subscription = new Subscription();
-  private stepSimulationSubscription: Subscription = new Subscription();
-  private codeSimulationSubscription: Subscription = new Subscription();
-  private resetSimulationSubscription: Subscription = new Subscription();
-  public stepSimulation: any;
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
+  /** Where each instruction is in this cycle (one Map for the whole table, instead of a search for each row) */
+  public readonly stages = this.machine.state.stages;
 
-  constructor() {
-    this.dataSourceCode.filter = "";
-    this.dataSourceCode.sort = this.sort;
-  }
+  /** The button of the card reads the memory again (a word written by the user in the memory view, for example) */
+  private readonly refreshes = signal(0);
 
-  ngOnInit(): void {
-    this.dataSourceCode.data = this.machine.memory.getAllMemoryWord().map((value, index) => {
-      const hexCode = Utils.binaryToHexadecimal(value.binary);
-      const address = Utils.indexToAddress(index * 4);
-      // FIX
-      // const instructionGeneratedByHexCode = Utils.convertHexCodeToTextMachineInstructionDLX(hexCode);
+  /**
+   * The rows: every word of the memory with its instruction. They change when a program is loaded (in one go, not row by
+   * row); the stages of the pipeline change every cycle and only touch the classes of the rows
+   */
+  public readonly rows = computed<TypeInstructionsData_Table[]>(() => {
+    this.machine.state.loads();
+    this.refreshes();
+    const code = new Map(this.machine.state.code().map((instruction) => [instruction.address.toUpperCase(), instruction]));
+    return untracked(() => this.machine.memory.getAllMemoryWord()).map((word, index) => {
+      const address = toAddress(index * 4);
+      const hexCode = `0x${bitsToHex(word.binary, 8)}`;
+      const instruction = code.get(address.toUpperCase());
       return {
-        index: index,
-        instruction: "", //instructionGeneratedByHexCode,
-        address: address,
-        code: `0x${hexCode}`,
-        text: "",
+        index,
+        row: index,
+        address,
+        code: instruction?.code ?? hexCode,
+        text: instruction?.text ?? "",
+        instruction:
+          instruction?.instruction ?? (instruction ? Utils.convertHexCodeToTextMachineInstructionDLX(instruction.code, index * 4) : ""),
         stage: "",
       } as TypeInstructionsData_Table;
     });
-    this.codeSimulationSubscription = this.machine.getCodeSimulationObservable().subscribe((typeTableCode) => {
-      for (const data_code of typeTableCode) {
-        const index = Math.round(Utils.hexadecimalToDecimal(data_code.address) / 4);
-        this.setRow(index, data_code);
-      }
-    });
-    this.stepSimulationSubscription = this.machine.getStepSimulationObservable().subscribe((_stepSimulation) => {
-      this.listRowActives = [];
-      const stepSimulationPipeline = this.machine.getListStatusPipeline();
-      for (const step of stepSimulationPipeline) {
-        if (step.stage === undefined) continue;
-        this.listRowActives.push({ address: step.address, stage: step.stage });
-      }
-    });
-    this.resetSimulationSubscription = this.machine.getResetObservable().subscribe(() => {
-      this.listRowActives = [];
-    });
-    this.stepSubscription = this.machine.getStepObservable().subscribe((step) => {
-      this.stepSimulation = step;
-    });
-  }
+  });
 
-  ngAfterViewInit(): void {
-    const array = Utils.MapToArray(this.machine.code.getMap());
-    for (const code_memory of array) {
-      const index = Utils.addressToIndex(code_memory.value.address);
-      const code: TypeInstructionsData = {
-        address: code_memory.value.address,
-        instruction: code_memory.value.instruction,
-        code: code_memory.value.code,
-        text: code_memory.value.text,
-      };
+  public readonly trackByIndex = (index: number) => index;
 
-      this.setRow(index, code);
-    }
-
-    window.jQuery("#Code-card").on("expanded.lte.cardwidget", (/*$event*/) => {
-      this.resizeCard("75vh");
-    });
-    window.jQuery("#Code-card").on("minimized.lte.cardwidget", () => {
-      this.resizeCard("75vh");
-    });
-    window.jQuery("#Code-card").on("maximized.lte.cardwidget", () => {
-      this.resizeCard("100%");
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.stepSubscription.unsubscribe();
-    this.codeSimulationSubscription.unsubscribe();
-    this.stepSimulationSubscription.unsubscribe();
-    this.resetSimulationSubscription.unsubscribe();
-  }
+  /** The class of a row: the stage of its instruction */
+  public readonly rowClass = (row: TypeInstructionsData_Table) => this.stageClass(row.address);
 
   public refresh(): void {
-    this.dataSourceCode.filter = "";
-    this.dataSourceCode.data = [...this.dataSourceCode.data];
-    window.dispatchEvent(new Event("resize"));
+    this.refreshes.update((n) => n + 1);
   }
 
-  /**
-   * 'IF' 'ID' 'intEX' 'MEM' 'WB'
-   * faddEX   --> 8
-   * fmultEX  --> 8
-   * fdivEX   --> 8
-   * max size array ==> 8 + 8 + 8 + 5 = 29
-   *
-   */
-  private setRow(index: number, tableCode: TypeInstructionsData, stage: TypeStage = ""): void {
-    this.dataSourceCode.data[index] = {
-      text: tableCode.text,
-      address: tableCode.address,
-      instruction: tableCode.instruction ?? Utils.convertHexCodeToTextMachineInstructionDLX(tableCode.code),
-      code: tableCode.code,
-      stage: stage,
-      // binary: this.machine.getMemory(index).binary,
-      index: index,
-      row: 0,
-    };
-    this.refresh();
+  /** The class of a row: the stage of its instruction (the floating point units, as intEX) */
+  public stageClass(address: TypeAddress): string {
+    const stage = this.stages().get(address);
+    if (stage === undefined || stage === "") return "";
+    return ["faddEX", "fmultEX", "fdivEX"].includes(stage) ? "stage-intEX" : `stage-${stage}`;
   }
 
-  public checkElementStage(address: TypeAddress): TypeStage {
-    const elements = this.listRowActives.filter((v) => v.address === address);
-    if (elements.length > 0) return elements[0].stage;
-    return "";
-  }
-
-  public checkIfContains(address: TypeAddress, stages: TypeStage[]): boolean {
-    return this.listRowActives.some((v) => {
-      return v.address === address && stages.includes(v.stage);
-    });
-  }
-
-  private resizeCard(height: string) {
+  /** The height of the table when its card unfolds, is restored or fills the screen (it measures itself: ViewportResizeDirective) */
+  public resizeCard(height: string): void {
     this.maxHeightCard = height;
-    setTimeout(() => {
-      window.dispatchEvent(new Event("resize"));
-    }, 500);
   }
 }

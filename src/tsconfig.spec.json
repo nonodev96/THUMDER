@@ -2,17 +2,12 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "module": "commonjs",
     "types": [
-      "jasmine",
       "node"
     ]
   },
-  "files": [
-    "test.ts",
-    "polyfills-test.ts"
-  ],
   "include": [
+    "global-shim.ts",
     "**/*.spec.ts",
     "**/*.d.ts"
   ],
@@ -20,5 +15,8 @@
     "dist",
     "release",
     "node_modules"
+  ],
+  "files": [
+    "test-setup.ts"
   ]
 }

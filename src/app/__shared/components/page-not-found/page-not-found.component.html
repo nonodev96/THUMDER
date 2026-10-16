@@ -1,45 +1,29 @@
 <div class="wrapper">
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="margin: 0 !important;">
-    <!-- Content Header (Page header) -->
+  <div class="content-wrapper" style="margin: 0 !important; min-height: 100vh;">
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>404 Error Page</h1>
+            <h1>{{ 'NOT_FOUND.TITLE' | translate }}</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a [routerLink]="'/'">Home</a></li>
-              <li class="breadcrumb-item active">404 Error Page</li>
+              <li class="breadcrumb-item"><a [routerLink]="'/'">{{ 'HOME' | translate }}</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{ 'NOT_FOUND.TITLE' | translate }}</li>
             </ol>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
 
-    <!-- Main content -->
     <section class="content">
       <div class="error-page">
-        <h2 class="headline text-warning"> 404</h2>
-
+        <h2 class="headline text-warning">404</h2>
         <div class="error-content">
-          <h3><i class="fas fa-exclamation-triangle text-warning" aria-hidden="true"></i> Oops! Page not found.</h3>
-
-          <p>
-            We could not find the page you were looking for.
-            Meanwhile, you may <a [routerLink]="'/'">return to dashboard</a> or try using the search form.
-          </p>
-
+          <h3><i class="fas fa-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'NOT_FOUND.HEADING' | translate }}</h3>
+          <p>{{ 'NOT_FOUND.TEXT' | translate }} <a [routerLink]="'/'">{{ 'NOT_FOUND.HOME' | translate }}</a></p>
         </div>
-        <!-- /.error-content -->
       </div>
-      <!-- /.error-page -->
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
-
 </div>
-<!-- ./wrapper -->

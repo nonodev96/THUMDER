@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editMemoryModalLabel">{{'MACHINE.EDIT_MEMORY' | translate}}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" thumderModalDismiss [attr.aria-label]="'FORMS.CLOSE' | translate">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -80,7 +80,7 @@
                             [ngModelOptions]="{standalone: true}"
                             (change)="changeAddressMemoryToEdit($event.target)">
                             <div class="input-group-append">
-                              <span class="input-group-text">in hexadecimal</span>
+                              <span class="input-group-text">{{ 'EDIT.IN_HEXADECIMAL' | translate }}</span>
                             </div>
                           </div>
                         </div>
@@ -98,7 +98,7 @@
                               [ngModelOptions]="{standalone: true}"
                               (ngModelChange)="ngModelChange_ValueInSection_Hexadecimal($event)">
                               <div class="input-group-append">
-                                <span class="input-group-text">in hexadecimal</span>
+                                <span class="input-group-text">{{ 'EDIT.IN_HEXADECIMAL' | translate }}</span>
                               </div>
                             </div>
                           </div>
@@ -115,7 +115,7 @@
                                   [ngModelOptions]="{standalone: true}"
                                   (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
                                   <div class="input-group-append">
-                                    <span class="input-group-text">in decimal</span>
+                                    <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                                   </div>
                                 </div>
                               </div>
@@ -132,7 +132,7 @@
                                     [ngModelOptions]="{standalone: true}"
                                     (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
                                     <div class="input-group-append">
-                                      <span class="input-group-text">in decimal</span>
+                                      <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                                     </div>
                                   </div>
                                 </div>
@@ -149,7 +149,7 @@
                                       [ngModelOptions]="{standalone: true}"
                                       (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
                                       <div class="input-group-append">
-                                        <span class="input-group-text">in decimal</span>
+                                        <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                                       </div>
                                     </div>
                                   </div>
@@ -166,7 +166,7 @@
                                         [ngModelOptions]="{standalone: true}"
                                         (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
                                         <div class="input-group-append">
-                                          <span class="input-group-text">in decimal</span>
+                                          <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                                         </div>
                                       </div>
                                     </div>
@@ -183,7 +183,7 @@
                                           [ngModelOptions]="{standalone: true}"
                                           (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
                                           <div class="input-group-append">
-                                            <span class="input-group-text">in decimal</span>
+                                            <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                                           </div>
                                         </div>
                                       </div>
@@ -191,10 +191,10 @@
 
 
                                     <div class="col-sm-6">
-                                      <p>Min value: 0</p>
+                                      <p>{{ 'EDIT.MIN_VALUE' | translate: { value: 0 } }}</p>
                                     </div>
                                     <div class="col-sm-6">
-                                      <p>Max value: {{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}</p>
+                                      <p>{{ 'EDIT.MAX_VALUE' | translate: { value: MAX_VALUE_TYPE_DATA[typeDataSelected] } }}</p>
                                     </div>
 
                                     <div class="col-sm-6">
@@ -259,7 +259,7 @@
                               </div>
                               <!--
                               <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{'FORMS.CLOSE' | translate}}</button>
+                                <button type="button" class="btn btn-secondary" thumderModalDismiss>{{'FORMS.CLOSE' | translate}}</button>
                                 <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
                               </div>
                               -->

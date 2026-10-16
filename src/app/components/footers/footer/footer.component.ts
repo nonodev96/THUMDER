@@ -1,40 +1,55 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, computed, inject } from "@angular/core";
 import { NPM_VERSION } from "@app/CONSTANTS";
+import { MachineService } from "@core/machine/machine.service";
 import { ElectronService } from "@core/services";
 import { Globals } from "@core/services/globals/globals.service";
-import { StorageService } from "@core/storage/storage.service";
+import { TranslatePipe } from "@ngx-translate/core";
 import { AppConfig } from "../../../../environments/_environment";
 
+/** The footer: the status bar of the simulation (UI-10) and the version */
 @Component({
   selector: "THUMDER-footer",
   templateUrl: "./footer.component.html",
-  standalone: false,
+  imports: [TranslatePipe],
 })
-export class FooterComponent implements OnInit {
-  private storageService = inject(StorageService);
+export class FooterComponent {
   electronService = inject(ElectronService);
   globals = inject(Globals);
+  machine = inject(MachineService);
 
-  public date: number = new Date().getFullYear();
   public version: string = NPM_VERSION;
   public environment: string = AppConfig.environment;
-  public lang: string = "";
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
+  /** What the simulator is doing */
+  public readonly status = computed(() => {
+    const state = this.machine.state;
+    if (state.loads() === 0) return "IDLE";
+    if (state.quiet()) return "QUIET";
+    if (state.running()) return "RUNNING";
+    if (state.complete()) return "COMPLETE";
+    if (state.waitingForInput()) return "INPUT";
+    if (state.breakpoint()) return "BREAKPOINT";
+    if (!state.canSimulate()) return "ERRORS";
+    return state.cycles() === 0 ? "LOADED" : "PAUSED";
+  });
 
-  constructor() {}
+  public readonly statusText = computed(() => `STATUS.${this.status()}`);
 
-  ngOnInit(): void {
-    this.lang = this.storageService.getItem("lang");
-    this.storageService.watchStorage().subscribe((update_key) => {
-      if (update_key === "lang") {
-        this.lang = this.storageService.getItem("lang");
-      }
-    });
-  }
+  public readonly statusClass = computed(
+    () =>
+      ({
+        IDLE: "badge-secondary",
+        QUIET: "badge-info",
+        RUNNING: "badge-success",
+        COMPLETE: "badge-primary",
+        INPUT: "badge-warning",
+        BREAKPOINT: "badge-warning",
+        ERRORS: "badge-danger",
+        LOADED: "badge-secondary",
+        PAUSED: "badge-secondary",
+      })[this.status()],
+  );
 
-  public async notification() {
-    this.electronService.send("thumder-notification");
-  }
+  /** The instruction fetched in the last cycle */
+  public readonly fetched = computed(() => this.machine.state.pipeline()?.IF.text ?? "");
 }

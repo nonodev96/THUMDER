@@ -1,21 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 
-// Angular Material theme (M3 API — Angular Material v17+)
-@use '@angular/material' as mat;
-
-$thumder-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$azure-palette,
-    tertiary: mat.$blue-palette,
-  ),
-  density: (scale: 0),
-));
-
-html {
-  @include mat.all-component-themes($thumder-theme);
-}
-
 html {
   overflow-y: scroll;
   font-size: 0.9em;
@@ -25,8 +9,27 @@ html, body {
   margin: 0;
   padding: 0;
 
-  height: 100%;
+  height: auto;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+// What the Layout plugin of AdminLTE did with jQuery: the content fills the screen under the navbar (so the footer stays
+// at the bottom of short pages), and the sidebar scrolls when its menu is longer than the screen
+body .wrapper .content-wrapper {
+  min-height: calc(100vh - (3.5rem + 1px));
+}
+
+// Where the footer is not fixed (see the end of this file) it goes under the content: the content leaves room for it
+@media (max-width: 575.98px), (max-height: 500px) {
+  body .wrapper .content-wrapper {
+    min-height: calc(100vh - 2 * (3.5rem + 1px));
+  }
+}
+
+body.layout-fixed .main-sidebar .sidebar {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 .wrapper {
@@ -42,14 +45,18 @@ html, body {
   min-height: 400px;
 }
 
+// As tall as the screen allows (minus the header of the layout), between 320 and 800 px
 .monaco-editor {
-  height: 800px !important;
+  height: clamp(320px, calc(100vh - 220px), 800px) !important;
+  height: clamp(320px, calc(100dvh - 220px), 800px) !important;
   width: 100%;
   position: relative !important;
 }
 
 .debug-line {
-  background: aquamarine;
+  // The line of the instruction just fetched: a pale green that keeps the colours of the code readable (A11Y-04)
+  background: #e8fff7;
+  box-shadow: inset 4px 0 0 #00a07a;
 }
 
 .color-red {
@@ -169,10 +176,6 @@ html, body {
 
 .full-width-table {
   width: 100%;
-}
-
-.mat-header-cell {
-  background-color: #ffffff;
 }
 
 
@@ -375,6 +378,24 @@ markdown img {
   max-width: 50%;
 }
 
+@media (max-width: 767.98px) {
+  markdown img {
+    max-width: 100%;
+  }
+}
+
+// Wide tables and code of the documentation scroll sideways instead of widening the page
+markdown table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+markdown pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 
 /* LOGIN */
 .error-messages {
@@ -452,5 +473,290 @@ body {
 
   100% {
     transform: translateX(0%);
+  }
+}
+
+// ─── Phones, tablets and desktops ───────────────────────────────────────────────────────────────────────────────────
+// Bootstrap 4 breakpoints: sm 576 px, md 768 px, lg 992 px (from here the sidebar stops covering the content), xl 1200 px.
+// This file is loaded before AdminLTE, Bootstrap and cookieconsent (angular.json): the rules that change theirs start
+// with `body` to win.
+
+// The tables of data (code, registers, memory) keep their columns readable: in a narrow card (a phone, a tablet or a
+// small window of the multiview) each column takes the width of its content and the table scrolls sideways in its card
+.wrapper-table {
+  container-type: inline-size;
+}
+
+@container (max-width: 900px) {
+  .table-layout {
+    table-layout: auto;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .table-layout th,
+  .table-layout td {
+    white-space: nowrap;
+    padding-right: 1rem;
+  }
+}
+
+// Long words (file names, URLs, binary numbers) never widen the page
+.content-wrapper {
+  overflow-wrap: anywhere;
+}
+
+.content-wrapper pre,
+.content-wrapper code,
+.content-wrapper .table-layout {
+  overflow-wrap: normal;
+}
+
+// The navbar never wraps: what does not fit is hidden by breakpoint (auth-navbar.component.html)
+body .main-header .navbar-nav {
+  flex-wrap: nowrap;
+}
+
+// Phones: less space around the content, a smaller title and a compact cookie banner
+@media (max-width: 575.98px) {
+  body .content-header {
+    padding: 0.5rem 0.25rem;
+  }
+
+  body .content-header h1 {
+    font-size: 1.4rem;
+  }
+
+  body .content-wrapper > .content {
+    padding: 0 0.25rem;
+  }
+
+  body .card-body {
+    padding: 0.75rem;
+  }
+
+  body .card-header > .card-tools {
+    margin-right: -0.5rem;
+  }
+
+  body .main-header.navbar {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+  }
+
+  body .main-header .btn-group > .btn {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  body .cc-window.cc-banner {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  body .cc-window.cc-banner .cc-compliance {
+    margin-top: 0.5rem;
+  }
+}
+
+// Phones (and phones turned sideways, with little height): the footer scrolls with the page instead of taking a line of
+// the screen all the time, and the tab of the cookie policy is smaller
+@media (max-width: 575.98px), (max-height: 500px) {
+  body.layout-footer-fixed .wrapper .main-footer {
+    position: static;
+  }
+
+  body.layout-footer-fixed .wrapper .content-wrapper {
+    padding-bottom: 0;
+  }
+
+  body .cc-revoke {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+// Touch screens: buttons big enough for a finger (44 px is the usual minimum, 36 px keeps the card headers in one line)
+@media (pointer: coarse) {
+  body .btn-tool {
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  body .main-header .navbar-nav .nav-link,
+  body .main-header .btn-group > .btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  body .dropdown-item {
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+}
+
+// ─── The dark theme (UI-07) ──────────────────────────────────────────────────────────────────────────────────────────
+// AdminLTE darkens its parts with `body.dark-mode` (ThemeService); these are the parts of THUMDER
+
+// The rows of the code keep the colour of their stage with black text (readable on the bright colours)
+[class*="stage-"].thumder-row,
+.stage-IF,
+.stage-ID,
+.stage-EX,
+.stage-intEX,
+.stage-MEM,
+.stage-WB {
+  color: #000;
+}
+
+body.dark-mode {
+  thumder-virtual-table .thumder-table-scroll {
+    border-color: #4b545c;
+  }
+
+  thumder-virtual-table .thumder-table-row {
+    border-color: #4b545c;
+  }
+
+  thumder-virtual-table .thumder-table-header {
+    background: #343a40;
+    color: #fff;
+  }
+
+  .callout {
+    background-color: #3f474e;
+  }
+
+  .breadcrumb .btn-link,
+  .btn-tool {
+    color: #ced4da;
+  }
+}
+
+// ─── Contrast (A11Y-04, WCAG AA: 4.5:1 for text) ──────────────────────────────────────────────────────────────────────
+// Bootstrap's blue (#007bff) has 3.97:1 on white and AdminLTE greys less: darker tones for the text and the buttons
+body:not(.dark-mode) {
+  a,
+  .btn-link {
+    color: #0056b3;
+  }
+
+  .btn-primary,
+  .bg-primary,
+  .bg-blue,
+  .badge-primary {
+    background-color: #0062cc !important;
+    border-color: #005cbf;
+    color: #fff !important;
+  }
+
+  .btn-outline-primary {
+    color: #0056b3;
+    border-color: #0056b3;
+
+    &:hover,
+    &.active {
+      color: #fff;
+      background-color: #0056b3;
+    }
+  }
+
+  .navbar-light .navbar-nav .nav-link {
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  .main-footer,
+  .main-footer strong {
+    color: #5a6268;
+  }
+
+  .btn-tool {
+    color: #5a6268;
+  }
+
+  .text-muted {
+    color: #5a6268 !important;
+  }
+
+  .main-footer a {
+    color: #0056b3;
+  }
+}
+
+// Links inside a text are underlined, not only coloured (WCAG 1.4.1)
+.main-footer a,
+.content-wrapper p a,
+.content-wrapper li a:not(.nav-link):not(.btn) {
+  text-decoration: underline;
+}
+
+body.dark-mode .debug-line {
+  background: #0f2a24;
+  box-shadow: inset 4px 0 0 #2fd8a8;
+}
+
+// The dark theme of AdminLTE 3.1 leaves the navbar white and some texts and links dark: the rest, with 4.5:1 (A11Y-04)
+body.dark-mode {
+  .main-header.navbar-white {
+    background-color: #343a40;
+    border-bottom-color: #4b545c;
+  }
+
+  .navbar-light .navbar-nav .nav-link,
+  .navbar-light .navbar-nav .btn-link {
+    color: #e9ecef;
+  }
+
+  .content-header h1,
+  .content-header .m-0,
+  .text-dark,
+  pre {
+    color: #e9ecef !important;
+  }
+
+  a,
+  .btn-link,
+  #title-app {
+    color: #9fc5ff;
+  }
+
+  .main-footer,
+  .main-footer strong {
+    color: #ced4da;
+  }
+
+  .btn-outline-primary {
+    color: #9fc5ff;
+    border-color: #9fc5ff;
+
+    &:hover,
+    &.active {
+      color: #212529;
+      background-color: #9fc5ff;
+    }
+  }
+
+  .btn-outline-secondary {
+    color: #e9ecef;
+    border-color: #adb5bd;
+  }
+
+  .btn-tool,
+  .btn-tool.btn--active,
+  .btn--active,
+  .btn--active > span {
+    color: #e9ecef !important;
+  }
+
+  .text-danger {
+    color: #ff8a95 !important;
+  }
+
+  .text-success {
+    color: #6fdc8c !important;
+  }
+
+  .text-primary {
+    color: #9fc5ff !important;
   }
 }

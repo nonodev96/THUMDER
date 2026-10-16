@@ -1,6 +1,3 @@
-@if (authService.isLoggedIn === true) {
-  Login but isLoggedIn
-}
 
 <div class="register-page">
   <div class="register-box">
@@ -15,7 +12,7 @@
         <form [formGroup]="registerForm">
 
           <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Full name" id="userName"
+            <input type="text" class="form-control" [placeholder]="'ACCOUNT.FULL_NAME' | translate" id="userName"
               autocomplete="name" name="name"
               [class.is-valid]="registerForm.get('first_name')?.valid"
               [class.is-invalid]="!registerForm.get('first_name')?.valid"
@@ -35,7 +32,7 @@
           }
 
           <div class="input-group mb-3">
-            <input type="email" class="form-control" placeholder="Email" id="userEmail"
+            <input type="email" class="form-control" [placeholder]="'ACCOUNT.EMAIL' | translate" id="userEmail"
               autocomplete="email" name="email"
               [class.is-valid]="registerForm.get('email')?.valid"
               [class.is-invalid]="!registerForm.get('email')?.valid"
@@ -56,7 +53,7 @@
             }
           </div>
           <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Password" id="newPassword"
+            <input type="password" class="form-control" [placeholder]="'ACCOUNT.PASSWORD' | translate" id="newPassword"
               autocomplete="new-password" name="new-password"
               [class.is-valid]="registerForm.get('password')?.valid"
               [class.is-invalid]="!registerForm.get('password')?.valid"
@@ -79,7 +76,7 @@
           </div>
 
           <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Retype password" id="confirmNewPassword"
+            <input type="password" class="form-control" [placeholder]="'ACCOUNT.RETYPE_PASSWORD' | translate" id="confirmNewPassword"
               autocomplete="new-password" name="confirm-new-password"
               [class.is-valid]="registerForm.get('confirm_password')?.valid"
               [class.is-invalid]="!registerForm.get('confirm_password')?.valid"
@@ -117,12 +114,12 @@
         @if (!electronService.isElectronApp) {
           <div class="social-auth-links text-center">
             <p>-</p>
-            <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
+            <button type="button" class="btn btn-block btn-danger" (click)="GoogleAuth()">
               <i class="fab fa-google-plus mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GOOGLE' | translate }}
-            </a>
-            <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
+            </button>
+            <button type="button" class="btn btn-block btn-primary" (click)="GithubAuth()">
               <i class="fab fa-github mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
-            </a>
+            </button>
           </div>
         }
 
@@ -135,21 +132,21 @@
         @if (app.translationEnabled) {
           <div class="row mt-3 mb-1">
             <div class="col-12">
-              <div class="dropdown">
+              <div class="dropdown" thumderDropdown>
                 <button class="btn btn-info btn-block dropdown-toggle" type="button"
-                  id="dropdownMenuButton_lang" data-toggle="dropdown"
+                  id="dropdownMenuButton_lang"
                   aria-haspopup="true" aria-expanded="false">
                   {{ 'CONFIG.LANG' | translate }}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_lang">
-                  <a class="dropdown-item" (click)="app.setLang('sp')">
+                  <button type="button" class="dropdown-item" (click)="app.setLang('es')">
                     <span class="flag-icon flag-icon-esp"></span>
-                    Spanish
-                  </a>
-                  <a class="dropdown-item" (click)="app.setLang('en')">
+                    Español
+                  </button>
+                  <button type="button" class="dropdown-item" (click)="app.setLang('en')">
                     <span class="flag-icon flag-icon-gbr"></span>
                     English
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>

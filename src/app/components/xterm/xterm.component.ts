@@ -1,5 +1,6 @@
 import { type AfterViewInit, Component, type ElementRef, EventEmitter, Input, type OnInit, Output, ViewChild } from "@angular/core";
 import type { TypeOnKeyEvent } from "@app/Types";
+import { logger } from "@core/logger/logger";
 // import { LigaturesAddon } from "@xterm/addon-ligatures";
 import { SearchAddon } from "@xterm/addon-search";
 import { WebLinksAddon } from "@xterm/addon-web-links";
@@ -92,7 +93,6 @@ const PIKACHU = `
   selector: "THUMDER-xterm",
   templateUrl: "./xterm.component.html",
   styleUrls: ["./xterm.component.scss"],
-  standalone: false,
 })
 export class XtermComponent implements OnInit, AfterViewInit {
   @ViewChild("myTerminal")
@@ -135,7 +135,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
         try {
           this.terminal.writeln(PIKACHU);
         } catch (err) {
-          console.error(err);
+          logger.error(err);
         }
         this.prompt();
       },
@@ -212,7 +212,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
       this.terminal.loadAddon(new WebglAddon());
       this._isWebglEnabled = true;
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
 
     //this.terminal.writeln(this.data)
@@ -229,7 +229,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
           if (this.terminal.buffer.normal.cursorX > 2) {
             this.terminal.write("\b \b");
             if (this._command.length > 0) {
-              this._command = this._command.substr(0, this._command.length - 1);
+              this._command = this._command.slice(0, -1);
             }
           }
           break;
@@ -260,7 +260,7 @@ export class XtermComponent implements OnInit, AfterViewInit {
       const cmds = this.commands as Record<string, { description: string; f: () => void }>;
       if (command in cmds) {
         cmds[command].f();
-        console.debug(cmds[command].description);
+        logger.debug(cmds[command].description);
         return;
       }
       this.terminal.writeln(`${command}: command not found`);

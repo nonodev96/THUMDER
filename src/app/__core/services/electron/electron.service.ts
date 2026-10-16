@@ -1,54 +1,29 @@
-// import { remote } from "electron";
-import type * as childProcess from "node:child_process";
-import type * as fs from "node:fs";
 import { Injectable } from "@angular/core";
-import type { ipcRenderer, webFrame } from "electron";
+
+/** What preload.ts exposes in Electron (the page has no access to Node.js) */
+export type ThumderBridge = {
+  platform: string;
+  arch: string;
+  openExternal(url: string): Promise<void>;
+  notify(): void;
+};
 
 @Injectable({
   providedIn: "root",
 })
 export class ElectronService {
-  private _electron: any;
-
-  public ipcRenderer!: typeof ipcRenderer;
-  public webFrame!: typeof webFrame;
-  // public remote: typeof remote;
-  public childProcess!: typeof childProcess;
-  public fs!: typeof fs;
-
-  constructor() {
-    // Conditional imports
-    if (ElectronService.isElectron()) {
-      this.ipcRenderer = window.require("electron").ipcRenderer;
-      this.webFrame = window.require("electron").webFrame;
-      // this.remote = window.require("electron").remote;
-
-      this.childProcess = window.require("child_process");
-      this.fs = window.require("fs");
-    }
+  private static get bridge(): ThumderBridge | undefined {
+    return (window as Window & { thumder?: ThumderBridge }).thumder;
   }
 
+  /** Opens a link in the browser of the system (Electron) or in a new tab (web) */
   public async openInExternal(url: string): Promise<void> {
-    if (!this.shell) {
-      console.warn("Electron shell module is not available.");
+    const bridge = ElectronService.bridge;
+    if (bridge) {
+      await bridge.openExternal(url);
       return;
     }
-    await this.shell.openExternal(url);
-  }
-
-  private get electron(): any {
-    if (!this._electron) {
-      if (window?.require) {
-        this._electron = window.require("electron");
-        return this._electron;
-      }
-      return null;
-    }
-    return this._electron;
-  }
-
-  public static isElectron() {
-    return window?.process?.type;
+    window.open(url, "_blank", "noopener");
   }
 
   public static get isServer(): boolean {
@@ -57,53 +32,37 @@ export class ElectronService {
     return location_href.includes(localhost);
   }
 
-  // New 2
   public static get isElectronApp(): boolean {
-    return !!window.navigator.userAgent.match(/Electron/);
+    return ElectronService.bridge !== undefined;
   }
 
   public get isElectronApp(): boolean {
-    return !!window.navigator.userAgent.match(/Electron/);
+    return ElectronService.isElectronApp;
   }
 
   public static get isMacOS(): boolean {
-    return ElectronService.isElectronApp && process.platform === "darwin";
+    return ElectronService.bridge?.platform === "darwin";
   }
 
   public static get isWindows(): boolean {
-    return ElectronService.isElectronApp && process.platform === "win32";
+    return ElectronService.bridge?.platform === "win32";
   }
 
   public static get isLinux(): boolean {
-    return ElectronService.isElectronApp && process.platform === "linux";
+    return ElectronService.bridge?.platform === "linux";
   }
 
   public static get isX86(): boolean {
-    return ElectronService.isElectronApp && process.arch === "ia32";
+    return ElectronService.bridge?.arch === "ia32";
   }
 
   public static get isX64(): boolean {
-    return ElectronService.isElectronApp && process.arch === "x64";
+    return ElectronService.bridge?.arch === "x64";
   }
 
-  // public get nativeImage(): Electron.nativeImage {
-  //   return this.electron ? this.electron.nativeImage : null;
-  // }
-  //
-  // public get screen(): Electron.Screen {
-  //   return this.electron.screen ? this.electron.screen : null;
-  // }
-  //
-  // public getAllDisplays(): Electron.Display[] {
-  //   return this.electron.screen.getAllDisplays();
-  // }
-
-  public get shell(): Electron.Shell | null {
-    return this.electron ? this.electron.shell : null;
-  }
-
-  public send(channel: string, ...args: any[]): void {
-    this.ipcRenderer.send(channel, args);
+  /** Messages to the main process of Electron (does nothing in the web) */
+  public send(channel: "thumder-notification"): void {
+    if (channel === "thumder-notification") ElectronService.bridge?.notify();
   }
 
   public static get debug() {

@@ -1,7 +1,8 @@
-import * as monaco from "monaco-editor";
+// The editor without the languages of Monaco (THUMDER has its own: DLX)
+import * as monaco from "monaco-editor/esm/vs/editor/edcore.main.js";
 import { AppConfig } from "../environments/_environment";
-import { OPCODES } from "./__core/DLX/__OPCODES";
 import { DLX_DOCUMENTATION } from "./__core/DLX/Documentation";
+import { INSTRUCTIONS } from "./__core/engine/isa";
 
 type IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
@@ -67,15 +68,33 @@ const MonacoConfig: TypeMonacoConfig = {
       base: "vs",
       inherit: false,
       rules: [
-        { foreground: "a08000", token: "custom-register.integer" },
-        { foreground: "a08400", token: "custom-register.float" },
-        { foreground: "a08800", token: "custom-register.double" },
+        { foreground: "7a5f00", token: "custom-register.integer" },
+        { foreground: "7a6200", token: "custom-register.float" },
+        { foreground: "7a6400", token: "custom-register.double" },
         // {foreground: '336633', token: 'custom-register.words' },
-        { foreground: "008800", token: "custom-comment.line" },
+        { foreground: "006b00", token: "custom-comment.line" },
         { foreground: "990000", token: "custom-function" },
         { foreground: "686868", token: "custom-numbers" },
-        { foreground: "ffa500", token: "custom-iterator" },
-        { foreground: "ffa500", token: "custom-words" },
+        { foreground: "9a4d00", token: "custom-iterator" },
+        { foreground: "9a4d00", token: "custom-words" },
+      ],
+    });
+
+    // The same colours, light enough for a dark background
+    monaco.editor.defineTheme("thumderThemeDark", {
+      colors: {},
+      encodedTokensColors: [],
+      base: "vs-dark",
+      inherit: true,
+      rules: [
+        { foreground: "e0c050", token: "custom-register.integer" },
+        { foreground: "e0c860", token: "custom-register.float" },
+        { foreground: "e0d070", token: "custom-register.double" },
+        { foreground: "6a9955", token: "custom-comment.line" },
+        { foreground: "f48771", token: "custom-function" },
+        { foreground: "b5cea8", token: "custom-numbers" },
+        { foreground: "ffb347", token: "custom-iterator" },
+        { foreground: "ffb347", token: "custom-words" },
       ],
     });
 
@@ -102,7 +121,8 @@ const MonacoConfig: TypeMonacoConfig = {
       provideCompletionItems: (_model, _position, _context, _token) => {
         const completionListItem: any[] = [];
         const documentations: monaco.languages.CompletionItem[] = [];
-        const snippets: monaco.languages.CompletionItem[] = Object.keys(OPCODES).map(
+        // The instructions the simulator knows (engine/isa.ts)
+        const snippets: monaco.languages.CompletionItem[] = INSTRUCTIONS.map((instruction) => instruction.mnemonic).map(
           (opc) =>
             <monaco.languages.CompletionItem>{
               label: opc,

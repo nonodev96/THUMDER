@@ -1,4 +1,6 @@
+import { UpperCasePipe } from "@angular/common";
 import { Component, inject, type OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import {
   DEFAULT_BINARY_32_BITS,
   DEFAULT_BINARY_64_BITS,
@@ -9,17 +11,46 @@ import {
   MACHINE_TYPE_REGISTERS,
 } from "@app/CONSTANTS";
 import type { TypeRegister, TypeRegisterToEdit } from "@app/Types";
-import { Utils } from "@app/Utils";
+import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
-import { TranslateService } from "@ngx-translate/core";
+import { bitsToFloat32, bitsToFloat64, bitsToHex, float32ToBits, float64ToBits, hexToBits, int32ToBits, isHex } from "@core/numbers";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
+import {
+  Binary32ToASCIIPipe,
+  Binary32ToBytesPipe,
+  Binary32ToDecimal_IEEE754Pipe,
+  Binary32ToHalfWordPipe,
+  Binary64ToDecimal_IEEE754Pipe,
+  BinaryByteToNumberPipe,
+  NumberToBasePipe,
+  NumberToHexadecimalPipe,
+  PadStartPipe,
+} from "@shared/pipes/numbers/numbers.pipes";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
+import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 
 @Component({
   selector: "THUMDER-edit-register-binary32",
   templateUrl: "./edit-register-binary32.component.html",
   styleUrls: ["./edit-register-binary32.component.scss"],
-  standalone: false,
+  imports: [
+    ModalDismissDirective,
+    FormsModule,
+    UpperCasePipe,
+    TranslatePipe,
+    Binary32ToASCIIPipe,
+    Binary32ToBytesPipe,
+    Binary32ToHalfWordPipe,
+    Binary32ToDecimal_IEEE754Pipe,
+    Binary64ToDecimal_IEEE754Pipe,
+    NumberToHexadecimalPipe,
+    PadStartFilterPipe,
+    NumberToBasePipe,
+    BinaryByteToNumberPipe,
+    PadStartPipe,
+  ],
 })
 export class EditRegisterBinary32Component implements OnInit {
   machine = inject(MachineService);
@@ -34,8 +65,8 @@ export class EditRegisterBinary32Component implements OnInit {
   public maxLengthHexadecimal: number = 8;
   public registerToEditHexadecimalValueIsValid: boolean = true;
   public lang_SELECT_REGISTER = "MACHINE.SELECT_REGISTER";
-  private regExp_32bits_hex: RegExp = /\b[0-9A-F]{8}\b/;
-  private regExp_64bits_hex: RegExp = /\b[0-9A-F]{16}\b/;
+  private regExp_32bits_hex: RegExp = /^(0x)?[0-9A-F]{8}$/i;
+  private regExp_64bits_hex: RegExp = /^(0x)?[0-9A-F]{16}$/i;
   private _registerToEdit_binary: string = DEFAULT_BINARY_32_BITS;
   private registerToEdit: TypeRegisterToEdit = "PC";
 
@@ -52,40 +83,38 @@ export class EditRegisterBinary32Component implements OnInit {
   }
 
   set registerToEdit_Word(word: number) {
-    this._registerToEdit_binary = word.toString(2).padStart(32, "0");
+    this._registerToEdit_binary = int32ToBits(word);
   }
 
+  // Through BigInt: a double (64 bits) does not fit in a Number without losing its low bits
   get registerToEdit_Hexadecimal(): string {
     const maxLengthHexadecimal = this.typeRegisterSelected === "Double" ? 16 : 8;
-    return parseInt(this._registerToEdit_binary, 2).toString(16).toUpperCase().padStart(maxLengthHexadecimal, "0");
+    return bitsToHex(this._registerToEdit_binary, maxLengthHexadecimal);
   }
 
   set registerToEdit_Hexadecimal(hexadecimal: string) {
-    this._registerToEdit_binary = parseInt(hexadecimal, 16).toString(2).padStart(32, "0");
+    if (!isHex(hexadecimal)) return;
+    const maxLength = this.typeRegisterSelected === "Double" ? 64 : 32;
+    this._registerToEdit_binary = hexToBits(hexadecimal, maxLength);
   }
 
   get registerToEdit_Float(): number {
     const binary32 = this.registerToEdit_Binary;
-    return Utils.convertIEEE754_Binary32Bits_To_Number(binary32);
+    return bitsToFloat32(binary32);
   }
 
   set registerToEdit_Float(float32: number) {
-    this._registerToEdit_binary = Utils.convertIEEE754_Number_To_Binary32Bits(float32);
+    this._registerToEdit_binary = float32ToBits(float32);
   }
 
   get registerToEdit_Double(): number {
     const binary64 = this.registerToEdit_Binary;
-    return Utils.convertIEEE754_Binary64Bits_To_Number(binary64);
+    return bitsToFloat64(binary64);
   }
 
   set registerToEdit_Double(double: number) {
-    this._registerToEdit_binary = Utils.convertIEEE754_Number_To_Binary64Bits(double);
+    this._registerToEdit_binary = float64ToBits(double);
   }
-
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
-  constructor() {}
 
   ngOnInit(): void {}
 
@@ -139,51 +168,47 @@ export class EditRegisterBinary32Component implements OnInit {
         await this.TOAST_ErrorRegister();
         return;
       }
+      const regExp = this.typeRegisterSelected === "Double" ? this.regExp_64bits_hex : this.regExp_32bits_hex;
+      this.registerToEditHexadecimalValueIsValid = regExp.test(hexadecimal);
+      // While the value is being typed it is not valid yet: nothing changes
+      if (!this.registerToEditHexadecimalValueIsValid) return;
       switch (this.typeRegisterSelected) {
         case "Control": {
-          this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
-          binary = Utils.hexadecimalToBinary(hexadecimal);
+          binary = hexToBits(hexadecimal);
           this.registerToEdit_Binary = binary;
           (this.machine.registers as any)[this.registerToEdit].binary = binary;
           break;
         }
         case "Integer": {
-          this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
-          binary = Utils.hexadecimalToBinary(hexadecimal);
+          binary = hexToBits(hexadecimal);
           this.registerToEdit_Binary = binary;
           this.machine.registers.R[parseInt(this.registerToEdit.toString(), 10)].binary = binary;
           break;
         }
         case "Float": {
-          this.registerToEditHexadecimalValueIsValid = this.regExp_32bits_hex.test(hexadecimal);
-          binary = Utils.hexadecimalToBinary(hexadecimal);
+          binary = hexToBits(hexadecimal);
           this.registerToEdit_Binary = binary;
           this.machine.registers.F[parseInt(this.registerToEdit.toString(), 10)].binary = binary;
           break;
         }
         case "Double": {
-          this.registerToEditHexadecimalValueIsValid = this.regExp_64bits_hex.test(hexadecimal);
-          binary = Utils.hexadecimalToBinary(hexadecimal, { maxLength: 64, fillString: "0" });
+          binary = hexToBits(hexadecimal, 64);
           this.registerToEdit_Binary = binary;
-          const index = parseInt(this.registerToEdit.toString(), 10);
-          this.machine.registers.F[index].binary = binary.substr(0, 32);
-          this.machine.registers.F[index + 1].binary = binary.substr(32, 32);
+          this.machine.registers.setRegisterDoubleWithBinary(parseInt(this.registerToEdit.toString(), 10), binary);
           break;
         }
       }
 
-      await this.machine.updateRegisterInServer([
+      await this.machine.updateRegisters([
         {
           register: this.registerToEdit,
           typeRegister: this.typeRegisterSelected,
-          hexadecimalValue: Utils.binaryToHexadecimal(this.registerToEdit_Binary),
+          hexadecimalValue: this.registerToEdit_Hexadecimal,
         },
       ]);
-
-      return Promise.resolve();
     } catch (e) {
-      console.error(e);
-      return Promise.reject();
+      logger.error(e);
+      await this.TOAST_ErrorRegister();
     }
   }
 

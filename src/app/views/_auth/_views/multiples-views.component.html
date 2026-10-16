@@ -1,12 +1,12 @@
 <ng-container cdkDropListGroup>
   <div class="container-fluid">
     <div class="row">
-      <div class="example-list col-xxl-6"
+      <div class="example-list col-12 col-xxl-6"
         cdkDropList
         #mainList_1="cdkDropList"
         [cdkDropListConnectedTo]="[mainList_2]"
         [cdkDropListData]="main_list_1"
-        (cdkDropListDropped)="globals.drop($event)">
+        (cdkDropListDropped)="drop($event)">
         @for (component of main_list_1; track component) {
           <div cdkDrag>
             <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
@@ -16,12 +16,12 @@
         }
       </div>
 
-      <div class="example-list col-xxl-6"
+      <div class="example-list col-12 col-xxl-6"
         cdkDropList
         #mainList_2="cdkDropList"
         [cdkDropListConnectedTo]="[mainList_1]"
         [cdkDropListData]="main_list_2"
-        (cdkDropListDropped)="globals.drop($event)">
+        (cdkDropListDropped)="drop($event)">
         @for (component of main_list_2; track component) {
           <div cdkDrag>
             <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
@@ -39,7 +39,7 @@
     @case ('calculator') {
       @if (multiviewConfiguration.calculator) {
         <view-calculator>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-calculator>
@@ -48,7 +48,7 @@
     @case ('pipeline') {
       @if (multiviewConfiguration.pipeline) {
         <view-pipeline>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-pipeline>
@@ -57,7 +57,7 @@
     @case ('registers') {
       @if (multiviewConfiguration.registers) {
         <view-registers>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-registers>
@@ -66,7 +66,7 @@
     @case ('statistics') {
       @if (multiviewConfiguration.statistics) {
         <view-statistics>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-statistics>
@@ -75,7 +75,7 @@
     @case ('cycle_clock_diagram') {
       @if (multiviewConfiguration.cycle_clock_diagram) {
         <view-cycle-clock-diagram>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-cycle-clock-diagram>
@@ -84,7 +84,7 @@
     @case ('memory') {
       @if (multiviewConfiguration.memory) {
         <view-memory>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-memory>
@@ -93,7 +93,7 @@
     @case ('code') {
       @if (multiviewConfiguration.code) {
         <view-code>
-          <button type="button" class="btn btn-tool" cdkDragHandle>
+          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </view-code>

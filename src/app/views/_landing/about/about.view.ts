@@ -1,19 +1,21 @@
 import { ViewportScroller } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { type AfterViewInit, Component, inject, type OnInit, Renderer2, ViewChild } from "@angular/core";
-import { Router } from "@angular/router";
 import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
+import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
-import { type MarkdownComponent, MarkdownService } from "ngx-markdown";
-import type { IPackageJson } from "package-json-type";
+import { TranslatePipe } from "@ngx-translate/core";
+import { type MarkdownComponent, MarkdownComponent as MarkdownComponent_1 } from "ngx-markdown";
 import { firstValueFrom } from "rxjs";
-import npm from "../../../../../package.json";
+import { CollapseDirective, CollapseToggleDirective } from "../../../__shared/directives/bootstrap/collapse.directive";
+
+type LicenseInfo = { name: string; version: string; license: string; author: string; homepage: string; description: string };
 
 @Component({
   selector: "app-about",
   templateUrl: "./about.view.html",
   styleUrls: [],
-  standalone: false,
+  imports: [CollapseToggleDirective, CollapseDirective, MarkdownComponent_1, TranslatePipe],
 })
 export class AboutView implements OnInit, AfterViewInit {
   electronService = inject(ElectronService);
@@ -21,12 +23,9 @@ export class AboutView implements OnInit, AfterViewInit {
   private renderer = inject(Renderer2);
   private httpClient = inject(HttpClient);
 
-  private readonly SERVER_API = "https://unpkg.com/";
-
-  public dependencies = Object.entries(npm.dependencies) as unknown as [string, string];
-  public devDependencies = Object.entries(npm.devDependencies) as unknown as [string, string];
-  public dependenciesData: IPackageJson[] = [];
-  public devDependenciesData: IPackageJson[] = [];
+  /** The dependencies and their licences (scripts/licenses.mjs writes them when the project is installed) */
+  public dependenciesData: LicenseInfo[] = [];
+  public devDependenciesData: LicenseInfo[] = [];
 
   @ViewChild("markdownComponentID_README", { static: false })
   private markdownComponentID_README!: MarkdownComponent;
@@ -45,39 +44,24 @@ export class AboutView implements OnInit, AfterViewInit {
 
   private listenObj!: ReturnType<Renderer2["listen"]>;
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
-  constructor() {}
-
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
     this.prepareData().then(() => {
-      console.log("End");
+      logger.info("End");
     });
   }
 
-  private async prepareData() {
-    const dependenciesData_Promises: Promise<IPackageJson>[] = [];
-    const devDependenciesData_Promises: Promise<IPackageJson>[] = [];
-    for (const dependency of this.dependencies) {
-      dependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
+  private async prepareData(): Promise<void> {
+    try {
+      const licenses = await firstValueFrom(
+        this.httpClient.get<{ dependencies: LicenseInfo[]; devDependencies: LicenseInfo[] }>("assets/licenses.json"),
+      );
+      this.dependenciesData = licenses.dependencies;
+      this.devDependenciesData = licenses.devDependencies;
+    } catch (error) {
+      logger.warn(error);
     }
-    for (const dependency of this.devDependencies) {
-      devDependenciesData_Promises.push(this.queryNPMPackage(dependency[0], dependency[1]));
-    }
-    this.dependenciesData = await Promise.all(dependenciesData_Promises);
-    this.devDependenciesData = await Promise.all(devDependenciesData_Promises);
-  }
-
-  private async queryNPMPackage(package_name: string, version: string): Promise<IPackageJson> {
-    return new Promise((resolve) => {
-      const QUERY = `${this.SERVER_API + package_name}@${version}/package.json`;
-      firstValueFrom(this.httpClient.get<IPackageJson>(QUERY)).then((response) => {
-        resolve(JSON.parse(JSON.stringify(response)));
-      });
-    });
   }
 
   public onMarkdownLoad(id: string) {
@@ -102,7 +86,7 @@ export class AboutView implements OnInit, AfterViewInit {
     // because MarkdownComponent isn't 'compiled' the links don't use the angular router,
     // so I'll catch the link click events here and pass them to the router...
     if (!markdownComponent) {
-      console.error("MarkdownComponent not found for id:", id);
+      logger.error("MarkdownComponent not found for id:", id);
       return;
     }
     this.listenObj = this.renderer.listen(markdownComponent.element.nativeElement, "click", (e: Event) => {

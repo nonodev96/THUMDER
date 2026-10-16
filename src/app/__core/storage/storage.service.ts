@@ -1,15 +1,5 @@
 import { Injectable } from "@angular/core";
-import {
-  DEFAULT_AUTO_SAVE_CONFIGURATION,
-  DEFAULT_BREAKPOINTS,
-  DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
-  DEFAULT_INTERFACE_FILE_ITEM,
-  DEFAULT_LANG,
-  DEFAULT_MEMORY_SIZE_CONFIGURATION,
-  DEFAULT_MULTIVIEW_CONFIGURATION,
-  DEFAULT_TIME_SIMULATION_CONFIGURATION,
-  DEFAULT_WEB_SOCKET_CONFIGURATION,
-} from "@app/CONSTANTS";
+import { DEFAULT_BREAKPOINTS, DEFAULT_INTERFACE_FILE_ITEM, DEFAULT_LANG } from "@app/CONSTANTS";
 import { type Observable, Subject } from "rxjs";
 
 @Injectable({
@@ -40,6 +30,10 @@ export class StorageService {
   }
 
   public defaultDataInStorage(): void {
+    // Spanish used to be saved as "sp", which is not a language code
+    if (this.getItem("lang") === "sp") {
+      this.setItem("lang", "es");
+    }
     if (!this.hasItem("lang")) {
       this.setItem("lang", DEFAULT_LANG);
     }
@@ -49,23 +43,8 @@ export class StorageService {
     if (!this.hasItem("breakpoints")) {
       this.setItem("breakpoints", DEFAULT_BREAKPOINTS);
     }
-    if (!this.hasItem("floating_point_stage_configuration")) {
-      this.setItem("floating_point_stage_configuration", DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
-    }
-    if (!this.hasItem("multiview_configuration")) {
-      this.setItem("multiview_configuration", DEFAULT_MULTIVIEW_CONFIGURATION);
-    }
-    if (!this.hasItem("memory_size_configuration")) {
-      this.setItem("memory_size_configuration", DEFAULT_MEMORY_SIZE_CONFIGURATION);
-    }
-    if (!this.hasItem("time_simulation_configuration")) {
-      this.setItem("time_simulation_configuration", DEFAULT_TIME_SIMULATION_CONFIGURATION);
-    }
-    if (!this.hasItem("auto_save_configuration")) {
-      this.setItem("auto_save_configuration", DEFAULT_AUTO_SAVE_CONFIGURATION);
-    }
-    if (!this.hasItem("web_socket_configuration")) {
-      this.setItem("web_socket_configuration", DEFAULT_WEB_SOCKET_CONFIGURATION);
-    }
+    // The configuration (thumder_configuration) is in ConfigService (core/config)
+    // The configuration of THUMDER-server, which THUMDER no longer uses
+    localStorage.removeItem("web_socket_configuration");
   }
 }

@@ -1,11 +1,8 @@
-@if (authService.isLoggedIn === true) {
-  Login but isLoggedIn
-}
-@if (authService.isLoggedIn === false) {
+@if (authService.isGuest()) {
   <div class="login-page" style="justify-content: center !important">
     <div class="login-box">
       <div class="login-logo">
-        <img src="assets/icons/favicon.256x256.png" alt="Logo" class="img-fluid mb-4">
+        <img src="assets/icons/favicon.256x256.png" alt="THUMDER" class="img-fluid mb-4">
         <h2>{{ 'TITLE' | translate }}</h2>
       </div>
       <div class="card">
@@ -13,7 +10,7 @@
           <p class="login-box-msg">{{ 'ACCOUNT.SIGN_IN_TO_START_YOUR_SESSION' | translate }}</p>
           <form [formGroup]="loginForm">
             <div class="input-group mb-3">
-              <input type="email" class="form-control" placeholder="Email" id="userEmail"
+              <input type="email" class="form-control" [placeholder]="'ACCOUNT.EMAIL' | translate" id="userEmail"
                 autocomplete="email" name="email"
                 [class.is-valid]="loginForm.get('email')?.valid"
                 [class.is-invalid]="!loginForm.get('email')?.valid"
@@ -33,7 +30,7 @@
               }
             }
             <div class="input-group mb-3">
-              <input type="password" class="form-control" placeholder="Password" id="userPassword"
+              <input type="password" class="form-control" [placeholder]="'ACCOUNT.PASSWORD' | translate" id="userPassword"
                 autocomplete="current-password" name="current-password"
                 [class.is-valid]="loginForm.get('password')?.valid"
                 [class.is-invalid]="!loginForm.get('password')?.valid"
@@ -68,12 +65,12 @@
           @if (!electronService.isElectronApp) {
             <div class="social-auth-links text-center mb-3">
               <p>-</p>
-              <a class="btn btn-block btn-danger" (click)="this.GoogleAuth()">
+              <button type="button" class="btn btn-block btn-danger" (click)="GoogleAuth()">
                 <i class="fab fa-google-plus mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GOOGLE' | translate }}
-              </a>
-              <a class="btn btn-block btn-primary" (click)="this.GithubAuth()">
+              </button>
+              <button type="button" class="btn btn-block btn-primary" (click)="GithubAuth()">
                 <i class="fab fa-github mr-2" aria-hidden="true"></i> {{ 'ACCOUNT.SIGN_IN_USING_GITHUB' | translate }}
-              </a>
+              </button>
             </div>
           }
           <p class="mt-3 mb-1">
@@ -86,21 +83,21 @@
           @if (app.translationEnabled) {
             <div class="row mt-3 mb-1">
               <div class="col-12">
-                <div class="dropdown">
+                <div class="dropdown" thumderDropdown>
                   <button class="btn btn-info btn-block dropdown-toggle" type="button"
-                    id="dropdownMenuButton_lang" data-toggle="dropdown"
+                    id="dropdownMenuButton_lang"
                     aria-haspopup="true" aria-expanded="false">
                     {{ 'CONFIG.LANG' | translate }}
                   </button>
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_lang">
-                    <a class="dropdown-item" (click)="app.setLang('sp')">
+                    <button type="button" class="dropdown-item" (click)="app.setLang('es')">
                       <span class="flag-icon flag-icon-esp"></span>
-                      Spanish
-                    </a>
-                    <a class="dropdown-item" (click)="app.setLang('en')">
+                      Español
+                    </button>
+                    <button type="button" class="dropdown-item" (click)="app.setLang('en')">
                       <span class="flag-icon flag-icon-gbr"></span>
                       English
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>

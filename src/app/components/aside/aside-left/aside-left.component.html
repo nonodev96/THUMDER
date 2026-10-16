@@ -3,7 +3,7 @@
   <!-- Brand Logo -->
   <a [routerLink]="['/']" class="brand-link">
     <img src="assets/icons/faviconWhite.512x512.png"
-      alt="AdminLTE Logo"
+      alt=""
       class="brand-image img-circle elevation-3">
       <span class="brand-text font-weight-light" id="title-app">THUMDER</span>
     </a>
@@ -14,24 +14,24 @@
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
           <img src="https://avatars.githubusercontent.com/u/23743639" class="img-circle elevation-2"
-            alt="User Image">
+            alt="">
           </div>
           <div class="info">
             @if (electronService.isElectronApp) {
-              <a href="#" (click)="electronService.openInExternal('https://github.com/nonodev96')" class="d-block">by nonodev96</a>
+              <a href="https://github.com/nonodev96" (click)="$event.preventDefault(); electronService.openInExternal('https://github.com/nonodev96')" class="d-block">{{ 'NAVIGATION.BY' | translate }} nonodev96</a>
             }
             @if (!electronService.isElectronApp) {
-              <a href="https://github.com/nonodev96" class="d-block">by nonodev96</a>
+              <a href="https://github.com/nonodev96" class="d-block">{{ 'NAVIGATION.BY' | translate }} nonodev96</a>
             }
           </div>
         </div>
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" data-accordion="false" role="menu">
+          <ul class="nav nav-pills nav-sidebar flex-column">
 
-            @if (authService.isLoggedIn) {
-              <li role="menuitem" class="nav-header">Machine</li>
+            
+              <li class="nav-header">{{ 'NAVIGATION.SECTION_MACHINE' | translate }}</li>
               <li class="nav-item">
                 <a class="nav-link" [routerLink]="'/auth/pipeline'">
                   <i class="nav-icon fas fa-desktop" aria-hidden="true"></i>
@@ -69,7 +69,19 @@
                 </a>
               </li>
               <!-- IDE -->
-              <li role="menuitem" class="nav-header">IDE</li>
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/auth/datapath'">
+                  <i class="nav-icon fas fa-project-diagram" aria-hidden="true"></i>
+                  <p>{{ 'NAVIGATION.DATAPATH' | translate }}</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/auth/exercises'">
+                  <i class="nav-icon fas fa-graduation-cap" aria-hidden="true"></i>
+                  <p>{{ 'NAVIGATION.EXERCISES' | translate }}</p>
+                </a>
+              </li>
+              <li class="nav-header">IDE</li>
               <li class="nav-item">
                 <a class="nav-link" [routerLink]="'/auth/file-manager'">
                   <i class="nav-icon fas fa-folder-open" aria-hidden="true"></i>
@@ -89,7 +101,7 @@
                 </a>
               </li>
               <!-- Utils -->
-              <li role="menuitem" class="nav-header">Utils</li>
+              <li class="nav-header">{{ 'NAVIGATION.SECTION_UTILS' | translate }}</li>
               <li class="nav-item">
                 <a class="nav-link" [routerLink]="'/auth/calculator'">
                   <i class="nav-icon fas fa-calculator" aria-hidden="true"></i>
@@ -103,7 +115,7 @@
                 </a>
               </li>
               <!-- Config -->
-              <li role="menuitem" class="nav-header">Config</li>
+              <li class="nav-header">{{ 'NAVIGATION.SECTION_CONFIG' | translate }}</li>
               <li class="nav-item">
                 <a class="nav-link" [routerLink]="'/auth/config'">
                   <i class="nav-icon fas fa-wrench" aria-hidden="true"></i>
@@ -112,13 +124,7 @@
               </li>
               <!-- DEBUG -->
               @if (isProduction) {
-                <li role="menuitem" class="nav-header">DEBUG</li>
-                <li class="nav-item">
-                  <a class="nav-link" [routerLink]="'/auth/debug'">
-                    <i class="nav-icon fas fa-bug" aria-hidden="true"></i>
-                    <p>{{ 'NAVIGATION.DEBUG' | translate }}</p>
-                  </a>
-                </li>
+                <li class="nav-header">DEBUG</li>
                 <li class="nav-item">
                   <a class="nav-link" [routerLink]="'/auth/logger'">
                     <i class="nav-icon fas fa-file-code" aria-hidden="true"></i>
@@ -132,23 +138,38 @@
                   </a>
                 </li>
               }
-              <li role="menuitem" class="nav-header">{{ 'NAVIGATION.ABOUT'| translate }}</li>
+              <li class="nav-header">{{ 'NAVIGATION.ABOUT'| translate }}</li>
               <li class="nav-item">
                 <a class="nav-link" [routerLink]="'/landing/about'">
                   <i class="nav-icon fas fa-book" aria-hidden="true"></i>
                   <p>{{ 'NAVIGATION.ABOUT'| translate }}</p>
                 </a>
               </li>
-            }
+            
 
-            @if (authService.isLoggedIn) {
+            @if (authService.hasAccounts) {
               <li class="nav-header">{{ 'ACCOUNT.ACCOUNT' | translate }}</li>
-              <li class="nav-item">
-                <a class="nav-link" (click)="authService.SignOut()">
-                  <i class="nav-icon fas fa-sign-out-alt" aria-hidden="true"></i>
-                  <p>{{ 'ACCOUNT.SIGN_OUT' | translate }}</p>
-                </a>
-              </li>
+              @if (authService.isGuest()) {
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/account/login">
+                    <i class="nav-icon fas fa-sign-in-alt" aria-hidden="true"></i>
+                    <p>{{ 'ACCOUNT.SIGN_IN_TO_SYNC' | translate }}</p>
+                  </a>
+                </li>
+              } @else {
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="/auth/profile">
+                    <i class="nav-icon fas fa-user" aria-hidden="true"></i>
+                    <p>{{ 'ACCOUNT.PROFILE' | translate }}</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <button type="button" class="nav-link btn btn-link text-left w-100" (click)="authService.SignOut()">
+                    <i class="nav-icon fas fa-sign-out-alt" aria-hidden="true"></i>
+                    <p>{{ 'ACCOUNT.SIGN_OUT' | translate }}</p>
+                  </button>
+                </li>
+              }
             }
 
           </ul>

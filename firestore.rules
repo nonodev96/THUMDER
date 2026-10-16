@@ -1,0 +1,60 @@
+rules_version = '2';
+
+// The rules of the Firestore of THUMDER (SEG-04). Each person reads and writes only their own data: their profile
+// (users/{uid}) and their files (file-items, with e1_uid = their uid). Tests: pnpm test:rules (Firestore emulator).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // A file as THUMDER writes it (src/app/__core/services/file-system/file-store.ts: normalizeFile and remoteFile):
+    // these fields and no others, with their types and sizes
+    function validFile(file) {
+      return file.keys().hasAll(['key', 'name', 'path', 'content', 'isDirectory', 'dateModified', 'e1_uid'])
+        && file.keys().hasOnly(['$key', 'f_id', 'e1_uid', 'key', 'path', 'pathKeys', 'name', 'content', 'description',
+                                'dateModified', 'size', 'isDirectory', 'hasSubDirectories', 'thumbnail', 'dataItem'])
+        && file.key is string && file.key.size() > 0 && file.key.size() <= 64
+        && file.name is string && file.name.size() > 0 && file.name.size() <= 100
+        && file.path is string && file.path.size() <= 1000
+        && file.content is string && file.content.size() <= 512000
+        && file.isDirectory is bool
+        && file.dateModified is number
+        && (!('description' in file) || (file.description is string && file.description.size() <= 2000))
+        && (!('pathKeys' in file) || file.pathKeys is list)
+        && (!('size' in file) || file.size is number);
+    }
+
+    // The profile as AuthService writes it when the person signs in
+    function validProfile(uid, profile) {
+      return profile.keys().hasOnly(['uid', 'email', 'displayName', 'photoURL', 'emailVerified'])
+        && profile.uid == uid
+        && profile.email is string && profile.displayName is string && profile.photoURL is string
+        && profile.emailVerified is bool;
+    }
+
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid) && validProfile(uid, request.resource.data);
+    }
+
+    match /file-items/{id} {
+      allow read: if isOwner(resource.data.e1_uid);
+      // A file that is not there (it never reached the account): deleting it changes nothing
+      allow delete: if signedIn() && (resource == null || isOwner(resource.data.e1_uid));
+      allow create: if isOwner(request.resource.data.e1_uid) && validFile(request.resource.data);
+      // The owner cannot change
+      allow update: if isOwner(resource.data.e1_uid) && request.resource.data.e1_uid == resource.data.e1_uid && validFile(request.resource.data);
+    }
+
+    // Nothing else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+// Monaco measures this element (automaticLayout) and stays inside it
+.thumder-monaco {
+  position: relative;
+  overflow: hidden;
+}

@@ -1,16 +1,15 @@
 <div class="row">
-  <div class="col-2"></div>
-  <div class="col-8" id="accordion_ABOUT">
+  <div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2" id="accordion_ABOUT">
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapse_about">
+      <a class="d-block w-100" href="#collapse_about" [thumderCollapseToggle]="panel0">
         <div class="card-header">
           <h4 class="card-title w-100">
             0. {{'VIEWS.ABOUT.TITLE_ABOUT' | translate}}
           </h4>
         </div>
       </a>
-      <div id="collapse_about" class="collapse show" data-parent="#accordion_ABOUT">
+      <div id="collapse_about" class="collapse" thumderCollapse #panel0="thumderCollapse" thumderCollapseGroup="about" [thumderCollapseOpen]="true">
         <div class="card-body">
           <markdown [src]="'assets/md/ABOUT.md'" (load)="onMarkdownLoad('markdownComponentID_ABOUT')"
           #markdownComponentID_ABOUT></markdown>
@@ -19,14 +18,14 @@
     </div>
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapse_readme">
+      <a class="d-block w-100" href="#collapse_readme" [thumderCollapseToggle]="panel1">
         <div class="card-header">
           <h4 class="card-title w-100">
             1. {{'VIEWS.ABOUT.TITLE_README' | translate}}
           </h4>
         </div>
       </a>
-      <div id="collapse_readme" class="collapse" data-parent="#accordion_ABOUT">
+      <div id="collapse_readme" class="collapse" thumderCollapse #panel1="thumderCollapse" thumderCollapseGroup="about">
         <div class="card-body">
           <markdown [src]="'assets/md/README.md'" (load)="onMarkdownLoad('markdownComponentID_README')"
           #markdownComponentID_README></markdown>
@@ -35,14 +34,14 @@
     </div>
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_LICENSE">
+      <a class="d-block w-100" href="#collapseOne_LICENSE" [thumderCollapseToggle]="panel2">
         <div class="card-header">
           <h4 class="card-title w-100">
             2. {{'VIEWS.ABOUT.TITLE_LICENSE' | translate}}
           </h4>
         </div>
       </a>
-      <div id="collapseOne_LICENSE" class="collapse" data-parent="#accordion_ABOUT">
+      <div id="collapseOne_LICENSE" class="collapse" thumderCollapse #panel2="thumderCollapse" thumderCollapseGroup="about">
         <div class="card-body">
           <markdown [src]="'assets/md/LICENSE.md'" (load)="onMarkdownLoad('markdownComponentID_LICENSE')"
           #markdownComponentID_LICENSE></markdown>
@@ -51,14 +50,14 @@
     </div>
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_COOKIES">
+      <a class="d-block w-100" href="#collapseOne_COOKIES" [thumderCollapseToggle]="panel3">
         <div class="card-header">
           <h4 class="card-title w-100" id="collapse-header-cookies">
             3. {{'VIEWS.ABOUT.TITLE_COOKIES' | translate}}
           </h4>
         </div>
       </a>
-      <div id="collapseOne_COOKIES" class="collapse" data-parent="#accordion_ABOUT">
+      <div id="collapseOne_COOKIES" class="collapse" thumderCollapse #panel3="thumderCollapse" thumderCollapseGroup="about">
         <div class="card-body">
           <markdown [src]="'assets/md/COOKIES.md'" (load)="onMarkdownLoad('markdownComponentID_COOKIES')"
           #markdownComponentID_COOKIES></markdown>
@@ -67,14 +66,14 @@
     </div>
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#collapseOne_CHANGELOG">
+      <a class="d-block w-100" href="#collapseOne_CHANGELOG" [thumderCollapseToggle]="panel4">
         <div class="card-header">
           <h4 class="card-title w-100">
             4. {{'VIEWS.ABOUT.TITLE_CHANGELOG' | translate}}
           </h4>
         </div>
       </a>
-      <div id="collapseOne_CHANGELOG" class="collapse" data-parent="#accordion_ABOUT">
+      <div id="collapseOne_CHANGELOG" class="collapse" thumderCollapse #panel4="thumderCollapse" thumderCollapseGroup="about">
         <div class="card-body">
           <markdown [src]="'assets/md/CHANGELOG.md'" (load)="onMarkdownLoad('markdownComponentID_CHANGELOG')"
           #markdownComponentID_CHANGELOG></markdown>
@@ -83,14 +82,14 @@
     </div>
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" data-toggle="collapse" href="#accordion_dependencies">
+      <a class="d-block w-100" href="#accordion_dependencies" [thumderCollapseToggle]="panel5">
         <div class="card-header">
           <h4 class="card-title w-100">
             5. {{'VIEWS.ABOUT.TITLE_DEPENDENCIES' | translate}}
           </h4>
         </div>
       </a>
-      <div id="accordion_dependencies" class="collapse" data-parent="#accordion_ABOUT">
+      <div id="accordion_dependencies" class="collapse" thumderCollapse #panel5="thumderCollapse" thumderCollapseGroup="about">
         <div class="card-body">
 
           <div class="container-fluid">
@@ -110,7 +109,7 @@
                     <tr>
                       <td>
                         @if (data?.homepage) {
-                          <a (click)="openInExternal(data?.homepage)" class="link-primary">
+                          <a [href]="data?.homepage" target="_blank" rel="noopener noreferrer" (click)="$event.preventDefault(); openInExternal(data?.homepage)" class="link-primary">
                             {{data?.name}}
                           </a>
                         }
@@ -120,7 +119,7 @@
                       </td>
                       <td>{{data?.version}}</td>
                       <td>{{data?.license}}</td>
-                      <td>{{data?.author?.name}}</td>
+                      <td>{{data?.author}}</td>
                       <td>{{data?.description}}</td>
                     </tr>
                   }
@@ -141,7 +140,7 @@
                     <tr>
                       <td>
                         @if (data?.homepage) {
-                          <a (click)="openInExternal(data?.homepage)" class="link-primary">
+                          <a [href]="data?.homepage" target="_blank" rel="noopener noreferrer" (click)="$event.preventDefault(); openInExternal(data?.homepage)" class="link-primary">
                             {{data?.name}}
                           </a>
                         }
@@ -151,7 +150,7 @@
                       </td>
                       <td>{{data?.version}}</td>
                       <td>{{data?.license}}</td>
-                      <td>{{data?.author?.name}}</td>
+                      <td>{{data?.author}}</td>
                       <td>{{data?.description}}</td>
                     </tr>
                   }
@@ -167,5 +166,4 @@
 
 
   </div>
-  <div class="col-2"></div>
 </div>

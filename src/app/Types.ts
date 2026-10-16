@@ -4,8 +4,6 @@ declare global {
   interface Window {
     process: any;
     require: any;
-    jQuery: any;
-    $: any;
   }
 }
 
@@ -50,17 +48,25 @@ export interface InterfaceUser {
   emailVerified: boolean;
 }
 
+/** A file or a folder of the file manager (core/services/file-system) */
 export interface InterfaceFileItem {
-  $key: string; // ---? Firebase
-  f_id: string; //-
-  e1_uid: string; //-
-  key: string; //-
-  pathKeys: string[]; //-
+  /** The id of its document in Firestore (the same as `key` for the files created since version 1.7) */
+  $key: string;
+  f_id: string;
+  /** The owner: the uid of the account, or "local" for the guest */
+  e1_uid: string;
+  /** Its id: a UUID that does not change when it is renamed, moved or synchronised */
+  key: string;
+  pathKeys: string[];
+  /** The folder that contains it ("" is the root folder) */
   path: string;
   name: string;
   content: string;
   description: string;
-  dateModified: Date;
+  /** When it was changed, in milliseconds since 1970 (as Date.now()) */
+  dateModified: number;
+  /** Only in the browser: the `dateModified` it had when it was last synchronised with the account */
+  syncedAt?: number;
   size: number;
   isDirectory: boolean;
   hasSubDirectories: boolean;
@@ -161,8 +167,11 @@ export type TypeDirective = "GLOBAL" | "TEXT" | "SPACE" | "DATA" | "ALIGN" | "AS
 
 export type TypeIdTitleFile = {
   id: string;
+  /** The key of its title in the translations */
   title: string;
   file: string;
+  /** The language the document is written in (I18N-04): the view says it when it is not the one of the interface */
+  lang: "es" | "en";
 };
 
 export type TypeDataRegister = {
@@ -632,11 +641,7 @@ export type TypeFloatingPointStageConfiguration = {
   };
 };
 
-export type TypeWebSocketConfiguration = {
-  socket_url: string;
-};
-
-export type TypeLang = "en" | "sp";
+export type TypeLang = "en" | "es";
 
 export type TypeConfigurationMachine = {
   addition: {
@@ -674,6 +679,18 @@ export type TypeMemoryToUpdate = {
   address: TypeAddress;
   typeData: TypeData;
   value: string;
+};
+
+/** Answer of THUMDER-server to UpdateRegisterRequest: the values it has stored */
+export type TypeRegisterToUpdateResponse = {
+  allOK: boolean;
+  registerToUpdates: TypeRegisterToUpdate[];
+};
+
+/** Answer of THUMDER-server to UpdateMemoryRequest: the values it has stored */
+export type TypeMemoryToUpdateResponse = {
+  allOK: boolean;
+  memoryToUpdates: TypeMemoryToUpdate[];
 };
 
 export type TypeCycleCell = {
@@ -773,6 +790,8 @@ export type TypeSimulationInitRequest = {
   breakpoints: TypeLine[];
   registers: TypeRegisterToUpdate[];
   memory: TypeMemoryToUpdate[];
+  /** Other files of the program (modules with .global symbols) */
+  files?: { name: string; content: string }[];
 };
 
 export type TypeDataStatistics = {

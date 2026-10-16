@@ -1,4 +1,6 @@
+import { AsyncPipe, NgClass } from "@angular/common";
 import { Component, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
 import { Utils } from "@app/Utils";
 import { filter } from "rxjs/operators";
@@ -12,7 +14,7 @@ type MenuItem = {
   selector: "THUMDER-breadcrumb",
   templateUrl: "./breadcrumb.component.html",
   styleUrls: ["./breadcrumb.component.scss"],
-  standalone: false,
+  imports: [NgClass, AsyncPipe],
 })
 export class BreadcrumbComponent {
   private router = inject(Router);
@@ -21,14 +23,16 @@ export class BreadcrumbComponent {
   public menuItems!: MenuItem[];
   public menuItemsLoaded!: Promise<boolean>;
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
   constructor() {
-    this.router.events.pipe(filter((event: Event) => event instanceof NavigationEnd)).subscribe((_$event) => {
-      this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
-      this.menuItemsLoaded = Promise.resolve(true);
-    });
+    this.router.events
+      .pipe(
+        filter((event: Event) => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((_$event) => {
+        this.menuItems = this.createBreadcrumbs(this.activatedRoute.root);
+        this.menuItemsLoaded = Promise.resolve(true);
+      });
   }
 
   private createBreadcrumbs(route: ActivatedRoute, url: string = "", breadcrumbs: MenuItem[] = []): MenuItem[] {

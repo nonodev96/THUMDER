@@ -47,7 +47,7 @@
   },
   "include": [
     "main.ts",
-    "polyfill.ts",
+    "global-shim.ts",
     "typings.d.ts"
   ],
   "exclude": [

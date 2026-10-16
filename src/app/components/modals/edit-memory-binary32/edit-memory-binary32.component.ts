@@ -1,18 +1,50 @@
+import { UpperCasePipe } from "@angular/common";
 import { ChangeDetectorRef, Component, inject, type OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
 import { DomSanitizer, type SafeHtml } from "@angular/platform-browser";
-import { DEFAULT_BINARY_32_BITS, DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "@app/CONSTANTS";
+import { DEFAULT_HEXADECIMAL_08_DIGITS, MAX_VALUE_TYPE_DATA, REGEX_HEXADECIMAL_08 } from "@app/CONSTANTS";
 import type { TypeData } from "@app/Types";
-import { Utils } from "@app/Utils";
+import { BYTES_OF_TYPE_DATA, valueToBinary } from "@core/DLX/typeDataValues";
+import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
-import { TranslateService } from "@ngx-translate/core";
+import { bitsToFloat32, bitsToFloat64, bitsToHex, hexToBits, hexToNumber, isHex, toAddress } from "@core/numbers";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
+import {
+  Binary32ToASCIIPipe,
+  Binary32ToBytesPipe,
+  Binary32ToDecimal_IEEE754Pipe,
+  Binary32ToHalfWordPipe,
+  Binary64ToDecimal_IEEE754Pipe,
+  BinaryByteToNumberPipe,
+  NumberToBasePipe,
+  NumberToHexadecimalPipe,
+  PadStartPipe,
+} from "@shared/pipes/numbers/numbers.pipes";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
+import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 
 @Component({
   selector: "THUMDER-edit-memory-binary32",
   templateUrl: "./edit-memory-binary32.component.html",
   styleUrls: ["./edit-memory-binary32.component.scss"],
-  standalone: false,
+  imports: [
+    ModalDismissDirective,
+    FormsModule,
+    UpperCasePipe,
+    TranslatePipe,
+    Binary32ToASCIIPipe,
+    Binary32ToBytesPipe,
+    Binary32ToHalfWordPipe,
+    Binary32ToDecimal_IEEE754Pipe,
+    Binary64ToDecimal_IEEE754Pipe,
+    NumberToHexadecimalPipe,
+    PadStartFilterPipe,
+    NumberToBasePipe,
+    BinaryByteToNumberPipe,
+    PadStartPipe,
+  ],
 })
 export class EditMemoryBinary32Component implements OnInit {
   machine = inject(MachineService);
@@ -37,22 +69,20 @@ export class EditMemoryBinary32Component implements OnInit {
   // addressMemoryToEdit = addressMemoryDisplay % 4
   public addressIsValid: boolean = true;
   public typeDataSelected: TypeData = "Word";
-  // Binary 8 16 32 64
-  private _binaryValue: string = DEFAULT_BINARY_32_BITS;
   // Hexadecimal 8 digits
   private _hexadecimalAddressMemory: string = DEFAULT_HEXADECIMAL_08_DIGITS;
 
   // =================================================================================================================
   get displayAddressMemory(): string {
-    return Utils.numberToHexadecimalString(Utils.hexadecimalToDecimal(this._hexadecimalAddressMemory));
+    return toAddress(hexToNumber(this._hexadecimalAddressMemory));
   }
 
   get displayAddressMemoryNext(): string {
-    return Utils.numberToHexadecimalString(Utils.hexadecimalToDecimal(this._hexadecimalAddressMemory) + 4);
+    return toAddress(hexToNumber(this._hexadecimalAddressMemory) + 4);
   }
 
   get addressMemoryIndex(): number {
-    return Utils.hexadecimalToDecimal(this._hexadecimalAddressMemory);
+    return hexToNumber(this._hexadecimalAddressMemory);
   }
 
   get addressMemory(): string {
@@ -67,233 +97,104 @@ export class EditMemoryBinary32Component implements OnInit {
     }
   }
 
+  // The value of the selected type at the address, read from memory every time (zeros if the address is not valid)
   get valueInSection_Hexadecimal(): string {
-    const maxLength = this.typeDataSelected === "Double" ? 16 : 8;
-    const binary_32_64 = this.typeDataSelected === "Double" ? this.memoryValueBinary64Display : this.memoryValueBinary32Display;
-    return Utils.binaryToHexadecimal(binary_32_64, { maxLength: maxLength, fillString: "0" });
+    return bitsToHex(this.valueBinary, this.bytes * 2);
   }
 
-  set valueInSection_Hexadecimal(hexadecimal: string) {
-    const maxLength = this.typeDataSelected === "Double" ? 64 : 32;
-    this.binaryValue = Utils.hexadecimalToBinary(hexadecimal, { maxLength: maxLength, fillString: "0" });
-  }
-
-  // Address: 0x00000001
-  // Binary:   00000000 XXXXXXXX 00000000 00000000
   get valueInSection_Byte(): number {
-    const binary32 = this.memoryValueBinary32Display;
-    const binary8_byte = binary32.substr(8 * this.addressMemoryModule, 8);
-    return parseInt(binary8_byte, 2);
-  }
-
-  set valueInSection_Byte(byte: number) {
-    const binary32 = this.memoryValueBinary32Display;
-    const binary8_byte = byte.toString(2).padStart(8, "0");
-    this.binaryValue = Utils.binaryStringSwap(binary32, binary8_byte, 8 * this.addressMemoryModule);
+    return parseInt(this.readMemory(this.addressMemoryIndex, 1), 2);
   }
 
   get valueInSection_HalfWord(): number {
-    const binary32 = this.memoryValueBinary32Display;
-    const binary16_halfword = binary32.substr(8 * this.addressMemoryModule, 16);
-    return parseInt(binary16_halfword, 2);
-  }
-
-  set valueInSection_HalfWord(halfword_number: number) {
-    const binary32 = this.memoryValueBinary32Display;
-    const binary16_halfword = halfword_number.toString(2).padStart(16, "0");
-    this.binaryValue = Utils.binaryStringSwap(binary32, binary16_halfword, 8 * this.addressMemoryModule);
+    return parseInt(this.readMemory(this.addressMemoryIndex, 2), 2);
   }
 
   get valueInSection_Word(): number {
-    const binary32 = this.memoryValueBinary32Display;
-    return parseInt(binary32, 2);
-  }
-
-  set valueInSection_Word(word: number) {
-    this.binaryValue = word.toString(2).padStart(32, "0");
+    return parseInt(this.readMemory(this.addressMemoryIndex, 4), 2);
   }
 
   get valueInSection_Float_Binary32_IEEE754(): number {
-    const binary32 = this.memoryValueBinary32Display;
-    return Utils.convertIEEE754_Binary32Bits_To_Number(binary32);
-  }
-
-  set valueInSection_Float_Binary32_IEEE754(float32: number) {
-    this.binaryValue = Utils.convertIEEE754_Number_To_Binary32Bits(float32);
+    return bitsToFloat32(this.readMemory(this.addressMemoryIndex, 4));
   }
 
   get valueInSection_Double_Binary64_IEEE754(): number {
-    const binary64 = this.memoryValueBinary64Display;
-    return Utils.convertIEEE754_Binary64Bits_To_Number(binary64);
+    return bitsToFloat64(this.readMemory(this.addressMemoryIndex, 8));
   }
 
-  set valueInSection_Double_Binary64_IEEE754(double: number) {
-    this.binaryValue = Utils.convertIEEE754_Number_To_Binary64Bits(double);
-  }
-
-  set binaryValue(binary: string) {
-    if (binary.length === 32) {
-      this._binaryValue = binary;
-    } else if (binary.length === 64) {
-      this._binaryValue = binary;
-    } else {
-      throw new Error(`Binary length error: ${binary.length.toString()}`);
-    }
-  }
-
+  // The word that contains the address (and the next one, for a double), for the views in binary, bytes, ASCII...
   get memoryValueBinary32Display(): string {
-    return this._binaryValue.padStart(32, "0");
+    return this.readMemory(this.addressMemoryIndex - this.addressMemoryModule, 4);
   }
 
   get memoryValueBinary64Display(): string {
-    return this._binaryValue.padStart(64, "0");
+    return this.readMemory(this.addressMemoryIndex - this.addressMemoryModule, 8);
   }
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
+  private get bytes(): number {
+    return BYTES_OF_TYPE_DATA[this.typeDataSelected];
+  }
+
+  private get valueBinary(): string {
+    return this.readMemory(this.addressMemoryIndex, this.bytes);
+  }
+
+  private readMemory(index: number, bytes: number): string {
+    if (!this.addressIsValid || !this.machine.memory.isInMemory(index, bytes)) return "".padStart(bytes * 8, "0");
+    return this.machine.memory.getMemoryBinaryByIndex(index, bytes);
+  }
 
   // =================================================================================================================
-
-  constructor() {}
 
   ngOnInit(): void {}
 
   public async changeAddressMemoryToEdit(target: EventTarget | any): Promise<void> {
-    if (REGEX_HEXADECIMAL_08.test(target.value)) {
-      this.addressMemory = target.value;
-      this.addressMemoryModule = Utils.hexadecimalToDecimal(target.value) % 4;
-
-      switch (this.typeDataSelected) {
-        case "Byte": // 8 bits
-          break;
-        case "HalfWord": // 16 bits
-          if (this.addressMemoryModule % 2 !== 0) {
-            await this.TOAST_ErrorAddress("module % 2 != 0");
-            this.addressIsValid = false;
-            return;
-          }
-          break;
-        case "Word": // 32 bits
-          if (this.addressMemoryModule % 4 !== 0) {
-            await this.TOAST_ErrorAddress("module % 4 != 0");
-            this.addressIsValid = false;
-            return;
-          }
-          break;
-        case "Float": // 32 bits
-          if (this.addressMemoryModule % 4 !== 0) {
-            await this.TOAST_ErrorAddress("module % 4 != 0");
-            this.addressIsValid = false;
-            return;
-          }
-          break;
-        case "Double": // 64 bits
-          if (this.addressMemoryModule % 4 !== 0) {
-            await this.TOAST_ErrorAddress("module % 4 != 0");
-            this.addressIsValid = false;
-            return;
-          }
-          break;
-      }
-
-      if (parseInt(this.addressMemory, 16) >= 0 && parseInt(this.addressMemory, 16) <= this.machine.memory.memorySizeBytes) {
-        this.addressIsValid = true;
-        switch (this.typeDataSelected) {
-          case "Byte":
-            this.valueInSection_Byte = parseInt(this.machine.memory.getMemoryByteBinaryByIndex(this.addressMemoryIndex), 2);
-            break;
-          case "HalfWord":
-            this.valueInSection_HalfWord = parseInt(this.machine.memory.getMemoryWordBinaryByIndex(this.addressMemoryIndex), 2);
-            break;
-          case "Word":
-            this.valueInSection_Word = parseInt(this.machine.memory.getMemoryWordBinaryByIndex(this.addressMemoryIndex), 2);
-            break;
-          case "Float":
-            this.valueInSection_Float_Binary32_IEEE754 = 0;
-            break;
-          case "Double":
-            this.valueInSection_Double_Binary64_IEEE754 = 0;
-            break;
-        }
-      } else {
-        this.addressIsValid = false;
-        console.error("Address not valid, out of memory");
-        await this.TOAST_ErrorInAddressMemory();
-      }
-    } else {
+    if (!REGEX_HEXADECIMAL_08.test(target.value)) {
+      this.addressIsValid = false;
       await this.TOAST_ErrorRegex();
+      return;
     }
-
-    return Promise.resolve();
+    this.addressMemory = target.value;
+    this.addressMemoryModule = hexToNumber(target.value) % 4;
+    await this.checkAddress();
   }
 
-  private async changeMemory(value: number): Promise<void> {
+  // The address must be a multiple of the size of the data (of 4 for a double) and the data must fit in memory
+  private async checkAddress(): Promise<void> {
+    const alignment = Math.min(this.bytes, 4);
+    if (this.addressMemoryIndex % alignment !== 0) {
+      this.addressIsValid = false;
+      await this.TOAST_ErrorAddress(`module % ${alignment} != 0`);
+      return;
+    }
+    if (!this.machine.memory.isInMemory(this.addressMemoryIndex, this.bytes)) {
+      this.addressIsValid = false;
+      logger.error("Address not valid, out of memory");
+      await this.TOAST_ErrorInAddressMemory();
+      return;
+    }
+    this.addressIsValid = true;
+  }
+
+  // Writes the bits of the selected type at the address, here and in THUMDER-server
+  private async writeMemory(binary: string): Promise<void> {
+    if (!this.addressIsValid) {
+      await this.TOAST_ErrorInValueMemory();
+      logger.error("Address not valid");
+      return;
+    }
     try {
-      if (!this.addressIsValid) {
-        await this.TOAST_ErrorInValueMemory();
-        this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
-        console.error("Address not valid");
-        return Promise.resolve();
-      }
-
-      // Ej:  "1." ---> 1.0
-      // let oldValueBinaryString = this.machine.getMemory(this.addressMemoryIndex).binary.padStart(32, '0');
-      switch (this.typeDataSelected) {
-        case "Byte": {
-          const newValue_byte = value;
-          const newValue_8bits = Utils.integer8ToBin(newValue_byte);
-          this.valueInSection_Byte = newValue_byte;
-          this.machine.memory.setMemoryByteBinaryByIndex(this.addressMemoryIndex, newValue_8bits);
-          break;
-        }
-        case "HalfWord": {
-          const newValue_h_word = value;
-          const newValue_16bits = Utils.integer16ToBin(newValue_h_word);
-          this.valueInSection_HalfWord = newValue_h_word;
-          this.machine.memory.setMemoryHalfWordBinaryByIndex(this.addressMemoryIndex, newValue_16bits);
-          break;
-        }
-        case "Word": {
-          const newValue_word = value;
-          const newValue_32bits = Utils.integer32ToBin(newValue_word);
-          this.valueInSection_Word = newValue_word;
-          this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, newValue_32bits);
-          break;
-        }
-        case "Float": {
-          const newValue_float = Utils.formatDecimalNumber(value);
-          const newValue_float_s = Utils.formatDecimalString(newValue_float);
-          const newValue_32bits_floating_point = Utils.convertIEEE754_Number_To_Binary32Bits(newValue_float);
-          this.valueInSection_Float_Binary32_IEEE754 = newValue_float_s;
-          this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, newValue_32bits_floating_point);
-          break;
-        }
-        case "Double": {
-          const newValue_double = Utils.formatDecimalNumber(value);
-          const newValue_double_s = Utils.formatDecimalString(newValue_double);
-          const newValue_64bits_floating_point = Utils.convertIEEE754_Number_To_Binary64Bits(newValue_double);
-          const part1 = newValue_64bits_floating_point.slice(0, 32);
-          const part2 = newValue_64bits_floating_point.slice(32, 64);
-          this.valueInSection_Double_Binary64_IEEE754 = newValue_double_s;
-          this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, part1);
-          this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex + 4, part2);
-          break;
-        }
-      }
-
-      await this.machine.updateMemoryInServer([
+      this.machine.memory.setMemoryBinaryByIndex(this.addressMemoryIndex, binary);
+      await this.machine.updateMemory([
         {
           typeData: this.typeDataSelected,
           address: `0x${this.addressMemory}`,
-          value: Utils.binaryToHexadecimal(this._binaryValue),
+          value: bitsToHex(binary, this.bytes * 2),
         },
       ]);
-
-      return Promise.resolve();
     } catch (e) {
       await this.TOAST_ErrorInValueMemory();
-      this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
-      console.error(e);
+      logger.error(e);
     }
   }
 
@@ -302,19 +203,6 @@ export class EditMemoryBinary32Component implements OnInit {
     this.addressIsValid = true;
     this.addressMemoryModule = 0;
     this._hexadecimalAddressMemory = DEFAULT_HEXADECIMAL_08_DIGITS;
-    this._binaryValue = this.machine.memory.getMemoryWordByIndex(0).binary;
-    switch (this.typeDataSelected) {
-      case "Word":
-        this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
-        break;
-      case "Float":
-        this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
-        break;
-      case "Double":
-        this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
-        this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex + 4, DEFAULT_BINARY_32_BITS);
-        break;
-    }
     this.ref.detectChanges();
   }
 
@@ -350,8 +238,8 @@ export class EditMemoryBinary32Component implements OnInit {
   public drawDigitsToChangeByTypeData(): SafeHtml {
     // restart the position to de first element of 4 binaries
     const initIndex = this.addressMemoryIndex - this.addressMemoryModule;
-    const string32bits = this.machine.memory.getMemoryWordBinaryByIndex(initIndex);
-    const string32bits_next_address = this.machine.memory.getMemoryWordBinaryByIndex(initIndex + 4);
+    const string32bits = this.readMemory(initIndex, 4);
+    const string32bits_next_address = this.readMemory(initIndex + 4, 4);
     const module = this.addressMemoryModule;
     let partToChange_init = 0;
     let partToChange_end = 32;
@@ -386,7 +274,7 @@ export class EditMemoryBinary32Component implements OnInit {
             break;
           case 1:
             this.addressIsValid = false;
-            console.error("Address not valid, module === 1");
+            logger.error("Address not valid, module === 1");
             break;
           case 2:
             partToChange_init = 16;
@@ -394,7 +282,7 @@ export class EditMemoryBinary32Component implements OnInit {
             break;
           case 3:
             this.addressIsValid = false;
-            console.error("Address not valid, module === 3");
+            logger.error("Address not valid, module === 3");
             break;
         }
         break;
@@ -471,49 +359,22 @@ export class EditMemoryBinary32Component implements OnInit {
   // =================================================================================================================
 
   public async ngModelChange_ValueInSection_Hexadecimal(hexadecimal: string): Promise<void> {
-    this.valueInSection_Hexadecimal = hexadecimal;
-    await this.changeMemory(this.valueInSection_Word);
-    return Promise.resolve();
+    const digits = hexadecimal.trim().replace(/^0x/i, "");
+    if (!isHex(hexadecimal) || digits.length > this.bytes * 2) {
+      // Still being typed, or too long for the type: nothing is written
+      return;
+    }
+    await this.writeMemory(hexToBits(digits, this.bytes * 8));
   }
 
   public async ngModelChange_ValueInSection_Decimal(value: number): Promise<void> {
-    if (typeof value === "string") {
-      value = 0;
-      console.error("Should be a number", value);
-    }
-    if (value === undefined || value === null) {
-      value = 0;
-    }
-    if (value > (MAX_VALUE_TYPE_DATA as any)[this.typeDataSelected]) {
+    if (typeof value !== "number" || Number.isNaN(value)) return;
+    const binary = valueToBinary(this.typeDataSelected, value);
+    if (binary === null) {
       await this.TOAST_ErrorInValueMemory();
-      this.machine.memory.setMemoryWordBinaryByIndex(this.addressMemoryIndex, DEFAULT_BINARY_32_BITS);
-      console.error("Value not valid, data size error");
+      logger.error("Value not valid, data size error");
       return;
     }
-
-    switch (this.typeDataSelected) {
-      case "Byte":
-        this.valueInSection_Byte = value;
-        await this.changeMemory(value);
-        break;
-      case "HalfWord":
-        this.valueInSection_HalfWord = value;
-        await this.changeMemory(value);
-        break;
-      case "Word":
-        this.valueInSection_Word = value;
-        await this.changeMemory(value);
-        break;
-      case "Float":
-        this.valueInSection_Float_Binary32_IEEE754 = value;
-        await this.changeMemory(value);
-        break;
-      case "Double":
-        this.valueInSection_Double_Binary64_IEEE754 = value;
-        await this.changeMemory(value);
-        break;
-    }
-
-    return Promise.resolve();
+    await this.writeMemory(binary);
   }
 }

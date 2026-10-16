@@ -1,17 +1,17 @@
-<div class="card" id="card-debug" cdkDrag>
+<div thumderCard class="card" id="card-debug" cdkDrag>
   <div class="card-header">
     <h3 class="card-title">
-      <button type="button" class="btn btn-tool" cdkDragHandle>
+      <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
         <i class="fas fa-arrows-alt" aria-hidden="true"></i>
       </button>
       {{ "DEBUG" | translate }}
     </h3>
 
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" thumderCardWidget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="remove" (click)="globals.showDebug=!globals.showDebug">
+      <button type="button" class="btn btn-tool" (click)="globals.showDebug=!globals.showDebug" [title]="'FORMS.CLOSE' | translate" [attr.aria-label]="'FORMS.CLOSE' | translate">
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>

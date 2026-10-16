@@ -1,177 +1,135 @@
-import { type AfterViewInit, Component, inject, type OnInit } from "@angular/core";
-import {
-  DEFAULT_AUTO_SAVE_CONFIGURATION,
-  DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
-  DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION,
-  DEFAULT_MEMORY_SIZE_CONFIGURATION,
-  DEFAULT_MULTIVIEW_CONFIGURATION,
-  DEFAULT_TIME_SIMULATION_CONFIGURATION,
-  DEFAULT_WEB_SOCKET_CONFIGURATION,
-} from "@app/CONSTANTS";
-import type {
-  TypeEnabledForwardingConfiguration,
-  TypeFloatingPointStageConfiguration,
-  TypeMultiviewConfiguration,
-  TypeWebSocketConfiguration,
-} from "@app/Types";
+import { CdkDrag, CdkDragHandle, CdkDragPlaceholder, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
+import { UpperCasePipe } from "@angular/common";
+import { Component, effect, inject, signal } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import type { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration } from "@app/Types";
+import { changesMachine, defaultConfig, type ThumderConfig, validateConfig } from "@core/config/config";
+import { ConfigService } from "@core/config/config.service";
+import { ExerciseService } from "@core/exercises/exercise.service";
+import type { Lockable } from "@core/exercises/share";
 import { MachineService } from "@core/machine/machine.service";
 import { Globals } from "@core/services/globals/globals.service";
-import { SocketProviderConnectService } from "@core/services/socket/socket-provider-connect.service";
-import { StorageService } from "@core/storage/storage.service";
-import { AppConfig } from "../../../../environments/_environment";
+import { TranslatePipe } from "@ngx-translate/core";
+import { ModalService } from "@shared/directives/bootstrap/modal.directive";
+import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/modal.directive";
+import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
-interface EventTargetInput extends EventTarget {
-  value: string | number | boolean;
-}
+type FloatingPointUnit = keyof TypeFloatingPointStageConfiguration;
+
+/** The modal that asks before a change of the configuration throws away the simulation going on */
+const CONFIRM_MODAL = "configConfirmModal";
 
 @Component({
   selector: "view-config",
   templateUrl: "./config.view.html",
   styleUrls: [],
-  standalone: false,
+  imports: [
+    CardDirective,
+    CardWidgetDirective,
+    FormsModule,
+    CdkDropListGroup,
+    CdkDropList,
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDragHandle,
+    ModalDismissDirective,
+    UpperCasePipe,
+    TranslatePipe,
+  ],
 })
-export class ConfigView implements OnInit, AfterViewInit {
+export class ConfigView {
   globals = inject(Globals);
-  private storage = inject(StorageService);
-  private socket = inject(SocketProviderConnectService);
+  private config = inject(ConfigService);
   private machine = inject(MachineService);
+  private modals = inject(ModalService);
+  private exercises = inject(ExerciseService);
 
-  public readonly webSocketUrlIsEditable: boolean = AppConfig.readonly_web_socket_url;
+  /** The options the exercise open in the editor locks (EDU-07): shown, but they cannot change */
+  public readonly lock = signal(this.exercises.currentLock());
 
-  public enabledForwardingConfiguration: TypeEnabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
-  public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration = DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
-  public memorySizeConfiguration: number = DEFAULT_MEMORY_SIZE_CONFIGURATION;
-  public timeSimulationConfiguration: number = DEFAULT_TIME_SIMULATION_CONFIGURATION;
-  public autoSaveConfiguration: boolean = DEFAULT_AUTO_SAVE_CONFIGURATION;
-  public multiviewConfiguration: TypeMultiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
-  public webSocketConfiguration: TypeWebSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
+  public isLocked(key: Lockable): boolean {
+    return this.lock()?.locked.includes(key) ?? false;
+  }
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
+  public readonly units: { key: FloatingPointUnit; label: string }[] = [
+    { key: "addition", label: "CONFIG.ADDITION" },
+    { key: "multiplication", label: "CONFIG.MULTIPLICATION" },
+    { key: "division", label: "CONFIG.DIVISION" },
+  ];
 
-  constructor() {}
+  // The form: a copy of the configuration (core/config), changed by the inputs until it is saved
+  public enabledForwardingConfiguration = true;
+  public floatingPointStageConfiguration!: TypeFloatingPointStageConfiguration;
+  public memorySizeConfiguration = 0;
+  public timeSimulationConfiguration = 0;
+  public autoSaveConfiguration = true;
+  public multiviewConfiguration!: TypeMultiviewConfiguration;
+  public diagramHistoryConfiguration = 0;
 
-  ngOnInit(): void {
-    this.enabledForwardingConfiguration =
-      this.storage.getItem("enabled_forwarding_configuration") ?? DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
-    this.floatingPointStageConfiguration =
-      this.storage.getItem("floating_point_stage_configuration") ?? DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
-    this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration") ?? DEFAULT_MEMORY_SIZE_CONFIGURATION;
-    this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration") ?? DEFAULT_TIME_SIMULATION_CONFIGURATION;
-    this.autoSaveConfiguration = this.storage.getItem("auto_save_configuration") ?? DEFAULT_AUTO_SAVE_CONFIGURATION;
-    this.multiviewConfiguration = this.storage.getItem("multiview_configuration") ?? DEFAULT_MULTIVIEW_CONFIGURATION;
-    this.webSocketConfiguration = this.storage.getItem("web_socket_configuration") ?? DEFAULT_WEB_SOCKET_CONFIGURATION;
+  /** What the user asked to save while the confirmation is open */
+  private pending: ThumderConfig | null = null;
 
-    this.storage.watchStorage().subscribe((key) => {
-      switch (key) {
-        case "enabled_forwarding_configuration":
-          this.enabledForwardingConfiguration = this.storage.getItem("enabled_forwarding_configuration");
-          break;
-        case "floating_point_stage_configuration":
-          this.floatingPointStageConfiguration = this.storage.getItem("floating_point_stage_configuration");
-          break;
-        case "memory_size_configuration":
-          this.memorySizeConfiguration = this.storage.getItem("memory_size_configuration");
-          break;
-        case "time_simulation_configuration":
-          this.timeSimulationConfiguration = this.storage.getItem("time_simulation_configuration");
-          break;
-        case "auto_save_configuration":
-          this.autoSaveConfiguration = this.storage.getItem("auto_save_configuration");
-          break;
-        case "multiview_configuration":
-          this.multiviewConfiguration = this.storage.getItem("multiview_configuration");
-          break;
-        case "web_socket_configuration":
-          this.webSocketConfiguration = this.storage.getItem("web_socket_configuration");
-          break;
-      }
+  constructor() {
+    // The saved configuration (validated: with the values adjusted to their limits) fills the form again
+    effect(() => this.fill(this.config.value()));
+  }
+
+  private fill(config: ThumderConfig): void {
+    const copy = structuredClone(config);
+    this.enabledForwardingConfiguration = copy.forwarding;
+    this.floatingPointStageConfiguration = copy.floatingPoint;
+    this.memorySizeConfiguration = copy.memorySize;
+    this.timeSimulationConfiguration = copy.delay;
+    this.autoSaveConfiguration = copy.autoSave;
+    this.multiviewConfiguration = copy.multiview;
+    this.diagramHistoryConfiguration = copy.diagramHistory;
+  }
+
+  /** What the form says, valid */
+  private fromForm(): ThumderConfig {
+    return validateConfig({
+      forwarding: this.enabledForwardingConfiguration,
+      floatingPoint: this.floatingPointStageConfiguration,
+      memorySize: this.memorySizeConfiguration,
+      delay: this.timeSimulationConfiguration,
+      autoSave: this.autoSaveConfiguration,
+      multiview: this.multiviewConfiguration,
+      diagramHistory: this.diagramHistoryConfiguration,
     });
   }
 
-  ngAfterViewInit(): void {}
-
-  public async updateConfiguration(): Promise<void> {
-    this.storage.setItem("enabled_forwarding_configuration", this.enabledForwardingConfiguration);
-    this.storage.setItem("floating_point_stage_configuration", this.floatingPointStageConfiguration);
-    this.storage.setItem("memory_size_configuration", this.memorySizeConfiguration);
-    this.storage.setItem("time_simulation_configuration", this.timeSimulationConfiguration);
-    this.storage.setItem("auto_save_configuration", this.autoSaveConfiguration);
-    this.storage.setItem("multiview_configuration", this.multiviewConfiguration);
-    this.storage.setItem("web_socket_configuration", this.webSocketConfiguration);
-    this.socket.updateSocketURl();
-    await this.machine.resetMachineStatus();
-    return Promise.resolve();
-  }
-
-  public async resetConfiguration(): Promise<void> {
-    this.enabledForwardingConfiguration = DEFAULT_ENABLED_FORWARDING_CONFIGURATION;
-    this.floatingPointStageConfiguration = DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION;
-    this.memorySizeConfiguration = DEFAULT_MEMORY_SIZE_CONFIGURATION;
-    this.timeSimulationConfiguration = DEFAULT_TIME_SIMULATION_CONFIGURATION;
-    this.autoSaveConfiguration = DEFAULT_AUTO_SAVE_CONFIGURATION;
-    this.timeSimulationConfiguration = DEFAULT_TIME_SIMULATION_CONFIGURATION;
-    this.multiviewConfiguration = DEFAULT_MULTIVIEW_CONFIGURATION;
-    this.webSocketConfiguration = DEFAULT_WEB_SOCKET_CONFIGURATION;
-
-    this.storage.setItem("enabled_forwarding_configuration", DEFAULT_ENABLED_FORWARDING_CONFIGURATION);
-    this.storage.setItem("multiview_configuration", DEFAULT_MULTIVIEW_CONFIGURATION);
-    this.storage.setItem("floating_point_stage_configuration", DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION);
-    this.storage.setItem("memory_size_configuration", DEFAULT_MEMORY_SIZE_CONFIGURATION);
-    this.storage.setItem("time_simulation_configuration", DEFAULT_TIME_SIMULATION_CONFIGURATION);
-    this.storage.setItem("auto_save_configuration", DEFAULT_AUTO_SAVE_CONFIGURATION);
-    this.storage.setItem("web_socket_configuration", DEFAULT_WEB_SOCKET_CONFIGURATION);
-    this.socket.updateSocketURl();
-    await this.machine.resetMachineStatus();
-    return Promise.resolve();
-  }
-
-  public checkIfHttpUrlIsValid(_url: EventTargetInput | any | string): boolean {
-    try {
-      const url = new URL(_url);
-      return url.protocol === "http:" || url.protocol === "https:";
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
-
-  public checkCount(target: EventTargetInput | any): void {
-    const count = parseInt(target.value.toString(), 10);
-    if (count >= 1 && count <= 8) {
-      target.value = count;
+  /**
+   * Saving or restoring the defaults. A change of what the simulator uses (forwarding, units, memory) loads the program
+   * again: if a simulation is going on, the user confirms it first. The rest (speed, autosave, windows) is saved as it is
+   */
+  public request(action: "save" | "reset", opener: EventTarget | null): void {
+    const next = action === "reset" ? defaultConfig() : this.fromForm();
+    const reload = changesMachine(this.config.value(), next);
+    if (reload && (this.machine.step > 0 || this.machine.isRunning)) {
+      this.pending = next;
+      this.modals.open(CONFIRM_MODAL, opener as HTMLElement | null);
     } else {
-      target.value = 1;
+      void this.apply(next, reload);
     }
   }
 
-  public checkDelay(target: EventTargetInput | any): void {
-    const delay = parseInt(target.value.toString(), 10);
-    if (delay >= 1 && delay <= 50) {
-      target.value = delay;
-    } else {
-      target.value = 1;
-    }
+  public async confirm(): Promise<void> {
+    this.modals.close(CONFIRM_MODAL);
+    if (this.pending) await this.apply(this.pending, true);
+    this.pending = null;
   }
 
-  public checkMemorySize(target: EventTargetInput | any): void {
-    const size = parseInt(target.value.toString(), 10);
-    if (size >= 512 && size <= 1048576) {
-      target.value = size;
-    } else {
-      target.value = 1;
-    }
+  private async apply(next: ThumderConfig, reload: boolean): Promise<void> {
+    this.config.save(next);
+    if (reload) await this.machine.resetMachineStatus();
   }
 
-  public updateEnableForwarding(target: EventTargetInput | any): void {
-    this.enabledForwardingConfiguration = target.checked ?? false;
-  }
-
-  public updateAutoSave(target: EventTargetInput | any): void {
-    this.autoSaveConfiguration = target.checked ?? false;
-  }
-
-  public updateTimeSimulation(target: EventTargetInput | any): void {
-    this.timeSimulationConfiguration = parseInt(target.value.toString(), 10);
+  /** The values out of range, to their limits (as they will be saved), when an input loses the focus */
+  public clampValues(): void {
+    const valid = this.fromForm();
+    this.floatingPointStageConfiguration = valid.floatingPoint;
+    this.memorySizeConfiguration = valid.memorySize;
+    this.timeSimulationConfiguration = valid.delay;
+    this.diagramHistoryConfiguration = valid.diagramHistory;
   }
 }

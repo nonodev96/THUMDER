@@ -4,18 +4,4 @@
   </div>
 }
 
-<td-code-editor
-  [style.height.vh]="height"
-  editorStyle="border:0; overflow: hidden;"
-  flex
-  theme="{{inputTheme}}"
-  language="{{inputLanguage}}"
-  [editorOptions]="EDITOR_OPTIONS_THUMDER"
-  [(ngModel)]="editorFile.content"
-  (ngModelChange)="callBackFunc($event)"
-  (editorInitialized)="editorInitialized($any($event))"
-  (editorConfigurationChanged)="editorConfigurationChanged()"
-  (editorLanguageChanged)="editorLanguageChanged()"
-  (editorValueChange)="editorValueChange()">
-</td-code-editor>
-
+<div #container class="thumder-monaco" [style.height.vh]="height"></div>

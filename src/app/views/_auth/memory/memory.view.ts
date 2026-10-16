@@ -1,63 +1,88 @@
-import { type AfterViewInit, Component, inject, type OnInit, ViewChild } from "@angular/core";
-import { MatSort } from "@angular/material/sort";
+import { UpperCasePipe } from "@angular/common";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, untracked, ViewChild } from "@angular/core";
 import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
 import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
-import { StorageService } from "@core/storage/storage.service";
-import { TranslateService } from "@ngx-translate/core";
-import { TableVirtualScrollDataSource } from "ng-table-virtual-scroll";
+import { TranslatePipe } from "@ngx-translate/core";
+import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
+import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
+import {
+  Binary32ToASCIIPipe,
+  Binary32ToBytesPipe,
+  Binary32ToDecimal_IEEE754Pipe,
+  Binary32ToHalfWordPipe,
+  Binary64ToDecimal_IEEE754Pipe,
+  BinaryByteToNumberPipe,
+  BinaryToHexadecimal_FormatPipe,
+  NumberToHexadecimalPipe,
+  PadStartPipe,
+} from "@shared/pipes/numbers/numbers.pipes";
+import { ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
+import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 @Component({
   selector: "view-memory",
   templateUrl: "./memory.view.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: [],
-  standalone: false,
+  imports: [
+    CardDirective,
+    CardWidgetDirective,
+    ModalOpenDirective,
+    UpperCasePipe,
+    TranslatePipe,
+    Binary32ToASCIIPipe,
+    Binary32ToBytesPipe,
+    Binary32ToHalfWordPipe,
+    Binary32ToDecimal_IEEE754Pipe,
+    Binary64ToDecimal_IEEE754Pipe,
+    NumberToHexadecimalPipe,
+    PadStartFilterPipe,
+    BinaryToHexadecimal_FormatPipe,
+    BinaryByteToNumberPipe,
+    PadStartPipe,
+    VirtualTableComponent,
+    VirtualTableColumnDirective,
+  ],
 })
-export class MemoryView implements OnInit, AfterViewInit {
+export class MemoryView {
   machine = inject(MachineService);
-  private storage = inject(StorageService);
-
-  @ViewChild(MatSort, { static: true })
-  public sort!: MatSort;
+  private cdr = inject(ChangeDetectorRef);
 
   @ViewChild(EditMemoryBinary32Component)
   public editBinary32Component!: EditMemoryBinary32Component;
 
   // "Address-0", "Address-1", "Address-2", "Address-3"
   public displayedColumnsMemory: string[] = ["Address", "Hexadecimal", "Binary", "Word"];
-  public dataSourceMemory: TableVirtualScrollDataSource<number> = new TableVirtualScrollDataSource<number>();
+  /** The rows: the index of each word of the memory */
+  public dataSourceMemory: number[] = [];
   public typeDataSelected: TypeDataDisplayColumn = "Word";
+
+  /** How the words of the memory can be shown */
+  public readonly dataTypes: { key: TypeDataDisplayColumn; label: string; wide?: boolean }[] = [
+    { key: "Byte", label: "MACHINE.TYPE_BYTES" },
+    { key: "HalfWord", label: "MACHINE.TYPE_HALF_WORDS" },
+    { key: "Word", label: "MACHINE.TYPE_WORD" },
+    { key: "ASCII", label: "MACHINE.TYPE_ASCII" },
+    { key: "Float", label: "MACHINE.TYPE_FLOAT" },
+    { key: "Double", label: "MACHINE.TYPE_DOUBLE" },
+    { key: "InstructionCode", label: "MACHINE.TYPE_INSTRUCTION", wide: true },
+    { key: "Address-0-1-2-3", label: "MACHINE.TYPE_BYTES_BY_ADDRESS", wide: true },
+    { key: "HalfWord-0-1", label: "MACHINE.TYPE_HALF_WORDS_BY_ADDRESS", wide: true },
+  ];
   public maxHeightCard: string = "75vh";
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
   constructor() {
-    this.dataSourceMemory.filter = "";
-    this.dataSourceMemory.sort = this.sort;
-  }
-
-  ngOnInit(): void {
-    this.storage.watchStorage().subscribe((key) => {
-      switch (key) {
-        case "memory_size":
-          this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
-          break;
-      }
+    // The rows (an index per word): again when a program is loaded, since the configuration can change the size
+    effect(() => {
+      this.machine.state.loads();
+      this.dataSourceMemory = untracked(() => this.machine.memory.getAllIndexByWord());
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSourceMemory.data = this.machine.memory.getAllIndexByWord();
-
-    window.jQuery("#Memory-card").on("expanded.lte.cardwidget", (/*$event*/) => {
-      this.resizeCard("75vh");
-    });
-    window.jQuery("#Memory-card").on("minimized.lte.cardwidget", () => {
-      this.resizeCard("75vh");
-    });
-    window.jQuery("#Memory-card").on("maximized.lte.cardwidget", () => {
-      this.resizeCard("100%");
+    // The table reads the memory of MachineService: it is drawn again when the values change (a cycle, an edit)
+    effect(() => {
+      this.machine.state.values();
+      this.machine.state.loads();
+      this.cdr.markForCheck();
     });
   }
 
@@ -96,16 +121,13 @@ export class MemoryView implements OnInit, AfterViewInit {
   }
 
   public refresh(): void {
-    this.dataSourceMemory.filter = "";
-    this.dataSourceMemory.data = [...this.dataSourceMemory.data];
-    window.dispatchEvent(new Event("resize"));
+    this.dataSourceMemory = [...this.dataSourceMemory];
+    this.cdr.markForCheck();
   }
 
-  private resizeCard(height: string): void {
+  /** The height of the table when its card unfolds, is restored or fills the screen (it measures itself: ViewportResizeDirective) */
+  public resizeCard(height: string): void {
     this.maxHeightCard = height;
-    setTimeout(() => {
-      window.dispatchEvent(new Event("resize"));
-    }, 500);
   }
 
   public getInstructionDLXFromIndex(index: number): string {

@@ -66,8 +66,6 @@
             <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.DEBUG' | translate }}</h4>
             <div class="row">
               <ng-container [ngTemplateOutlet]="card"
-              [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DEBUG}"></ng-container>
-              <ng-container [ngTemplateOutlet]="card"
               [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.LOGGER}"></ng-container>
               <ng-container [ngTemplateOutlet]="card"
               [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PROFILE}"></ng-container>

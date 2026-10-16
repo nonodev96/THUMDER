@@ -7,20 +7,10 @@
   <base href="/">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <!-- What the page may load (SEG-03): its own code, the services of Firebase and the images of GitHub and Google.
+       Styles inline: Angular, Monaco and PixiJS write them. No eval (PixiJS uses @pixi/unsafe-eval) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com https://*.googleusercontent.com https://www.google-analytics.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src https://*.firebaseapp.com https://accounts.google.com https://github.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <link rel="icon" type="image/x-icon" href="assets/icons/faviconWhite.ico">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <script>
-    if (typeof module === 'object') {
-      window.module = module;
-      module = undefined;
-    }
-    if (window.module) {
-      module = window.module;
-    }
-    if (global === undefined) {
-      var global = window;
-    }
-  </script>
   <style>
     .loader {
       position: relative;

@@ -1,0 +1,68 @@
+.datapath-svg {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  font-family: Arial, sans-serif;
+
+  .block {
+    stroke: #333;
+    stroke-width: 1.5;
+  }
+
+  .stage-title {
+    font-size: 15px;
+    font-weight: bold;
+    fill: #222;
+  }
+
+  .label {
+    font-size: 11px;
+    fill: #333;
+  }
+
+  .occupant {
+    font-size: 11px;
+    font-family: "Courier New", monospace;
+    fill: #000;
+  }
+
+  .latch {
+    fill: #bbb;
+    stroke: #555;
+  }
+
+  .wire {
+    stroke: #777;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  .forward {
+    stroke: #bbb;
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+    fill: none;
+
+    &.active {
+      stroke: #00aa00;
+      stroke-width: 4;
+      stroke-dasharray: none;
+    }
+  }
+}
+
+// The dark theme: the white boxes and the texts outside the coloured ones
+:host-context(body.dark-mode) .datapath-svg {
+  .block[fill="#fff"] {
+    fill: #3a3f44;
+  }
+
+  .stage-title,
+  .label {
+    fill: #e9ecef;
+  }
+
+  .latch {
+    fill: #6c757d;
+  }
+}

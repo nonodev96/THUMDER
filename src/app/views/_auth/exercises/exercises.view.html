@@ -1,0 +1,72 @@
+<div class="card card-outline card-primary">
+  <div class="card-header">
+    <h1 class="card-title h3">{{ 'EXERCISES.TITLE' | translate }}</h1>
+  </div>
+  <div class="card-body">
+    <p>{{ 'EXERCISES.HELP' | translate }}</p>
+
+    @if (active(); as exercise) {
+      <!-- The exercise open in the editor -->
+      <section class="callout callout-info" id="exerciseActive" aria-labelledby="exerciseActiveTitle">
+        <h2 class="h5" id="exerciseActiveTitle">{{ text(exercise.title) }}</h2>
+        <p>{{ text(exercise.statement) }}</p>
+        @if (!canCheck()) {
+          <p class="small text-muted" role="status">{{ 'EXERCISES.RUN_FIRST' | translate }}</p>
+        }
+        <form (ngSubmit)="check(exercise)">
+          @for (question of exercise.questions; track question.id) {
+            <div class="form-group mb-2">
+              <label [for]="'answer-' + question.id">{{ text(question.text) }}</label>
+              <div class="d-flex align-items-center">
+                <input type="text" inputmode="numeric" class="form-control form-control-sm w-auto" [id]="'answer-' + question.id" [name]="question.id"
+                  [ngModel]="answer(exercise, question.id)" (ngModelChange)="write(exercise, question.id, $event)" autocomplete="off"
+                  [class.is-valid]="progress()[exercise.id]?.checked && isRight(exercise, question.id)"
+                  [class.is-invalid]="progress()[exercise.id]?.checked && !isRight(exercise, question.id)">
+                @if (progress()[exercise.id]?.checked) {
+                  <span class="ml-2 small" [class.text-success]="isRight(exercise, question.id)" [class.text-danger]="!isRight(exercise, question.id)">
+                    {{ (isRight(exercise, question.id) ? 'EXERCISES.RIGHT' : 'EXERCISES.WRONG') | translate }}
+                  </span>
+                }
+                @if (showSolutions() && canCheck()) {
+                  <span class="ml-2 small text-muted">{{ 'EXERCISES.SOLUTION' | translate: { value: expected(exercise, question.id) } }}</span>
+                }
+              </div>
+            </div>
+          }
+          <button type="submit" class="btn btn-sm btn-primary mr-2" id="exerciseCheck" [disabled]="!canCheck()">{{ 'EXERCISES.CHECK' | translate }}</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="exerciseSolutions" [disabled]="!canCheck()" (click)="showSolutions.set(!showSolutions())">
+            {{ (showSolutions() ? 'EXERCISES.HIDE_SOLUTIONS' : 'EXERCISES.SHOW_SOLUTIONS') | translate }}
+          </button>
+          @if (progress()[exercise.id]?.checked) {
+            <p class="mt-2 mb-0" role="status" id="exerciseScore">{{ 'EXERCISES.SCORE' | translate: { right: score(exercise), total: exercise.questions.length } }}</p>
+          }
+        </form>
+      </section>
+    }
+
+    @if (failed()) {
+      <p class="text-danger" role="alert">{{ 'EXERCISES.FAILED' | translate }}</p>
+    }
+    @for (topic of topics; track topic) {
+      @if (ofTopic(topic).length > 0) {
+        <h2 class="h5 mt-3">{{ 'EXERCISES.TOPIC_' + topic.toUpperCase() | translate }}</h2>
+        <div class="row">
+          @for (exercise of ofTopic(topic); track exercise.id) {
+            <div class="col-md-6 col-xl-4 d-flex">
+              <article class="card card-outline flex-fill" [class.card-success]="progress()[exercise.id]?.checked && score(exercise) === exercise.questions.length">
+                <div class="card-body">
+                  <h3 class="h6">{{ text(exercise.title) }}</h3>
+                  <p class="small mb-2">{{ text(exercise.statement) }}</p>
+                  <p class="small text-muted mb-2">{{ 'EXERCISES.QUESTIONS' | translate: { count: exercise.questions.length, file: exercise.file.split('/').pop() } }}</p>
+                  <button type="button" class="btn btn-sm btn-outline-primary" [attr.data-exercise]="exercise.id" (click)="start(exercise)">
+                    {{ (progress()[exercise.id] ? 'EXERCISES.CONTINUE' : 'EXERCISES.START') | translate }}
+                  </button>
+                </div>
+              </article>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</div>

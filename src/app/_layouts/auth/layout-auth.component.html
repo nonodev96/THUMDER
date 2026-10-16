@@ -49,7 +49,12 @@
 
   <!-- Main Footer -->
   <THUMDER-footer></THUMDER-footer>
+
+  <!-- Where the sidebar covers the content (phones and tablets), touching outside closes it -->
+  <div id="sidebar-overlay" aria-hidden="true" (click)="sidebar.close()"></div>
 </div>
+
+<THUMDER-dlx-io></THUMDER-dlx-io>
 
 @if (globals.showDebug) {
   <THUMDER-windows-debug></THUMDER-windows-debug>

@@ -1,16 +1,23 @@
-<footer class="main-footer">
-  @if (electronService.isElectronApp) {
-    <strong>Copyright &copy; 2020-2022 <a href="#" (click)="electronService.openInExternal('https://github.com/nonodev96/THUMDER')">THUMDER</a>.</strong>
-  }
-  @if (!electronService.isElectronApp) {
-    <strong>Copyright &copy; 2020-2022 <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>.</strong>
-  }
-  All rights reserved. |
-  <button type="button" class="btn btn-xs btn-outline-primary" data-toggle="modal" (click)="globals.showDebug=!globals.showDebug">Debug</button>
+<footer class="main-footer d-flex flex-wrap align-items-center">
+  <!-- The state of the simulation (UI-10): announced to the screen readers when it stops (A11Y-01) -->
+  <div class="thumder-status mr-auto" role="status" id="simulationStatus" [attr.aria-live]="machine.state.running() ? 'off' : 'polite'">
+    <span class="badge mr-2" [class]="'badge mr-2 ' + statusClass()">{{ statusText() | translate }}</span>
+    @if (machine.state.loads() > 0) {
+      <span class="mr-2">{{ 'STATUS.CYCLE' | translate: { cycle: machine.state.cycles() } }}</span>
+      @if (machine.state.line() > 0) { <span class="mr-2">{{ 'STATUS.LINE' | translate: { line: machine.state.line() } }}</span> }
+      @if (fetched()) { <span class="text-monospace d-none d-md-inline">{{ fetched() }}</span> }
+    }
+  </div>
 
-  <div class="float-right d-none d-sm-block">
-    <strong>{{ 'CONFIG.ENVIRONMENT' | translate }}</strong> {{environment}} |
-    <strong>{{ 'CONFIG.LANG' | translate }}</strong> {{lang}} |
-    <strong>{{ 'CONFIG.VERSION' | translate }}</strong> {{version}}
+  <div class="d-flex align-items-center small">
+    <button type="button" class="btn btn-xs btn-outline-primary mr-2" (click)="globals.showDebug=!globals.showDebug">{{ 'FOOTER.DEBUG' | translate }}</button>
+    <span class="d-none d-sm-inline">
+      @if (electronService.isElectronApp) {
+        <a href="#" (click)="$event.preventDefault(); electronService.openInExternal('https://github.com/nonodev96/THUMDER')">THUMDER</a>
+      } @else {
+        <a href="https://github.com/nonodev96/THUMDER">THUMDER</a>
+      }
+      {{ version }} | {{ environment }}
+    </span>
   </div>
 </footer>

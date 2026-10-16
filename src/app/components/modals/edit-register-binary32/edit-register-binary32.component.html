@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editRegisterModalLabel">{{'MACHINE.EDIT_REGISTER' | translate}}</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" thumderModalDismiss [attr.aria-label]="'FORMS.CLOSE' | translate">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -51,7 +51,7 @@
                   [ngModelOptions]="{standalone: true}"
                   (ngModelChange)="onRegisterToEditChangeHexadecimal($event)">
                   <div class="input-group-append">
-                    <span class="input-group-text">in hexadecimal</span>
+                    <span class="input-group-text">{{ 'EDIT.IN_HEXADECIMAL' | translate }}</span>
                   </div>
                 </div>
               </div>
@@ -68,7 +68,7 @@
                       [ngModelOptions]="{standalone: true}"
                       (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
                       <div class="input-group-append">
-                        <span class="input-group-text">in decimal</span>
+                        <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                       </div>
                     </div>
                   </div>
@@ -84,7 +84,7 @@
                         [ngModelOptions]="{standalone: true}"
                         (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
                         <div class="input-group-append">
-                          <span class="input-group-text">in decimal</span>
+                          <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                         </div>
                       </div>
                     </div>
@@ -100,7 +100,7 @@
                           [ngModelOptions]="{standalone: true}"
                           (ngModelChange)="onRegisterToEditChange_WordFloatDouble($event)">
                           <div class="input-group-append">
-                            <span class="input-group-text">in decimal</span>
+                            <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
                           </div>
                         </div>
                       </div>

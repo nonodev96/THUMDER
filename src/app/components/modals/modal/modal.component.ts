@@ -1,10 +1,12 @@
 import { Component, Input, type OnInit } from "@angular/core";
+import { TranslatePipe } from "@ngx-translate/core";
+import { ModalDismissDirective, ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 
 @Component({
   selector: "app-modal",
   templateUrl: "./modal.component.html",
   styleUrls: ["./modal.component.scss"],
-  standalone: false,
+  imports: [ModalOpenDirective, ModalDismissDirective, TranslatePipe],
 })
 export class ModalComponent implements OnInit {
   @Input() public modalID: string = "modal-id";

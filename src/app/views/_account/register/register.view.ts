@@ -2,20 +2,26 @@ import { DOCUMENT } from "@angular/common";
 import { Component, inject, type OnInit } from "@angular/core";
 import {
   type AbstractControl,
+  FormsModule,
+  ReactiveFormsModule,
   UntypedFormBuilder,
   UntypedFormControl,
   type UntypedFormGroup,
   type ValidationErrors,
   Validators,
 } from "@angular/forms";
+import { RouterLink } from "@angular/router";
 import { AppComponent } from "@app/app.component";
 import { AuthService } from "@core/auth/auth.service";
+import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
+import { TranslatePipe } from "@ngx-translate/core";
+import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdown.directive";
 
 @Component({
   selector: "app-register",
   templateUrl: "./register.view.html",
-  standalone: false,
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, DropdownDirective, TranslatePipe],
 })
 export class RegisterView implements OnInit {
   private _document = inject<Document>(DOCUMENT);
@@ -51,9 +57,6 @@ export class RegisterView implements OnInit {
   };
 
   public translationEnabled: boolean = false;
-
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
 
   constructor() {
     this.registerForm = this.formBuilder.group(
@@ -104,7 +107,7 @@ export class RegisterView implements OnInit {
     try {
       await this.authService.GoogleAuth();
     } catch (e) {
-      console.error(e);
+      logger.error(e);
     } finally {
       this.showSpinner = false;
     }
@@ -115,7 +118,7 @@ export class RegisterView implements OnInit {
     try {
       await this.authService.GithubAuth();
     } catch (e) {
-      console.error(e);
+      logger.error(e);
     } finally {
       this.showSpinner = false;
     }

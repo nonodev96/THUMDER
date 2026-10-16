@@ -1,5 +1,6 @@
 import type {
   InterfaceFileItem,
+  InterfaceUser,
   PublicRoutes,
   PublicRoutesList,
   TypeCycleCell,
@@ -16,20 +17,21 @@ import type {
   TypeRegister,
   TypeRegisterToEdit,
   TypeSimulationStep,
-  TypeWebSocketConfiguration,
 } from "@app/Types";
-import type { SocketIoConfig } from "ngx-socket-io";
 import type { IndividualConfig } from "ngx-toastr";
 import npm from "../../package.json";
 import { AppConfig } from "../environments/_environment";
 
 export const NPM_VERSION = npm.version.toString();
 
+/** The web version of THUMDER: the links to share exercises from the desktop application go there (EDU-07) */
+export const PUBLIC_WEB_URL = "https://thumder.netlify.app/";
+
 export const DEFAULT_INTERFACE_FILE_ITEM: InterfaceFileItem = {
   $key: "",
   content: "",
   dataItem: undefined,
-  dateModified: new Date(0),
+  dateModified: 0,
   description: "",
   e1_uid: "",
   f_id: "",
@@ -47,15 +49,55 @@ export const REGEX_IS_ABSOLUTE_HREF = /(?<TAG>^:[a-z][a-z0-9+.-]*:|\/\/)/i;
 export const REGEX_HEXADECIMAL_08 = /^(0x|0X)?([a-fA-F0-9]{08})$/i;
 // export const REGEX_HEXADECIMAL_16 = new RegExp("^(0x|0X|)?([a-fA-F0-9]{16})$", "i");
 
+/**
+ * The classic DLX examples (src/assets/examples-dlx/ejemplos, explained in docs/ejemplos-dlx.md), and the modules they
+ * need from src/assets/examples-dlx. The file manager copies them into a folder.
+ */
+export const DLX_EXAMPLES_FOLDER = "ejemplos";
+export const DLX_EXAMPLES: string[] = [
+  "01-hola-mundo.s",
+  "02-suma-vector.s",
+  "03-maximo.s",
+  "04-fibonacci.s",
+  "05-factorial.s",
+  "06-mcd-euclides.s",
+  "07-multiplica-desplazando.s",
+  "08-binario.s",
+  "09-cadenas.s",
+  "10-burbuja.s",
+  "11-busqueda-binaria.s",
+  "12-criba.s",
+  "13-matrices.s",
+  "14-factorial-recursivo.s",
+  "15-hanoi.s",
+  "16-producto-escalar.s",
+  "17-daxpy.s",
+  "18-daxpy-desenrollado.s",
+  "19-riesgos.s",
+  "20-media-entrada.s",
+];
+export const DLX_EXAMPLES_MODULES: string[] = ["input.s"];
+
 export const DEFAULT_BREAKPOINTS: [] = [];
 export const DEFAULT_TIME_SIMULATION_CONFIGURATION: number = 250;
 export const DEFAULT_AUTO_SAVE_CONFIGURATION: boolean = true;
-export const DEFAULT_LANG: TypeLang = "sp";
+export const DEFAULT_LANG: TypeLang = "es";
 // 0x8000 --> 32768
 export const DEFAULT_MEMORY_SIZE_CONFIGURATION: number = 32768;
 
-export const DEFAULT_WEB_SOCKET_CONFIGURATION: TypeWebSocketConfiguration = {
-  socket_url: AppConfig.socket_url,
+/**
+ * Without Firebase keys in the environment file THUMDER works on its own: no accounts (a local guest), the files in the
+ * browser and no analytics
+ */
+export const FIREBASE_ENABLED: boolean = (AppConfig.firebase?.apiKey ?? "") !== "";
+
+/** The user of the local mode (FIREBASE_ENABLED false) */
+export const LOCAL_USER: InterfaceUser = {
+  uid: "local",
+  email: "",
+  displayName: "",
+  photoURL: "",
+  emailVerified: false,
 };
 
 export const DEFAULT_MULTIVIEW_CONFIGURATION: TypeMultiviewConfiguration = {
@@ -201,6 +243,18 @@ export const DEFAULT_CONFIG_TOAST: Partial<IndividualConfig> = {
   positionClass: "toast-bottom-right",
   progressAnimation: "decreasing",
   closeButton: true,
+  timeOut: 5000,
+};
+
+/**
+ * The toasts of THUMDER (UI-10), all in one place: long enough to be read (about 20 words in 5 s), longer for the
+ * warnings and the errors, and always with a button to close them. The state of the simulation goes in the status bar
+ */
+export const TOAST: Record<"info" | "success" | "warning" | "error", Partial<IndividualConfig>> = {
+  info: { ...DEFAULT_CONFIG_TOAST, timeOut: 5000 },
+  success: { ...DEFAULT_CONFIG_TOAST, timeOut: 3000 },
+  warning: { ...DEFAULT_CONFIG_TOAST, timeOut: 8000 },
+  error: { ...DEFAULT_CONFIG_TOAST, timeOut: 12000 },
 };
 
 export const MAX_VALUE_TYPE_DATA: Record<TypeData, number> = {
@@ -434,18 +488,6 @@ export const ASCII_TABLE = [
   { hex: "7F", binary: "01111111", ascii: "DEL" },
 ];
 
-export const CONFIG_WEBSOCKET: SocketIoConfig = {
-  url: AppConfig.socket_url,
-
-  options: {
-    transports: ["websocket"],
-    reconnection: false,
-    reconnectionDelay: 2000,
-    reconnectionDelayMax: 2500,
-    reconnectionAttempts: 1,
-  },
-};
-
 export const AUTH_ROUTES: PublicRoutesList = {
   PIPELINE: {
     lang: "PIPELINE",
@@ -499,6 +541,24 @@ export const AUTH_ROUTES: PublicRoutesList = {
     displayName: "Statistics",
     data: { breadcrumb: "Statistics" },
     icon: "fas fa-chart-bar",
+    show: true,
+  },
+  DATAPATH: {
+    lang: "DATAPATH",
+    path: "datapath",
+    routerLink: "/auth/datapath",
+    displayName: "Datapath",
+    data: { breadcrumb: "Datapath" },
+    icon: "fas fa-project-diagram",
+    show: true,
+  },
+  EXERCISES: {
+    lang: "EXERCISES",
+    path: "exercises",
+    routerLink: "/auth/exercises",
+    displayName: "Exercises",
+    data: { breadcrumb: "Exercises" },
+    icon: "fas fa-graduation-cap",
     show: true,
   },
   FILE_MANAGER: {
@@ -555,15 +615,6 @@ export const AUTH_ROUTES: PublicRoutesList = {
     icon: "fas fa-wrench",
     show: true,
   },
-  DEBUG: {
-    lang: "DEBUG",
-    path: "debug",
-    routerLink: "/auth/debug",
-    displayName: "Debug",
-    data: { breadcrumb: "Debug" },
-    icon: "fas fa-bug",
-    show: AppConfig.environment === "DEV",
-  },
   LOGGER: {
     lang: "LOGGER",
     path: "logger",
@@ -591,12 +642,6 @@ export const PUBLIC_ROUTES: PublicRoutes = {
   displayName: "Home",
   data: {},
   children: [
-    {
-      lang: "DEBUG",
-      path: "debug",
-      routerLink: "/debug",
-      displayName: "Debug",
-    },
     {
       lang: "LOGIN",
       path: "login",

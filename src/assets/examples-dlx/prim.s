@@ -1,63 +1,54 @@
-;*********** WINDLX EXP.2: GENERATE PRIME NUMBER TABLE  *************
-;*********** (C) 1991 GÜNTHER RAIDL						*************
-;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR			*************
+;*********** WINDLX Exp.2: Generate prime number table *************
+;*********** (c) 1991 Günther Raidl                    *************
+;*********** Modified 1992 Maziar Khosravipour         *************
 
 ;-------------------------------------------------------------------
-; PROGRAM BEGINS AT SYMBOL MAIN
-; GENERATES A TABLE WITH THE FIRST 'COUNT' PRIME NUMBERS FROM 'TABLE'
+; Program begins at symbol main
+; generates a table with the first 'Count' prime numbers from 'Table'
 ;-------------------------------------------------------------------
 
-		.DATA 0
+                .data
 
-        ;*** SIZE OF TABLE
-		.GLOBAL		COUNT
-COUNT:	.WORD		10
-
-		.GLOBAL		TABLE
-TABLE:	.SPACE		COUNT*4
-
-        .TEXT 256
-		.GLOBAL	MAIN
-
-		;*** INITIALIZATION
-MAIN:
-		ADDI		R1, R0, #0			;INDEX IN TABLE
-		ADDI		R2, R0, #2 			;CURRENT VALUE
-		;*** DETERMINE, IF R2 CAN BE DIVIDED BY A VALUE IN TABLE
-
-NEXTVALUE:
-		ADDI		R3, R0, #0 	;HELPINDEX IN TABLE
-
-LOOP:
-		SEQ			R4, R1, R3	;END OF TABLE?
-		BNEZ		R4, ISPRIM	;R2 IS A PRIME NUMBER
-		LW			R5, TABLE(R3)
-		DIVU		R6, R2, R5
-		MULTU		R7, R6, R5
-		SUBU		R8, R2, R7
-		BEQZ		R8, ISNOPRIM
-		ADDI		R3, R3, #4
-		J			LOOP
+                ;*** size of table
+                .global Count
+Count:          .word   10
+                .global Table
+Table:          .space  Count*4
 
 
-;*** WRITE VALUE INTO TABLE AND INCREMENT INDEX
-ISPRIM:
-		SW			TABLE(R1), R2
-		ADDI		R1, R1, #4
+                .text
 
-		;*** 'COUNT' REACHED?
-		LW			R9, COUNT
-		SRLI		R10, R1, #2
-		SGE			R11, R10, R9
-		BNEZ		R11, FINISH
+                .global main
+main:
+                ;*** Initialization
+                addi    r1,r0,0         ;Index in Table
+                addi    r2,r0,2         ;Current value
 
+                ;*** Determine, if R2 can be divided by a value in table
+NextValue:      addi    r3,r0,0         ;Helpindex in Table
+Loop:           seq     r4,r1,r3        ;End of Table?
+                bnez    r4,IsPrim       ;R2 is a prime number
+                lw      r5,Table(R3)
+                divu    r6,r2,r5
+                multu   r7,r6,r5
+                subu    r8,r2,r7
+                beqz    r8,IsNoPrim
+                addi    r3,r3,4
+                j       Loop
 
-;*** CHECK NEXT VALUE
-ISNOPRIM:
-		ADDI		R2, R2, #1 	;INCREMENT R2
-		J			NEXTVALUE
+IsPrim:         ;*** Write value into Table and increment index
+                sw      Table(r1),r2
+                addi    r1,r1,4
 
+                ;*** 'Count' reached?
+                lw      r9,Count
+                srli    r10,r1,2
+                sge     r11,r10,r9
+                bnez    r11,Finish
 
-;*** END
-FINISH:
-		TRAP		0
+IsNoPrim:       ;*** Check next value
+                addi    r2,r2,1         ;increment R2
+                j       NextValue
+
+Finish:         ;*** end
+                trap    0

@@ -1,17 +1,52 @@
+import * as fs from "node:fs";
 import * as path from "node:path";
 import * as url from "node:url";
-import { app, BrowserWindow, ipcMain, Menu, Notification, type NotificationConstructorOptions, nativeImage, screen, Tray } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  Notification,
+  type NotificationConstructorOptions,
+  nativeImage,
+  screen,
+  shell,
+  Tray,
+} from "electron";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1);
 const isServe = args.some((val) => val === "--serve");
+
+// The Angular application, built by `ng build` into dist/browser
+const DEV_SERVER_URL = "http://localhost:4200";
+const APP_URL = isServe
+  ? DEV_SERVER_URL
+  : url.format({
+      pathname: path.join(__dirname, "dist", "browser", "index.html"),
+      protocol: "file:",
+      slashes: true,
+    });
+
+const EXTERNAL_PROTOCOLS = ["https:", "http:", "mailto:"];
+
+function isExternal(link: string): boolean {
+  try {
+    return EXTERNAL_PROTOCOLS.includes(new URL(link).protocol);
+  } catch {
+    return false;
+  }
+}
+
+function isApp(link: string): boolean {
+  return isServe ? link.startsWith(DEV_SERVER_URL) : link.startsWith("file:");
+}
 
 function createWindow(): BrowserWindow {
   const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
   win = new BrowserWindow({
-    // titleBarStyle: 'hiddenInset',
     x: 0,
     y: 0,
     width: size.width,
@@ -19,29 +54,36 @@ function createWindow(): BrowserWindow {
     minWidth: 400,
     minHeight: 400,
     webPreferences: {
-      // nativeWindowOpen: true,
-      // enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
-      nodeIntegration: true,
-      allowRunningInsecureContent: isServe,
-      contextIsolation: false, // false if you want to run 2e2 test with Spectron
+      // The page has no access to Node.js: it only gets what preload.ts exposes
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: false,
+      contextIsolation: true,
+      sandbox: true,
     },
+  });
+
+  // Links to other sites open in the browser of the system, never inside THUMDER
+  win.webContents.setWindowOpenHandler(({ url: link }) => {
+    if (isExternal(link)) void shell.openExternal(link);
+    return { action: "deny" };
+  });
+  win.webContents.on("will-navigate", (event, link) => {
+    if (isApp(link)) return;
+    event.preventDefault();
+    if (isExternal(link)) void shell.openExternal(link);
   });
 
   if (isServe) {
     win.webContents.openDevTools();
-    require("electron-reload")(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`),
-    });
-    win.loadURL("http://localhost:4200");
-  } else {
-    win.loadURL(
-      url.format({
-        pathname: path.join(__dirname, "dist/index.html"),
-        protocol: "file:",
-        slashes: true,
-      }),
-    );
+    // The page reloads by itself with `ng serve`; when main.js or preload.js change (tsc), Electron starts again
+    for (const file of ["main.js", "preload.js"]) {
+      fs.watch(path.join(__dirname, file), () => {
+        app.relaunch();
+        app.exit(0);
+      });
+    }
   }
+  void win.loadURL(APP_URL);
 
   // Emitted when the window is closed.
   win.on("closed", () => {
@@ -64,7 +106,7 @@ try {
   let tray = null;
   let alwaysOnTop = false;
   app.whenReady().then(() => {
-    const image = nativeImage.createFromPath(path.join(__dirname, "dist/assets/icons/faviconWhite.512x512.png"));
+    const image = nativeImage.createFromPath(path.join(__dirname, "dist", "browser", "assets", "icons", "faviconWhite.512x512.png"));
     tray = new Tray(image.resize({ width: 20, height: 20 }));
     const contextMenu = Menu.buildFromTemplate([
       {
@@ -80,22 +122,11 @@ try {
       {
         label: "Reload app",
         click: async () => {
-          if (isServe) {
-            await win.loadURL("http://localhost:4200");
-          } else {
-            await win.loadURL(
-              url.format({
-                pathname: path.join(__dirname, "dist/index.html"),
-                protocol: "file:",
-                slashes: true,
-              }),
-            );
-          }
-          // await shell.openExternal("https://electronjs.org");
+          await win?.loadURL(APP_URL);
         },
       },
     ]);
-    tray.setToolTip("This is my application.");
+    tray.setToolTip("THUMDER");
     tray.setContextMenu(contextMenu);
   });
 
@@ -116,29 +147,18 @@ try {
     }
   });
 
+  ipcMain.handle("thumder-open-external", async (_event, link: unknown) => {
+    if (typeof link === "string" && isExternal(link)) await shell.openExternal(link);
+  });
+
   ipcMain.on("thumder-notification", (_$event, _args) => {
     const options: NotificationConstructorOptions = {
-      title: "Custom Notification",
-      subtitle: "Subtitle of the Notification",
-      body: "Body of Custom Notification",
+      title: "THUMDER",
+      body: "Notifications are working",
       silent: false,
-      // icon:             path.join(__dirname, "./src/assets/image.png"),
-      // sound:            path.join(__dirname, "./src/assets/sound.mp3"),
-      hasReply: true,
-      timeoutType: "never",
-      replyPlaceholder: "Reply Here",
-      urgency: "critical",
-      closeButtonText: "Close Button",
-      actions: [
-        {
-          type: "button",
-          text: "Show Button",
-        },
-      ],
     };
     const customNotification = new Notification(options);
     customNotification.show();
-    // customNotification.close();
   });
 } catch (error) {
   console.error(error);

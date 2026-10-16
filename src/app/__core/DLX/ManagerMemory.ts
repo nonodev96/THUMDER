@@ -1,67 +1,48 @@
 import type { TypeDirectiveData, TypeInstructionsData, TypeMemory, TypeMemoryToUpdate } from "@app/Types";
-import { Utils } from "@app/Utils";
 import type { InterfaceMemory } from "@core/DLX/interfaces";
+import { logger } from "@core/logger/logger";
+import { hexToBits, hexToNumber } from "@core/numbers";
 import { Int32 } from "@core/TypesData";
 
+// Memoria big-endian direccionable por bytes: el byte 0 de una palabra es el más significativo
 export class ManagerMemory implements InterfaceMemory {
   // Bytes
   public _memorySizeBytes: number;
-  // private _memory: Array<Int32>;
   public _memoryInt8Array: Uint8Array;
 
   constructor(memorySizeBytes: number) {
     this._memorySizeBytes = memorySizeBytes;
+    // 8 bytes de margen: un double que empiece en la última palabra no se sale del array
     this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
-    // this._memory = [...new Array(this._memorySize)].map((v, i, a) => new Int32())
   }
 
   get memorySizeBytes() {
-    return this._memorySizeBytes * 4;
+    return this._memorySizeBytes;
   }
 
   set memorySizeBytes(memorySize: number) {
-    this._memorySizeBytes = memorySize;
-    this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
+    this.setSize(memorySize);
   }
 
   public processResponseMachineDirectives(directives: TypeDirectiveData[]): void {
     for (const directive of directives) {
       switch (directive.directive) {
-        case "DATA": {
-          break;
-        }
-        case "GLOBAL": {
-          break;
-        }
-        case "SPACE": {
-          break;
-        }
-        case "ALIGN": {
-          break;
-        }
-        case "ASCII": {
-          break;
-        }
-        case "ASCIIZ": {
-          break;
-        }
-        case "BYTE": {
-          break;
-        }
-        case "FLOAT": {
-          break;
-        }
-        case "DOUBLE": {
-          break;
-        }
-        case "WORD": {
-          break;
-        }
+        case "DATA":
+        case "GLOBAL":
+        case "SPACE":
+        case "ALIGN":
+        case "ASCII":
+        case "ASCIIZ":
+        case "BYTE":
+        case "FLOAT":
+        case "DOUBLE":
+        case "WORD":
         case "TEXT": {
+          // THUMDER-server writes the data of the directives into its own memory and does not send it yet
           break;
         }
         default: {
-          console.warn("Error, type of directive not valid", directive);
+          logger.warn("Error, type of directive not valid", directive);
           break;
         }
       }
@@ -70,7 +51,7 @@ export class ManagerMemory implements InterfaceMemory {
 
   public processResponseMachineInstructions(instructions: TypeInstructionsData[]): void {
     for (const instruction of instructions) {
-      const binary32 = Utils.hexadecimalToBinary(instruction.code);
+      const binary32 = hexToBits(instruction.code);
       this.setMemoryWordBinaryByAddress(instruction.address, binary32);
     }
   }
@@ -80,35 +61,30 @@ export class ManagerMemory implements InterfaceMemory {
       const { typeData, address, value } = memoryToUpdate;
       switch (typeData) {
         case "Byte": {
-          const binary = Utils.hexadecimalToBinary(value);
-          this.setMemoryByteBinaryByAddress(address, binary);
+          this.setMemoryByteBinaryByAddress(address, hexToBits(value, 8));
           break;
         }
         case "HalfWord": {
-          const binary = Utils.hexadecimalToBinary(value);
-          this.setMemoryHalfWordBinaryByAddress(address, binary);
+          this.setMemoryHalfWordBinaryByAddress(address, hexToBits(value, 16));
           break;
         }
         case "Word": {
-          const binary = Utils.hexadecimalToBinary(value);
-          this.setMemoryWordBinaryByAddress(address, binary);
+          this.setMemoryWordBinaryByAddress(address, hexToBits(value, 32));
           break;
         }
         case "Float": {
-          const binary = Utils.hexadecimalToBinary(value);
-          this.setMemoryFloatBinaryByAddress(address, binary);
+          this.setMemoryFloatBinaryByAddress(address, hexToBits(value, 32));
           break;
         }
         case "Double": {
-          const binary = Utils.hexadecimalToBinary(value);
-          this.setMemoryDoubleBinaryByAddress(address, binary);
+          this.setMemoryDoubleBinaryByAddress(address, hexToBits(value, 64));
           break;
         }
         case "ASCII": {
           break;
         }
         default: {
-          console.warn("Can't process memory", typeData, address, value);
+          logger.warn("Can't process memory", typeData, address, value);
           break;
         }
       }
@@ -123,20 +99,11 @@ export class ManagerMemory implements InterfaceMemory {
   }
 
   public getMemoryWordByAddress(address: string): Int32 {
-    const index = Utils.hexadecimalToDecimal(address);
-    const data = new Int32();
-    data.binary = this.getMemoryWordBinaryByIndex(index);
-    return data;
+    return this.getMemoryWordByIndex(hexToNumber(address));
   }
 
   public getMemoryWordBinaryByIndex(index: number): string {
-    return (
-      "" +
-      this._memoryInt8Array[index].toString(2).padStart(8, "0") +
-      this._memoryInt8Array[index + 1].toString(2).padStart(8, "0") +
-      this._memoryInt8Array[index + 2].toString(2).padStart(8, "0") +
-      this._memoryInt8Array[index + 3].toString(2).padStart(8, "0")
-    );
+    return this.readBinary(index, 4);
   }
 
   // WORD - SET
@@ -145,93 +112,73 @@ export class ManagerMemory implements InterfaceMemory {
   }
 
   public setMemoryWordByAddress(address: string, data: Int32): void {
-    const index = Utils.hexadecimalToDecimal(address);
-    this.setMemoryWordBinaryByIndex(index, data.binary);
+    this.setMemoryWordBinaryByIndex(hexToNumber(address), data.binary);
   }
 
   public setMemoryWordBinaryByAddress(address: string, binary32: string): void {
-    const index = Utils.hexadecimalToDecimal(address);
-    this.setMemoryWordBinaryByIndex(index, binary32);
+    this.setMemoryWordBinaryByIndex(hexToNumber(address), binary32);
   }
 
   public setMemoryWordBinaryByIndex(index: number, binary32: string): void {
-    const p0 = binary32.substr(0, 8);
-    const p1 = binary32.substr(8, 8);
-    const p2 = binary32.substr(16, 8);
-    const p3 = binary32.substr(24, 8);
-    this._memoryInt8Array[index] = parseInt(p0, 2);
-    this._memoryInt8Array[index + 1] = parseInt(p1, 2);
-    this._memoryInt8Array[index + 2] = parseInt(p2, 2);
-    this._memoryInt8Array[index + 3] = parseInt(p3, 2);
+    this.writeBinary(index, binary32, 4);
   }
 
   // BYTE - GET
   public getMemoryByteBinaryByIndex(index: number): string {
-    return this._memoryInt8Array[index].toString(2).padStart(8, "0");
+    return this.readBinary(index, 1);
   }
 
   // BYTE - SET
+  // A longer value keeps its low-order byte
   public setMemoryByteBinaryByIndex(index: number, binary: string): void {
-    const p0 = binary.substr(0, 8);
-    this._memoryInt8Array[index] = parseInt(p0, 2);
+    this.writeBinary(index, binary.length > 8 ? binary.slice(-8) : binary, 1);
   }
 
   public setMemoryByteBinaryByAddress(address: string, binary08: string): void {
-    const p0 = binary08.substr(0, 8);
-    const index = Utils.hexadecimalToDecimal(address);
-    this._memoryInt8Array[index] = parseInt(p0, 2);
+    this.setMemoryByteBinaryByIndex(hexToNumber(address), binary08);
   }
 
   // HALF WORD - GET
   public getMemoryHalfWordBinaryByIndex(index: number): string {
-    return `${this._memoryInt8Array[index].toString(2).padStart(8, "0")}${this._memoryInt8Array[index + 1].toString(2).padStart(8, "0")}`;
+    return this.readBinary(index, 2);
   }
 
   // HALF WORD - SET
   public setMemoryHalfWordBinaryByIndex(index: number, binary16: string): void {
-    const p0 = binary16.substr(0, 8);
-    const p1 = binary16.substr(8, 8);
-    this._memoryInt8Array[index] = parseInt(p0, 2);
-    this._memoryInt8Array[index + 1] = parseInt(p1, 2);
+    this.writeBinary(index, binary16.length > 16 ? binary16.slice(-16) : binary16, 2);
   }
 
   public setMemoryHalfWordBinaryByAddress(address: string, binary16: string): void {
-    const index = Utils.hexadecimalToDecimal(address);
-    const p0 = binary16.substr(0, 8);
-    const p1 = binary16.substr(8, 8);
-    this._memoryInt8Array[index] = parseInt(p0, 2);
-    this._memoryInt8Array[index + 1] = parseInt(p1, 2);
+    this.setMemoryHalfWordBinaryByIndex(hexToNumber(address), binary16);
   }
 
-  // HALF WORD - SET
+  // ANY WIDTH (1, 2, 4 or 8 bytes)
+  public getMemoryBinaryByIndex(index: number, bytes: number): string {
+    return this.readBinary(index, bytes);
+  }
+
+  public setMemoryBinaryByIndex(index: number, binary: string): void {
+    this.writeBinary(index, binary, binary.length / 8);
+  }
+
+  /** Whether `bytes` bytes starting at `index` are inside the memory */
+  public isInMemory(index: number, bytes: number): boolean {
+    return Number.isInteger(index) && index >= 0 && index + bytes <= this._memorySizeBytes;
+  }
+
+  // FLOAT / DOUBLE - SET
   public setMemoryFloatBinaryByAddress(address: string, binary32: string): void {
-    const index = Utils.hexadecimalToDecimal(address);
-    this.setMemory_stringBinary_ByIndex(index, binary32);
+    this.writeBinary(hexToNumber(address), binary32, 4);
   }
 
   public setMemoryDoubleBinaryByAddress(address: string, binary64: string): void {
-    const index = Utils.hexadecimalToDecimal(address);
-    this.setMemory_stringBinary_ByIndex(index, binary64);
-  }
-
-  private setMemory_stringBinary_ByIndex(index: number, binary_08_16_32_64: string): void {
-    for (let pos = 0; pos < binary_08_16_32_64.length; pos += 8) {
-      const p0 = binary_08_16_32_64.substr(pos, 8);
-      this._memoryInt8Array[index + (pos % 8)] = parseInt(p0, 2);
-    }
+    this.writeBinary(hexToNumber(address), binary64, 8);
   }
 
   // 0          1          2          3
   // 00000000 - 00000000 - 00000000 - 00000000
   public getAllMemoryWord(): Int32[] {
-    const list = [];
-    let data: Int32;
-    for (let index = 0; index <= this._memorySizeBytes; index += 4) {
-      data = new Int32();
-      data.binary = this.getMemoryWordBinaryByIndex(index);
-      list.push(data);
-    }
-    return list;
+    return this.getAllIndexByWord().map((index) => this.getMemoryWordByIndex(index));
   }
 
   public getAllIndexByWord(): number[] {
@@ -246,8 +193,10 @@ export class ManagerMemory implements InterfaceMemory {
     this._memoryInt8Array = new Uint8Array(this._memorySizeBytes + 8);
   }
 
+  // Cambiar el tamaño vacía la memoria
   public setSize(memorySize: number) {
     this._memorySizeBytes = memorySize;
+    this.reset();
   }
 
   // TODO
@@ -262,5 +211,32 @@ export class ManagerMemory implements InterfaceMemory {
         } as TypeMemory,
       ];
     });
+  }
+
+  private checkRange(index: number, bytes: number) {
+    if (!Number.isInteger(index) || index < 0 || index + bytes > this._memorySizeBytes + 8) {
+      const address = Number.isInteger(index) && index >= 0 ? `0x${index.toString(16).toUpperCase().padStart(8, "0")}` : String(index);
+      throw new RangeError(`Address ${address} is out of memory (${this._memorySizeBytes} bytes)`);
+    }
+  }
+
+  private readBinary(index: number, bytes: number): string {
+    this.checkRange(index, bytes);
+    let binary = "";
+    for (let i = 0; i < bytes; i++) {
+      binary += this._memoryInt8Array[index + i].toString(2).padStart(8, "0");
+    }
+    return binary;
+  }
+
+  // Writes `bytes` bytes from `binary` (8 bits per byte, most significant byte first)
+  private writeBinary(index: number, binary: string, bytes: number): void {
+    if (binary.length !== bytes * 8 || !/^[01]+$/.test(binary)) {
+      throw new Error(`Expected ${bytes * 8} bits, got "${binary}"`);
+    }
+    this.checkRange(index, bytes);
+    for (let i = 0; i < bytes; i++) {
+      this._memoryInt8Array[index + i] = parseInt(binary.slice(i * 8, i * 8 + 8), 2);
+    }
   }
 }

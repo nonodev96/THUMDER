@@ -7,13 +7,12 @@ export class ManagerStatistics implements InterfaceDataStatistics {
   public _data: TypeDataStatistics;
 
   constructor() {
-    this._data = DEFAULT_DATA_STATISTICS;
+    // A copy: processResponse changes the data, and the defaults are shared by everyone
+    this._data = Utils.clone(DEFAULT_DATA_STATISTICS) as TypeDataStatistics;
   }
 
   public processResponse(response: Partial<TypeDataStatistics>): void {
-    for (const responseElement of Object.keys(response)) {
-      (this._data as any)[responseElement] = (response as any)[responseElement];
-    }
+    this._data = { ...this._data, ...response };
   }
 
   public getData(): TypeDataStatistics {

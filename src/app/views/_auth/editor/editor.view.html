@@ -1,28 +1,21 @@
-<div class="card">
+<div thumderCard class="card" id="card-IDE" (maximized)="onMaximized(true)" (minimized)="onMaximized(false)">
   <div class="card-header">
     <h3 class="card-title">{{ 'NAVIGATION.EDITOR' | translate }} | {{ interfaceFileItem.name ?? ''}}</h3>
     <div class="card-tools">
-      @if (env.environment === 'DEV') {
-        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="getListOfTags()">
-          Get List Of Tags
-        </button>
-        <button type="button" class="btn btn-xs btn-outline-primary mr-1" (click)="toggleDebuggerTag()">
-          Toggle Debugger in cursor
-        </button>
-      }
 
-      <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()">
+      <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()"
+        [title]="'EDITOR.TOGGLE_BREAKPOINT' | translate" [attr.aria-label]="'EDITOR.TOGGLE_BREAKPOINT' | translate">
         <i class="fas fa-circle" aria-hidden="true"></i>
       </button>
 
-      <button type="button" class="btn btn-tool" (click)="closeAndSave()">
+      <button type="button" class="btn btn-tool" (click)="closeAndSave()" [title]="'EDITOR.SAVE' | translate" [attr.aria-label]="'EDITOR.SAVE' | translate">
         <i class="fas fa-save" aria-hidden="true"></i>
       </button>
 
-      <button type="button" class="btn btn-tool" data-card-widget="maximize">
+      <button type="button" class="btn btn-tool" thumderCardWidget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" thumderCardWidget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
 
@@ -30,24 +23,45 @@
   </div>
 
   <div class="card-body">
+    @if (lock(); as exercise) {
+      <div class="callout callout-info py-2 mb-2" id="editorExercise">
+        <h4 class="h6 mb-1">{{ 'SHARE.EXERCISE' | translate }}</h4>
+        @if (exercise.statement) { <p class="mb-1">{{ exercise.statement }}</p> }
+        @if (exercise.locked.length > 0) {
+          <p class="small text-muted mb-0">{{ 'SHARE.LOCKED' | translate }}
+            @for (key of exercise.locked; track key) { <span class="badge badge-secondary mr-1">{{ 'SHARE.LOCK_' + key.toUpperCase() | translate }}</span> }
+          </p>
+        }
+      </div>
+    }
 
     <THUMDER-monaco-editor [inputLanguage]="'thumderLanguage'" [inputTheme]="'thumderTheme'"></THUMDER-monaco-editor>
 
   </div>
 
   <div class="card-footer">
-
-    @if (interfaceFileItem) {
-      <pre>
-        $Key: {{interfaceFileItem.$key ?? ''}}
-        User: {{interfaceFileItem.e1_uid ?? ''}}
-        Key: {{interfaceFileItem.key ?? ''}}
-        Name: {{interfaceFileItem.name ?? ''}}
-        Path: {{interfaceFileItem.path ?? ''}}
-        Date modified: {{(interfaceFileItem?.dateModified ?? date) | date: "yyyy-MM-dd HH:mm:ss"}}
-      </pre>
-    }
-
+    <div class="btn-toolbar mb-2" role="toolbar" [attr.aria-label]="'EDITOR.TOOLS' | translate">
+      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorModules" (click)="modules.open($event.currentTarget)">
+        <i class="fas fa-puzzle-piece" aria-hidden="true"></i> {{ 'MODULES.BUTTON' | translate }}
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorSymbols" thumderModalOpen="programSymbolsModal">
+        <i class="fas fa-tags" aria-hidden="true"></i> {{ 'SYMBOLS.BUTTON' | translate }}
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorBreakpoints"
+        (click)="breakpointsModal.open(monacoEditorComponent.getBreakpoints(), monacoEditorComponent.getContent(), $event.currentTarget)">
+        <i class="fas fa-stop-circle" aria-hidden="true"></i> {{ 'BREAKPOINTS.BUTTON' | translate }}
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorShare"
+        (click)="share.open({ name: interfaceFileItem.name, content: monacoEditorComponent.getContent() }, $event.currentTarget)">
+        <i class="fas fa-share-alt" aria-hidden="true"></i> {{ 'SHARE.BUTTON' | translate }}
+      </button>
+    </div>
+    <thumder-problems-panel (goToLine)="monacoEditorComponent.goToLine($event)"></thumder-problems-panel>
   </div>
 </div>
 <!-- /.card -->
+
+<thumder-modules-modal></thumder-modules-modal>
+<thumder-symbols-modal></thumder-symbols-modal>
+<thumder-breakpoints-modal></thumder-breakpoints-modal>
+<thumder-share-modal></thumder-share-modal>

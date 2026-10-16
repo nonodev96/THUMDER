@@ -2,27 +2,26 @@
   <!-- Left navbar links -->
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a class="nav-link" role="button"
-        aria-labelledby="navbar-button"
-        data-widget="pushmenu">
+      <button type="button" class="nav-link btn btn-link" (click)="sidebar.toggle()" [attr.aria-expanded]="sidebar.isExpanded"
+        [attr.aria-label]="'NAVBAR.TOGGLE_SIDEBAR' | translate" [title]="'NAVBAR.TOGGLE_SIDEBAR' | translate">
         <i class="fas fa-bars" aria-hidden="true"></i>
-      </a>
+      </button>
     </li>
 
-    <li class="nav-item d-none d-sm-inline-block">
-      <a [routerLink]="['/']" class="nav-link" title="HomePage">{{ 'HOME' | translate }}</a>
+    <li class="nav-item d-none d-xl-inline-block">
+      <a [routerLink]="['/']" class="nav-link">{{ 'HOME' | translate }}</a>
     </li>
 
 
-    @if (authService.isLoggedIn) {
-      <li class="nav-item dropdown">
-        <a id="dropdownSubMenuNavigation" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-        class="nav-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</a>
+    
+      <li class="nav-item dropdown d-none d-md-block" thumderDropdown>
+        <button type="button" id="dropdownSubMenuNavigation" aria-haspopup="true" aria-expanded="false"
+        class="nav-link btn btn-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</button>
         <ul aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow">
           @for (menu of PRIVATE_AUTH_ROUTES; track menu) {
             <li>
               @if (menu.show) {
-                <a class="dropdown-item" title="{{menu.path}}" (click)="goToPage($event, menu)">
+                <a class="dropdown-item" title="{{menu.path}}" [routerLink]="menu.routerLink">
                   {{ 'NAVIGATION.' + menu.lang | translate }}
                 </a>
               }
@@ -30,155 +29,139 @@
           }
         </ul>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/config']" class="nav-link" title="AUTH-CONFIG">
+      <li class="nav-item d-none d-xl-inline-block">
+        <a [routerLink]="['/auth/config']" class="nav-link">
           {{ 'NAVIGATION.CONFIG' | translate }}
         </a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/file-manager']" class="nav-link" title="AUTH-NAVBAR-FILE-MANAGER">
+      <li class="nav-item d-none d-xl-inline-block">
+        <a [routerLink]="['/auth/file-manager']" class="nav-link">
           {{ 'NAVIGATION.FILE_MANAGER' | translate }}
         </a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/editor']" class="nav-link" title="AUTH-NAVBAR-EDITOR">
+      <li class="nav-item d-none d-xl-inline-block">
+        <a [routerLink]="['/auth/editor']" class="nav-link">
           {{ 'NAVIGATION.EDITOR' | translate }}
         </a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a [routerLink]="['/auth/multiview']" class="nav-link" title="VIEW-MULTIVIEW">
+      <li class="nav-item d-none d-xl-inline-block">
+        <a [routerLink]="['/auth/multiview']" class="nav-link">
           {{ 'NAVIGATION.MULTIVIEW' | translate }}
         </a>
       </li>
-      @if (isDEV) {
-        <li class="nav-item d-none d-sm-inline-block">
-          <a [routerLink]="['/auth/grid-view']" class="nav-link badge-beta" title="GRID-VIEW">
-            {{ 'NAVIGATION.GRID_VIEW' | translate }}
-          </a>
-        </li>
-      }
-    }
+    
 
   </ul>
 
-  <!-- SEARCH FORM -->
-  <!--
-  <form class="form-inline ml-3">
-    <div class="input-group input-group-sm">
-      <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-      <div class="input-group-append">
-        <button class="btn btn-navbar" type="submit" title="search-button">
-          <i class="fas fa-search"></i>
-        </button>
-      </div>
-    </div>
-  </form>
-  -->
   <!-- Right navbar links -->
   <ul class="navbar-nav ml-auto">
 
 
-    @if (authService.isLoggedIn) {
-      <div class="input-group input-group-sm">
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <button type="button" class="btn" (click)="resetConnection()"
-            data-toggle="tooltip" data-placement="bottom" title="Reset connection"
-            [style.color]="isWebsocketStatusConnect">
-            <i class="fas fa-sync"></i>
-          </button>
+    
+      <li class="nav-item d-flex flex-nowrap align-items-center ml-2">
+        <div class="btn-group" role="group" [attr.aria-label]="'SIMULATION.CONTROLS' | translate"
+          [title]="'SIMULATION.SHORTCUTS' | translate">
           <button type="button" class="btn" (click)="reset()"
-            data-toggle="tooltip" data-placement="bottom" title="Reset code"
-            [style.color]="isWebsocketStatusConnect ? '#28a745' : '#ffc107'">
-            <i class="fas fa-exchange-alt"></i>
+            [attr.aria-label]="'SIMULATION.LOAD' | translate" [title]="('SIMULATION.LOAD' | translate) + ' (Shift+F5)'"
+            style="color: #28a745">
+            <i class="fas fa-exchange-alt" aria-hidden="true"></i>
           </button>
           <button type="button" class="btn" (click)="togglePlayPause()"
-            data-toggle="tooltip" data-placement="bottom" title="Play / Pause"
-            [disabled]="!this.machine.canSimulate"
-            [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-            @if (isRunning === true) {
-              <i class="fas fa-pause"></i>
-            }
-            @if (isRunning === false) {
-              <i class="fas fa-play"></i>
-            }
+            [attr.aria-label]="(machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate"
+            [title]="((machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate) + ' (F5)'"
+            [disabled]="!machine.state.canSimulate()"
+            [style.color]="machine.state.canSimulate() ? '#28a745' : '#ffc107'">
+            <i class="fas" [class.fa-pause]="machine.state.running()" [class.fa-play]="!machine.state.running()" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn" (click)="stepBack()" id="simulationStepBack"
+            [attr.aria-label]="'SIMULATION.STEP_BACK' | translate" [title]="('SIMULATION.STEP_BACK' | translate) + ' (Shift+F10)'"
+            [disabled]="machine.state.cycles() === 0 || machine.state.running()"
+            [style.color]="machine.state.cycles() > 0 ? '#28a745' : '#ffc107'">
+            <i class="fas fa-angle-left" aria-hidden="true"></i>
           </button>
           <button type="button" class="btn" (click)="nextStep()"
-            data-toggle="tooltip" data-placement="bottom" title="Next step"
-            [disabled]="!this.machine.canSimulate"
-            [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-            <i class="fas fa-angle-right"></i>
+            [attr.aria-label]="'SIMULATION.STEP' | translate" [title]="('SIMULATION.STEP' | translate) + ' (F10)'"
+            [disabled]="!machine.state.canSimulate() || machine.state.running()"
+            [style.color]="machine.state.canSimulate() ? '#28a745' : '#ffc107'">
+            <i class="fas fa-angle-right" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn d-none d-sm-inline-block" (click)="runToEnd()" id="simulationRunToEnd"
+            [attr.aria-label]="'SIMULATION.RUN_TO_END' | translate" [title]="('SIMULATION.RUN_TO_END' | translate) + ' (F8)'"
+            [disabled]="!machine.state.canSimulate() || machine.state.running()"
+            [style.color]="machine.state.canSimulate() ? '#28a745' : '#ffc107'">
+            <i class="fas fa-fast-forward" aria-hidden="true"></i>
           </button>
         </div>
-      </div>
-    }
+        <div class="dropdown d-inline-block" thumderDropdown>
+          <button type="button" class="btn dropdown-toggle" id="simulationSpeed" aria-haspopup="true" aria-expanded="false"
+            [attr.aria-label]="('SIMULATION.SPEED' | translate) + ': ' + (speedLabel() | translate)" [title]="('SIMULATION.SPEED' | translate) + ': ' + (speedLabel() | translate)">
+            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="simulationSpeed">
+            @for (speed of speeds; track speed.delay) {
+              <button type="button" class="dropdown-item" (click)="machine.setSpeed(speed.delay)"
+                [class.active]="config.value().delay === speed.delay" [attr.aria-pressed]="config.value().delay === speed.delay">
+                {{ speed.label | translate }} <span class="text-muted small">({{ speed.delay }} ms)</span>
+              </button>
+            }
+          </div>
+        </div>
+        @if (machine.state.quiet()) {
+          <span class="text-muted small ml-1 d-none d-md-inline" role="status">
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ 'SIMULATION.RUNNING_QUIET' | translate }}
+          </span>
+        }
+      </li>
+    
 
-    <li class="nav-item dropdown">
-      <a id="dropdownSubMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-      class="nav-link dropdown-toggle">{{ 'CONFIG.LANG' | translate }}</a>
-      <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu border-0 shadow">
+    <li class="nav-item dropdown" thumderDropdown>
+      <button type="button" id="dropdownTheme" aria-haspopup="true" aria-expanded="false" class="nav-link btn btn-link dropdown-toggle"
+        [title]="'THEME.TITLE' | translate" [attr.aria-label]="'THEME.TITLE' | translate">
+        <i class="fas" [class.fa-moon]="theme.dark()" [class.fa-sun]="!theme.dark()" aria-hidden="true"></i>
+      </button>
+      <ul aria-labelledby="dropdownTheme" class="dropdown-menu dropdown-menu-right border-0 shadow">
+        @for (option of themes; track option.choice) {
+          <li>
+            <button type="button" class="dropdown-item" [id]="'theme-' + option.choice" (click)="theme.set(option.choice)"
+              [class.active]="theme.choice() === option.choice" [attr.aria-pressed]="theme.choice() === option.choice">
+              <i class="fas fa-fw {{ option.icon }}" aria-hidden="true"></i> {{ option.label | translate }}
+            </button>
+          </li>
+        }
+      </ul>
+    </li>
+
+    <li class="nav-item dropdown" thumderDropdown>
+      <button type="button" id="dropdownSubMenuLang" aria-haspopup="true" aria-expanded="false"
+      class="nav-link btn btn-link dropdown-toggle" [title]="'CONFIG.LANG' | translate">
+        <i class="fas fa-language d-lg-none" aria-hidden="true"></i>
+        <span class="d-none d-lg-inline">{{ 'CONFIG.LANG' | translate }}</span>
+        <span class="sr-only d-lg-none">{{ 'CONFIG.LANG' | translate }}</span>
+      </button>
+      <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu dropdown-menu-right border-0 shadow">
         <li>
-          <a class="dropdown-item" (click)="app.setLang('sp')" id="changeLangToSpanish">
-            <span class="flag-icon flag-icon-esp"></span>
-            Spanish
-          </a>
+          <button type="button" class="dropdown-item" (click)="app.setLang('es')" id="changeLangToSpanish" lang="es">
+            <span class="flag-icon flag-icon-esp" aria-hidden="true"></span>
+            Español
+          </button>
         </li>
         <li>
-          <a class="dropdown-item" (click)="app.setLang('en')" id="changeLangToEnglish">
-            <span class="flag-icon flag-icon-gbr"></span>
+          <button type="button" class="dropdown-item" (click)="app.setLang('en')" id="changeLangToEnglish" lang="en">
+            <span class="flag-icon flag-icon-gbr" aria-hidden="true"></span>
             English
-          </a>
+          </button>
         </li>
       </ul>
     </li>
 
-    @if (authService.isLoggedIn) {
-      <!--
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="debug()">
-          <i class="fas fa-bug"></i>
-        </a>
-      </li>
-      -->
-      <!--
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="reset()"
-          [style.color]="colorWebsocketStatus">
-          <i class="fas fa-sync"></i>
-        </a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="togglePlayPause()"
-          [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-          <ng-container *ngIf="isRunning === true">
-            <i class="fas fa-pause"></i>
-          </ng-container>
-          <ng-container *ngIf="isRunning === false">
-            <i class="fas fa-play"></i>
-          </ng-container>
-        </a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="nextStep()"
-          [style.color]="this.machine.canSimulate ? '#28a745' : '#ffc107'">
-          <i class="fas fa-angle-right"></i>
-        </a>
-      </li>
-      -->
-      <!--
-      <li class="nav-item d-none d-sm-inline-block">
-        <a class="nav-link" (click)="end()">
-          <i class="fas fa-angle-double-right"></i>
-        </a>
-      </li>
-      -->
-    }
 
 
-    @if (authService.isLoggedIn) {
+    @if (!authService.isGuest()) {
       <li class="nav-item">
-        <a class="nav-link" id="buttonSignOutID" (click)="authService.SignOut()">
-          <i class="fas fa-sign-out-alt"></i>
-        </a>
+        <button type="button" class="nav-link btn btn-link" id="buttonSignOutID" (click)="authService.SignOut()"
+          [attr.aria-label]="'NAVBAR.SIGN_OUT' | translate" [title]="'NAVBAR.SIGN_OUT' | translate">
+          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+        </button>
       </li>
     }
   </ul>

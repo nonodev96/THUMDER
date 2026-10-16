@@ -1,4 +1,4 @@
-<button type="button" class="btn btn-default {{buttonSize}}" data-toggle="modal" [attr.data-target]="'#' + modalID">
+<button type="button" class="btn btn-default {{buttonSize}}" [thumderModalOpen]="modalID">
   {{ buttonText | translate }}
 </button>
 
@@ -8,7 +8,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">{{ modalTitle | translate }}</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" thumderModalDismiss [attr.aria-label]="'FORMS.CLOSE' | translate">
           <span aria-hidden="true">×</span>
         </button>
       </div>
@@ -16,7 +16,7 @@
         <ng-content></ng-content>
       </div>
       <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
+        <button type="button" class="btn btn-default" thumderModalDismiss>
           {{ buttonCloseText | translate }}
         </button>
         <button type="button" class="btn btn-primary">

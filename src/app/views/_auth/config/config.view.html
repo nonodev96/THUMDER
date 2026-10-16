@@ -1,230 +1,156 @@
-<div class="card">
+<div thumderCard class="card" id="config-card">
   <div class="card-header">
-    <h3 class="card-title">
-      <span data-card-widget="collapse">{{ 'NAVIGATION.CONFIG' | translate }}</span>
-    </h3>
+    <h2 class="card-title">
+      <span thumderCardWidget="collapse">{{ 'NAVIGATION.CONFIG' | translate }}</span>
+    </h2>
   </div>
 
-  <div class="card-body">
-    <form>
+  <form class="card-body" (ngSubmit)="request('save', null)">
+    @if (lock(); as exercise) {
+      <div class="callout callout-warning py-2" id="configLocked">
+        {{ 'CONFIG.LOCKED_BY_EXERCISE' | translate }}
+        @for (key of exercise.locked; track key) { <span class="badge badge-secondary mr-1">{{ 'SHARE.LOCK_' + key.toUpperCase() | translate }}</span> }
+      </div>
+    }
+    <fieldset class="mb-4">
+      <legend class="h5">{{ 'CONFIG.SECTION_PIPELINE' | translate }}</legend>
 
-      <table class="table" aria-describedby="Table with configuration of machine and IDE">
-        <tr>
-          <th id="CONFIG_FLOATING_POINT_STAGE_CONFIGURATION">{{ 'CONFIG.FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</th>
-          <th id="CONFIG_COUNT">{{ 'CONFIG.COUNT' | translate }}</th>
-          <th id="CONFIG_DELAY">{{ 'CONFIG.DELAY' | translate }}</th>
-        </tr>
-        <tr>
-          <th id="CONFIG_ADDITION">{{ 'CONFIG.ADDITION' | translate }}</th>
-          <td>
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="floatingPointStageConfiguration.addition.count"
-              (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
-              title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
-          </td>
-          <td>
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="floatingPointStageConfiguration.addition.delay"
-              (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
-              title="{{ 'CONFIG.ADDITION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
-          </td>
-        </tr>
-        <tr>
-          <th id="CONFIG_MULTIPLICATION">{{ 'CONFIG.MULTIPLICATION' | translate }}</th>
-          <td>
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="floatingPointStageConfiguration.multiplication.count"
-              (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
-              title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
-          </td>
-          <td>
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="floatingPointStageConfiguration.multiplication.delay"
-              (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
-              title="{{ 'CONFIG.MULTIPLICATION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
-          </td>
-        </tr>
-        <tr>
-          <th id="CONFIG_DIVISION">{{ 'CONFIG.DIVISION' | translate }}</th>
-          <td>
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="floatingPointStageConfiguration.division.count"
-              (change)="checkCount($event.target)" min="1" max="8" step="1" class="form-control"
-              title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.COUNT' | translate }}">
-          </td>
-          <td>
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="floatingPointStageConfiguration.division.delay"
-              (change)="checkDelay($event.target)" min="1" max="50" step="1" class="form-control"
-              title="{{ 'CONFIG.DIVISION' | translate }} {{ 'CONFIG.DELAY' | translate }}">
-          </td>
-        </tr>
+      <div class="form-check mb-3">
+        <input type="checkbox" class="form-check-input" id="forwardingID" name="forwarding"
+          [(ngModel)]="enabledForwardingConfiguration" aria-describedby="forwardingHelp" [disabled]="isLocked('forwarding')">
+        <label class="form-check-label" for="forwardingID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
+        <small id="forwardingHelp" class="form-text text-muted">{{ 'CONFIG.HELP_FORWARDING' | translate }}</small>
+      </div>
 
-        <tr>
-          <td colspan="3">{{ 'CONFIG.MESSAGE_1_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</td>
-        </tr>
-        <tr>
-          <td colspan="3">{{ 'CONFIG.MESSAGE_2_FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</td>
-        </tr>
+      <p class="mb-1 font-weight-bold" id="floatingPointTitle">{{ 'CONFIG.FLOATING_POINT_STAGE_CONFIGURATION' | translate }}</p>
+      <small id="floatingPointHelp" class="form-text text-muted mt-0 mb-2">{{ 'CONFIG.HELP_FLOATING_POINT' | translate }}</small>
+      <div class="table-responsive">
+        <table class="table table-sm mb-0" aria-labelledby="floatingPointTitle" aria-describedby="floatingPointHelp">
+          <thead>
+            <tr>
+              <th scope="col">{{ 'CONFIG.UNIT' | translate }}</th>
+              <th scope="col">{{ 'CONFIG.COUNT' | translate }} (1-8)</th>
+              <th scope="col">{{ 'CONFIG.DELAY' | translate }} (1-50)</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (unit of units; track unit.key) {
+              <tr>
+                <th scope="row">{{ unit.label | translate }}</th>
+                <td>
+                  <input type="number" class="form-control" [id]="unit.key + 'CountID'" [name]="unit.key + 'Count'" min="1" max="8" step="1"
+                    [(ngModel)]="floatingPointStageConfiguration[unit.key].count" (change)="clampValues()" [disabled]="isLocked('floatingPoint')"
+                    [attr.aria-label]="(unit.label | translate) + ': ' + ('CONFIG.COUNT' | translate)">
+                </td>
+                <td>
+                  <input type="number" class="form-control" [id]="unit.key + 'DelayID'" [name]="unit.key + 'Delay'" min="1" max="50" step="1"
+                    [(ngModel)]="floatingPointStageConfiguration[unit.key].delay" (change)="clampValues()" [disabled]="isLocked('floatingPoint')"
+                    [attr.aria-label]="(unit.label | translate) + ': ' + ('CONFIG.DELAY' | translate)">
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </fieldset>
 
-        <tr>
-          <td></td>
-          <th colspan="2" id="CONFIG_SIZE">{{ 'CONFIG.SIZE' | translate }}</th>
-        </tr>
-        <tr>
-          <th id="CONFIG_MEMORY_SIZE">{{ 'CONFIG.MEMORY_SIZE' | translate }}</th>
-          <td colspan="2">
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="memorySizeConfiguration"
-              (change)="checkMemorySize($event.target)"
-              class="form-control" min="512" max="1048576" step="8"
-              title="{{ 'CONFIG.MEMORY_SIZE' | translate }}">
-          </td>
-        </tr>
+    <fieldset class="mb-4">
+      <legend class="h5">{{ 'CONFIG.SECTION_MEMORY' | translate }}</legend>
+      <div class="form-group">
+        <label for="memorySizeID">{{ 'CONFIG.MEMORY_SIZE' | translate }}</label>
+        <input type="number" class="form-control" id="memorySizeID" name="memorySize" min="512" max="1048576" step="8"
+          [(ngModel)]="memorySizeConfiguration" (change)="clampValues()" aria-describedby="memorySizeHelp" [disabled]="isLocked('memorySize')">
+        <small id="memorySizeHelp" class="form-text text-muted">{{ 'CONFIG.HELP_MEMORY_SIZE' | translate }}</small>
+      </div>
+    </fieldset>
 
-        <tr>
-          <td></td>
-          <th colspan="2" id="CONFIG_ENABLE_FORWARDING">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</th>
-        </tr>
-        <tr>
-          <th id="CONFIG_ENABLE_FORWARDING_FORM">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</th>
-          <td colspan="2">
-            <div class="form-check">
-              <input type="checkbox"
-                [ngModelOptions]="{standalone: true}"
-                [(ngModel)]="enabledForwardingConfiguration"
-                (change)="updateEnableForwarding($event.target)"
-                class="form-check-input"
-                id="enableForwarding_ID">
-              <label class="form-check-label"
-              for="enableForwarding_ID">{{ 'CONFIG.ENABLE_FORWARDING' | translate }}</label>
-            </div>
-          </td>
-        </tr>
+    <fieldset class="mb-4">
+      <legend class="h5">{{ 'CONFIG.SECTION_SIMULATION' | translate }}</legend>
+      <div class="form-group">
+        <label for="timeSimulationID">{{ 'CONFIG.TIME_SIMULATION' | translate }}</label>
+        <input type="number" class="form-control" id="timeSimulationID" name="timeSimulation" min="0" max="10000" step="50"
+          [(ngModel)]="timeSimulationConfiguration" (change)="clampValues()" aria-describedby="timeSimulationHelp">
+        <small id="timeSimulationHelp" class="form-text text-muted">{{ 'CONFIG.HELP_TIME_SIMULATION' | translate }}</small>
+      </div>
+      <div class="form-group">
+        <label for="diagramHistoryID">{{ 'CONFIG.DIAGRAM_HISTORY' | translate }}</label>
+        <input type="number" class="form-control" id="diagramHistoryID" name="diagramHistory" min="100" max="100000" step="100"
+          [(ngModel)]="diagramHistoryConfiguration" (change)="clampValues()" aria-describedby="diagramHistoryHelp">
+        <small id="diagramHistoryHelp" class="form-text text-muted">{{ 'CONFIG.HELP_DIAGRAM_HISTORY' | translate }}</small>
+      </div>
+    </fieldset>
 
-        <tr>
-          <td></td>
-          <th colspan="2" id="CONFIG_AUTO_SAVE">{{ 'CONFIG.AUTO_SAVE' | translate }}</th>
-        </tr>
-        <tr>
-          <th id="CONFIG_AUTO_SAVE_FORM">{{ 'CONFIG.AUTO_SAVE' | translate }}</th>
-          <td colspan="2">
-            <div class="form-check">
-              <input type="checkbox"
-                [ngModelOptions]="{standalone: true}"
-                [(ngModel)]="autoSaveConfiguration"
-                (change)="updateAutoSave($event.target)"
-                class="form-check-input"
-                id="autoSaveCheck_ID">
-              <label class="form-check-label" for="autoSaveCheck_ID">{{ 'CONFIG.AUTO_SAVE' | translate }}</label>
-            </div>
-          </td>
-        </tr>
+    <fieldset class="mb-4">
+      <legend class="h5">{{ 'CONFIG.SECTION_EDITOR' | translate }}</legend>
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="autoSaveID" name="autoSave"
+          [(ngModel)]="autoSaveConfiguration" aria-describedby="autoSaveHelp">
+        <label class="form-check-label" for="autoSaveID">{{ 'CONFIG.AUTO_SAVE' | translate }}</label>
+        <small id="autoSaveHelp" class="form-text text-muted">{{ 'CONFIG.HELP_AUTO_SAVE' | translate }}</small>
+      </div>
+    </fieldset>
 
-        <tr>
-          <td></td>
-          <th colspan="2" id="CONFIG_TIME_SIMULATION">{{ 'CONFIG.TIME_SIMULATION' | translate }}</th>
-        </tr>
-        <tr>
-          <th id="CONFIG_TIME_SIMULATION_FORM">{{ 'CONFIG.TIME_SIMULATION' | translate }}</th>
-          <td colspan="2">
-            <input type="number"
-              [ngModelOptions]="{standalone: true}"
-              [(ngModel)]="timeSimulationConfiguration"
-              (change)="updateTimeSimulation($event.target)"
-              class="form-control" min="100" max="10000" step="50"
-              title="{{ 'CONFIG.TIME_SIMULATION' | translate }}">
-          </td>
-        </tr>
-
-        <tr>
-          <td></td>
-          <th colspan="2" id="CONFIG_MULTIVIEW">{{ 'CONFIG.MULTIVIEW' | translate }}</th>
-        </tr>
-        <ng-container cdkDropListGroup>
-          <tr>
-            <th id="CONFIG_MULTIVIEW_FORM">{{ 'CONFIG.MULTIVIEW' | translate }}</th>
-            <td>
-              <div class="form-group">
-                <div class="form-group-list-drag"
-                  cdkDropList
-                  #list_1="cdkDropList"
-                  [cdkDropListConnectedTo]="[list_2]"
-                  [cdkDropListData]="this.multiviewConfiguration.list_1"
-                  (cdkDropListDropped)="globals.drop($event)">
-                  @for (component of this.multiviewConfiguration.list_1; track component) {
-                    <div class="form-check" cdkDrag>
-                      <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
-                      <input class="form-check-input" type="checkbox"
-                        [ngModelOptions]="{standalone: true}"
-                        [(ngModel)]="multiviewConfiguration[component]"
-                        title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
-                      <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
-                      <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
-                    </div>
-                  }
-                </div>
+    <fieldset>
+      <legend class="h5">{{ 'CONFIG.MULTIVIEW' | translate }}</legend>
+      <small class="form-text text-muted mt-0 mb-2">{{ 'CONFIG.HELP_MULTIVIEW' | translate }}</small>
+      <div class="row" cdkDropListGroup>
+        <div class="col-12 col-md-6">
+          <div class="form-group-list-drag" cdkDropList #list_1="cdkDropList" [cdkDropListConnectedTo]="[list_2]"
+            [cdkDropListData]="this.multiviewConfiguration.list_1" (cdkDropListDropped)="globals.drop($event)">
+            @for (component of this.multiviewConfiguration.list_1; track component) {
+              <div class="form-check" cdkDrag>
+                <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
+                <input class="form-check-input" type="checkbox" [id]="'multiview-' + component" [name]="'multiview-' + component"
+                  [(ngModel)]="multiviewConfiguration[component]">
+                <label class="form-check-label" [for]="'multiview-' + component">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
+                <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
               </div>
-            </td>
-
-            <td>
-              <div class="form-group-list-drag"
-                cdkDropList
-                #list_2="cdkDropList"
-                [cdkDropListConnectedTo]="[list_1]"
-                [cdkDropListData]="this.multiviewConfiguration.list_2"
-                (cdkDropListDropped)="globals.drop($event)">
-                @for (component of this.multiviewConfiguration.list_2; track component) {
-                  <div class="form-check" cdkDrag>
-                    <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
-                    <input class="form-check-input" type="checkbox"
-                      [ngModelOptions]="{standalone: true}"
-                      [(ngModel)]="multiviewConfiguration[component]"
-                      title="{{ ('NAVIGATION.' + component) | uppercase | translate }}">
-                    <label class="form-check-label">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
-                    <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
-                  </div>
-                }
+            }
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="form-group-list-drag" cdkDropList #list_2="cdkDropList" [cdkDropListConnectedTo]="[list_1]"
+            [cdkDropListData]="this.multiviewConfiguration.list_2" (cdkDropListDropped)="globals.drop($event)">
+            @for (component of this.multiviewConfiguration.list_2; track component) {
+              <div class="form-check" cdkDrag>
+                <div class="form-check-custom-placeholder" *cdkDragPlaceholder></div>
+                <input class="form-check-input" type="checkbox" [id]="'multiview-' + component" [name]="'multiview-' + component"
+                  [(ngModel)]="multiviewConfiguration[component]">
+                <label class="form-check-label" [for]="'multiview-' + component">{{ ("NAVIGATION." + component) | uppercase | translate }}</label>
+                <i class="fas fa-arrows-alt float-right" aria-hidden="true" cdkDragHandle></i>
               </div>
-            </td>
-          </tr>
-        </ng-container>
+            }
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </form>
 
-        <tr>
-          <td></td>
-          <th colspan="2" id="CONFIG_WEBSOCKET">{{ 'CONFIG.WEBSOCKET' | translate }}</th>
-        </tr>
-        <tr>
-          <th id="CONFIG_WEBSOCKET_FORM"><label for="webSocketConfigurationID">{{ 'CONFIG.WEBSOCKET' | translate }}</label></th>
-          <td colspan="2">
-            <div class="form-group">
-              <input type="text"
-                class="form-control"
-                id="webSocketConfigurationID"
-                [readonly]="this.webSocketUrlIsEditable"
-                [ngModelOptions]="{standalone: true}"
-                (change)="checkIfHttpUrlIsValid($event.target)"
-                [(ngModel)]="webSocketConfiguration.socket_url">
-            </div>
-          </td>
-        </tr>
-
-      </table>
-
-    </form>
+  <div class="card-footer d-flex justify-content-between">
+    <button type="button" class="btn btn-secondary" id="configResetButton" (click)="request('reset', $event.currentTarget)">
+      {{ "CONFIG.RESTORE_DEFAULTS" | translate }}
+    </button>
+    <button type="button" class="btn btn-primary" id="configSaveButton" (click)="request('save', $event.currentTarget)">
+      {{ "FORMS.SAVE" | translate }}
+    </button>
   </div>
+</div>
 
-  <div class="card-footer">
-    <button type="reset" class="btn btn-secondary"
-    (click)="resetConfiguration()">{{ "FORMS.RESET" | translate }}</button>
-    <button type="submit" class="btn btn-primary float-right"
-    (click)="updateConfiguration()">{{ "FORMS.SAVE" | translate }}</button>
+<!-- Saving loads the program again: confirmation while a simulation is going on -->
+<div class="modal fade" id="configConfirmModal" tabindex="-1" aria-labelledby="configConfirmTitle" aria-hidden="true" style="display: none">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="configConfirmTitle">{{ 'CONFIG.CONFIRM_TITLE' | translate }}</h5>
+        <button type="button" class="close" thumderModalDismiss [attr.aria-label]="'FORMS.CLOSE' | translate">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">{{ 'CONFIG.CONFIRM_MESSAGE' | translate }}</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" thumderModalDismiss>{{ 'FORMS.CANCEL' | translate }}</button>
+        <button type="button" class="btn btn-primary" id="configConfirmButton" (click)="confirm()">{{ 'CONFIG.CONFIRM_ACCEPT' | translate }}</button>
+      </div>
+    </div>
   </div>
 </div>

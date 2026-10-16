@@ -1,0 +1,26 @@
+@if (open()) {
+  <section class="card card-outline card-primary thumder-dlx-io" [attr.aria-label]="'IO.TITLE' | translate">
+    <div class="card-header d-flex align-items-center">
+      <h2 class="card-title h6 mb-0 mr-auto">{{ 'IO.TITLE' | translate }}</h2>
+      <button type="button" class="btn btn-tool" (click)="clear()" [title]="'IO.CLEAR' | translate"
+        [attr.aria-label]="'IO.CLEAR' | translate">
+        <i class="fas fa-eraser" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-tool" (click)="open.set(false)" [title]="'IO.CLOSE' | translate"
+        [attr.aria-label]="'IO.CLOSE' | translate">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="card-body p-0">
+      <pre #output class="thumder-dlx-io-output mb-0" role="log" aria-live="polite">{{ machine.state.output() }}</pre>
+    </div>
+    @if (machine.state.waitingForInput()) {
+      <form class="card-footer d-flex" (ngSubmit)="send()">
+        <label class="sr-only" for="thumderDlxIoLine">{{ 'IO.INPUT' | translate }}</label>
+        <input #lineInput id="thumderDlxIoLine" name="line" class="form-control form-control-sm mr-2 text-monospace" autocomplete="off"
+          [(ngModel)]="line" [placeholder]="'IO.WAITING' | translate">
+        <button type="submit" class="btn btn-sm btn-primary">{{ 'IO.SEND' | translate }}</button>
+      </form>
+    }
+  </section>
+}

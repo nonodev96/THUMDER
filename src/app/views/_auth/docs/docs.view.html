@@ -10,7 +10,7 @@
         <div cdkDrag>
           <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
           <THUMDER-docs-item [item]="document">
-          <button type="button" class="btn btn-tool" title="Drag to reorder" cdkDragHandle>
+          <button type="button" class="btn btn-tool" [title]="'DOCS.DRAG' | translate" cdkDragHandle>
             <i class="fas fa-arrows-alt" aria-hidden="true"></i>
           </button>
         </THUMDER-docs-item>

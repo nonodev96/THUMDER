@@ -1,0 +1,5 @@
+// A phone scrolls the drawing sideways (see MIN_PIPELINE_SCALE)
+:host {
+  display: block;
+  overflow-x: auto;
+}

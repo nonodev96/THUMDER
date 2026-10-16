@@ -1,55 +1,56 @@
-;*********** WINDLX EX.1: GREATEST COMMON MEASURE   *************
-;*********** (C) 1991 GÜNTHER RAIDL		            *************
-;*********** MODIFIED 1992 MAZIAR KHOSRAVIPOUR	    *************
+;*********** WINDLX Ex.1: Greatest common measure *************
+;*********** (c) 1991 Günther Raidl               *************
+;*********** Modified 1992 Maziar Khosravipour    *************
 
 ;------------------------------------------------------------------------
-; PROGRAM BEGINS AT SYMBOL MAIN
-; REQUIRES MODULE INPUT
-; READ TWO POSITIVE INTEGER NUMBERS FROM STDIN,  CALCULATE THE GCM
-; AND WRITE THE RESULT TO STDOUT
+; Program begins at symbol main
+; requires module INPUT
+; Read two positive integer numbers from stdin, calculate the gcm
+; and write the result to stdout
 ;------------------------------------------------------------------------
 
-		.DATA
+                .data
 
-		;*** PROMPTS FOR INPUT
-PROMPT1:	    .ASCIIZ 	"FIRST NUMBER:"
-PROMPT2:	    .ASCIIZ 	"SECOND NUMBER: "
+                ;*** Prompts for input
+Prompt1:        .asciiz "First Number:"
+Prompt2:        .asciiz "Second Number: "
 
-		;*** DATA FOR PRINTF-TRAP
-PRINTFFORMAT:	.ASCIIZ 	"GCM=%D\N\N"
-		        .ALIGN		2
-PRINTFPAR:	    .WORD		PRINTFFORMAT
-PRINTFVALUE:	.SPACE		4
+                ;*** Data for printf-Trap
+PrintfFormat:   .asciiz "gcM=%d\n\n"
+                .align  2
+PrintfPar:      .word   PrintfFormat
+PrintfValue:    .space  4
 
 
-		.TEXT
-		.GLOBAL	MAIN
-MAIN:
-		;*** READ TWO POSITIVE INTEGER NUMBERS INTO R1 AND R2
-		ADDI		R1, R0, PROMPT1
-		JAL		    INPUTUNSIGNED	;READ UNS.-INTEGER INTO R1
-		ADD		    R2, R1, R0	;R2 <- R1
-		ADDI		R1, R0, PROMPT2
-		JAL		    INPUTUNSIGNED	;READ UNS.-INTEGER INTO R1
+                .text
 
-LOOP:		;*** COMPARE R1 AND R2
-		SEQ		    R3, R1, R2	;R1 == R2 ?
-		BNEZ		R3, RESULT	
-		SGT		    R3, R1, R2	;R1 > R2 ?
-		BNEZ		R3, R1GREATER
-		
-R2GREATER:	;*** SUBTRACT R1 FROM R2
-		SUB		    R2, R2, R1
-		J		    LOOP
+                .global main
+main:
+                ;*** Read two positive integer numbers into R1 and R2
+                addi    r1,r0,Prompt1
+                jal     InputUnsigned   ;read uns.-integer into R1
+                add     r2,r1,r0        ;R2 <- R1
+                addi    r1,r0,Prompt2
+                jal     InputUnsigned   ;read uns.-integer into R1
 
-R1GREATER:	;*** SUBTRACT R2 FROM R1
-		SUB		    R1, R1, R2
-		J		    LOOP
+Loop:           ;*** Compare R1 and R2
+                seq     r3,r1,r2        ;R1 == R2 ?
+                bnez    r3,Result
+                sgt     r3,r1,r2        ;R1 > R2 ?
+                bnez    r3,r1Greater
 
-RESULT: 	;*** WRITE THE RESULT (R1)
-		SW		    PRINTFVALUE, R1
-		ADDI		R14, R0, PRINTFPAR
-		TRAP		5
+r2Greater:      ;*** subtract r1 from r2
+                sub     r2,r2,r1
+                j       Loop
 
-		;*** END
-		TRAP		0
+r1Greater:      ;*** subtract r2 from r1
+                sub     r1,r1,r2
+                j       Loop
+
+Result:         ;*** Write the result (R1)
+                sw      PrintfValue,r1
+                addi    r14,r0,PrintfPar
+                trap    5
+
+                ;*** end
+                trap    0

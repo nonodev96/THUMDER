@@ -1,8 +1,13 @@
 import { Injectable, inject } from "@angular/core";
+import { DLX_EXAMPLES, DLX_EXAMPLES_FOLDER, DLX_EXAMPLES_MODULES } from "@app/CONSTANTS";
 import type { InterfaceFileItem } from "@app/Types";
 import { Utils } from "@app/Utils";
+import { logger } from "@core/logger/logger";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
-import { type Observable, Subject, type Subscription } from "rxjs";
+import { type Observable, Subject } from "rxjs";
+import { cleanName, type NameError, nameError, uniqueName } from "./file-names";
+import { normalizeFile } from "./file-store";
+import { createZip, readZip, type ZipEntry } from "./zip";
 
 export class FileSystemItem {
   path: string;
@@ -10,7 +15,7 @@ export class FileSystemItem {
   pathKeys: string[];
   name: string = "";
   key: string = "";
-  dateModified: Date = new Date();
+  dateModified: number = Date.now();
   size: number = 0;
   hasSubDirectories: boolean = false;
   thumbnail: string = "";
@@ -22,15 +27,6 @@ export class FileSystemItem {
     this.pathKeys = [...pathKeys];
   }
 }
-
-export type UploadInfo = {
-  chunkIndex: number;
-  chunkCount: number;
-  chunkBlob: Blob;
-  chunkSize: number;
-  uploadedSize: number;
-  customData: Record<string, unknown>;
-};
 
 export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileItem {
   $key: string;
@@ -49,6 +45,20 @@ export class THUMDER_FileItem extends FileSystemItem implements InterfaceFileIte
   }
 }
 
+/** A name that cannot be used: `reason` is the key of its message (FILE_MANAGER.NAME_<reason>) */
+export class InvalidNameError extends Error {
+  constructor(
+    public readonly reason: NameError,
+    name: string,
+  ) {
+    super(`Invalid name "${name}": ${reason}`);
+  }
+}
+
+/** The files that can be imported: DLX programs and texts, and ZIP files with them */
+export const IMPORT_EXTENSIONS = [".s", ".txt", ".zip"];
+
+/** The files and folders of the file manager, as a tree of paths ("" is the root folder) */
 @Injectable({
   providedIn: "root",
 })
@@ -57,214 +67,230 @@ export class FileSystemService {
 
   public items: THUMDER_FileItem[] = [];
   private updateUI$: Subject<void> = new Subject<void>();
-  private subscription!: Subscription;
 
-  /** Inserted by Angular inject() migration for backwards compatibility */
-  constructor(...args: unknown[]);
-
-  constructor() {}
-
-  public async init(): Promise<void> {
-    await this.setList_FileItems(await this.fileSystemStorageService.getFiles());
-
-    this.subscription = this.fileSystemStorageService.getAllFilesFromFirestoreAsObservable().subscribe(async (items) => {
-      this.items = [];
-      await this.setList_FileItems(items);
+  constructor() {
+    this.fileSystemStorageService.changes().subscribe((items) => {
+      this.items = items.map((item) => FileSystemService.toFileItem(item));
+      this.updateUI$.next();
     });
+  }
 
-    return Promise.resolve();
+  /** The first time, with no files at all, two classic programs */
+  public async init(): Promise<void> {
+    await this.fileSystemStorageService.generateDefaultFiles();
   }
 
   public getUpdateUIObservable(): Observable<void> {
     return this.updateUI$.asObservable();
   }
 
-  public async getItems(path: FileSystemItem): Promise<Array<THUMDER_FileItem>> {
-    await this.updateLocalItems();
-    const results = this.items.filter((value) => value.path === path.path);
-    const fileItems = results.map((fileItem) => {
-      const item: THUMDER_FileItem = new THUMDER_FileItem(fileItem.path, fileItem.isDirectory, fileItem.pathKeys);
-      return Object.assign({}, item, fileItem);
-    });
-    return Promise.resolve(fileItems);
+  /** The names in a folder (except the item `except`, for a rename) */
+  public namesIn(path: string, except?: string): string[] {
+    return this.items.filter((item) => item.path === path && item.key !== except).map((item) => item.name);
+  }
+
+  /** The name, clean and valid in the folder, or an InvalidNameError */
+  private checkName(name: string, path: string, except?: string): string {
+    const error = nameError(name, this.namesIn(path, except));
+    if (error !== null) throw new InvalidNameError(error, name);
+    return cleanName(name);
+  }
+
+  /** The item and everything inside it, if it is a folder */
+  private withContents(item: { key: string }): THUMDER_FileItem[] {
+    const own = this.items.find((value) => value.key === item.key);
+    if (own === undefined) return [];
+    if (!own.isDirectory) return [own];
+    const fullPath = FileSystemService.join(own.path, own.name);
+    return [own, ...this.items.filter((value) => FileSystemService.isInside(value.path, fullPath))];
+  }
+
+  private static newItem(path: string, name: string, isDirectory: boolean, content = "", date = Date.now()): THUMDER_FileItem {
+    const item = new THUMDER_FileItem(path, isDirectory, path ? path.split("/") : []);
+    item.key = Utils.uuidv4();
+    item.$key = item.key;
+    item.name = name;
+    item.content = content;
+    item.size = content.length;
+    item.dateModified = date;
+    return item;
   }
 
   public async createDirectory(parentDirectory: FileSystemItem, name: string): Promise<THUMDER_FileItem> {
-    const { path, pathKeys } = parentDirectory;
-    const newDirectory = new THUMDER_FileItem(path, true, pathKeys);
-    newDirectory.name = name;
-    newDirectory.key = Utils.uuidv4();
-    newDirectory.dateModified = new Date();
-    await this.fileSystemStorageService.createFileItem(newDirectory);
-    this.items.push(newDirectory);
-    this.updateUI$.next();
-    return Promise.resolve(newDirectory);
+    const folder = FileSystemService.newItem(parentDirectory.path, this.checkName(name, parentDirectory.path), true);
+    await this.fileSystemStorageService.save([folder]);
+    return folder;
   }
 
-  public async createFile(item: FileSystemItem, extension: string): Promise<boolean> {
-    try {
-      const { path, pathKeys } = item;
-      const newItem = new THUMDER_FileItem(path, false, pathKeys);
-      newItem.key = Utils.uuidv4();
-      newItem.name = `New file - ${newItem.key}${extension}`;
-      await this.fileSystemStorageService.createFileItem(newItem);
-      this.updateUI$.next();
-      return Promise.resolve(true);
-    } catch (error) {
-      console.error(error);
-      return Promise.reject(error);
-    }
-  }
-
-  public async updateCategory(
-    directory: FileSystemItem,
-    selectedItems: FileSystemItem[],
-    newCategory: any,
-    viewArea: "navPane" | "itemView",
-  ): Promise<boolean> {
-    const items = viewArea === "navPane" ? [directory] : selectedItems;
-    for (const item of items) {
-      const index = this.items.findIndex((value) => value.key === item.key);
-      if (item.dataItem) {
-        item.dataItem.category = newCategory;
-        this.items[index].dataItem.category = newCategory;
-        const { $key } = this.items[index];
-        await this.fileSystemStorageService.updateFileItem($key, this.items[index]);
-      }
-    }
-    this.updateUI$.next();
-    return Promise.resolve(items.length > 0);
-  }
-
-  public async editFileItem(updateFileItem: THUMDER_FileItem, $key: string): Promise<void> {
-    const index = this.items.findIndex((value) => value.key === updateFileItem.key);
-    if (index > -1) {
-      this.items[index] = FileSystemService.transform_InterfaceFileItem_to_THUMDER_FileItem(updateFileItem);
-
-      this.items[index].dateModified = new Date();
-      await this.fileSystemStorageService.updateFileItem($key, this.items[index]);
-      this.updateUI$.next();
-    }
-    return Promise.resolve();
-  }
-
-  public async renameItem(item: FileSystemItem, newName: string): Promise<THUMDER_FileItem> {
-    const index = this.items.findIndex((value) => value.key === item.key);
-    this.items[index].name = newName;
-    this.items[index].dateModified = new Date();
-    const { $key } = this.items[index];
-    await this.fileSystemStorageService.updateFileItem($key, this.items[index]);
-    this.updateUI$.next();
-    return Promise.resolve(this.items[index]);
-  }
-
-  public async deleteItem(item: FileSystemItem): Promise<void> {
-    const indexToDelete = this.items.findIndex((value) => value.key === item.key);
-    if (indexToDelete > -1) {
-      const element = this.items.find((value) => value.key === item.key);
-      // Actualizamos this.items
-      await this.fileSystemStorageService.deleteFileItem(element!.$key);
-      this.updateUI$.next();
-      return Promise.resolve();
-    } else {
-      return Promise.reject();
-    }
-  }
-
-  public async moveItem(item: THUMDER_FileItem, destinationDirectory: THUMDER_FileItem): Promise<void> {
-    const destPath = destinationDirectory.path ? `${destinationDirectory.path}/${destinationDirectory.name}` : destinationDirectory.name;
-
-    if (item.isDirectory) {
-      const oldFullPath = item.path ? `${item.path}/${item.name}` : item.name;
-      for (const child of this.items) {
-        if (child.path === oldFullPath || child.path.startsWith(`${oldFullPath}/`)) {
-          const newChildPath = `${destPath}/${item.name}${child.path.slice(oldFullPath.length)}`;
-          child.path = newChildPath;
-          child.pathKeys = newChildPath.split("/");
-          child.dateModified = new Date();
-          await this.fileSystemStorageService.updateFileItem(child.$key, child);
-        }
-      }
-    }
-
-    const index = this.items.findIndex((v) => v.key === item.key);
-    if (index > -1) {
-      this.items[index].path = destPath;
-      this.items[index].pathKeys = destPath ? destPath.split("/") : [];
-      this.items[index].dateModified = new Date();
-      await this.fileSystemStorageService.updateFileItem(this.items[index].$key, this.items[index]);
-      this.updateUI$.next();
-    }
-  }
-
-  public async importFile(file: File, destinationPath: string): Promise<void> {
-    const content = await file.text();
-    const pathKeys = destinationPath ? destinationPath.split("/") : [];
-    const newItem = new THUMDER_FileItem(destinationPath, false, pathKeys);
-    newItem.key = Utils.uuidv4();
-    newItem.name = file.name;
-    newItem.content = content;
-    newItem.dateModified = new Date(file.lastModified);
-    newItem.size = file.size;
-    await this.fileSystemStorageService.createFileItem(newItem);
-    this.updateUI$.next();
-  }
-
-  // TODO
-  public async uploadFileChunk(
-    fileData: File,
-    uploadInfo: UploadInfo,
-    destinationDirectory: FileSystemItem,
-  ): Promise<THUMDER_FileItem | any> {
-    console.debug("TODO", fileData, uploadInfo, destinationDirectory);
-    return Promise.resolve();
-  }
-
-  // TODO
-  public async downloadItem(items: Array<FileSystemItem>): Promise<void> {
-    console.debug("TODO", items);
-    return Promise.resolve();
-  }
-
-  private async setList_FileItems(items: THUMDER_FileItem[]): Promise<void> {
-    // console.log({items: items})
-    for (const item of items) {
-      const { pathKeys, path, isDirectory }: THUMDER_FileItem = item;
-      const thumderFileItem = new THUMDER_FileItem(path, isDirectory, pathKeys);
-      const newItem = Object.assign({}, thumderFileItem, { ...item });
-      // newItem.$key = $key;
-      const index = this.items.findIndex((value) => value.key === newItem.key);
-      if (index > -1) {
-        this.items[index] = newItem;
-      } else this.items.push(newItem);
-    }
-    // console.log({this_items: this.items})
-    this.updateUI$.next();
-    return Promise.resolve();
-  }
-
-  private async updateLocalItems(): Promise<void> {
-    await this.setList_FileItems(await this.fileSystemStorageService.getFiles());
-    return Promise.resolve();
-  }
-
-  private static transform_InterfaceFileItem_to_THUMDER_FileItem(interfaceFileItem: InterfaceFileItem): THUMDER_FileItem {
-    const file = new THUMDER_FileItem(interfaceFileItem.path, interfaceFileItem.isDirectory, interfaceFileItem.pathKeys);
-
-    file.$key = interfaceFileItem.$key;
-    file.f_id = interfaceFileItem.f_id;
-    file.e1_uid = interfaceFileItem.e1_uid;
-    file.key = interfaceFileItem.key;
-
-    file.name = interfaceFileItem.name;
-    file.content = interfaceFileItem.content;
-    file.description = interfaceFileItem.description;
-    file.dateModified = interfaceFileItem.dateModified;
-    file.size = interfaceFileItem.size;
-    file.isDirectory = interfaceFileItem.isDirectory;
-    file.hasSubDirectories = interfaceFileItem.hasSubDirectories;
-    file.thumbnail = interfaceFileItem.thumbnail;
-    file.dataItem = interfaceFileItem.dataItem;
+  /** A new empty file with a free name: "nuevo.s", "nuevo (2).s"... (`baseName` comes translated) */
+  public async createFile(parent: FileSystemItem, extension: string, baseName = "nuevo"): Promise<THUMDER_FileItem> {
+    const file = FileSystemService.newItem(parent.path, uniqueName(`${baseName}${extension}`, this.namesIn(parent.path)), false);
+    await this.fileSystemStorageService.save([file]);
     return file;
+  }
+
+  /** Saves the text of a file of the editor. A file the file manager does not have (deleted meanwhile) is created again */
+  public async editFileItem(edited: InterfaceFileItem): Promise<THUMDER_FileItem> {
+    const current = edited.key
+      ? (this.items.find((value) => value.key === edited.key) ?? (await this.fileSystemStorageService.getFile(edited.key)))
+      : undefined;
+    const file = current
+      ? FileSystemService.toFileItem({ ...current, content: edited.content, description: edited.description, dateModified: Date.now() })
+      : FileSystemService.newItem(edited.path, uniqueName(edited.name || "nuevo.s", this.namesIn(edited.path)), false, edited.content);
+    file.size = file.content.length;
+    await this.fileSystemStorageService.save([file]);
+    return file;
+  }
+
+  /** Renames a file or a folder (and the paths of what is inside it) */
+  public async renameItem(item: FileSystemItem, newName: string): Promise<THUMDER_FileItem> {
+    const [own, ...contents] = this.withContents(item);
+    if (own === undefined) throw new Error(`Item not found: ${item.name}`);
+    const name = this.checkName(newName, own.path, own.key);
+    const now = Date.now();
+    const renamed = { ...own, name, dateModified: now };
+    const oldPath = FileSystemService.join(own.path, own.name);
+    const newPath = FileSystemService.join(own.path, name);
+    const moved = contents.map((child) => ({ ...child, path: newPath + child.path.slice(oldPath.length), dateModified: now }));
+    await this.fileSystemStorageService.save([renamed, ...moved]);
+    return FileSystemService.toFileItem(renamed);
+  }
+
+  /** Deletes a file, or a folder with everything inside it */
+  public async deleteItem(item: FileSystemItem): Promise<void> {
+    const items = this.withContents(item);
+    if (items.length === 0) throw new Error(`Item not found: ${item.name}`);
+    await this.fileSystemStorageService.remove(items);
+  }
+
+  /** Moves a file or a folder (with what is inside it) into a folder; with the name taken there, it gets a free one */
+  public async moveItem(item: THUMDER_FileItem, destinationDirectory: FileSystemItem): Promise<void> {
+    const destPath = FileSystemService.join(destinationDirectory.path, destinationDirectory.name);
+    const [own, ...contents] = this.withContents(item);
+    if (own === undefined) throw new Error(`Item not found: ${item.name}`);
+    const oldPath = FileSystemService.join(own.path, own.name);
+    if (own.isDirectory && FileSystemService.isInside(destPath, oldPath)) {
+      throw new Error(`A folder cannot be moved into itself: ${oldPath}`);
+    }
+    if (own.path === destPath) return;
+    const now = Date.now();
+    const name = uniqueName(own.name, this.namesIn(destPath));
+    const newPath = FileSystemService.join(destPath, name);
+    const moved = { ...own, name, path: destPath, dateModified: now };
+    const children = contents.map((child) => ({ ...child, path: newPath + child.path.slice(oldPath.length), dateModified: now }));
+    await this.fileSystemStorageService.save([moved, ...children]);
+  }
+
+  /**
+   * The other DLX files in the folder of a file: the modules a program can use (the simulator only takes those that
+   * define, with .global, the symbols the program needs)
+   */
+  public async programFiles(current: InterfaceFileItem): Promise<{ name: string; content: string }[]> {
+    try {
+      const files = await this.fileSystemStorageService.getFiles();
+      return files
+        .filter((file) => !file.isDirectory && file.path === current.path && file.key !== current.key && file.name !== current.name)
+        .filter((file) => /\.s$/i.test(file.name))
+        .map((file) => ({ name: file.name, content: file.content ?? "" }));
+    } catch (error) {
+      logger.error(error);
+      return [];
+    }
+  }
+
+  // "" is the root folder
+  public static join(parentPath: string, name: string): string {
+    return parentPath ? (name ? `${parentPath}/${name}` : parentPath) : name;
+  }
+
+  /** Whether the path is the folder or is inside it */
+  public static isInside(path: string, folderPath: string): boolean {
+    return path === folderPath || path.startsWith(`${folderPath}/`);
+  }
+
+  /**
+   * Copies the classic DLX examples, with the modules they need, into a new folder of `parentPath` ("ejemplos", or
+   * "ejemplos (2)"... if there is one already). Returns the path of the folder.
+   */
+  public async addExamples(parentPath: string): Promise<string> {
+    const name = uniqueName(DLX_EXAMPLES_FOLDER, this.namesIn(parentPath));
+    const contents = await Promise.all([
+      ...DLX_EXAMPLES.map((file) => this.fileSystemStorageService.fetchExample(`${DLX_EXAMPLES_FOLDER}/${file}`)),
+      ...DLX_EXAMPLES_MODULES.map((file) => this.fileSystemStorageService.fetchExample(file)),
+    ]);
+    const folder = FileSystemService.join(parentPath, name);
+    const items = [
+      FileSystemService.newItem(parentPath, name, true),
+      ...[...DLX_EXAMPLES, ...DLX_EXAMPLES_MODULES].map((file, index) => FileSystemService.newItem(folder, file, false, contents[index])),
+    ];
+    await this.fileSystemStorageService.save(items);
+    return folder;
+  }
+
+  /**
+   * Imports files into a folder: DLX programs and texts, and ZIP files (with their folders). A name already taken
+   * gets a free one ("bucle (2).s"). Returns how many files were imported
+   */
+  public async importFiles(files: File[], destinationPath: string): Promise<number> {
+    const entries: ZipEntry[] = [];
+    for (const file of files) {
+      if (/\.zip$/i.test(file.name)) {
+        for (const entry of await readZip(await file.arrayBuffer())) entries.push({ ...entry, date: entry.date ?? file.lastModified });
+      } else {
+        entries.push({ path: file.name, content: await file.text(), date: file.lastModified });
+      }
+    }
+    const items: THUMDER_FileItem[] = [];
+    const names = (path: string) => [...this.namesIn(path), ...items.filter((item) => item.path === path).map((item) => item.name)];
+    // The folders of the paths, created once (the existing ones are used)
+    const folder = (parts: string[]): string => {
+      let path = destinationPath;
+      for (const part of parts) {
+        const name = nameError(part, []) === null ? cleanName(part) : "carpeta";
+        const existing = [...this.items, ...items].find((item) => item.isDirectory && item.path === path && item.name === name);
+        const created = existing ?? FileSystemService.newItem(path, uniqueName(name, names(path)), true);
+        if (existing === undefined) items.push(created);
+        path = FileSystemService.join(path, created.name);
+      }
+      return path;
+    };
+    let count = 0;
+    for (const entry of entries) {
+      const parts = entry.path.split("/").filter((part) => part !== "" && part !== "." && part !== "..");
+      const fileName = parts.pop();
+      if (fileName === undefined || !/\.(s|txt)$/i.test(fileName)) continue;
+      const path = folder(parts);
+      const name = uniqueName(nameError(fileName, []) === null ? cleanName(fileName) : "importado.s", names(path));
+      items.push(FileSystemService.newItem(path, name, false, entry.content, entry.date));
+      count++;
+    }
+    await this.fileSystemStorageService.save(items);
+    return count;
+  }
+
+  /**
+   * What to download for some items: one file as it is (a .s), or a ZIP with the files and the folders (keeping the
+   * folders). With no items, everything
+   */
+  public exportItems(selected: FileSystemItem[]): { name: string; blob: Blob } {
+    const items = selected.length > 0 ? selected.flatMap((item) => this.withContents(item)) : this.items;
+    const files = items.filter((item) => !item.isDirectory);
+    if (selected.length === 1 && !selected[0].isDirectory && files.length === 1) {
+      return { name: files[0].name, blob: new Blob([files[0].content], { type: "text/plain" }) };
+    }
+    // The paths inside the ZIP start at the folder of the selection
+    const base = selected.length > 0 ? selected[0].path : "";
+    const entries = files.map((file) => ({
+      path: FileSystemService.join(base ? file.path.slice(base.length + 1) : file.path, file.name),
+      content: file.content,
+      date: file.dateModified,
+    }));
+    const name = selected.length === 1 && selected[0].isDirectory ? `${selected[0].name}.zip` : "thumder.zip";
+    return { name, blob: createZip(entries) };
+  }
+
+  private static toFileItem(item: InterfaceFileItem): THUMDER_FileItem {
+    const file = normalizeFile(item);
+    return Object.assign(new THUMDER_FileItem(file.path, file.isDirectory, file.pathKeys), file);
   }
 }

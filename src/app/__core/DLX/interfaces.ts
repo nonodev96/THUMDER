@@ -125,19 +125,3 @@ export class InstructionTypeJ implements InterfaceInstructionTypeJ {
     return this.codeOP.toString() + this.des.toString();
   }
 }
-
-export interface InterfaceOperation {
-  readonly name: string;
-}
-
-export abstract class Operation implements InterfaceOperation {
-  private readonly _name: string;
-
-  protected constructor(name: string) {
-    this._name = name;
-  }
-
-  get name() {
-    return this._name;
-  }
-}

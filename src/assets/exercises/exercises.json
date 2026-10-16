@@ -1,0 +1,125 @@
+[
+  {
+    "id": "riesgos-de-datos",
+    "topic": "data",
+    "file": "ejemplos/02-suma-vector.s",
+    "title": { "es": "Riesgos de datos con adelantamiento", "en": "Data hazards with forwarding" },
+    "statement": {
+      "es": "Ejecuta la suma de un vector con adelantamiento. Busca en el diagrama de ciclos las instrucciones que esperan (R-Stall): ¿qué instrucción va delante de cada una?",
+      "en": "Run the sum of a vector with forwarding. Look in the cycle clock diagram for the instructions that wait (R-Stall): which instruction goes before each one?"
+    },
+    "config": { "forwarding": true },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "raw", "text": { "es": "¿Cuántas detenciones RAW hay en total?", "en": "How many RAW stalls are there in total?" }, "answer": { "kind": "statistic", "path": "STALLS.RAW_STALLS.num" } },
+      { "id": "loads", "text": { "es": "¿Cuántas de ellas se deben a una carga (lw) seguida de su uso?", "en": "How many of them are caused by a load (lw) followed by its use?" }, "answer": { "kind": "statistic", "path": "STALLS.LD_STALLS.num" } }
+    ]
+  },
+  {
+    "id": "sin-adelantamiento",
+    "topic": "data",
+    "file": "ejemplos/02-suma-vector.s",
+    "title": { "es": "El mismo programa sin adelantamiento", "en": "The same program without forwarding" },
+    "statement": {
+      "es": "El mismo programa, ahora sin adelantamiento: cada instrucción espera a que la anterior escriba su resultado en el registro (WB). Compara los ciclos con los del ejercicio anterior.",
+      "en": "The same program, now without forwarding: each instruction waits until the previous one writes its result in the register (WB). Compare the cycles with those of the previous exercise."
+    },
+    "config": { "forwarding": false },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda sin adelantamiento?", "en": "How many cycles does it take without forwarding?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "raw", "text": { "es": "¿Cuántas detenciones RAW hay?", "en": "How many RAW stalls are there?" }, "answer": { "kind": "statistic", "path": "STALLS.RAW_STALLS.num" } }
+    ]
+  },
+  {
+    "id": "riesgos-de-control",
+    "topic": "control",
+    "file": "ejemplos/03-maximo.s",
+    "title": { "es": "Riesgos de control: saltos tomados", "en": "Control hazards: taken branches" },
+    "statement": {
+      "es": "DLX predice que los saltos no se toman: cuando uno se toma, la instrucción que ya se había captado se anula (Aborted). Cuenta esos ciclos perdidos al buscar el máximo de un vector.",
+      "en": "DLX predicts that branches are not taken: when one is taken, the instruction already fetched is aborted (Aborted). Count those lost cycles while looking for the maximum of a vector."
+    },
+    "config": { "forwarding": true },
+    "questions": [
+      { "id": "taken", "text": { "es": "¿Cuántos saltos condicionales se toman?", "en": "How many conditional branches are taken?" }, "answer": { "kind": "statistic", "path": "CONDITIONAL.TAKEN.num" } },
+      { "id": "control", "text": { "es": "¿Cuántas detenciones de control hay?", "en": "How many control stalls are there?" }, "answer": { "kind": "statistic", "path": "STALLS.CONTROL_STALLS.num" } }
+    ]
+  },
+  {
+    "id": "riesgo-estructural",
+    "topic": "structural",
+    "file": "ejemplos/18-daxpy-desenrollado.s",
+    "title": { "es": "Un riesgo estructural: una sola unidad de multiplicación", "en": "A structural hazard: a single multiplication unit" },
+    "statement": {
+      "es": "El bucle desenrollado de DAXPY lanza cuatro multd seguidas, pero solo hay una unidad de multiplicación: las demás esperan (S-Stall).",
+      "en": "The unrolled DAXPY loop issues four multd in a row, but there is only one multiplication unit: the others wait (S-Stall)."
+    },
+    "config": { "forwarding": true, "floatingPoint": { "addition": { "count": 1, "delay": 2 }, "multiplication": { "count": 1, "delay": 5 }, "division": { "count": 1, "delay": 19 } } },
+    "questions": [
+      { "id": "structural", "text": { "es": "¿Cuántas detenciones estructurales hay?", "en": "How many structural stalls are there?" }, "answer": { "kind": "statistic", "path": "STALLS.STRUCTURAL_STALLS.num" } },
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda?", "en": "How many cycles does it take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } }
+    ]
+  },
+  {
+    "id": "coma-flotante",
+    "topic": "floating",
+    "file": "ejemplos/16-producto-escalar.s",
+    "title": { "es": "Coma flotante: el producto escalar", "en": "Floating point: the dot product" },
+    "statement": {
+      "es": "multd va a la unidad de multiplicación (5 ciclos) y addd a la de suma (2 ciclos). Mira en el pipeline cómo pasan por sus unidades y en el diagrama cómo cada addd espera a su multd.",
+      "en": "multd goes to the multiplication unit (5 cycles) and addd to the addition unit (2 cycles). Look in the pipeline at how they go through their units and in the diagram at how each addd waits for its multd."
+    },
+    "config": { "forwarding": true, "floatingPoint": { "addition": { "count": 1, "delay": 2 }, "multiplication": { "count": 1, "delay": 5 }, "division": { "count": 1, "delay": 19 } } },
+    "questions": [
+      { "id": "mult", "text": { "es": "¿Cuántas multiplicaciones de coma flotante se ejecutan?", "en": "How many floating point multiplications are executed?" }, "answer": { "kind": "statistic", "path": "FLOATING.MULTIPLICATIONS.num" } },
+      { "id": "add", "text": { "es": "¿Y cuántas sumas?", "en": "And how many additions?" }, "answer": { "kind": "statistic", "path": "FLOATING.ADDITIONS.num" } },
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda?", "en": "How many cycles does it take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } }
+    ]
+  },
+  {
+    "id": "bucles",
+    "topic": "loops",
+    "file": "ejemplos/05-factorial.s",
+    "title": { "es": "Un bucle con una unidad lenta", "en": "A loop with a slow unit" },
+    "statement": {
+      "es": "El factorial multiplica con mult, que usa la unidad de multiplicación. Cada mult necesita el resultado del anterior, así que el bucle va al ritmo de esa unidad.",
+      "en": "The factorial multiplies with mult, which uses the multiplication unit. Each mult needs the result of the previous one, so the loop goes at the pace of that unit."
+    },
+    "config": { "forwarding": true, "floatingPoint": { "addition": { "count": 1, "delay": 2 }, "multiplication": { "count": 1, "delay": 5 }, "division": { "count": 1, "delay": 19 } } },
+    "questions": [
+      { "id": "instructions", "text": { "es": "¿Cuántas instrucciones se ejecutan?", "en": "How many instructions are executed?" }, "answer": { "kind": "statistic", "path": "TOTAL.ID_EXECUTED.instructions" } },
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda?", "en": "How many cycles does it take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "raw", "text": { "es": "¿Cuántas detenciones RAW hay?", "en": "How many RAW stalls are there?" }, "answer": { "kind": "statistic", "path": "STALLS.RAW_STALLS.num" } }
+    ]
+  },
+  {
+    "id": "memoria",
+    "topic": "memory",
+    "file": "ejemplos/10-burbuja.s",
+    "title": { "es": "Memoria: ordenar un vector", "en": "Memory: sorting a vector" },
+    "statement": {
+      "es": "La burbuja compara posiciones vecinas de memoria y las intercambia. Mira en la ventana de la memoria cómo cambian los valores de Vector.",
+      "en": "Bubble sort compares neighbouring positions of memory and swaps them. Look in the memory window at how the values of Vector change."
+    },
+    "config": { "forwarding": true },
+    "questions": [
+      { "id": "loads", "text": { "es": "¿Cuántas cargas de memoria se ejecutan?", "en": "How many loads from memory are executed?" }, "answer": { "kind": "statistic", "path": "LOAD_STORE.LOADS.num" } },
+      { "id": "stores", "text": { "es": "¿Y cuántos almacenamientos?", "en": "And how many stores?" }, "answer": { "kind": "statistic", "path": "LOAD_STORE.STORES.num" } }
+    ]
+  },
+  {
+    "id": "recursividad",
+    "topic": "loops",
+    "file": "ejemplos/14-factorial-recursivo.s",
+    "title": { "es": "Recursividad y la pila", "en": "Recursion and the stack" },
+    "statement": {
+      "es": "El factorial recursivo guarda en la pila su dirección de vuelta y su n en cada llamada. Sigue el registro r29 (la pila) mientras se ejecuta.",
+      "en": "The recursive factorial saves its return address and its n in the stack in each call. Follow the register r29 (the stack) while it runs."
+    },
+    "config": { "forwarding": true },
+    "questions": [
+      { "id": "result", "text": { "es": "¿Qué valor queda en R2 (el resultado) al terminar?", "en": "What value is left in R2 (the result) at the end?" }, "answer": { "kind": "register", "name": "R2" } },
+      { "id": "instructions", "text": { "es": "¿Cuántas instrucciones se ejecutan?", "en": "How many instructions are executed?" }, "answer": { "kind": "statistic", "path": "TOTAL.ID_EXECUTED.instructions" } }
+    ]
+  }
+]

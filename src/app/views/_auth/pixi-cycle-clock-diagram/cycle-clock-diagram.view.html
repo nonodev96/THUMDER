@@ -1,38 +1,116 @@
-<div class="card" id="pixiCardCycleClockDiagram">
+<div thumderCard class="card" id="pixiCardCycleClockDiagram">
   <div class="card-header">
     <h3 class="card-title">
       <!-- Drag button -->
       <ng-content></ng-content>
 
-      <span data-card-widget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> |
+      <span thumderCardWidget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> |
       <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}" aria-hidden="true"></i>
     </h3>
     <div class="card-tools">
 
-      <button type="button" class="btn btn-tool" title="Move bottom" (click)="this.pixi_CycleClockDiagramComponent.moveBottom()">
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_UP' | translate" [attr.aria-label]="'MACHINE.MOVE_UP' | translate" (click)="pixi_CycleClockDiagramComponent.moveBottom()">
         <i class="fas fa-arrow-up" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" title="Move top" (click)="this.pixi_CycleClockDiagramComponent.moveTop()">
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_DOWN' | translate" [attr.aria-label]="'MACHINE.MOVE_DOWN' | translate" (click)="pixi_CycleClockDiagramComponent.moveTop()">
         <i class="fas fa-arrow-down" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" title="Move right" (click)="this.pixi_CycleClockDiagramComponent.moveRight()">
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_LEFT' | translate" [attr.aria-label]="'MACHINE.MOVE_LEFT' | translate" (click)="pixi_CycleClockDiagramComponent.moveRight()">
         <i class="fas fa-arrow-left" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" title="Move left" (click)="this.pixi_CycleClockDiagramComponent.moveLeft()">
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_RIGHT' | translate" [attr.aria-label]="'MACHINE.MOVE_RIGHT' | translate" (click)="pixi_CycleClockDiagramComponent.moveLeft()">
         <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
 
-      <button type="button" class="btn btn-tool" title="Maximize" data-card-widget="maximize">
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.ZOOM_OUT' | translate" [attr.aria-label]="'MACHINE.ZOOM_OUT' | translate"
+        (click)="pixi_CycleClockDiagramComponent.zoomBy(1 / 1.25)">
+        <i class="fas fa-search-minus" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.ZOOM_RESET' | translate" [attr.aria-label]="'MACHINE.ZOOM_RESET' | translate"
+        (click)="pixi_CycleClockDiagramComponent.resetZoom()">
+        <i class="fas fa-search" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.ZOOM_IN' | translate" [attr.aria-label]="'MACHINE.ZOOM_IN' | translate"
+        (click)="pixi_CycleClockDiagramComponent.zoomBy(1.25)">
+        <i class="fas fa-search-plus" aria-hidden="true"></i>
+      </button>
+
+      <div class="dropdown d-inline-block" thumderDropdown>
+        <button type="button" class="btn btn-tool dropdown-toggle" id="diagramExport" aria-haspopup="true" aria-expanded="false"
+          [title]="'MACHINE.EXPORT' | translate" [attr.aria-label]="'MACHINE.EXPORT' | translate">
+          <i class="fas fa-file-export" aria-hidden="true"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="diagramExport">
+          <button type="button" class="dropdown-item" (click)="exportSvg()">{{ 'MACHINE.EXPORT_SVG' | translate }}</button>
+          <button type="button" class="dropdown-item" (click)="exportPng()">{{ 'MACHINE.EXPORT_PNG' | translate }}</button>
+          <button type="button" class="dropdown-item" (click)="exportCsv()">{{ 'MACHINE.EXPORT_CSV' | translate }}</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-tool" [title]="'FORMS.MAXIMIZE' | translate" [attr.aria-label]="'FORMS.MAXIMIZE' | translate" thumderCardWidget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" title="Collapse" data-card-widget="collapse">
+      <button type="button" class="btn btn-tool" [title]="'FORMS.COLLAPSE' | translate" [attr.aria-label]="'FORMS.COLLAPSE' | translate" thumderCardWidget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
   <div class="card-body">
     <THUMDER-pixi-cycle-clock-diagram
-      (inCanvasEventEmitter)="handleInCanvas($event)"></THUMDER-pixi-cycle-clock-diagram>
+      (inCanvasEventEmitter)="handleInCanvas($event)" (cellSelected)="selected.set($event)"></THUMDER-pixi-cycle-clock-diagram>
+
+    <!-- The diagram as a table (A11Y-01) -->
+    <button type="button" class="btn btn-sm btn-outline-secondary mt-2" id="diagramAsTable" [attr.aria-expanded]="asTable()" aria-controls="diagramTable"
+      (click)="asTable.set(!asTable())">
+      <i class="fas fa-table" aria-hidden="true"></i> {{ (asTable() ? 'MACHINE.HIDE_TABLE' : 'MACHINE.SHOW_TABLE') | translate }}
+    </button>
+    @if (asTable()) {
+      <div class="table-responsive mt-2 diagram-table" id="diagramTable">
+        @if (table().rows.length === 0) {
+          <p class="text-muted small mb-0">{{ 'MACHINE.TABLE_EMPTY' | translate }}</p>
+        } @else {
+          <table class="table table-sm table-bordered text-monospace small mb-0">
+            <caption>{{ 'MACHINE.TABLE_CAPTION' | translate: { count: table().cycles.length } }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'MACHINE.INSTRUCTION' | translate }}</th>
+                @for (cycle of table().cycles; track cycle) { <th scope="col">{{ cycle }}</th> }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of table().rows; track $index) {
+                <tr>
+                  <th scope="row">{{ row.text }}</th>
+                  @for (cell of row.cells; track $index) { <td>{{ cell }}</td> }
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    }
+
+    <!-- Why an instruction stalls (EDU-01) -->
+    <section class="diagram-explanation mt-2" aria-labelledby="diagramExplanationTitle">
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <h4 class="h6 mb-1" id="diagramExplanationTitle">{{ 'MACHINE.EXPLAIN_TITLE' | translate }}</h4>
+        <div class="btn-group btn-group-sm" role="group">
+          <button type="button" class="btn btn-outline-secondary" id="diagramPreviousStall" (click)="goToStall(-1)">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i> {{ 'MACHINE.PREVIOUS_STALL' | translate }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="diagramNextStall" (click)="goToStall(1)">
+            {{ 'MACHINE.NEXT_STALL' | translate }} <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="diagram-explanation-text" aria-live="polite" id="diagramExplanation">
+        @for (text of explanation(); track $index) {
+          <p class="mb-1">{{ text.key | translate: text.params }}</p>
+        } @empty {
+          <p class="mb-1 text-muted">{{ (noStalls() ? 'MACHINE.NO_STALLS' : 'MACHINE.EXPLAIN_HELP') | translate }}</p>
+        }
+      </div>
+    </section>
   </div>
   <div class="card-footer">
     <app-modal [modalID]="'modal-info-pixi-id'"
@@ -42,20 +120,12 @@
                [modalTitle]="'MODAL.INFO'"
                [buttonCloseText]=""
                [buttonSaveText]="">
-      <h2>Short cuts</h2>
-      <ol>
-        <li><strong>r</strong>: Reset</li>
-        <li><strong>n</strong>: Next step</li>
-        <li><strong>m</strong>: Next step x10</li>
-        <li>Move
-          <ol>
-            <li><strong>i</strong>: Move top</li>
-            <li><strong>k</strong>: Move down</li>
-            <li><strong>j</strong>: Move left</li>
-            <li><strong>l</strong>: Move right</li>
-          </ol>
-        </li>
-      </ol>
+      <h2>{{ 'MACHINE.DIAGRAM_HELP_TITLE' | translate }}</h2>
+      <ul>
+        @for (n of [1, 2, 3, 4, 5]; track n) {
+          <li>{{ 'MACHINE.DIAGRAM_HELP_' + n | translate }}</li>
+        }
+      </ul>
     </app-modal>
   </div>
 </div>

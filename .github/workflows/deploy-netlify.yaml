@@ -1,0 +1,107 @@
+name: Deploy to Netlify
+
+# Production: each version tag (v*), and on demand from Actions → Deploy to Netlify → Run workflow.
+# Previews: each pull request (https://pr-<number>--<site>.netlify.app) and the dev branch (https://dev--<site>.netlify.app).
+#
+# Repository secrets:
+#   NETLIFY_AUTH_TOKEN             personal access token of Netlify (User settings → Applications)
+#   NETLIFY_SITE_ID                Project configuration → Project ID
+#   ANGULAR_ENVIROTMENT_PRODUCTION optional: src/environments/environment.production.ts in base64, with the Firebase
+#                                  keys. Without it THUMDER is built in local mode (no accounts, files in the browser).
+
+on:
+  push:
+    branches: [dev]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      production:
+        description: "Deploy to production (if not, a preview with the branch name)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: netlify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    # Pull requests from forks and from Dependabot have no access to the secrets
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
+    env:
+      PRODUCTION: ${{ startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.production) }}
+    environment:
+      name: ${{ (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.production)) && 'production' || 'preview' }}
+      url: ${{ steps.deploy.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The wiki, which the build copies into assets/wiki
+          submodules: recursive
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # Before the install: postinstall only creates the environment files that do not exist
+      - name: Production environment
+        run: |
+          if [ -n "$ENVIRONMENT_PRODUCTION" ]; then
+            echo "$ENVIRONMENT_PRODUCTION" | base64 --decode > src/environments/environment.production.ts
+          else
+            echo "::notice::No ANGULAR_ENVIROTMENT_PRODUCTION secret: THUMDER is built in local mode, without Firebase"
+          fi
+        env:
+          ENVIRONMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
+
+      - run: pnpm install --frozen-lockfile
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+
+      - name: Unit tests
+        if: env.PRODUCTION == 'true'
+        run: pnpm test
+
+      - name: Build
+        run: pnpm run ng:build:production
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - run: npm install --global netlify-cli@27
+
+      # dist/browser is already built (and has the _redirects of the single page application): --no-build
+      - name: Deploy
+        id: deploy
+        run: |
+          if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
+            echo "::error::The NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID secrets are needed to deploy"
+            exit 1
+          fi
+          args=(--dir dist/browser --no-build --json)
+          if [ "$PRODUCTION" = "true" ]; then
+            args+=(--prod --message "$GITHUB_REF_NAME ${GITHUB_SHA::7}")
+          elif [ -n "$PR_NUMBER" ]; then
+            args+=(--alias "pr-$PR_NUMBER" --message "PR #$PR_NUMBER ${PR_SHA::7}")
+          else
+            # The branch name as a subdomain: lowercase letters, digits and hyphens, at most 37 characters
+            alias=$(echo "$GITHUB_REF_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g' | cut -c1-37)
+            args+=(--alias "$alias" --message "$GITHUB_REF_NAME ${GITHUB_SHA::7}")
+          fi
+          netlify deploy "${args[@]}" > deploy.json
+          if [ "$PRODUCTION" = "true" ]; then url=$(jq -r '.url' deploy.json); else url=$(jq -r '.deploy_url' deploy.json); fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed to $url ([deploy log]($(jq -r '.logs' deploy.json)))" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_SHA: ${{ github.event.pull_request.head.sha }}
