@@ -1,3 +1,11 @@
+## 1.7.1 (2026-10-16)
+
+### Nuevas funciones
+
+* registers in one card with a tab for each group, and narrower tables ([1bd8dad](https://github.com/nonodev96/THUMDER/commit/1bd8dad))
+
+
+
 ## 1.7.0 (2026-10-16)
 
 THUMDER simula en el propio navegador o en la aplicación de escritorio: ya no hace falta THUMDER-server ni conexión.
