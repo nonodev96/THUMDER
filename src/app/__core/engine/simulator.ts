@@ -1,5 +1,5 @@
-// The simulator of THUMDER: assembles the program, loads it in memory and runs it in the pipeline, answering the same
-// requests (and with the same types) as THUMDER-server, so the views do not care where it runs.
+// The simulator of THUMDER: assembles the program, loads it in memory and runs it in the pipeline. It runs in a Web
+// Worker (runner.ts) and answers the requests of the protocol of docs/simulador.md.
 import type {
   TypeArrowCycle,
   TypeConfigurationMachine,
@@ -193,7 +193,6 @@ export class DLXSimulator {
         global: symbol.global,
       })),
       modules: this.files.slice(1).map((file) => file.name),
-      machineDirectives: [],
       machineInstructions,
       runner: [
         {

@@ -1,113 +1,91 @@
-<ng-container cdkDropListGroup>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="example-list col-12 col-xxl-6"
-        cdkDropList
-        #mainList_1="cdkDropList"
-        [cdkDropListConnectedTo]="[mainList_2]"
-        [cdkDropListData]="main_list_1"
-        (cdkDropListDropped)="drop($event)">
-        @for (component of main_list_1; track component) {
-          <div cdkDrag>
-            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-            <ng-container [ngTemplateOutlet]="BigSwitch"
-            [ngTemplateOutletContext]="{component: component}"></ng-container>
-          </div>
-        }
-      </div>
+<div class="multiview" #desk [style.min-height.px]="height()">
+  <ng-container cdkDropListGroup>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="example-list col-12 col-xxl-6"
+          cdkDropList
+          #mainList_1="cdkDropList"
+          [cdkDropListConnectedTo]="[mainList_2]"
+          [cdkDropListData]="columns[0]"
+          (cdkDropListDropped)="drop($event)">
+          @for (component of columns[0]; track component) {
+            <div cdkDrag class="multiview-item">
+              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+              <ng-container [ngTemplateOutlet]="BigSwitch" [ngTemplateOutletContext]="{ component: component }"></ng-container>
+            </div>
+          }
+        </div>
 
-      <div class="example-list col-12 col-xxl-6"
-        cdkDropList
-        #mainList_2="cdkDropList"
-        [cdkDropListConnectedTo]="[mainList_1]"
-        [cdkDropListData]="main_list_2"
-        (cdkDropListDropped)="drop($event)">
-        @for (component of main_list_2; track component) {
-          <div cdkDrag>
-            <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-            <ng-container [ngTemplateOutlet]="BigSwitch"
-            [ngTemplateOutletContext]="{component: component}"></ng-container>
-          </div>
-        }
+        <div class="example-list col-12 col-xxl-6"
+          cdkDropList
+          #mainList_2="cdkDropList"
+          [cdkDropListConnectedTo]="[mainList_1]"
+          [cdkDropListData]="columns[1]"
+          (cdkDropListDropped)="drop($event)">
+          @for (component of columns[1]; track component) {
+            <div cdkDrag class="multiview-item">
+              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+              <ng-container [ngTemplateOutlet]="BigSwitch" [ngTemplateOutletContext]="{ component: component }"></ng-container>
+            </div>
+          }
+        </div>
       </div>
     </div>
-  </div>
-</ng-container>
+  </ng-container>
+
+  <!-- The floating windows, over the columns -->
+  @for (component of floating(); track component) {
+    <div [thumderWindow]="windows()[component]" [order]="orderOf(component)" [attr.data-window]="component"
+      (geometryChange)="moved(component, $event)" (raised)="raise(component)">
+      <ng-container [ngTemplateOutlet]="BigSwitch" [ngTemplateOutletContext]="{ component: component }"></ng-container>
+    </div>
+  }
+</div>
+
+<!-- The buttons of each window, in the header of its card: drag it in its column, and float it or put it back -->
+<ng-template #Controls let-component="component">
+  @if (!isFloating(component)) {
+    <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
+      <i class="fas fa-arrows-alt" aria-hidden="true"></i>
+    </button>
+  }
+  @if (wide()) {
+    <button type="button" class="btn btn-tool multiview-float" [attr.data-float]="component" [attr.aria-pressed]="isFloating(component)"
+      (click)="toggleFloating(component, $event.currentTarget)"
+      [title]="(isFloating(component) ? 'MULTIVIEW.DOCK' : 'MULTIVIEW.FLOAT') | translate"
+      [attr.aria-label]="(isFloating(component) ? 'MULTIVIEW.DOCK' : 'MULTIVIEW.FLOAT') | translate">
+      <i class="fas" [class.fa-window-restore]="!isFloating(component)" [class.fa-th-large]="isFloating(component)" aria-hidden="true"></i>
+    </button>
+  }
+</ng-template>
 
 <ng-template #BigSwitch let-component='component'>
-  @switch (component) {
-    @case ('calculator') {
-      @if (multiviewConfiguration.calculator) {
-        <view-calculator>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-calculator>
+  @if (isEnabled(component)) {
+    @switch (component) {
+      @case ('calculator') {
+        <view-calculator><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-calculator>
       }
-    }
-    @case ('pipeline') {
-      @if (multiviewConfiguration.pipeline) {
-        <view-pipeline>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-pipeline>
+      @case ('pipeline') {
+        <view-pipeline><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-pipeline>
       }
-    }
-    @case ('registers') {
-      @if (multiviewConfiguration.registers) {
-        <view-registers>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-registers>
+      @case ('registers') {
+        <view-registers><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-registers>
       }
-    }
-    @case ('statistics') {
-      @if (multiviewConfiguration.statistics) {
-        <view-statistics>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-statistics>
+      @case ('statistics') {
+        <view-statistics><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-statistics>
       }
-    }
-    @case ('cycle_clock_diagram') {
-      @if (multiviewConfiguration.cycle_clock_diagram) {
-        <view-cycle-clock-diagram>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-cycle-clock-diagram>
+      @case ('cycle_clock_diagram') {
+        <view-cycle-clock-diagram><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-cycle-clock-diagram>
       }
-    }
-    @case ('memory') {
-      @if (multiviewConfiguration.memory) {
-        <view-memory>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-memory>
+      @case ('memory') {
+        <view-memory><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-memory>
       }
-    }
-    @case ('code') {
-      @if (multiviewConfiguration.code) {
-        <view-code>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-code>
+      @case ('code') {
+        <view-code><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-code>
       }
-    }
-    @case ('datapath') {
-      @if (multiviewConfiguration.datapath) {
-        <view-datapath>
-          <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </view-datapath>
+      @case ('datapath') {
+        <view-datapath><ng-container [ngTemplateOutlet]="Controls" [ngTemplateOutletContext]="{ component: component }"></ng-container></view-datapath>
       }
     }
   }
 </ng-template>
-

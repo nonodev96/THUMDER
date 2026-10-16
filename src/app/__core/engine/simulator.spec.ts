@@ -33,7 +33,7 @@ function runToEnd(simulator: DLXSimulator, max = 100_000): LocalSimulationStep[]
 }
 
 describe("DLXSimulator", () => {
-  it("assembles the program and sends the code and the data like THUMDER-server", () => {
+  it("assembles the program and sends the code and the data", () => {
     const simulator = new DLXSimulator();
     const init = JSON.parse(simulator.handle("SimulationInitRequest", JSON.stringify(request("prim.s", EXAMPLES["prim.s"])))) as TypeSimulationInitResponse;
     expect(init.canSimulate).toBe(true);

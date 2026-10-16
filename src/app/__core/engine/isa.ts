@@ -1,5 +1,5 @@
 // The DLX instruction set as WinDLX encodes it (see docs/manual-simulador-dlx.md, section 4.1, and the opcode tables of
-// src/app/__core/DLX/__OPCODES.ts, which the disassembler uses). Pure TypeScript: no Angular, so THUMDER-server can use it.
+// src/app/__core/DLX/__OPCODES.ts, which the disassembler uses). Pure TypeScript: no Angular, so the Web Worker can use it.
 //
 //   R-type (opcode 0, SPECIAL): opcode(6) rs1(5) rs2(5) rd(5) func(11)
 //   F-type (opcode 1, FPARITH): opcode(6) fs1(5) fs2(5) fd(5) func(11)

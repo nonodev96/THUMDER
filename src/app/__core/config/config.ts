@@ -6,7 +6,7 @@ import {
   DEFAULT_MULTIVIEW_CONFIGURATION,
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
 } from "@app/CONSTANTS";
-import type { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration } from "@app/Types";
+import type { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration, TypeWindowGeometry } from "@app/Types";
 
 /** The configuration of THUMDER, saved under one key with its version (CONFIG_KEY) */
 export type ThumderConfig = {
@@ -23,6 +23,8 @@ export type ThumderConfig = {
   autoSave: boolean;
   /** The windows of the multiview and their order */
   multiview: TypeMultiviewConfiguration;
+  /** The windows of the multiview that float over it, with their place and size; the order is the one of the pile */
+  windows: Record<string, TypeWindowGeometry>;
   /** How many cycles the cycle clock diagram keeps (WinDLX: the history of the diagram); the oldest ones go */
   diagramHistory: number;
 };
@@ -37,6 +39,8 @@ export const LIMITS = {
   memorySize: { min: 512, max: 1048576 },
   delay: { min: 0, max: 10000 },
   diagramHistory: { min: 100, max: 100000 },
+  windowPlace: { min: -10000, max: 100000 },
+  windowSize: { min: 120, max: 10000 },
 } as const;
 
 /** The cycles the diagram keeps by default: enough for the examples, and light for long runs */
@@ -66,6 +70,7 @@ export function defaultConfig(): ThumderConfig {
     delay: DEFAULT_TIME_SIMULATION_CONFIGURATION,
     autoSave: DEFAULT_AUTO_SAVE_CONFIGURATION,
     multiview: structuredClone(DEFAULT_MULTIVIEW_CONFIGURATION),
+    windows: {},
     diagramHistory: DEFAULT_DIAGRAM_HISTORY,
   };
 }
@@ -103,6 +108,23 @@ function validateMultiview(value: unknown): TypeMultiviewConfiguration {
   return multiview;
 }
 
+/** The floating windows: only the windows of the multiview, each one once, with whole numbers in their limits */
+function validateWindows(value: unknown, multiview: TypeMultiviewConfiguration): Record<string, TypeWindowGeometry> {
+  const known = [...multiview.list_1, ...multiview.list_2];
+  const windows: Record<string, TypeWindowGeometry> = {};
+  if (!isObject(value)) return windows;
+  for (const [name, raw] of Object.entries(value)) {
+    if (!known.includes(name) || !isObject(raw)) continue;
+    windows[name] = {
+      x: clamp(raw.x, LIMITS.windowPlace, 0),
+      y: clamp(raw.y, LIMITS.windowPlace, 0),
+      width: clamp(raw.width, LIMITS.windowSize, 480),
+      height: clamp(raw.height, LIMITS.windowSize, 360),
+    };
+  }
+  return windows;
+}
+
 /** Any value (what was saved, by any version, or edited by hand) as a valid configuration: what is wrong takes the default */
 export function validateConfig(value: unknown): ThumderConfig {
   const defaults = defaultConfig();
@@ -116,6 +138,7 @@ export function validateConfig(value: unknown): ThumderConfig {
       delay: clamp(rawUnit.delay, LIMITS.cycles, defaults.floatingPoint[unit].delay),
     };
   }
+  const multiview = validateMultiview(raw.multiview);
   return {
     version: CONFIG_VERSION,
     forwarding: typeof raw.forwarding === "boolean" ? raw.forwarding : defaults.forwarding,
@@ -123,7 +146,8 @@ export function validateConfig(value: unknown): ThumderConfig {
     memorySize: Math.floor(clamp(raw.memorySize, LIMITS.memorySize, defaults.memorySize) / 8) * 8,
     delay: clamp(raw.delay, LIMITS.delay, defaults.delay),
     autoSave: typeof raw.autoSave === "boolean" ? raw.autoSave : defaults.autoSave,
-    multiview: validateMultiview(raw.multiview),
+    multiview,
+    windows: validateWindows(raw.windows, multiview),
     diagramHistory: clamp(raw.diagramHistory, LIMITS.diagramHistory, defaults.diagramHistory),
   };
 }

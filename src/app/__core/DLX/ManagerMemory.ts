@@ -1,4 +1,4 @@
-import type { TypeDirectiveData, TypeInstructionsData, TypeMemory, TypeMemoryToUpdate } from "@app/Types";
+import type { TypeInstructionsData, TypeMemory, TypeMemoryToUpdate } from "@app/Types";
 import type { InterfaceMemory } from "@core/DLX/interfaces";
 import { logger } from "@core/logger/logger";
 import { hexToBits, hexToNumber } from "@core/numbers";
@@ -22,31 +22,6 @@ export class ManagerMemory implements InterfaceMemory {
 
   set memorySizeBytes(memorySize: number) {
     this.setSize(memorySize);
-  }
-
-  public processResponseMachineDirectives(directives: TypeDirectiveData[]): void {
-    for (const directive of directives) {
-      switch (directive.directive) {
-        case "DATA":
-        case "GLOBAL":
-        case "SPACE":
-        case "ALIGN":
-        case "ASCII":
-        case "ASCIIZ":
-        case "BYTE":
-        case "FLOAT":
-        case "DOUBLE":
-        case "WORD":
-        case "TEXT": {
-          // THUMDER-server writes the data of the directives into its own memory and does not send it yet
-          break;
-        }
-        default: {
-          logger.warn("Error, type of directive not valid", directive);
-          break;
-        }
-      }
-    }
   }
 
   public processResponseMachineInstructions(instructions: TypeInstructionsData[]): void {

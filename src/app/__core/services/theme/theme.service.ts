@@ -36,7 +36,7 @@ export class ThemeService {
   private apply(): void {
     const dark = this.dark();
     this.document.body.classList.toggle("dark-mode", dark);
-    this.document.documentElement.dataset["theme"] = dark ? "dark" : "light";
+    this.document.documentElement.dataset.theme = dark ? "dark" : "light";
     // The scrollbars, the inputs and the menus of the browser
     this.document.documentElement.style.colorScheme = dark ? "dark" : "light";
   }

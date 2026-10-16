@@ -16,8 +16,6 @@ THUMDER ensambla y simula los programas por sí mismo, sin servidor. El código 
 
 Todo el proceso (ensamblar, simular y el bucle de ejecución) ocurre en un **Web Worker**, fuera del hilo de la página. La página envía las peticiones y la orden de ejecutar (con el retardo y los puntos de ruptura) y solo recibe los ciclos para dibujarlos. Con retardo 0, el Worker agrupa los ciclos que caben en un fotograma (16 ms, como mucho 500) en cada mensaje, así que un programa largo no bloquea la interfaz. El Worker se para solo al terminar el programa, en un punto de ruptura, en un error o cuando el programa espera una línea de la consola. Donde no hay Workers (las pruebas unitarias), el mismo código se ejecuta en la página.
 
-THUMDER-server, el simulador anterior, ya no se usa: el cliente solo habla con su Worker.
-
 ### El protocolo del Worker
 
 La página (`LocalSimulatorService`) y el Worker (`runner.ts`) se mandan objetos con `postMessage`. Las peticiones y sus respuestas van como texto JSON, igual que iban por el socket.

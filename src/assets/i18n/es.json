@@ -14,10 +14,6 @@
     "link": "Mas información",
     "policy": "Política de cookies"
   },
-  "WEBSOCKET": {
-    "TITLE_NEW_MESSAGE": "Nuevo mensaje",
-    "MESSAGE_NEW_MESSAGE": "Nuevo mensaje {{type}}"
-  },
   "ACCOUNT": {
     "YOU_FORGOT_YOUR_PASSWORD_HERE_YOU_CAN_EASILY_RETRIEVE_A_NEW_PASSWORD": "¿Has olvidado tu contraseña? Aquí puedes recuperar fácilmente una nueva contraseña",
     "REQUEST_NEW_PASSWORD": "Solicita una nueva contraseña",
@@ -646,5 +642,9 @@
     "MAX_VALUE": "Valor máximo: {{value}}",
     "UNSIGNED": "Sin signo",
     "SIGNED": "Con signo"
+  },
+  "MULTIVIEW": {
+    "FLOAT": "Sacar como ventana flotante (se mueve por su título y cambia de tamaño desde los bordes; Alt+flechas la mueven y Alt+Mayús+flechas cambian su tamaño)",
+    "DOCK": "Devolver la ventana a su columna"
   }
 }

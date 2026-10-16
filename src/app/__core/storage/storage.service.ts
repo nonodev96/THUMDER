@@ -44,7 +44,5 @@ export class StorageService {
       this.setItem("breakpoints", DEFAULT_BREAKPOINTS);
     }
     // The configuration (thumder_configuration) is in ConfigService (core/config)
-    // The configuration of THUMDER-server, which THUMDER no longer uses
-    localStorage.removeItem("web_socket_configuration");
   }
 }

@@ -73,11 +73,8 @@ export class ManagerRegisters implements InterfaceRegisters {
           break;
         }
         case "Double": {
-          const index = Utils.getRegisterNumber(register);
-          // THUMDER-server sends each half of a double as its own 32-bit entry (F<n> and F<n+1>);
-          // a 64-bit value (more than 8 hexadecimal digits) fills the pair starting at the even register
-          if (hexadecimalValue.replace(/^0x/i, "").length > 8) this.setRegisterDoubleWithHexadecimal(index, hexadecimalValue);
-          else this.setRegisterFloatWithHexadecimal(index, hexadecimalValue);
+          // The 64 bits, in the pair of registers that starts at the even one
+          this.setRegisterDoubleWithHexadecimal(Utils.getRegisterNumber(register), hexadecimalValue);
           break;
         }
         default: {

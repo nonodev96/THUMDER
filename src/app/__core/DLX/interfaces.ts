@@ -3,7 +3,6 @@ import {
   stringOfLength,
   type TypeBreakpoints,
   type TypeDataStatistics,
-  type TypeDirectiveData,
   type TypeInstructionsData,
   type TypeMemoryToUpdate,
   type TypeRegisterToUpdate,
@@ -17,8 +16,6 @@ export interface InterfaceBreakpoints {
 export interface InterfaceMemory {
   _memorySizeBytes: number;
   _memoryInt8Array: Uint8Array;
-
-  processResponseMachineDirectives(directives: TypeDirectiveData[]): void;
 
   processResponseMachineInstructions(instructions: TypeInstructionsData[]): void;
 

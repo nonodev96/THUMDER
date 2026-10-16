@@ -176,7 +176,7 @@ export class EditMemoryBinary32Component implements OnInit {
     this.addressIsValid = true;
   }
 
-  // Writes the bits of the selected type at the address, here and in THUMDER-server
+  // Writes the bits of the selected type at the address, here and in the simulator
   private async writeMemory(binary: string): Promise<void> {
     if (!this.addressIsValid) {
       await this.TOAST_ErrorInValueMemory();

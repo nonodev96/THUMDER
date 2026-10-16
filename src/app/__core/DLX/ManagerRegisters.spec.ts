@@ -14,16 +14,6 @@ describe("ManagerRegisters", () => {
     expect(registers.F[3].value).toBe(1);
   });
 
-  it("applies a double sent by THUMDER-server as two 32-bit halves", () => {
-    const registers = new ManagerRegisters();
-    registers.processRegisterToUpdateArray([
-      { typeRegister: "Double", register: "F4", hexadecimalValue: "400921FB" },
-      { typeRegister: "Double", register: "F5", hexadecimalValue: "54442D18" },
-    ]);
-    expect(registers.F[4].hexValue).toBe("400921FB");
-    expect(registers.F[5].hexValue).toBe("54442D18");
-  });
-
   it("applies a whole 64-bit double to the pair of registers", () => {
     const registers = new ManagerRegisters();
     registers.processRegisterToUpdateArray([{ typeRegister: "Double", register: "F2", hexadecimalValue: "0x3FF0000000000000" }]);

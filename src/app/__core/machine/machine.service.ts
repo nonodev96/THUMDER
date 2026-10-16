@@ -509,7 +509,6 @@ export class MachineService {
     this.lastInit = request;
     const simulationInit = await this.simulator.request<LocalSimulationInitResponse>("SimulationInitRequest", JSON.stringify(request));
 
-    this.memory.processResponseMachineDirectives(simulationInit.machineDirectives);
     this.memory.processResponseMachineInstructions(simulationInit.machineInstructions);
     for (const instruction of simulationInit.machineInstructions) {
       this.code.set(Utils.stringToAddress(instruction.address), { ...instruction });

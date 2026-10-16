@@ -42,7 +42,7 @@ Plan por fases para las 62 tareas abiertas de [TODO-mejoras.md](TODO-mejoras.md)
 
 - [x] Fuera `SocketProviderConnectService`, socket.io, la opción «Simulador» y la URL del servidor de la configuración, y `thumder-ontology` del cliente.
 - [x] `MachineService` habla solo con el Worker.
-- [x] **SRV-01 a SRV-07**: cerradas como «no aplica».
+- [x] **SRV-01 a SRV-07**: eran del repositorio de THUMDER-server; quitadas de TODO-mejoras.md.
 - [x] **DOC-03.** Documentar el protocolo del Worker (`runner.ts`) en lugar del del socket.
 - [x] **UI-11.** Configuración comprensible: explicar cada opción y confirmar antes de reiniciar la máquina.
 

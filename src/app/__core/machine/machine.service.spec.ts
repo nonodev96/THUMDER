@@ -100,7 +100,6 @@ describe("MachineService with a fake simulator", () => {
       lines: 1,
       canSimulate: true,
       errors: [],
-      machineDirectives: [],
       machineInstructions: [{ address: "0x00000100", code: "0x20010000", instruction: "ADDI R1, R0, 0", text: "" }],
       runner: [],
     });

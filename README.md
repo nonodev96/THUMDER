@@ -34,9 +34,7 @@ Desarrollado sobre tecnologías web modernas (**Angular** y **Electron**), THUMD
 
 THUMDER ensambla los programas en código máquina DLX real, los carga en memoria y los simula ciclo a ciclo con el pipeline de WinDLX (adelantamiento, detenciones, unidades de coma flotante configurables, traps de entrada y salida y estadísticas), sin necesidad de servidor. Cómo funciona y cómo se comprueba: [docs/simulador.md](docs/simulador.md). El manual de WinDLX en el que se basa: [docs/manual-simulador-dlx.md](docs/manual-simulador-dlx.md).
 
-THUMDER-server, el simulador anterior, ya no hace falta.
-
-Para aprender DLX hay 20 ejemplos clásicos comentados, de «Hola, mundo» a un bucle DAXPY desenrollado y un catálogo de riesgos del pipeline: [docs/ejemplos-dlx.md](docs/ejemplos-dlx.md). Se añaden desde **Gestor de ficheros → + → DLX examples**.
+Para aprender DLX hay 20 ejemplos clásicos comentados, de «Hola, mundo» a un bucle DAXPY desenrollado y un catálogo de riesgos del pipeline: [docs/ejemplos-dlx.md](docs/ejemplos-dlx.md). Están siempre en la carpeta «ejemplos» del gestor de ficheros, de solo lectura, junto a «ejercicios» con los programas de los ejercicios guiados: si cambias uno, se guarda una copia en tus ficheros.
 
 ## Puesta en marcha
 

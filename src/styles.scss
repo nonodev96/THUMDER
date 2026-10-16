@@ -355,6 +355,140 @@ span.underline-text:after {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+// ─── The floating windows of the multiview (WindowDirective) ─────────────────────────────────────────────────────────
+.multiview {
+  position: relative;
+}
+
+.thumder-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface);
+  box-shadow: var(--thumder-shadow-lg), 0 0 0 1px var(--thumder-border);
+
+  &:focus-within {
+    box-shadow: var(--thumder-shadow-lg), 0 0 0 2px var(--thumder-primary);
+  }
+
+  // The view fills the window and scrolls inside it
+  > :not(.thumder-window-handle) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  .card {
+    margin-bottom: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  // The title bars move the window, and stay at the top while its content scrolls
+  .card-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    cursor: move;
+    user-select: none;
+    background-color: var(--thumder-surface-2);
+  }
+
+  .card-header :is(button, a, input, select) {
+    cursor: pointer;
+  }
+
+  // Folded, only its title bar
+  &:has(> * > .collapsed-card:only-child) {
+    height: auto !important;
+  }
+
+  // A card that fills the screen goes over everything
+  &:has(.maximized-card) {
+    z-index: 1050 !important;
+    overflow: visible;
+  }
+
+  &.thumder-window-active {
+    user-select: none;
+    opacity: 0.96;
+  }
+}
+
+.thumder-window-handle {
+  position: absolute;
+  z-index: 3;
+
+  &-n,
+  &-s {
+    left: 10px;
+    right: 10px;
+    height: 6px;
+    cursor: ns-resize;
+  }
+
+  &-e,
+  &-w {
+    top: 10px;
+    bottom: 10px;
+    width: 6px;
+    cursor: ew-resize;
+  }
+
+  &-n {
+    top: 0;
+  }
+
+  &-s {
+    bottom: 0;
+  }
+
+  &-e {
+    right: 0;
+  }
+
+  &-w {
+    left: 0;
+  }
+
+  &-ne,
+  &-nw,
+  &-se,
+  &-sw {
+    width: 14px;
+    height: 14px;
+  }
+
+  &-ne {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+  }
+
+  &-sw {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
+  }
+
+  &-nw {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+  }
+
+  // The corner to resize from, visible
+  &-se {
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+    background: linear-gradient(135deg, transparent 50%, var(--thumder-border-strong) 50%, var(--thumder-border-strong) 60%, transparent 60%, transparent 70%, var(--thumder-border-strong) 70%, var(--thumder-border-strong) 80%, transparent 80%);
+  }
+}
+
 #card-debug {
   position: fixed;
   width: 50%;

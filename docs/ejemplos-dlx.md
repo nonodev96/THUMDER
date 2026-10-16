@@ -2,7 +2,7 @@
 
 En `src/assets/examples-dlx/ejemplos/` hay 20 programas clásicos, ordenados de más sencillo a más avanzado. Cada uno empieza con una cabecera que explica los conceptos, qué mirar en THUMDER mientras se ejecuta, una prueba para hacer y el resultado que imprime.
 
-Para tenerlos en THUMDER: **Gestor de ficheros → + → DLX examples**. Se crea la carpeta `ejemplos` con los 20 programas e `input.s`, el módulo de lectura de los ejemplos de WinDLX que usa el ejemplo 20.
+En THUMDER están siempre en la carpeta `ejemplos` del gestor de ficheros, de solo lectura, con los 20 programas e `input.s`, el módulo de lectura de los ejemplos de WinDLX que usa el ejemplo 20. Si cambias uno, al guardar se crea una copia en `mis ejemplos`.
 
 | Nº | Fichero | Qué enseña | Imprime |
 | :-- | :-- | :-- | :-- |

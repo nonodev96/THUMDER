@@ -163,8 +163,6 @@ export type TypeDataDisplayColumn = TypeData | "InstructionCode" | "Address-0-1-
 
 export type TypeDataRepresentation = "Binary" | "Uint8Array";
 
-export type TypeDirective = "GLOBAL" | "TEXT" | "SPACE" | "DATA" | "ALIGN" | "ASCII" | "ASCIIZ" | "BYTE" | "FLOAT" | "DOUBLE" | "WORD";
-
 export type TypeIdTitleFile = {
   id: string;
   /** The key of its title in the translations */
@@ -586,13 +584,6 @@ export type TypeStage =
   | "fmultEX_7"
   | "fdivEX_7";
 
-export type TypeDirectiveData = {
-  address: TypeAddress; // 0x00000000
-  hexValue: string; // 0x00000000
-  text: string;
-  directive: TypeDirective;
-};
-
 export type TypeInstructionsData = {
   address: TypeAddress; // 0x00000000
   code: string; // 0x00000000
@@ -600,16 +591,14 @@ export type TypeInstructionsData = {
   instruction: string;
 };
 
-export type TypeCodeResponse = {
-  machineDirectives: TypeDirectiveData[];
-  machineInstructions: TypeInstructionsData[];
-};
-
 export type TypeInstructionsData_Table = TypeInstructionsData & {
   row: number;
   stage?: TypeStage;
   index?: number;
 };
+
+/** A floating window of the multiview: where it is and how big, in px from the top left corner of the multiview */
+export type TypeWindowGeometry = { x: number; y: number; width: number; height: number };
 
 export type TypeMultiviewConfiguration = {
   [key: string]: boolean | string[];
@@ -682,13 +671,13 @@ export type TypeMemoryToUpdate = {
   value: string;
 };
 
-/** Answer of THUMDER-server to UpdateRegisterRequest: the values it has stored */
+/** Answer of the simulator to UpdateRegisterRequest: the values it has stored */
 export type TypeRegisterToUpdateResponse = {
   allOK: boolean;
   registerToUpdates: TypeRegisterToUpdate[];
 };
 
-/** Answer of THUMDER-server to UpdateMemoryRequest: the values it has stored */
+/** Answer of the simulator to UpdateMemoryRequest: the values it has stored */
 export type TypeMemoryToUpdateResponse = {
   allOK: boolean;
   memoryToUpdates: TypeMemoryToUpdate[];
@@ -777,7 +766,6 @@ export type TypeSimulationInitResponse = {
   canSimulate: boolean;
   errors: TypeErrorInCode[];
 
-  machineDirectives: TypeDirectiveData[];
   machineInstructions: TypeInstructionsData[];
   runner: TypeSimulationStep[];
 };

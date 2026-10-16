@@ -42,6 +42,21 @@ describe("validateConfig", () => {
     expect(multiview.statistics).toBe(true);
   });
 
+  it("keeps the floating windows of the multiview that exist, with whole numbers in their limits and in their order", () => {
+    const windows = validateConfig({
+      windows: {
+        memory: { x: 10.4, y: "20", width: 50, height: 400 },
+        unknown: { x: 0, y: 0, width: 300, height: 300 },
+        code: { x: "a", y: null, width: 99999, height: 300 },
+        pipeline: "no",
+      },
+    }).windows;
+    expect(Object.keys(windows)).toEqual(["memory", "code"]);
+    expect(windows.memory).toEqual({ x: 10, y: 20, width: 120, height: 400 });
+    expect(windows.code).toEqual({ x: 0, y: 0, width: 10000, height: 300 });
+    expect(validateConfig({}).windows).toEqual({});
+  });
+
   it("knows which changes load the program again", () => {
     const config = defaultConfig();
     expect(changesMachine(config, { ...config, delay: 10, autoSave: false })).toBe(false);

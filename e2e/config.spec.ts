@@ -6,13 +6,12 @@ import { expect, go, loadAndStep, machineState, test } from "./fixtures";
 const stored = (page: import("@playwright/test").Page, key: string) =>
   page.evaluate((key) => JSON.parse(localStorage.getItem("thumder_configuration") ?? "{}")[key] ?? null, key);
 
-test("cada opción tiene su explicación, y ya no hay opciones de THUMDER-server", async ({ page }) => {
+test("cada opción tiene su explicación", async ({ page }) => {
   await go(page, "/auth/config");
   for (const id of ["forwardingHelp", "floatingPointHelp", "memorySizeHelp", "timeSimulationHelp", "autoSaveHelp"]) {
     await expect(page.locator(`#${id}`)).not.toBeEmpty();
   }
   await expect(page.locator("#forwardingID")).toHaveAttribute("aria-describedby", "forwardingHelp");
-  await expect(page.getByText(/WebSocket|THUMDER-server/)).toHaveCount(0);
 });
 
 test("sin simulación en marcha, guarda sin preguntar y ajusta los valores fuera de rango", async ({ page }) => {
