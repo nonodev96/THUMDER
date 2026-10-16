@@ -1,3 +1,11 @@
+## 1.8.0 (2026-10-16)
+
+### Nuevas funciones
+
+* statistics in tabs with charts, IEEE 754 in the calculator, and errors reported to Firestore ([459fb9f](https://github.com/nonodev96/THUMDER/commit/459fb9f))
+
+
+
 ## 1.7.1 (2026-10-16)
 
 ### Nuevas funciones
