@@ -238,7 +238,12 @@
     "TYPE_DOUBLE": "Double",
     "TYPE_INSTRUCTION": "Instruction code",
     "TYPE_BYTES_BY_ADDRESS": "Bytes by address",
-    "TYPE_HALF_WORDS_BY_ADDRESS": "Half words by address"
+    "TYPE_HALF_WORDS_BY_ADDRESS": "Half words by address",
+    "TAB_CONTROL": "Control",
+    "TAB_INTEGER": "Integer",
+    "TAB_FLOAT": "Floating point",
+    "TAB_DOUBLE": "Double",
+    "REPRESENTATION": "Representation"
   },
   "TYPE_DATA": {
     "BYTE": "Byte",

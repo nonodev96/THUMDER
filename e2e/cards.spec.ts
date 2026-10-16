@@ -27,13 +27,48 @@ test("la tarjeta de código se pliega, se maximiza y su tabla se vuelve a medir"
   expect(await height()).toBeGreaterThan(200);
 });
 
-test("los registros enteros, de coma flotante y dobles empiezan plegados y se despliegan con su tabla", async ({ page }) => {
+test("los registros están en pestañas, cada una con su tabla y sus controles", async ({ page }) => {
   await go(page, "/auth/registers");
-  for (const id of ["registers_R_id", "registers_F_id", "registers_D_id"]) await expect(page.locator(`#${id}`)).toHaveClass(/collapsed-card/);
-  await expect(page.locator("#registers_Control_id")).not.toHaveClass(/collapsed-card/);
-  const integers = page.locator("#registers_R_id");
-  await integers.locator(".card-tools button:has(.fa-plus)").click();
-  await expect.poll(() => rows(integers).count()).toBeGreaterThan(3);
+  await expect(page.getByRole("tab")).toHaveText(["Control", "Enteros", "Coma flotante", "Dobles"]);
+  await expect(page.locator("#registersTab-Control")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#registersPanel-Control .thumder-row").first()).toContainText("PC");
+
+  // The arrows choose the next tab and take the focus to it
+  await page.locator("#registersTab-Control").focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#registersTab-R")).toBeFocused();
+  await expect(page.locator("#registersTab-R")).toHaveAttribute("aria-selected", "true");
+  await expect.poll(() => rows(page.locator("#registersPanel-R")).count()).toBeGreaterThan(3);
+  await expect(page.locator("#registersPanel-R .thumder-row").first()).toContainText("00000000 00000000 00000000 00000000");
+
+  // The controls of a group are in its tab
+  await page.locator("#registersTab-D").click();
+  const doubles = page.locator("#registersPanel-D");
+  await doubles.getByRole("button", { name: "Uint8" }).click();
+  await expect(doubles.getByRole("button", { name: "Uint8" })).toHaveAttribute("aria-pressed", "true");
+  await expect(doubles.locator("[role=columnheader]").nth(2)).toHaveText("Uint8");
+
+  // The tab chosen is the one shown the next time
+  await page.reload();
+  await expect(page.locator("#registersTab-D")).toHaveAttribute("aria-selected", "true");
+});
+
+test("el nombre del registro se queda al desplazar la tabla en horizontal", async ({ page }) => {
+  await page.setViewportSize({ width: 800, height: 800 });
+  await go(page, "/auth/registers");
+  await page.locator("#registersTab-D").click();
+  const panel = page.locator("#registersPanel-D");
+  const scroller = panel.locator(".thumder-table-scroll");
+  await expect.poll(() => scroller.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeGreaterThan(200);
+  const cells = panel.locator(".thumder-row").first().locator("[role=cell]");
+  const x = async (index: number) => ((await cells.nth(index).boundingBox()) as { x: number }).x;
+  const [name, hex] = [await x(0), await x(1)];
+  await scroller.evaluate((element) => {
+    element.scrollLeft = 200;
+  });
+  await expect.poll(async () => Math.round(hex - (await x(1)))).toBe(200);
+  expect(Math.round(await x(0))).toBe(Math.round(name));
+  await expect(cells.nth(0)).toHaveText("F0-F1");
 });
 
 test("el editor se maximiza y se restaura", async ({ page }) => {

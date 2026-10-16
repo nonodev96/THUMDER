@@ -1,0 +1,28 @@
+// The tabs go along the top of the card, and each one has its controls above its table
+.registers-body {
+  padding-top: 0.5rem;
+}
+
+.registers-tabs {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 0.75rem;
+
+  .nav-link {
+    white-space: nowrap;
+  }
+}
+
+.registers-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.registers-toolbar-label {
+  font-size: 0.875rem;
+  color: var(--thumder-muted);
+}

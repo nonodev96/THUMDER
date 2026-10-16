@@ -1,162 +1,114 @@
-<div thumderCard class="card" id="registers_Control_id"
+<div thumderCard class="card" id="registersCard"
     (expanded)="resizeCards('60vh')" (minimized)="resizeCards('60vh')" (maximized)="resizeCards('100%')">
   <div class="card-header">
     <h3 class="card-title">
       <!-- Drag button -->
       <ng-content></ng-content>
 
-      <span thumderCardWidget="collapse">{{'MACHINE.REGISTERS_CONTROL' | translate}}</span>
+      <span thumderCardWidget="collapse">{{ 'NAVIGATION.REGISTERS' | translate }}</span>
     </h3>
     <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelected === 'Byte' ? 'btn--active' : '' }}" [title]="'MACHINE.TYPE_BYTES' | translate"
-              (click)="changeTypeDataInTableRegisters('Byte')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.TYPE_BYTES' | translate }}
-      </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'HalfWord' ? 'btn--active' : '' }}" [title]="'MACHINE.TYPE_HALF_WORDS' | translate"
-              (click)="changeTypeDataInTableRegisters('HalfWord')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.TYPE_HALF_WORDS' | translate }}
-      </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'Word' ? 'btn--active' : '' }}" [title]="'MACHINE.TYPE_WORD' | translate"
-              (click)="changeTypeDataInTableRegisters('Word')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.TYPE_WORD' | translate }}
-      </button>
-      <button class="btn btn-tool {{ typeDataSelected === 'ASCII' ? 'btn--active' : '' }}" title="{{ 'MACHINE.ASCII' | translate }}"
-              (click)="changeTypeDataInTableRegisters('ASCII')">
-        <i class="fas fa-table" aria-hidden="true"></i> ASCII
-      </button>
-
-      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" thumderModalOpen="modal-EditRegister" id="modal-EditRegister-Button">
+      <button type="button" class="btn btn-tool" [title]="'MACHINE.EDIT_REGISTER' | translate" [attr.aria-label]="'MACHINE.EDIT_REGISTER' | translate"
+        thumderModalOpen="modal-EditRegister" id="modal-EditRegister-Button">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
+      <button type="button" class="btn btn-tool" [title]="'FORMS.REFRESH' | translate" [attr.aria-label]="'FORMS.REFRESH' | translate" (click)="refresh()">
         <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
-
-
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" thumderCardWidget="maximize">
+      <button type="button" class="btn btn-tool" [title]="'FORMS.MAXIMIZE' | translate" [attr.aria-label]="'FORMS.MAXIMIZE' | translate" thumderCardWidget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" thumderCardWidget="collapse">
+      <button type="button" class="btn btn-tool" [title]="'FORMS.COLLAPSE' | translate" [attr.aria-label]="'FORMS.COLLAPSE' | translate" thumderCardWidget="collapse">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
-  <div class="card-body">
-    <thumder-virtual-table [rows]="dataSource" [columns]="displayedColumns" [height]="maxHeightCard" [itemSize]="32" minWidth="1980px" [label]="'MACHINE.REGISTERS_CONTROL' | translate">
-      <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" width="minmax(4rem, 10fr)" let-element>{{ element }}</ng-template>
-      <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" width="minmax(4rem, 20fr)" let-element>{{ ($any(machine.registers)[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
-      <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" width="minmax(4rem, 40fr)" let-register>{{ ($any(machine.registers)[register].binary) }}</ng-template>
-      <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" width="minmax(4rem, 30fr)" let-element>{{ ($any(machine.registers)[element].binary | binary_to_number | uint_IEEE754_32) }}</ng-template>
-      <ng-template thumderColumn="Byte" [header]="'MACHINE.BYTES' | translate" width="minmax(4rem, 30fr)" let-element>{{ $any(machine.registers)[element].binary | binary32_to_bytes }}</ng-template>
-      <ng-template thumderColumn="HalfWord" [header]="'MACHINE.HALF_WORD' | translate" width="minmax(4rem, 30fr)" let-element>{{ $any(machine.registers)[element].binary | binary32_to_halfword }}</ng-template>
-      <ng-template thumderColumn="Word" [header]="'MACHINE.WORD' | translate" width="minmax(4rem, 30fr)" let-element>{{ $any(machine.registers)[element].binary | binary32_to_word }}</ng-template>
-      <ng-template thumderColumn="ASCII" [header]="'MACHINE.ASCII' | translate" width="minmax(4rem, 30fr)" let-element>{{ $any(machine.registers)[element].binary | binary32_to_ascii }}</ng-template>
-    </thumder-virtual-table>
-  </div>
-</div>
 
-<div thumderCard class="card collapsed-card" id="registers_R_id"
-    (expanded)="resizeCards('60vh')" (minimized)="resizeCards('60vh')" (maximized)="resizeCards('100%')">
-  <div class="card-header">
-    <h3 class="card-title"><span thumderCardWidget="collapse">{{'MACHINE.REGISTERS_INTEGER' | translate}}</span></h3>
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" thumderModalOpen="modal-EditRegister">
-        <i class="fas fa-edit" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
-        <i class="fas fa-sync-alt" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" thumderCardWidget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" thumderCardWidget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
+  <div class="card-body registers-body">
+    <!-- One tab for each group of registers -->
+    <ul class="nav nav-tabs registers-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.REGISTERS' | translate">
+      @for (item of tabs; track item.id; let index = $index) {
+        <li class="nav-item" role="presentation">
+          <button type="button" class="nav-link" role="tab" [id]="'registersTab-' + item.id" [class.active]="tab === item.id"
+            [attr.aria-selected]="tab === item.id" [attr.aria-controls]="tab === item.id ? 'registersPanel-' + item.id : null"
+            [tabIndex]="tab === item.id ? 0 : -1" (click)="select(item.id)" (keydown)="onTabKeydown($event, index)">
+            {{ item.label | translate }}
+          </button>
+        </li>
+      }
+    </ul>
+
+    <div class="registers-panel" role="tabpanel" [id]="'registersPanel-' + tab" [attr.aria-labelledby]="'registersTab-' + tab">
+      @switch (tab) {
+        @case ('Control') {
+          <div class="registers-toolbar">
+            <span class="registers-toolbar-label" id="registersControlTypes">{{ 'MACHINE.REPRESENTATION' | translate }}</span>
+            <div class="btn-group btn-group-sm" role="group" aria-labelledby="registersControlTypes">
+              @for (type of controlTypes; track type.key) {
+                <button type="button" class="btn btn-outline-secondary" [class.active]="typeDataSelected === type.key"
+                  [attr.aria-pressed]="typeDataSelected === type.key" (click)="changeTypeDataInTableRegisters(type.key)">{{ type.label | translate }}</button>
+              }
+            </div>
+          </div>
+          <thumder-virtual-table [rows]="dataSource" [columns]="displayedColumns" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+            [minWidth]="minWidth(controlWidths)" [label]="'MACHINE.REGISTERS_CONTROL' | translate">
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.register" let-element>{{ element }}</ng-template>
+            <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-element>{{ ($any(machine.registers)[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
+            <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary" let-register>{{ $any(machine.registers)[register].binary | binary_groups }}</ng-template>
+            <ng-template thumderColumn="Byte" [header]="'MACHINE.BYTES' | translate" [width]="widths.control('Byte')" let-element>{{ $any(machine.registers)[element].binary | binary32_to_bytes }}</ng-template>
+            <ng-template thumderColumn="HalfWord" [header]="'MACHINE.HALF_WORD' | translate" [width]="widths.control('HalfWord')" let-element>{{ $any(machine.registers)[element].binary | binary32_to_halfword }}</ng-template>
+            <ng-template thumderColumn="Word" [header]="'MACHINE.WORD' | translate" [width]="widths.control('Word')" let-element>{{ $any(machine.registers)[element].binary | binary32_to_word }}</ng-template>
+            <ng-template thumderColumn="ASCII" [header]="'MACHINE.ASCII' | translate" [width]="widths.control('ASCII')" let-element>{{ $any(machine.registers)[element].binary | binary32_to_ascii }}</ng-template>
+          </thumder-virtual-table>
+        }
+        @case ('R') {
+          <thumder-virtual-table [rows]="dataSourceR" [columns]="displayedColumnsR" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+            [minWidth]="minWidth(integerWidths)" [label]="'MACHINE.REGISTERS_INTEGER' | translate">
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element>R{{ element }}</ng-template>
+            <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-element>{{ (machine.registers.R[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
+            <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary" let-element>{{ machine.registers.R[element].binary | binary_groups }}</ng-template>
+            <ng-template thumderColumn="Integer" [header]="'MACHINE.INTEGER' | translate" [width]="widths.integer" let-element>{{ machine.registers.R[element].binary | binary_to_number }}</ng-template>
+          </thumder-virtual-table>
+        }
+        @case ('F') {
+          <div class="registers-toolbar">
+            <span class="registers-toolbar-label" id="registersFloatTypes">{{ 'MACHINE.REPRESENTATION' | translate }}</span>
+            <div class="btn-group btn-group-sm" role="group" aria-labelledby="registersFloatTypes">
+              @for (type of floatTypes; track type.key) {
+                <button type="button" class="btn btn-outline-secondary" [class.active]="typeDataSelectedFloat === type.key"
+                  [attr.aria-pressed]="typeDataSelectedFloat === type.key" (click)="changeTypeDataInTableFloatRegisters(type.key)">{{ type.label | translate }}</button>
+              }
+            </div>
+          </div>
+          <thumder-virtual-table [rows]="dataSourceF" [columns]="displayedColumnsF" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+            [minWidth]="minWidth(floatWidths)" [label]="'MACHINE.REGISTERS_FLOAT' | translate">
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element>F{{ element }}</ng-template>
+            <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-address>{{ (machine.registers.F[address].binary | binary_32_64_to_hexadecimal) }}</ng-template>
+            <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary" let-address>{{ machine.registers.F[address].binary | binary_groups }}</ng-template>
+            <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" [width]="widths.uint8" let-address>{{ (machine.registers.F[address].binary | binary32_to_decimal_IEEE754 | uint_IEEE754_32) }}</ng-template>
+            <ng-template thumderColumn="Float" [header]="('MACHINE.FLOAT' | translate) + ' (IEEE 754, 32 bits)'" [width]="widths.float" let-element>{{ machine.registers.F[element].binary | binary32_to_decimal_IEEE754 }}</ng-template>
+          </thumder-virtual-table>
+        }
+        @case ('D') {
+          <div class="registers-toolbar">
+            <span class="registers-toolbar-label" id="registersDoubleTypes">{{ 'MACHINE.REPRESENTATION' | translate }}</span>
+            <div class="btn-group btn-group-sm" role="group" aria-labelledby="registersDoubleTypes">
+              @for (type of floatTypes; track type.key) {
+                <button type="button" class="btn btn-outline-secondary" [class.active]="typeDataSelectedDouble === type.key"
+                  [attr.aria-pressed]="typeDataSelectedDouble === type.key" (click)="changeTypeDataInTableDoubleRegisters(type.key)">{{ type.label | translate }}</button>
+              }
+            </div>
+          </div>
+          <thumder-virtual-table [rows]="dataSourceD" [columns]="displayedColumnsD" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+            [minWidth]="minWidth(doubleWidths)" [label]="'MACHINE.REGISTERS_DOUBLE' | translate">
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.doubleRegister" let-element>F{{ element }}-F{{ element + 1 }}</ng-template>
+            <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_32_64_to_hexadecimal }}</ng-template>
+            <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_groups }}</ng-template>
+            <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" [width]="widths.uint8_64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 | uint_IEEE754_64 }}</ng-template>
+            <ng-template thumderColumn="Double" [header]="('MACHINE.DOUBLE' | translate) + ' (IEEE 754, 64 bits)'" [width]="widths.double" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 }}</ng-template>
+          </thumder-virtual-table>
+        }
+      }
     </div>
   </div>
-  <div class="card-body">
-    <thumder-virtual-table [rows]="dataSourceR" [columns]="displayedColumnsR" [height]="maxHeightCard" [itemSize]="32" minWidth="900px" [label]="'MACHINE.REGISTERS_INTEGER' | translate">
-      <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" width="minmax(4rem, 10fr)" let-element>R{{ element }}</ng-template>
-      <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" width="minmax(4rem, 20fr)" let-element>{{ (machine.registers.R[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
-      <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" width="minmax(4rem, 40fr)" let-element>{{ (machine.registers.R[element].binary) }}</ng-template>
-      <ng-template thumderColumn="Integer" [header]="'MACHINE.INTEGER' | translate" width="minmax(4rem, 30fr)" let-element>{{ machine.registers.R[element].binary | binary_to_number }}</ng-template>
-    </thumder-virtual-table>
-  </div>
 </div>
-
-<div thumderCard class="card collapsed-card" id="registers_F_id"
-    (expanded)="resizeCards('60vh')" (minimized)="resizeCards('60vh')" (maximized)="resizeCards('100%')">
-  <div class="card-header">
-    <h3 class="card-title"><span thumderCardWidget="collapse">{{'MACHINE.REGISTERS_FLOAT' | translate}}</span></h3>
-    <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Binary' ? 'btn--active' : '' }}" title="{{ 'MACHINE.BINARY' | translate }}"
-              (click)="changeTypeDataInTableFloatRegisters('Binary')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.BINARY' | translate }}
-      </button>
-      <button class="btn btn-tool {{ typeDataSelectedFloat === 'Uint8Array' ? 'btn--active' : '' }}" title="{{ 'MACHINE.UINT8ARRAY' | translate }}"
-              (click)="changeTypeDataInTableFloatRegisters('Uint8Array')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.UINT8ARRAY' | translate }}
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" thumderModalOpen="modal-EditRegister">
-        <i class="fas fa-edit" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
-        <i class="fas fa-sync-alt" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" thumderCardWidget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" thumderCardWidget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-  <div class="card-body">
-    <thumder-virtual-table [rows]="dataSourceF" [columns]="displayedColumnsF" [height]="maxHeightCard" [itemSize]="32" minWidth="1260px" [label]="'MACHINE.REGISTERS_FLOAT' | translate">
-      <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" width="minmax(4rem, 10fr)" let-element>F{{ element }}</ng-template>
-      <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" width="minmax(4rem, 20fr)" let-address>{{ (machine.registers.F[address].binary | binary_32_64_to_hexadecimal) }}</ng-template>
-      <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" width="minmax(4rem, 40fr)" let-address>{{ (machine.registers.F[address].binary) }}</ng-template>
-      <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" width="minmax(4rem, 40fr)" let-address>{{ (machine.registers.F[address].binary | binary32_to_decimal_IEEE754 | uint_IEEE754_32) }}</ng-template>
-      <ng-template thumderColumn="Float" [header]="('MACHINE.FLOAT' | translate) + ' IEEE 754 32 bits'" width="minmax(4rem, 30fr)" let-element>{{ machine.registers.F[element].binary | binary32_to_decimal_IEEE754 }}</ng-template>
-    </thumder-virtual-table>
-  </div>
-</div>
-
-<div thumderCard class="card collapsed-card" id="registers_D_id"
-    (expanded)="resizeCards('60vh')" (minimized)="resizeCards('60vh')" (maximized)="resizeCards('100%')">
-  <div class="card-header">
-    <h3 class="card-title"><span thumderCardWidget="collapse">{{'MACHINE.REGISTERS_DOUBLE' | translate}}</span></h3>
-    <div class="card-tools">
-      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Binary' ? 'btn--active' : '' }}" title="{{ 'MACHINE.BINARY' | translate }}"
-              (click)="changeTypeDataInTableDoubleRegisters('Binary')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.BINARY' | translate }}
-      </button>
-      <button class="btn btn-tool {{ typeDataSelectedDouble === 'Uint8Array' ? 'btn--active' : '' }}" title="{{ 'MACHINE.UINT8ARRAY' | translate }}"
-              (click)="changeTypeDataInTableDoubleRegisters('Uint8Array')">
-        <i class="fas fa-table" aria-hidden="true"></i> {{ 'MACHINE.UINT8ARRAY' | translate }}
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'MACHINE.EDIT_REGISTER' | translate }}" thumderModalOpen="modal-EditRegister">
-        <i class="fas fa-edit" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.REFRESH' | translate }}" (click)="refresh()">
-        <i class="fas fa-sync-alt" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.MAXIMIZE' | translate }}" thumderCardWidget="maximize">
-        <i class="fas fa-expand" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" title="{{ 'FORMS.COLLAPSE' | translate }}" thumderCardWidget="collapse">
-        <i class="fas fa-minus" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-  <div class="card-body">
-    <thumder-virtual-table [rows]="dataSourceD" [columns]="displayedColumnsD" [height]="maxHeightCard" [itemSize]="32" minWidth="1350px" [label]="'MACHINE.REGISTERS_DOUBLE' | translate">
-      <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" width="minmax(4rem, 10fr)" let-element>F{{ element }} - F{{ element + 1 }}</ng-template>
-      <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" width="minmax(4rem, 20fr)" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_32_64_to_hexadecimal }}</ng-template>
-      <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" width="minmax(4rem, 50fr)" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) }}</ng-template>
-      <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" width="minmax(4rem, 50fr)" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 | uint_IEEE754_64 }}</ng-template>
-      <ng-template thumderColumn="Double" [header]="('MACHINE.DOUBLE' | translate) + ' IEEE 754 64 bits'" width="minmax(4rem, 20fr)" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 }}</ng-template>
-    </thumder-virtual-table>
-  </div>
-</div>
-

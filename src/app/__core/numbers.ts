@@ -113,6 +113,11 @@ export function formatHex(bits: string): string {
   return `0x${bitsToHex(bits)}`;
 }
 
+/** Some bits in groups of `size` (a byte by default), to read them: "00000000 00000001" */
+export function groupBits(bits: string, size = 8): string {
+  return bits.match(new RegExp(`.{1,${size}}`, "g"))?.join(" ") ?? "";
+}
+
 /** The bytes of a word, in decimal: [000-001-002-255] */
 export function formatBytes(bits: string): string {
   return byteList(pieces(bits, 8));

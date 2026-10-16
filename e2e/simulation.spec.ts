@@ -16,7 +16,7 @@ test("prim.s: el código marca las etapas y los registros siguen a la simulació
   const pc = () =>
     page.evaluate(
       () =>
-        [...document.querySelectorAll("#registers_Control_id .thumder-row")]
+        [...document.querySelectorAll("#registersPanel-Control .thumder-row")]
           .find((row) => /^\s*PC\b/.test(row.textContent ?? ""))
           ?.querySelectorAll("[role=cell]")[1]
           ?.textContent?.trim() ?? "",
@@ -26,8 +26,8 @@ test("prim.s: el código marca las etapas y los registros siguen a la simulació
   for (let i = 0; i < 3; i++) await controls(page).step.click();
   await expect.poll(pc).not.toBe(pcBefore);
 
-  const integers = page.locator("#registers_R_id");
-  await integers.locator(".card-tools button:has(.fa-plus)").click();
+  await page.locator("#registersTab-R").click();
+  const integers = page.locator("#registersPanel-R");
   const values = () => integers.evaluate((card) => [...card.querySelectorAll(".thumder-row")].map((row) => row.querySelectorAll("[role=cell]")[1]?.textContent?.trim()).join());
   const before = await values();
   for (let i = 0; i < 15; i++) await controls(page).step.click();

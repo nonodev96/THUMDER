@@ -14,6 +14,7 @@ import {
   formatHalfWords,
   formatHex,
   formatWord,
+  groupBits,
   hexToBits,
   hexToNumber,
   int8ToBits,
@@ -135,6 +136,13 @@ describe("IEEE 754", () => {
 
 describe("the columns of the registers and the memory", () => {
   const word = hexToBits("4F6C610A");
+
+  it("shows the bits in bytes, to read them", () => {
+    expect(groupBits(word)).toBe("01001111 01101100 01100001 00001010");
+    expect(groupBits(PI_BITS).split(" ")).toHaveLength(8);
+    expect(groupBits("10101", 4)).toBe("1010 1");
+    expect(groupBits("")).toBe("");
+  });
 
   it("shows a word in hexadecimal, as bytes, half words and an unsigned word", () => {
     expect(formatHex(word)).toBe("0x4F6C610A");

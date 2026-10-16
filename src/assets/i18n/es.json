@@ -238,7 +238,12 @@
     "TYPE_DOUBLE": "Double",
     "TYPE_INSTRUCTION": "Código de instrucción",
     "TYPE_BYTES_BY_ADDRESS": "Bytes por dirección",
-    "TYPE_HALF_WORDS_BY_ADDRESS": "Medias palabras por dirección"
+    "TYPE_HALF_WORDS_BY_ADDRESS": "Medias palabras por dirección",
+    "TAB_CONTROL": "Control",
+    "TAB_INTEGER": "Enteros",
+    "TAB_FLOAT": "Coma flotante",
+    "TAB_DOUBLE": "Dobles",
+    "REPRESENTATION": "Representación"
   },
   "TYPE_DATA": {
     "BYTE": "Byte",

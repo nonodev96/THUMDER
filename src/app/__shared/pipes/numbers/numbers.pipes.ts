@@ -12,6 +12,7 @@ import {
   formatHalfWords,
   formatHex,
   formatWord,
+  groupBits,
 } from "@core/numbers";
 
 // The pipes of the registers, the memory and their windows: each one is a conversion of core/numbers.ts
@@ -43,6 +44,13 @@ export class Binary32ToHalfWordPipe implements PipeTransform {
 export class Binary32ToWordPipe implements PipeTransform {
   transform(bits: string = ZERO_32): string {
     return formatWord(bits);
+  }
+}
+
+@Pipe({ name: "binary_groups" })
+export class BinaryGroupsPipe implements PipeTransform {
+  transform(bits: string = ZERO_32): string {
+    return groupBits(bits);
   }
 }
 
