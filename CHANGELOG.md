@@ -1,3 +1,24 @@
+## 1.7.0 (2026-10-16)
+
+THUMDER simula en el propio navegador o en la aplicación de escritorio: ya no hace falta THUMDER-server ni conexión.
+
+### Nuevas funciones
+
+* Simulador propio: ensamblador DLX real y el pipeline de WinDLX (adelantamiento, detenciones, unidades de coma flotante configurables, traps de entrada y salida y estadísticas), en un Web Worker y sin servidor.
+* Sin cuenta: los ficheros se guardan en el navegador (IndexedDB). La cuenta es opcional y solo sincroniza los ficheros.
+* Carpetas «ejemplos» (20 programas clásicos comentados) y «ejercicios» (8 ejercicios guiados) siempre en el gestor de ficheros, de solo lectura: un programa cambiado se guarda como copia.
+* Para aprender: velocidad de la simulación, ejecutar hasta el final, paso atrás, explicación de cada detención, comparación con y sin adelantamiento, puntos de ruptura por etapa y en memoria, símbolos y módulos del programa, ruta de datos, ejercicios compartidos por enlace y el diagrama de ciclos en SVG, PNG y CSV.
+* Vista múltiple con ventanas flotantes que se mueven y cambian de tamaño como las de un sistema operativo.
+* Nueva paleta de colores, con tema claro y oscuro y contraste WCAG 2.1 AA.
+* Interfaz para móvil, tableta y escritorio.
+* Angular 20, sin jQuery, DevExtreme ni Angular Material.
+
+### Correcciones
+
+* Los fallos de la versión anterior en las conversiones de números, los registros dobles, el diagrama de ciclos, la configuración y los ficheros (el detalle, en TODO-mejoras.md).
+
+
+
 ## <small>1.6.3 (2022-07-02)</small>
 
 * Update readme, wiki and fix code request test ([5dd294a](https://github.com/nonodev96/THUMDER/commit/5dd294a))

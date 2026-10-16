@@ -50,7 +50,7 @@ Antes de proponer un cambio: lint sin errores, las pruebas unitarias y las e2e q
 
 ## Publicar
 
-1. `pnpm version minor` (o `patch`): sube la versión y añade al CHANGELOG los commits desde la anterior.
+1. `pnpm version minor` (o `patch`): sube la versión y añade al CHANGELOG los `feat`, `fix` y `perf` desde la anterior (`scripts/changelog.mjs`). Si antes escribes a mano la sección de esa versión en CHANGELOG.md, se queda la tuya.
 2. `git push --follow-tags`: la etiqueta `v*` lanza dos flujos:
    - `deploy-netlify.yaml` despliega la web;
    - `create-release.yaml` crea un borrador de *release* con los ejecutables de Linux, Windows y macOS, los `latest*.yml` y las notas del CHANGELOG.

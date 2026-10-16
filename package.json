@@ -46,7 +46,7 @@
     "test:watch": "ng test",
     "test:rules": "firebase emulators:exec --only firestore --project demo-thumder \"vitest run --config vitest.rules.config.ts\"",
     "e2e": "playwright test",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "version": "node scripts/changelog.mjs",
     "lint": "biome check src/ main.ts preload.ts e2e/ test/ vitest.rules.config.ts",
     "lint:fix": "biome check --write src/ main.ts preload.ts e2e/ test/ vitest.rules.config.ts",
     "e2e:electron": "pnpm run build:prod && playwright test --config playwright.electron.config.ts"
