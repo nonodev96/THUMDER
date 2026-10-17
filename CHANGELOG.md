@@ -1,3 +1,11 @@
+## 1.10.0 (2026-10-17)
+
+### Nuevas funciones
+
+* the simulation sounds: a note for each stage an instruction enters, and its own sound for stalls, aborted instructions and events ([cdca673](https://github.com/nonodev96/THUMDER/commit/cdca673))
+
+
+
 ## 1.9.1 (2026-10-17)
 
 ### Nuevas funciones
