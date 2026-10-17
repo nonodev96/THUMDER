@@ -18,6 +18,7 @@ import {
   NumberToHexadecimalPipe,
   PadStartPipe,
 } from "@shared/pipes/numbers/numbers.pipes";
+import { mediaSignal, NARROW } from "@shared/utils/media";
 import { ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
@@ -147,6 +148,17 @@ export class MemoryView {
         this.displayedColumnsMemory = ["Address", "Hexadecimal", "HalfWord-0", "HalfWord-1"];
         break;
     }
+  }
+
+  /** On a narrow screen the value goes next to the address, and the hexadecimal and the bits after it */
+  private readonly narrow = mediaSignal(NARROW);
+  public get columns(): string[] {
+    if (!this.narrow()) return this.displayedColumnsMemory;
+    const last = ["Hexadecimal", "Binary", "BinaryFloat", "BinaryDouble"];
+    return [
+      ...this.displayedColumnsMemory.filter((key) => !last.includes(key)),
+      ...this.displayedColumnsMemory.filter((key) => last.includes(key)),
+    ];
   }
 
   /** The width of a column (a size of the CSS grid) */

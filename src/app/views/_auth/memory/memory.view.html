@@ -29,7 +29,17 @@
     </div>
   </div>
   <div class="card-body" id="Memory-card-body">
-    <div class="memory-types" role="group" [attr.aria-label]="'MACHINE.TYPE_DATA' | translate">
+    <!-- Phones: a list (the buttons would take three lines) -->
+    <div class="memory-types-select d-sm-none">
+      <label class="memory-types-label mb-0" for="memoryTypeSelect">{{ 'MACHINE.SHOW_AS' | translate }}</label>
+      <select class="custom-select custom-select-sm" id="memoryTypeSelect" [value]="typeDataSelected"
+        (change)="changeTypeDataInTable($any($event.target).value)">
+        @for (type of dataTypes; track type.key) {
+          <option [value]="type.key" [selected]="typeDataSelected === type.key">{{ type.label | translate }}</option>
+        }
+      </select>
+    </div>
+    <div class="memory-types d-none d-sm-flex" role="group" [attr.aria-label]="'MACHINE.TYPE_DATA' | translate">
       <span class="memory-types-label" aria-hidden="true">{{ 'MACHINE.SHOW_AS' | translate }}</span>
       @for (type of dataTypes; track type.key) {
         <button type="button" class="btn btn-sm" [class.btn-primary]="typeDataSelected === type.key" [class.btn-outline-secondary]="typeDataSelected !== type.key"
@@ -38,7 +48,7 @@
         </button>
       }
     </div>
-    <thumder-virtual-table [rows]="dataSourceMemory" [columns]="displayedColumnsMemory" [height]="maxHeightCard" [itemSize]="32" [minWidth]="minWidth"
+    <thumder-virtual-table [rows]="dataSourceMemory" [columns]="columns" [height]="maxHeightCard" [itemSize]="32" [minWidth]="minWidth"
       [stickyFirst]="true" [label]="'MACHINE.MEMORY' | translate">
       <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" [width]="width('Address')" let-index>0x{{ index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"} }}</ng-template>
       <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="width('Hexadecimal')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_32_64_to_hexadecimal) }}</ng-template>

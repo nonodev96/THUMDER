@@ -329,7 +329,8 @@
     "MESSAGES": "Messages",
     "NOTIFICATIONS": "Notifications",
     "TOGGLE_CONTROL_SIDEBAR": "Toggle control sidebar",
-    "SIGN_OUT": "Sign out"
+    "SIGN_OUT": "Sign out",
+    "MORE": "More options: speed, theme and language"
   },
   "CONFIG": {
     "LANG": "Language",

@@ -131,3 +131,22 @@ test("el registro de la simulación se filtra, se vacía y se puede copiar", asy
   await page.locator("#loggerClear").click();
   await expect(viewer).toContainText("Aún no hay mensajes");
 });
+
+test("@movil el código y la memoria ponen primero lo que se lee, y la memoria elige su tipo en una lista", async ({ page }) => {
+  await go(page, "/auth/code");
+  await controls(page).load.click();
+  await expect(controls(page).step).toBeEnabled();
+  const headers = page.locator("#Code-card [role=columnheader]");
+  await expect(headers.first()).toHaveText("Dirección");
+  await expect(headers.nth(1)).toHaveText("Instrucción");
+  await expect(headers.nth(2)).toHaveText("Etapa");
+  await expect(headers.nth(3)).toHaveText("Descripción");
+
+  await page.locator(".main-header button:has(.fa-bars)").tap();
+  await page.locator(".main-sidebar a", { hasText: "Memoria" }).first().tap();
+  await expect(page.locator("#memoryTypeSelect")).toBeVisible();
+  await page.locator("#memoryTypeSelect").selectOption("Float");
+  const memory = page.locator("#Memory-card [role=columnheader]");
+  await expect(memory.nth(1)).toHaveText("Float");
+  await expect(memory.last()).toHaveText(/Binario/);
+});

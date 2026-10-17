@@ -20,7 +20,7 @@
   </div>
 
   <div class="card-body statistics-body">
-    <ul class="nav nav-tabs statistics-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.STATISTICS' | translate">
+    <ul class="nav nav-tabs thumder-tabs statistics-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.STATISTICS' | translate">
       @for (item of tabs; track item.id; let index = $index) {
         <li class="nav-item" role="presentation">
           <button type="button" class="nav-link" role="tab" [id]="'statisticsTab-' + item.id" [class.active]="tab() === item.id"

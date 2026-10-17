@@ -8,6 +8,7 @@ import { bitsToHex, toAddress } from "@core/numbers";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
 import { FromBaseToBasePipe } from "@shared/pipes/numbers/numbers.pipes";
+import { mediaSignal, NARROW } from "@shared/utils/media";
 import { map } from "rxjs";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
@@ -24,7 +25,13 @@ export class CodeView {
 
   @ViewChild(VirtualTableComponent) private table?: VirtualTableComponent<TypeInstructionsData_Table>;
 
-  public displayedColumnsMemory: string[] = ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction", "Description"];
+  /** On a narrow screen, first what the instruction is and does, and the bits last */
+  private readonly narrow = mediaSignal(NARROW);
+  public readonly columns = computed(() =>
+    this.narrow()
+      ? ["Address", "Instruction", "Stage", "Description", "Text", "Hexadecimal", "Binary"]
+      : ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction", "Description"],
+  );
   public maxHeightCard: string = "75vh";
 
   /** Where each instruction is in this cycle (one Map for the whole table, instead of a search for each row) */

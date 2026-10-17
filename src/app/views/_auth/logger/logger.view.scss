@@ -45,6 +45,33 @@
   overflow-wrap: anywhere;
 }
 
+// Narrow: the time, the cycle and the type over the message, which takes the whole width
+@media (max-width: 575.98px) {
+  .logger-viewer {
+    height: 65vh;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .logger-line {
+    grid-template-columns: auto auto 1fr;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgb(148 163 184 / 20%);
+  }
+
+  .logger-cycle {
+    text-align: left;
+  }
+
+  .logger-text {
+    grid-column: 1 / -1;
+  }
+
+  .logger-filter {
+    max-width: none;
+  }
+}
+
 .logger-time,
 .logger-cycle {
   opacity: 0.75;

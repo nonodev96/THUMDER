@@ -67,12 +67,22 @@ test.describe("Desplegables", () => {
     await expect(page.locator(".main-sidebar")).toContainText("Memoria");
   });
 
-  test("@movil el de idioma abre con el dedo y se cierra al tocar fuera", async ({ page }) => {
+  test("@movil «Más opciones» reúne la velocidad, el tema y el idioma, abre con el dedo y se cierra al tocar fuera", async ({ page }) => {
     await go(page, "/auth/code");
-    await page.locator("#dropdownSubMenuLang").tap();
-    await expect(page.locator("#changeLangToEnglish")).toBeVisible();
-    await page.locator(".content-wrapper").tap({ position: { x: 200, y: 300 } });
-    await expect(page.locator("#changeLangToEnglish")).toBeHidden();
+    await expect(page.locator("#dropdownSubMenuLang")).toBeHidden();
+    await expect(page.locator("#simulationSpeed")).toBeHidden();
+    await page.locator("#navbarMore").tap();
+    await expect(page.locator("#moreLangEnglish")).toBeVisible();
+    await expect(page.locator("#moreTheme-dark")).toBeVisible();
+    // Outside the menu, which takes the right of the screen
+    await page.locator(".content-wrapper").tap({ position: { x: 20, y: 300 } });
+    await expect(page.locator("#moreLangEnglish")).toBeHidden();
+
+    // An option closes the menu and does what it says
+    await page.locator("#navbarMore").tap();
+    await page.locator("#moreLangEnglish").tap();
+    await expect(page.locator("#moreLangEnglish")).toBeHidden();
+    await expect(page.locator(".main-sidebar")).toContainText("Memory");
   });
 });
 

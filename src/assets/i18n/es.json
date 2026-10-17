@@ -329,7 +329,8 @@
     "MESSAGES": "Mensajes",
     "NOTIFICATIONS": "Notificaciones",
     "TOGGLE_CONTROL_SIDEBAR": "Alternar panel de control",
-    "SIGN_OUT": "Cerrar sesión"
+    "SIGN_OUT": "Cerrar sesión",
+    "MORE": "Más opciones: velocidad, tema e idioma"
   },
   "CONFIG": {
     "LANG": "Idioma",

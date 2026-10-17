@@ -49,8 +49,20 @@
   flex-wrap: wrap;
   gap: 0.5rem;
 
+  // The buttons share the width of their line (on a phone, one under the other with the same size)
   .btn {
-    min-width: 9rem;
+    flex: 1 1 9rem;
+  }
+}
+
+// Phones: the banner from edge to edge, with less padding
+@media (max-width: 575.98px) {
+  .thumder-consent {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -64,6 +76,12 @@
   box-shadow: var(--thumder-shadow-lg);
   background-color: var(--thumder-surface);
   color: var(--thumder-text);
+
+  // Open, the header and the buttons stay and the text scrolls between them (a phone, a low screen)
+  &[open] {
+    display: flex;
+    flex-direction: column;
+  }
 
   &::backdrop {
     background-color: rgb(15 23 42 / 60%);
@@ -100,8 +118,23 @@
 }
 
 .thumder-dialog-body {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 1rem 1.25rem;
   overflow-y: auto;
+}
+
+@media (max-width: 575.98px) {
+  .thumder-dialog-header,
+  .thumder-dialog-body,
+  .thumder-dialog-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .thumder-dialog-footer .btn {
+    flex: 1 1 auto;
+  }
 }
 
 .thumder-consent-group {

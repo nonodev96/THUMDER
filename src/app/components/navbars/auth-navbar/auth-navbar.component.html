@@ -91,7 +91,7 @@
             <i class="fas fa-fast-forward" aria-hidden="true"></i>
           </button>
         </div>
-        <div class="dropdown d-inline-block" thumderDropdown>
+        <div class="dropdown d-none d-sm-inline-block" thumderDropdown>
           <button type="button" class="btn dropdown-toggle" id="simulationSpeed" aria-haspopup="true" aria-expanded="false"
             [attr.aria-label]="('SIMULATION.SPEED' | translate) + ': ' + (speedLabel() | translate)" [title]="('SIMULATION.SPEED' | translate) + ': ' + (speedLabel() | translate)">
             <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
@@ -113,7 +113,44 @@
       </li>
     
 
-    <li class="nav-item dropdown" thumderDropdown>
+    <!-- Phones: the speed, the theme and the language in one menu (the navbar does not have room for three) -->
+    <li class="nav-item dropdown d-sm-none" thumderDropdown>
+      <button type="button" id="navbarMore" aria-haspopup="true" aria-expanded="false" class="nav-link btn btn-link dropdown-toggle navbar-more"
+        [title]="'NAVBAR.MORE' | translate" [attr.aria-label]="'NAVBAR.MORE' | translate">
+        <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+      </button>
+      <div aria-labelledby="navbarMore" class="dropdown-menu dropdown-menu-right border-0 shadow navbar-more-menu">
+        <button type="button" class="dropdown-item" id="moreRunToEnd" (click)="runToEnd()" [disabled]="!machine.state.canSimulate() || machine.state.running()">
+          <i class="fas fa-fw fa-fast-forward" aria-hidden="true"></i> {{ 'SIMULATION.RUN_TO_END' | translate }}
+        </button>
+        <div class="dropdown-divider" role="separator"></div>
+        <p class="dropdown-header" aria-hidden="true">{{ 'SIMULATION.SPEED' | translate }}</p>
+        @for (speed of speeds; track speed.delay) {
+          <button type="button" class="dropdown-item" (click)="machine.setSpeed(speed.delay)"
+            [class.active]="config.value().delay === speed.delay" [attr.aria-pressed]="config.value().delay === speed.delay">
+            <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i> {{ speed.label | translate }}
+          </button>
+        }
+        <div class="dropdown-divider" role="separator"></div>
+        <p class="dropdown-header" aria-hidden="true">{{ 'THEME.TITLE' | translate }}</p>
+        @for (option of themes; track option.choice) {
+          <button type="button" class="dropdown-item" [id]="'moreTheme-' + option.choice" (click)="theme.set(option.choice)"
+            [class.active]="theme.choice() === option.choice" [attr.aria-pressed]="theme.choice() === option.choice">
+            <i class="fas fa-fw {{ option.icon }}" aria-hidden="true"></i> {{ option.label | translate }}
+          </button>
+        }
+        <div class="dropdown-divider" role="separator"></div>
+        <p class="dropdown-header" aria-hidden="true">{{ 'CONFIG.LANG' | translate }}</p>
+        <button type="button" class="dropdown-item" id="moreLangSpanish" lang="es" (click)="app.setLang('es')" [class.active]="app.lang === 'es'">
+          <span class="flag-icon flag-icon-esp" aria-hidden="true"></span> Español
+        </button>
+        <button type="button" class="dropdown-item" id="moreLangEnglish" lang="en" (click)="app.setLang('en')" [class.active]="app.lang === 'en'">
+          <span class="flag-icon flag-icon-gbr" aria-hidden="true"></span> English
+        </button>
+      </div>
+    </li>
+
+    <li class="nav-item dropdown d-none d-sm-block" thumderDropdown>
       <button type="button" id="dropdownTheme" aria-haspopup="true" aria-expanded="false" class="nav-link btn btn-link dropdown-toggle"
         [title]="'THEME.TITLE' | translate" [attr.aria-label]="'THEME.TITLE' | translate">
         <i class="fas" [class.fa-moon]="theme.dark()" [class.fa-sun]="!theme.dark()" aria-hidden="true"></i>
@@ -130,7 +167,7 @@
       </ul>
     </li>
 
-    <li class="nav-item dropdown" thumderDropdown>
+    <li class="nav-item dropdown d-none d-sm-block" thumderDropdown>
       <button type="button" id="dropdownSubMenuLang" aria-haspopup="true" aria-expanded="false"
       class="nav-link btn btn-link dropdown-toggle" [title]="'CONFIG.LANG' | translate">
         <i class="fas fa-language d-lg-none" aria-hidden="true"></i>

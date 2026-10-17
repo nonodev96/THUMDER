@@ -26,7 +26,7 @@
   </div>
 
   <div class="card-body">
-    <thumder-virtual-table [rows]="rows()" [columns]="displayedColumnsMemory" [height]="maxHeightCard" [itemSize]="32" minWidth="128ch"
+    <thumder-virtual-table [rows]="rows()" [columns]="columns()" [height]="maxHeightCard" [itemSize]="32" minWidth="128ch"
       [rowClass]="rowClass" [label]="'MACHINE.CODE' | translate" [trackBy]="trackByIndex" [stickyFirst]="true">
       <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" width="13ch" let-row>{{ row.address }}</ng-template>
       <ng-template thumderColumn="Text" [header]="'MACHINE.TEXT' | translate" width="minmax(8ch, 1fr)" let-row>{{ row.text }}</ng-template>

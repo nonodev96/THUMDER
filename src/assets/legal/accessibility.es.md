@@ -10,7 +10,7 @@ THUMDER es **parcialmente conforme** con las [Pautas de Accesibilidad para el Co
 
 ## Qué se ha hecho
 
-- **Teclado:** casi todo se maneja con el teclado, con el foco siempre visible. La simulación tiene atajos: F5 ejecuta o pausa, F10 avanza un ciclo, Mayúsculas+F10 retrocede uno, F8 llega al final y Mayúsculas+F5 carga el programa. Las ventanas flotantes de la vista múltiple se mueven con las flechas.
+- **Teclado:** casi todo se maneja con el teclado, con el foco siempre visible. La simulación tiene atajos: F5 ejecuta o pausa, F10 avanza un ciclo, Mayúsculas+F10 retrocede uno, F8 llega al final y Mayúsculas+F5 carga el programa. Las ventanas flotantes de la vista múltiple se mueven con Alt y las flechas, y cambian de tamaño con Alt, Mayúsculas y las flechas.
 - **Lectores de pantalla:** los botones y controles tienen nombre; las tablas de código, memoria y registros se presentan como tablas; el estado de la simulación y los avisos se anuncian solos.
 - **Texto además de dibujos:** la tabla de Código dice en qué etapa está cada instrucción y explica qué hace; Registros, Memoria y Estadísticas dan en texto lo que dibujan el pipeline y el diagrama de ciclos.
 - **Visión:** temas claro y oscuro con el contraste comprobado, y un diseño que se adapta a pantallas estrechas y al zoom del navegador.
@@ -21,7 +21,7 @@ THUMDER es **parcialmente conforme** con las [Pautas de Accesibilidad para el Co
 
 - **Dibujos en canvas:** el pipeline, la ruta de datos y el diagrama de ciclos son dibujos. Su información está también en texto (ver arriba), pero algunos detalles, como el recorrido exacto de los datos por la ruta, solo se ven en el dibujo.
 - **Editor de código:** el editor (Monaco) funciona con lector de pantalla, pero algunas marcas son visuales, como el subrayado de los errores; los errores también se listan en el panel de Problemas.
-- **Vista múltiple:** ordenar las vistas arrastrándolas necesita ratón o pantalla táctil; con el teclado, cada vista puede abrirse como ventana flotante y moverse con las flechas.
+- **Vista múltiple:** ordenar las vistas arrastrándolas necesita ratón o pantalla táctil; con el teclado, cada vista puede abrirse como ventana flotante y moverse con Alt y las flechas.
 - **Documentos de terceros:** algunas páginas de la documentación vienen de otros proyectos y pueden tener imágenes sin una descripción completa.
 
 ## Cuéntanos qué falla

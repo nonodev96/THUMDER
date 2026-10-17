@@ -8,17 +8,17 @@
       <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}" aria-hidden="true"></i>
     </h3>
     <div class="card-tools">
-
-      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_UP' | translate" [attr.aria-label]="'MACHINE.MOVE_UP' | translate" (click)="pixi_CycleClockDiagramComponent.moveBottom()">
+      <!-- The arrows: on a phone the diagram moves with the finger (and with the arrow keys when it has the focus) -->
+      <button type="button" class="btn btn-tool d-none d-sm-inline-block" [title]="'MACHINE.MOVE_UP' | translate" [attr.aria-label]="'MACHINE.MOVE_UP' | translate" (click)="pixi_CycleClockDiagramComponent.moveBottom()">
         <i class="fas fa-arrow-up" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_DOWN' | translate" [attr.aria-label]="'MACHINE.MOVE_DOWN' | translate" (click)="pixi_CycleClockDiagramComponent.moveTop()">
+      <button type="button" class="btn btn-tool d-none d-sm-inline-block" [title]="'MACHINE.MOVE_DOWN' | translate" [attr.aria-label]="'MACHINE.MOVE_DOWN' | translate" (click)="pixi_CycleClockDiagramComponent.moveTop()">
         <i class="fas fa-arrow-down" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_LEFT' | translate" [attr.aria-label]="'MACHINE.MOVE_LEFT' | translate" (click)="pixi_CycleClockDiagramComponent.moveRight()">
+      <button type="button" class="btn btn-tool d-none d-sm-inline-block" [title]="'MACHINE.MOVE_LEFT' | translate" [attr.aria-label]="'MACHINE.MOVE_LEFT' | translate" (click)="pixi_CycleClockDiagramComponent.moveRight()">
         <i class="fas fa-arrow-left" aria-hidden="true"></i>
       </button>
-      <button type="button" class="btn btn-tool" [title]="'MACHINE.MOVE_RIGHT' | translate" [attr.aria-label]="'MACHINE.MOVE_RIGHT' | translate" (click)="pixi_CycleClockDiagramComponent.moveLeft()">
+      <button type="button" class="btn btn-tool d-none d-sm-inline-block" [title]="'MACHINE.MOVE_RIGHT' | translate" [attr.aria-label]="'MACHINE.MOVE_RIGHT' | translate" (click)="pixi_CycleClockDiagramComponent.moveLeft()">
         <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
 

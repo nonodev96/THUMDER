@@ -1,6 +1,7 @@
 import { expect, go, test } from "./fixtures";
 
-// No page is wider than the screen, in phones (upright and sideways), tablets, laptops and desktops
+// No page is wider than the screen, in phones (upright and sideways), tablets, laptops and desktops, and every button of
+// the navbar is inside it (the navbar hides what does not fit: it would not make the page wider)
 
 const SIZES = {
   movil: { width: 390, height: 844 },
@@ -37,6 +38,12 @@ for (const [name, size] of Object.entries(SIZES)) {
       await go(page, route);
       const extra = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       if (extra > 0) overflowing.push(`${route} (+${extra} px)`);
+      const outside = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>(".main-header button, .main-header a")]
+          .filter((element) => element.offsetParent !== null && element.getBoundingClientRect().right > document.documentElement.clientWidth + 1)
+          .map((element) => element.id || element.getAttribute("aria-label") || element.textContent?.trim() || element.tagName),
+      );
+      if (outside.length > 0) overflowing.push(`${route}: navbar ${outside.join(", ")}`);
     }
     expect(overflowing).toEqual([]);
   });

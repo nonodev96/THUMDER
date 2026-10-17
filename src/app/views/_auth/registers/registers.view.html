@@ -26,7 +26,7 @@
 
   <div class="card-body registers-body">
     <!-- One tab for each group of registers -->
-    <ul class="nav nav-tabs registers-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.REGISTERS' | translate">
+    <ul class="nav nav-tabs thumder-tabs registers-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.REGISTERS' | translate">
       @for (item of tabs; track item.id; let index = $index) {
         <li class="nav-item" role="presentation">
           <button type="button" class="nav-link" role="tab" [id]="'registersTab-' + item.id" [class.active]="tab === item.id"

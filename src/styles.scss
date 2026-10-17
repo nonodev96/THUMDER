@@ -678,6 +678,93 @@ body .main-header .navbar-nav {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
+
+  // The tabs (registers, statistics) wrap as buttons instead of hiding the last ones behind a scroll (with :root, over
+  // the tabs of theme.scss)
+  :root body .thumder-tabs.nav-tabs {
+    flex-wrap: wrap;
+    overflow: visible;
+    gap: 0.35rem;
+    border-bottom: 0;
+
+    .nav-link,
+    .nav-link:hover,
+    .nav-link:focus {
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--thumder-border);
+      border-radius: var(--thumder-radius);
+      margin-bottom: 0;
+    }
+
+    .nav-link.active,
+    .nav-link.active:hover {
+      color: var(--thumder-on-primary);
+      background-color: var(--thumder-primary);
+      border-color: var(--thumder-primary);
+      box-shadow: none;
+    }
+  }
+
+  // The texts in Markdown (about, documentation, legal texts): titles that fit the screen
+  body .content-wrapper markdown h1 {
+    font-size: 1.6rem;
+  }
+
+  body .content-wrapper markdown h2 {
+    font-size: 1.3rem;
+  }
+
+  body .content-wrapper markdown h3 {
+    font-size: 1.15rem;
+  }
+
+  // The footer: the links in one line and smaller
+  body .main-footer {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+// Phones, also sideways (little height): the title and where the page is, in one line
+@media (max-width: 575.98px), (max-height: 500px) {
+  body .content-header > .container-fluid > .row {
+    flex-wrap: nowrap;
+    align-items: baseline;
+    margin-bottom: 0 !important;
+  }
+
+  body .content-header > .container-fluid > .row > [class*="col-"] {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+  }
+
+  body .content-header > .container-fluid > .row > [class*="col-"]:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  body .content-header .breadcrumb {
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+    font-size: 0.85rem;
+  }
+
+  body .content-header {
+    padding-top: 0.5rem;
+    padding-bottom: 0.25rem;
+  }
+
+  body .content-header h1 {
+    font-size: 1.4rem;
+  }
+}
+
+// The menu «More» of the navbar on phones: it scrolls if the screen is low (a phone sideways)
+.navbar-more-menu {
+  max-height: calc(100vh - 4.5rem);
+  overflow-y: auto;
 }
 
 // Phones (and phones turned sideways, with little height): the footer scrolls with the page instead of taking a line of
