@@ -1,0 +1,222 @@
+// The documentation: the index on the left (on wide screens) and the page on the right
+.docs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 17rem minmax(0, 1fr);
+  }
+}
+
+.docs-nav {
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 4.5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+  }
+}
+
+.docs-nav-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.docs-nav-section {
+  margin: 1rem 0 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--thumder-muted);
+}
+
+.docs-nav-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.docs-nav-home,
+.docs-nav-list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--thumder-radius);
+  color: var(--thumder-text-2);
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover,
+  &:focus {
+    color: var(--thumder-primary-text);
+    background-color: var(--thumder-surface-hover);
+  }
+
+  &.active {
+    color: var(--thumder-primary-text);
+    background-color: var(--thumder-primary-soft);
+    font-weight: 600;
+  }
+}
+
+.docs-nav-home {
+  justify-content: flex-start;
+}
+
+.docs-lang {
+  flex: none;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0 0.3rem;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 3px;
+  color: var(--thumder-muted);
+}
+
+.docs-page-header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--thumder-border);
+}
+
+.docs-page-section {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--thumder-primary-text);
+}
+
+.docs-page-title {
+  font-size: 1.75rem;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.docs-page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+// The text of a page
+.docs-markdown {
+  display: block;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+
+  ::ng-deep {
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    pre {
+      overflow-x: auto;
+      border-radius: var(--thumder-radius);
+    }
+
+    table {
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+
+    th,
+    td {
+      padding: 0.35rem 0.6rem;
+      border: 1px solid var(--thumder-border);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin-top: 1.5rem;
+      scroll-margin-top: 4.5rem;
+    }
+
+    blockquote {
+      padding: 0.5rem 1rem;
+      border-left: 4px solid var(--thumder-primary);
+      background-color: var(--thumder-surface-2);
+    }
+  }
+}
+
+.docs-page-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--thumder-border);
+}
+
+.docs-page-link {
+  display: flex;
+  flex-direction: column;
+  max-width: 48%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  text-decoration: none;
+
+  small {
+    color: var(--thumder-muted);
+  }
+
+  &:hover {
+    border-color: var(--thumder-primary);
+  }
+}
+
+.docs-page-link-next {
+  margin-left: auto;
+  text-align: right;
+}
+
+.docs-parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+}
+
+.docs-part {
+  padding: 1rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+
+  ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+}
+
+.docs-part-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.docs-part-help {
+  color: var(--thumder-muted);
+  font-size: 0.9rem;
+}
+
+// The navbar is fixed: going to a page or to one of its sections leaves its title under it, not hidden behind it
+.docs-page {
+  scroll-margin-top: 4.5rem;
+}
+
+:host ::ng-deep .docs-markdown :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 4.5rem;
+}

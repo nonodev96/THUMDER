@@ -19,6 +19,11 @@ const ROUTES = [
   "/auth/multiview",
   "/auth/profile",
   "/landing/about",
+  "/landing/privacy",
+  "/landing/legal",
+  "/landing/accessibility",
+  "/auth/logger",
+  "/auth/documentation?page=start",
   "/auth/exercises",
   "/auth/datapath",
   "/auth/shared?d=invalid",
@@ -38,4 +43,20 @@ for (const theme of ["light", "dark"] as const) {
       expect(violations).toEqual([]);
     });
   }
+
+  test(`axe sin infracciones (tema ${theme === "light" ? "claro" : "oscuro"}): el aviso y los ajustes de privacidad`, async ({ page }) => {
+    await page.addInitScript((theme) => {
+      localStorage.setItem("theme", theme);
+      localStorage.removeItem("thumder_consent");
+    }, theme);
+    await go(page, "/auth/code");
+    await expect(page.locator("#consentBanner")).toBeVisible();
+    const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"];
+    let results = await new AxeBuilder({ page }).withTags(tags).include("#consentBanner").analyze();
+    expect(results.violations.map((violation) => `${violation.id}: ${violation.nodes.length}`)).toEqual([]);
+    await page.locator("#consentSettings").click();
+    await expect(page.locator("#consentDialog")).toBeVisible();
+    results = await new AxeBuilder({ page }).withTags(tags).include("#consentDialog").analyze();
+    expect(results.violations.map((violation) => `${violation.id}: ${violation.nodes.length}`)).toEqual([]);
+  });
 }

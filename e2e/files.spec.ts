@@ -76,7 +76,7 @@ test.describe("gestor de ficheros", () => {
       { name: "curso.zip", mimeType: "application/zip", buffer: zip },
     ];
     await page.locator("#fileManagerImportInput").setInputFiles(files);
-    await expect(page.locator(".ngx-toastr", { hasText: "ficheros importados" })).toBeVisible();
+    await expect(page.locator(".thumder-toast", { hasText: "ficheros importados" })).toBeVisible();
     await expect(row(page, "prim (2).s")).toBeVisible();
     await expect(row(page, "curso")).toBeVisible();
     await expect.poll(async () => (await storedFiles(page)).find((file) => file.name === "hola.s")?.path).toBe("curso");
@@ -112,7 +112,7 @@ test.describe("carpetas de THUMDER", () => {
     await row(page, "ejemplos").locator(".dropdown-toggle").click();
     await expect(row(page, "ejemplos").getByRole("button", { name: "Renombrar" })).toHaveCount(0);
     await row(page, "ejemplos").getByRole("button", { name: "Copiar a mis ficheros" }).click();
-    await expect(page.locator(".ngx-toastr", { hasText: "Copiado en «mis ejemplos»" })).toBeVisible();
+    await expect(page.locator(".thumder-toast", { hasText: "Copiado en «mis ejemplos»" })).toBeVisible();
     await expect(row(page, "mis ejemplos")).toBeVisible();
 
     // Inside, nothing can be created, renamed or deleted
@@ -159,7 +159,7 @@ test.describe("carpetas de THUMDER", () => {
     // The first line is a comment: written at its start, without Enter (which could take a suggestion)
     await page.keyboard.insertText("; mi cambio ");
     await page.keyboard.press("Control+s");
-    await expect(page.locator(".ngx-toastr", { hasText: "Copiado en «mis ejemplos/01-hola-mundo.s»" })).toBeVisible();
+    await expect(page.locator(".thumder-toast", { hasText: "Copiado en «mis ejemplos/01-hola-mundo.s»" })).toBeVisible();
     await expect(page.locator("#editorReadOnly")).toBeHidden();
     // Saving again changes the copy: no more copies
     await page.keyboard.insertText("; otro ");

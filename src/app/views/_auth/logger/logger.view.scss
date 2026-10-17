@@ -1,0 +1,77 @@
+.logger-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.logger-filter {
+  max-width: 24rem;
+}
+
+.logger-count {
+  font-size: 0.85rem;
+  color: var(--thumder-muted);
+}
+
+// A console: the colours of the console of the simulated program (DLX-I/O)
+.logger-viewer {
+  height: 60vh;
+  overflow: auto;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-console-bg);
+  color: var(--thumder-console-text);
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.45;
+
+  &:focus-visible {
+    outline: 3px solid var(--thumder-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.maximized-card .logger-viewer {
+  height: calc(100vh - 14rem);
+}
+
+.logger-line {
+  display: grid;
+  grid-template-columns: 9ch 6ch 7ch 1fr;
+  gap: 0 0.75rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.logger-time,
+.logger-cycle {
+  opacity: 0.75;
+}
+
+.logger-cycle {
+  text-align: right;
+}
+
+.logger-level {
+  font-weight: 700;
+
+  &--error,
+  &--fatal {
+    color: #fca5a5;
+  }
+
+  &--warn {
+    color: #fcd34d;
+  }
+
+  &--info {
+    color: #93c5fd;
+  }
+}
+
+.logger-empty {
+  margin: 0;
+  opacity: 0.8;
+}

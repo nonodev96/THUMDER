@@ -1,9 +1,9 @@
 @if (menuItemsLoaded | async) {
-  <ol class="breadcrumb float-sm-right">
-    @for (item of menuItems; track item; let i = $index) {
-      <li [ngClass]="{'breadcrumb-item': true, 'active': menuItems.length == i && i != 0}">
-        {{item.label['breadcrumb']}}
-      </li>
-    }
-  </ol>
+  <nav [attr.aria-label]="'BREADCRUMB.NAV' | translate">
+    <ol class="breadcrumb float-sm-right">
+      @for (item of menuItems; track $index; let last = $last) {
+        <li class="breadcrumb-item" [class.active]="last" [attr.aria-current]="last ? 'page' : null">{{ labelOf(item) | translate }}</li>
+      }
+    </ol>
+  </nav>
 }

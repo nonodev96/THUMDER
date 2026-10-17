@@ -18,11 +18,11 @@ import {
   type THUMDER_FileItem,
 } from "@core/services/file-system/file-system.service";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
+import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { DropdownDirective } from "@shared/directives/bootstrap/dropdown.directive";
 import { ModalDismissDirective, ModalService } from "@shared/directives/bootstrap/modal.directive";
 import { download } from "@shared/utils/download";
-import { ToastrService } from "ngx-toastr";
 import { Subscription } from "rxjs";
 
 const NAME_MODAL = "fileManagerNameModal";
@@ -48,7 +48,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private modals = inject(ModalService);
   private translate = inject(TranslateService);
-  private toast = inject(ToastrService);
+  private toast = inject(ToastService);
   private exercises = inject(ExerciseService);
   private machine = inject(MachineService);
 

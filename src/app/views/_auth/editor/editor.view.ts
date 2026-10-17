@@ -1,5 +1,18 @@
 import { DOCUMENT } from "@angular/common";
-import { type AfterViewInit, Component, effect, inject, type OnDestroy, type OnInit, signal, ViewChild } from "@angular/core";
+import {
+  type AfterViewInit,
+  Component,
+  computed,
+  effect,
+  HostListener,
+  inject,
+  type OnDestroy,
+  type OnInit,
+  signal,
+  untracked,
+  ViewChild,
+  viewChild,
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { DEFAULT_INTERFACE_FILE_ITEM, TOAST } from "@app/CONSTANTS";
 import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "@app/Types";
@@ -13,11 +26,12 @@ import { ConfigService } from "@core/config/config.service";
 import { type ExerciseLock, ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
+import { EditorStateService } from "@core/services/editor/editor-state.service";
 import { copyFolderOf, isBuiltin } from "@core/services/file-system/builtin-files";
 import { FileSystemService, type THUMDER_FileItem } from "@core/services/file-system/file-system.service";
+import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ModalOpenDirective } from "@shared/directives/bootstrap/modal.directive";
-import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subscription } from "rxjs";
 import * as env from "../../../../environments/_environment";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
@@ -26,7 +40,7 @@ import { MonacoEditorComponent as MonacoEditorComponent_1 } from "../../../compo
 @Component({
   selector: "view-editor",
   templateUrl: "./editor.view.html",
-  styleUrls: [],
+  styleUrls: ["./editor.view.scss"],
   imports: [
     CardDirective,
     CardWidgetDirective,
@@ -47,7 +61,8 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   private config = inject(ConfigService);
   private fileSystem = inject(FileSystemService);
   private translate = inject(TranslateService);
-  private toastService = inject(ToastrService);
+  private toastService = inject(ToastService);
+  private editorState = inject(EditorStateService);
 
   public env = env.AppConfig;
 
@@ -75,8 +90,17 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   public isMaximize = false;
   private destroyed = false;
 
+  /** The editor has changes that are not saved (MonacoEditorComponent) */
+  private readonly monacoRef = viewChild(MonacoEditorComponent);
+  public readonly unsaved = computed(() => this.monacoRef()?.dirty() ?? false);
+
   constructor() {
     this.extrasIDE = this.router.currentNavigation()?.extras.state as TypeExtrasIDE;
+    // The navbar warns when the program is loaded with changes not saved
+    effect(() => {
+      const unsaved = this.unsaved();
+      untracked(() => this.editorState.unsaved.set(unsaved));
+    });
     // The errors of the assembler, marked on their lines
     effect(() => {
       const errors = this.machine.state.errors();
@@ -131,19 +155,26 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       this.machine.updateRunBreakpoints();
     });
     this.fileSaveSubscription = this.monacoEditorComponent.getFileSaveStorageObservable().subscribe(async (editorFile) => {
-      await EditorView.saveFileInLocalStorage(editorFile);
-      await this.saveFileInCloudStorage(editorFile);
+      await this.saveFile(editorFile);
     });
   }
 
   async ngOnDestroy(): Promise<void> {
     this.destroyed = true;
+    const unsaved = this.monacoEditorComponent.dirty();
+    this.editorState.unsaved.set(false);
     if (this.config.value().autoSave) {
       const breakpoints = this.monacoEditorComponent.getBreakpoints();
       localStorage.setItem("breakpoints", JSON.stringify(breakpoints));
       await this.closeAndSave();
     } else {
       localStorage.setItem("breakpoints", JSON.stringify({}));
+      // Without autosave, the changes not saved are lost: the user is told
+      if (unsaved) {
+        const title = await firstValueFrom(this.translate.get("EDITOR.DISCARDED_TITLE"));
+        const message = await firstValueFrom(this.translate.get("EDITOR.DISCARDED", { name: this.interfaceFileItem.name }));
+        this.toastService.warning(message, title, TOAST.warning);
+      }
     }
     this.initializedSubscription.unsubscribe();
     this.breakpointSubscription.unsubscribe();
@@ -158,6 +189,12 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
     this.copyFolder.set(copyFolderOf(file.path));
   }
 
+  /** Closing or reloading the page with changes not saved: the browser asks first */
+  @HostListener("window:beforeunload", ["$event"])
+  public onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.unsaved() && !this.config.value().autoSave) event.preventDefault();
+  }
+
   public toggleDebuggerTag(): void {
     this.monacoEditorComponent.toggleDebuggerTag();
   }
@@ -167,9 +204,17 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public async closeAndSave(): Promise<void> {
-    const editorFile = await this.monacoEditorComponent.getEditorFile();
+    await this.saveFile(this.monacoEditorComponent.getEditorFile());
+  }
 
+  /**
+   * Saves the file: first where the simulator reads it (from then on, Load simulates these changes) and then in the file
+   * manager
+   */
+  private async saveFile(editorFile: THUMDER_FileItem): Promise<void> {
+    const content = editorFile.content;
     await EditorView.saveFileInLocalStorage(editorFile);
+    if (!this.destroyed) this.monacoEditorComponent.markSaved(content);
     await this.saveFileInCloudStorage(editorFile);
   }
 

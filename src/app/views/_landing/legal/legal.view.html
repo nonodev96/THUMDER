@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-12 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+    <nav class="legal-nav" [attr.aria-label]="'LEGAL.NAV' | translate">
+      @for (item of pages; track item.id) {
+        <a [routerLink]="item.path" class="legal-nav-link" [class.active]="page() === item.id" [attr.aria-current]="page() === item.id ? 'page' : null">
+          {{ item.title | translate }}
+        </a>
+      }
+    </nav>
+
+    <article class="card card-outline card-primary">
+      <div class="card-body legal-text">
+        @if (failed()) {
+          <p class="text-danger" role="alert">{{ 'DOCS.FAILED' | translate }}</p>
+        }
+        <markdown [src]="src()" (load)="failed.set(false)" (error)="failed.set(true)"></markdown>
+
+        @if (page() === 'privacy') {
+          <p class="mt-4 mb-0">
+            <button type="button" class="btn btn-primary" id="legalConsent" (click)="consent.openSettings()">
+              <i class="fas fa-user-shield" aria-hidden="true"></i> {{ 'CONSENT.CHANGE' | translate }}
+            </button>
+          </p>
+        }
+      </div>
+    </article>
+  </div>
+</div>

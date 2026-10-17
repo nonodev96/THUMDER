@@ -1,4 +1,4 @@
-import { Injectable, inject, type Signal, signal } from "@angular/core";
+import { computed, Injectable, inject, type Signal, signal } from "@angular/core";
 import { DEFAULT_CODE, TOAST } from "@app/CONSTANTS";
 import {
   EnumLogLevel,
@@ -44,9 +44,9 @@ import { logger } from "@core/logger/logger";
 import { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
 import { FileSystemService } from "@core/services/file-system/file-system.service";
 import { LocalSimulatorService } from "@core/services/simulator/local-simulator.service";
+import { ToastService } from "@core/services/toast/toast.service";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, type Observable, Subject } from "rxjs";
 
 import THUMDER_Map = UtilsDataStructures.THUMDER_Map;
@@ -120,6 +120,12 @@ export type MachineState = {
   fileKey: Signal<string>;
 };
 
+/** A message of the log of the simulation */
+export type LogEntry = { id: number; date: Date; level: string; text: string; cycle: number };
+
+/** The messages of the log that are kept */
+export const LOG_LIMIT = 2000;
+
 @Injectable({
   providedIn: "root",
 })
@@ -131,7 +137,7 @@ export class MachineService {
   private simulator = inject(LocalSimulatorService);
   private fileSystem = inject(FileSystemService);
   private translate = inject(TranslateService);
-  private toast = inject(ToastrService);
+  private toast = inject(ToastService);
 
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
   public memorySize: number;
@@ -196,9 +202,25 @@ export class MachineService {
     fileKey: this.fileKeySignal.asReadonly(),
   };
 
-  /** The log of the simulation, for the debug window and the log view */
+  /**
+   * Where the program starts, for the buttons that go to it in the code and the memory: its label main or, without it,
+   * its first instruction. Null without a program
+   */
+  public readonly entry = computed<{ address: number; main: boolean } | null>(() => {
+    const main = this.symbolsSignal().find((symbol) => symbol.name === "main");
+    if (main) return { address: Number.parseInt(main.address, 16) >>> 0, main: true };
+    const first = this.codeSignal()[0];
+    return first ? { address: Number.parseInt(first.address, 16) >>> 0, main: false } : null;
+  });
+
+  /** The last message of the log of the simulation, for the debug window */
   public logger: string = "";
   private readonly logger$ = new Subject<string>();
+  /** The log of the simulation, for its view: the last LOG_LIMIT messages (`logVersion` changes with each one) */
+  private readonly logEntries: LogEntry[] = [];
+  private readonly logVersionSignal = signal(0);
+  public readonly logVersion = this.logVersionSignal.asReadonly();
+  private nextLogId = 1;
   private readonly level: EnumLogLevel = EnumLogLevel.All;
 
   // The cycle waiting for the answer of the simulator: there is never more than one, so two quick F10 run two cycles
@@ -275,39 +297,14 @@ export class MachineService {
       this.breakpointManager.reset();
       this.breakpointManager.updateManager(this.store.getItem("breakpoints") as TypeBreakpoints);
 
-      this.registers.reset();
       // The configuration, with what the exercise of the file locks (EDU-07)
       const config = this.exercises.configFor((this.store.getItem("interfaceFileItem") as InterfaceFileItem | null)?.key);
       this.memorySize = config.memorySize;
       this.memory.setSize(this.memorySize);
       this.floatingPointStageConfiguration = config.floatingPoint;
       this.enabledForwarding = config.forwarding;
-      this.dataStatistics.reset();
-      this.diagram.reset();
       this.diagram.limit = config.diagramHistory;
-      this.code = new THUMDER_Map();
-      this.code.setDefaultValue(DEFAULT_CODE);
-
-      this.stepSignal.set(0);
-      this.lineSignal.set(-1);
-      this.completeSignal.set(false);
-      this.breakpointSignal.set(false);
-      this.canSimulateSignal.set(false);
-      this.waitingForInputSignal.set(false);
-      this.outputSignal.set("");
-      this.errorsSignal.set([]);
-      this.codeSignal.set([]);
-      this.stagesSignal.set(new Map());
-      this.pipelineSignal.set(null);
-      this.unitsSignal.set(MachineService.unitsOf(this.floatingPointStageConfiguration));
-      this.statisticsSignal.set(this.dataStatistics.getData());
-      this.cyclesSignal.set(0);
-      this.hitSignal.set(null);
-      this.pendingOutput = "";
-      this.lastStep = null;
-      if (!options.again) this.journal = [];
-      this.touchValues();
-      this.diagramSignal.update((version) => version + 1);
+      this.emptyState({ keepJournal: options.again === true });
 
       // The configuration first: the simulator assembles the program for its memory size (a program that does not fit
       // is an assembly error, not data out of the memory of the page)
@@ -324,6 +321,52 @@ export class MachineService {
       await this.toastSimulatorError();
       return false;
     }
+  }
+
+  /** The registers, the code, the statistics and the signals of the views as they are before loading a program */
+  private emptyState(options: { keepJournal?: boolean } = {}): void {
+    this.registers.reset();
+    this.dataStatistics.reset();
+    this.diagram.reset();
+    this.code = new THUMDER_Map();
+    this.code.setDefaultValue(DEFAULT_CODE);
+
+    this.stepSignal.set(0);
+    this.lineSignal.set(-1);
+    this.completeSignal.set(false);
+    this.breakpointSignal.set(false);
+    this.canSimulateSignal.set(false);
+    this.waitingForInputSignal.set(false);
+    this.outputSignal.set("");
+    this.errorsSignal.set([]);
+    this.codeSignal.set([]);
+    this.stagesSignal.set(new Map());
+    this.pipelineSignal.set(null);
+    this.unitsSignal.set(MachineService.unitsOf(this.floatingPointStageConfiguration));
+    this.statisticsSignal.set(this.dataStatistics.getData());
+    this.cyclesSignal.set(0);
+    this.hitSignal.set(null);
+    this.pendingOutput = "";
+    this.lastStep = null;
+    if (!options.keepJournal) this.journal = [];
+    this.touchValues();
+    this.diagramSignal.update((version) => version + 1);
+  }
+
+  /**
+   * The button of the navbar that resets everything: the memory, the code and the registers to zero and no program
+   * loaded (nothing can be simulated until the program is loaded again). The breakpoints of the file stay
+   */
+  public async clear(): Promise<void> {
+    this.writeToLog("CLEAR");
+    this.stopRunning();
+    await this.localRun?.catch(() => undefined);
+    this.memory.reset();
+    this.emptyState();
+    this.symbolsSignal.set([]);
+    this.modulesSignal.set([]);
+    this.lastInit = null;
+    this.loadsSignal.update((loads) => loads + 1);
   }
 
   public getLoggerObservable(): Observable<string> {
@@ -722,10 +765,26 @@ export class MachineService {
 
   public writeToLog(msg: string, level: EnumLogLevel = EnumLogLevel.Debug, params: TypeLogger[] = []) {
     if (this.shouldLog(level)) {
-      this.logger = `${new Date().toLocaleString()} - Type: ${EnumLogLevel[this.level]} - ${MachineService.stringFormat(msg, params)}`;
+      const date = new Date();
+      const text = MachineService.stringFormat(msg, params);
+      this.logger = `${date.toLocaleString()} - Type: ${EnumLogLevel[level]} - ${text}`;
       logger.debug(this.logger);
       this.logger$.next(this.logger);
+      this.logEntries.push({ id: this.nextLogId++, date, level: EnumLogLevel[level], text, cycle: this.cyclesSignal() });
+      // The oldest ones go in groups (not one by one with each new message)
+      if (this.logEntries.length > LOG_LIMIT + 500) this.logEntries.splice(0, this.logEntries.length - LOG_LIMIT);
+      this.logVersionSignal.update((version) => version + 1);
     }
+  }
+
+  /** The messages of the log kept, the oldest first */
+  public logHistory(): readonly LogEntry[] {
+    return this.logEntries.slice(-LOG_LIMIT);
+  }
+
+  public clearLog(): void {
+    this.logEntries.length = 0;
+    this.logVersionSignal.update((version) => version + 1);
   }
 
   /** Replaces each {n} of the message with the value of the parameter with index n (objects as JSON) */

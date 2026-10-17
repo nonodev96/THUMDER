@@ -54,11 +54,6 @@
                 "output": "./assets/md/"
               },
               {
-                "glob": "COOKIES.md",
-                "input": "./",
-                "output": "./assets/md/"
-              },
-              {
                 "glob": "CHANGELOG.md",
                 "input": "./",
                 "output": "./assets/md/"
@@ -67,6 +62,16 @@
                 "glob": "README.md",
                 "input": "./",
                 "output": "./assets/md/"
+              },
+              {
+                "glob": "CONTRIBUTING.md",
+                "input": "./",
+                "output": "./assets/md/"
+              },
+              {
+                "glob": "**/*",
+                "input": "./docs",
+                "output": "./assets/docs/"
               },
               {
                 "glob": "ABOUT.md",
@@ -84,13 +89,10 @@
               "node_modules/monaco-editor/min/vs/editor/editor.main.css",
               "src/assets/flag-icons-master/css/flag-icon.css",
               "src/assets/styles/bootstrap-4-xxl.css",
-              "node_modules/@xterm/xterm/css/xterm.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "node_modules/admin-lte/dist/css/adminlte.css",
-              "node_modules/ngx-toastr/toastr.css",
               "node_modules/prismjs/themes/prism-okaidia.css",
               "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css",
-              "node_modules/cookieconsent/build/cookieconsent.min.css",
               "src/theme.scss"
             ],
             "scripts": [
@@ -100,8 +102,7 @@
               "node_modules/prismjs/components/prism-css.min.js",
               "node_modules/prismjs/components/prism-bash.min.js",
               "node_modules/prismjs/components/prism-json.min.js",
-              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js",
-              "node_modules/cookieconsent/build/cookieconsent.min.js"
+              "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"
             ],
             "loader": {
               ".ttf": "file",

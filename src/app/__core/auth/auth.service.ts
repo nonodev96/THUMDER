@@ -20,8 +20,8 @@ import type { InterfaceUser } from "@app/Types";
 import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
+import { ToastService } from "@core/services/toast/toast.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
 import { type Observable, Subject, Subscription } from "rxjs";
 
 /** What signing out removes from localStorage: the work of the person (current file, breakpoints) and old sessions */
@@ -40,7 +40,7 @@ export class AuthService implements OnDestroy {
   private afAuth = inject(Auth, { optional: true });
   private ngZone = inject(NgZone);
   private router = inject(Router);
-  private toast = inject(ToastrService);
+  private toast = inject(ToastService);
   private translate = inject(TranslateService);
   private electronService = inject(ElectronService);
   private files = inject(FileSystemStorageService);

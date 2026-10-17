@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, 
 import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
 import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
+import { toAddress } from "@core/numbers";
 import { TranslatePipe } from "@ngx-translate/core";
 import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
 import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
@@ -20,11 +21,37 @@ import {
 import { ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
+/**
+ * The width of each column, in characters of the font of the table (monospace): what its values take and the padding of
+ * the cell. The value columns (the last ones) can grow to fill the card; the table scrolls sideways only when the
+ * columns shown do not fit, with the address fixed on the left
+ */
+const COLUMN_WIDTHS: Record<string, { ch: number; grow?: boolean }> = {
+  Address: { ch: 13 },
+  Hexadecimal: { ch: 13 },
+  Binary: { ch: 35 },
+  BinaryFloat: { ch: 35 },
+  BinaryDouble: { ch: 35 },
+  "Address-0": { ch: 13, grow: true },
+  "Address-1": { ch: 13, grow: true },
+  "Address-2": { ch: 13, grow: true },
+  "Address-3": { ch: 13, grow: true },
+  "HalfWord-0": { ch: 19, grow: true },
+  "HalfWord-1": { ch: 19, grow: true },
+  Bytes: { ch: 20, grow: true },
+  HalfWord: { ch: 16, grow: true },
+  Word: { ch: 14, grow: true },
+  ASCII: { ch: 20, grow: true },
+  Float: { ch: 26, grow: true },
+  Double: { ch: 26, grow: true },
+  InstructionCode: { ch: 28, grow: true },
+};
+
 @Component({
   selector: "view-memory",
   templateUrl: "./memory.view.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: [],
+  styleUrls: ["./memory.view.scss"],
   imports: [
     CardDirective,
     CardWidgetDirective,
@@ -49,6 +76,8 @@ export class MemoryView {
   machine = inject(MachineService);
   private cdr = inject(ChangeDetectorRef);
 
+  @ViewChild(VirtualTableComponent) private table?: VirtualTableComponent<number>;
+
   @ViewChild(EditMemoryBinary32Component)
   public editBinary32Component!: EditMemoryBinary32Component;
 
@@ -59,16 +88,16 @@ export class MemoryView {
   public typeDataSelected: TypeDataDisplayColumn = "Word";
 
   /** How the words of the memory can be shown */
-  public readonly dataTypes: { key: TypeDataDisplayColumn; label: string; wide?: boolean }[] = [
+  public readonly dataTypes: { key: TypeDataDisplayColumn; label: string }[] = [
     { key: "Byte", label: "MACHINE.TYPE_BYTES" },
     { key: "HalfWord", label: "MACHINE.TYPE_HALF_WORDS" },
     { key: "Word", label: "MACHINE.TYPE_WORD" },
     { key: "ASCII", label: "MACHINE.TYPE_ASCII" },
     { key: "Float", label: "MACHINE.TYPE_FLOAT" },
     { key: "Double", label: "MACHINE.TYPE_DOUBLE" },
-    { key: "InstructionCode", label: "MACHINE.TYPE_INSTRUCTION", wide: true },
-    { key: "Address-0-1-2-3", label: "MACHINE.TYPE_BYTES_BY_ADDRESS", wide: true },
-    { key: "HalfWord-0-1", label: "MACHINE.TYPE_HALF_WORDS_BY_ADDRESS", wide: true },
+    { key: "InstructionCode", label: "MACHINE.TYPE_INSTRUCTION" },
+    { key: "Address-0-1-2-3", label: "MACHINE.TYPE_BYTES_BY_ADDRESS" },
+    { key: "HalfWord-0-1", label: "MACHINE.TYPE_HALF_WORDS_BY_ADDRESS" },
   ];
   public maxHeightCard: string = "75vh";
 
@@ -118,6 +147,28 @@ export class MemoryView {
         this.displayedColumnsMemory = ["Address", "Hexadecimal", "HalfWord-0", "HalfWord-1"];
         break;
     }
+  }
+
+  /** The width of a column (a size of the CSS grid) */
+  public width(key: string): string {
+    const column = COLUMN_WIDTHS[key] ?? { ch: 16, grow: true };
+    return column.grow ? `minmax(${column.ch}ch, 1fr)` : `${column.ch}ch`;
+  }
+
+  /** The width under which the table scrolls sideways: the one of the columns shown */
+  public get minWidth(): string {
+    return `${this.displayedColumnsMemory.reduce((total, key) => total + (COLUMN_WIDTHS[key]?.ch ?? 16), 0)}ch`;
+  }
+
+  /** The button of the card: the table goes to the word of main (or of the first instruction) */
+  public goToEntry(): void {
+    const entry = this.machine.entry();
+    if (entry !== null) this.table?.scrollToIndex(Math.floor(entry.address / 4));
+  }
+
+  public entryAddress(): string {
+    const entry = this.machine.entry();
+    return entry === null ? "" : toAddress(entry.address);
   }
 
   public refresh(): void {

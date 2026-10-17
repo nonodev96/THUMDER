@@ -2,6 +2,7 @@ import { CdkFixedSizeVirtualScroll, CdkVirtualForOf, CdkVirtualScrollViewport } 
 import { NgTemplateOutlet } from "@angular/common";
 import {
   type AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ContentChildren,
   Directive,
@@ -55,7 +56,8 @@ export class VirtualTableColumnDirective {
         <cdk-virtual-scroll-viewport [itemSize]="itemSize" [style.height]="fill ? null : height" class="thumder-table-body" role="rowgroup" tabindex="0"
           [attr.aria-label]="label">
           <div *cdkVirtualFor="let row of rows; let index = index; trackBy: trackBy" class="thumder-table-row thumder-row" role="row"
-            [attr.aria-rowindex]="index + 2" [style.grid-template-columns]="grid" [style.height.px]="itemSize" [class]="rowClass(row)">
+            [attr.aria-rowindex]="index + 2" [style.grid-template-columns]="grid" [style.height.px]="itemSize" [class]="rowClass(row)"
+            [class.thumder-row-target]="index === target">
             @for (column of shown; track column.key) {
               <div class="thumder-table-cell" role="cell"><ng-container *ngTemplateOutlet="column.template; context: { $implicit: row }"></ng-container></div>
             }
@@ -91,12 +93,20 @@ export class VirtualTableColumnDirective {
         font-weight: 600;
       }
       :host(.sticky-first) .thumder-table-header .thumder-table-cell:first-child { background-color: var(--thumder-surface-2); }
+      /* The row that scrollToIndex() went to, for a moment */
+      .thumder-row-target { outline: 3px solid var(--thumder-primary); outline-offset: -3px; }
+      .thumder-row-target > .thumder-table-cell:first-child { font-weight: 700; }
     `,
   ],
 })
 export class VirtualTableComponent<T = unknown> implements AfterViewInit, OnDestroy {
   private readonly zone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
   @ViewChild("scroll", { static: true }) private scroll!: ElementRef<HTMLElement>;
+  @ViewChild(CdkVirtualScrollViewport) private viewport?: CdkVirtualScrollViewport;
+  /** The row that scrollToIndex() went to (-1: none) */
+  public target = -1;
+  private targetTimer?: ReturnType<typeof setTimeout>;
   private readonly onScroll = () => {
     const element = this.scroll.nativeElement;
     element.style.setProperty("--thumder-scroll-x", `${element.scrollLeft}px`);
@@ -139,6 +149,20 @@ export class VirtualTableComponent<T = unknown> implements AfterViewInit, OnDest
 
   public ngOnDestroy(): void {
     this.scroll.nativeElement.removeEventListener("scroll", this.onScroll);
+    clearTimeout(this.targetTimer);
+  }
+
+  /** Scrolls the list to a row, with a few rows above it, and marks it for a moment */
+  public scrollToIndex(index: number): void {
+    const reduce = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    this.viewport?.scrollToIndex(Math.max(0, index - 3), reduce ? "auto" : "smooth");
+    this.target = index;
+    clearTimeout(this.targetTimer);
+    this.targetTimer = setTimeout(() => {
+      this.target = -1;
+      this.cdr.markForCheck();
+    }, 3000);
+    this.cdr.markForCheck();
   }
 
   public get grid(): string {

@@ -1,10 +1,9 @@
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
-import { type ApplicationConfig, ErrorHandler, importProvidersFrom, inject, provideAppInitializer, SecurityContext } from "@angular/core";
+import { type ApplicationConfig, ErrorHandler, inject, provideAppInitializer, SecurityContext } from "@angular/core";
 import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
 import { getAuth, provideAuth } from "@angular/fire/auth";
 import { getFirestore, provideFirestore } from "@angular/fire/firestore";
 import { getRemoteConfig, provideRemoteConfig } from "@angular/fire/remote-config";
-import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideRouter } from "@angular/router";
 import { routes } from "@app/app.routes";
 import { FIREBASE_ENABLED } from "@app/CONSTANTS";
@@ -13,44 +12,8 @@ import { UtilityService } from "@core/services/utility/utility.service";
 import { provideTranslateService } from "@ngx-translate/core";
 import { provideTranslateHttpLoader } from "@ngx-translate/http-loader";
 import { Parser, type Tokens } from "marked";
-import { type NgcCookieConsentConfig, NgcCookieConsentModule } from "ngx-cookieconsent";
 import { MARKED_OPTIONS, type MarkedOptions, MarkedRenderer, provideMarkdown } from "ngx-markdown";
-import { provideToastr } from "ngx-toastr";
 import { AppConfig } from "../environments/_environment";
-
-// The web version asks before using analytics cookies (opt-in); the desktop version (file://) uses no cookies
-const isWeb = window.location.protocol.startsWith("http");
-
-const cookieConfig: NgcCookieConsentConfig = {
-  enabled: isWeb,
-  cookie: {
-    domain: window.location.hostname,
-  },
-  // The colours of theme.scss (cookieconsent writes them in its own styles: it needs the values)
-  palette: {
-    popup: {
-      background: "#0f172a",
-      text: "#e2e8f0",
-      link: "#a5b4fc",
-    },
-    button: {
-      background: "#4f46e5",
-      text: "#ffffff",
-    },
-  },
-  theme: "edgeless",
-  type: "opt-in",
-  content: {
-    href: "/landing/about",
-  },
-  elements: {
-    messagelink: `
-    <span id="cookieconsent:desc" class="cc-message">{{message}}&nbsp;
-        <a id="cookieconsent:link" aria-label="learn more about cookies" tabindex="0" class="cc-link">{{link}}</a>
-    </span>
-    `,
-  },
-};
 
 const escapeAttribute = (value: string) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -77,7 +40,7 @@ export function markedOptionsFactory(): MarkedOptions {
       return `<a${safeTitle}>${text}</a>`;
     }
     // Links to other sites open in a new tab (in Electron, in the browser of the system: see main.ts); the views
-    // catch the clicks on the relative ones (DocsItemComponent, AboutView)
+    // catch the clicks on the relative ones (DocsView, AboutView)
     const external = /^(https?:|mailto:)/i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : "";
     return `<a href="${escapeAttribute(href)}"${safeTitle}${external}>${text}</a>`;
   };
@@ -119,8 +82,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
-    provideAnimations(),
-    provideToastr(),
     provideMarkdown({
       sanitize: SecurityContext.HTML,
       loader: HttpClient,
@@ -128,7 +89,6 @@ export const appConfig: ApplicationConfig = {
     }),
     // The texts of src/assets/i18n, in Spanish when a text is missing in English
     provideTranslateService({ loader: provideTranslateHttpLoader({ prefix: "./assets/i18n/", suffix: ".json" }), fallbackLang: "es" }),
-    importProvidersFrom(NgcCookieConsentModule.forRoot(cookieConfig)),
     UtilityService,
     ...FIREBASE_PROVIDERS,
     // The errors nobody catches, to Firestore (client-errors) in the production builds

@@ -5,15 +5,6 @@
     "TITLE": "Error: {{title}}",
     "MESSAGE": "Mensaje: {{message}}"
   },
-  "cookie": {
-    "header": "¡Este sitio usa cookies 😘!",
-    "message": "Este sitio web utiliza cookies para garantizar que obtenga la mejor experiencia en nuestro sitio web",
-    "dismiss": "¡Entiendo!",
-    "allow": "Permitir cookies",
-    "deny": "Denegar",
-    "link": "Mas información",
-    "policy": "Política de cookies"
-  },
   "ACCOUNT": {
     "YOU_FORGOT_YOUR_PASSWORD_HERE_YOU_CAN_EASILY_RETRIEVE_A_NEW_PASSWORD": "¿Has olvidado tu contraseña? Aquí puedes recuperar fácilmente una nueva contraseña",
     "REQUEST_NEW_PASSWORD": "Solicita una nueva contraseña",
@@ -224,7 +215,7 @@
     "TEXT": "Texto",
     "ADDRESS": "Dirección",
     "CODE": "Código",
-    "STAGE": "Stage",
+    "STAGE": "Etapa",
     "INSTRUCTION": "Instrucción",
     "SET_MEMORY_VALUE": "Dar valor a la memoria",
     "INTEGER": "Entero",
@@ -239,7 +230,7 @@
     "BYTE": "Byte",
     "BYTES": "Bytes",
     "HALF_WORD": "Half word",
-    "WORD": "Word",
+    "WORD": "Palabra",
     "FLOAT": "Float",
     "ASCII": "ASCII",
     "DOUBLE": "Double",
@@ -300,7 +291,14 @@
     "TAB_INTEGER": "Enteros",
     "TAB_FLOAT": "Coma flotante",
     "TAB_DOUBLE": "Dobles",
-    "REPRESENTATION": "Representación"
+    "REPRESENTATION": "Representación",
+    "DESCRIPTION": "Descripción",
+    "GO_TO_MAIN": "Ir a main ({{address}})",
+    "GO_TO_START": "Ir al inicio del programa ({{address}}): no tiene la etiqueta main",
+    "DESCRIPTION_HINT": "Pulsa la descripción de una instrucción para ver qué hace, los campos de su código y lo que pasa en cada etapa del pipeline.",
+    "FIELDS": "Campos de la instrucción",
+    "STAGES": "En cada etapa",
+    "SHOW_AS": "Ver como:"
   },
   "TYPE_DATA": {
     "BYTE": "Byte",
@@ -446,10 +444,11 @@
       "TITLE_ABOUT": "Sobre nosotros",
       "TITLE_README": "Leeme",
       "TITLE_LICENSE": "Licencia",
-      "TITLE_COOKIES": "Cookies",
       "TITLE_CHANGELOG": "Cambios",
       "TITLE_DEPENDENCIES": "Dependencias",
-      "LICENSE": "Copyright 2022 - Antonio Mudarra Machuca - <nonodev96@gmail.com>\n\nPor la presente se concede permiso, libre de cargos, a cualquier persona que obtenga una copia de este software y de los archivos de documentación asociados (el \"Software\"), a utilizar el Software sin restricción, incluyendo sin limitación los derechos a usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar, y/o vender copias del Software, y a permitir a las personas a las que se les proporcione el Software a hacer lo mismo, sujeto a las siguientes condiciones:\n\n\nEl aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o partes sustanciales del Software.\n\n\nEL SOFTWARE SE PROPORCIONA \"COMO ESTA\", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD PARA UN PROPÓSITO PARTICULAR E INCUMPLIMIENTO. EN NINGÚN CASO LOS AUTORES O PROPIETARIOS DE LOS DERECHOS DE AUTOR SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN, DAÑOS U OTRAS RESPONSABILIDADES, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O CUALQUIER OTRO MOTIVO, DERIVADAS DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O SU USO U OTRO TIPO DE ACCIONES EN EL SOFTWARE."
+      "LICENSE": "Copyright 2022 - Antonio Mudarra Machuca - <nonodev96@gmail.com>\n\nPor la presente se concede permiso, libre de cargos, a cualquier persona que obtenga una copia de este software y de los archivos de documentación asociados (el \"Software\"), a utilizar el Software sin restricción, incluyendo sin limitación los derechos a usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar, y/o vender copias del Software, y a permitir a las personas a las que se les proporcione el Software a hacer lo mismo, sujeto a las siguientes condiciones:\n\n\nEl aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias o partes sustanciales del Software.\n\n\nEL SOFTWARE SE PROPORCIONA \"COMO ESTA\", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A GARANTÍAS DE COMERCIALIZACIÓN, IDONEIDAD PARA UN PROPÓSITO PARTICULAR E INCUMPLIMIENTO. EN NINGÚN CASO LOS AUTORES O PROPIETARIOS DE LOS DERECHOS DE AUTOR SERÁN RESPONSABLES DE NINGUNA RECLAMACIÓN, DAÑOS U OTRAS RESPONSABILIDADES, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O CUALQUIER OTRO MOTIVO, DERIVADAS DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O SU USO U OTRO TIPO DE ACCIONES EN EL SOFTWARE.",
+      "TITLE_LEGAL": "Privacidad, aviso legal y accesibilidad",
+      "LEGAL_HELP": "Qué datos usa THUMDER y cómo decides tú, las condiciones de uso y lo que se ha hecho para que cualquiera pueda usarlo."
     }
   },
   "SIMULATION": {
@@ -467,7 +466,12 @@
     "SPEED_NORMAL": "Normal",
     "SPEED_SLOW": "Lenta",
     "SPEED_VERY_SLOW": "Muy lenta",
-    "RUNNING_QUIET": "Ejecutando sin dibujar"
+    "RUNNING_QUIET": "Ejecutando sin dibujar",
+    "CLEAR": "Reiniciar la máquina: memoria, código y registros a cero",
+    "CLEARED": "La memoria, el código y los registros están a cero. Carga el programa para volver a simular.",
+    "CLEARED_TITLE": "Máquina reiniciada",
+    "LOADED_UNSAVED_TITLE": "Cambios sin guardar",
+    "LOADED_UNSAVED": "Se ha cargado la versión guardada del fichero. El editor tiene cambios sin guardar: guarda (Ctrl+S) y vuelve a cargar para simularlos."
   },
   "IO": {
     "TITLE": "Consola del programa (DLX-I/O)",
@@ -598,7 +602,14 @@
   "EDITOR": {
     "TOOLS": "Herramientas del programa",
     "TOGGLE_BREAKPOINT": "Poner o quitar un punto de ruptura en la línea del cursor",
-    "SAVE": "Guardar"
+    "SAVE": "Guardar",
+    "UNSAVED": "Sin guardar",
+    "UNSAVED_TITLE": "Hay cambios sin guardar.",
+    "UNSAVED_HELP": "La simulación usa la última versión guardada del fichero: guarda (Ctrl+S) antes de cargar el programa, o lo que se ejecute no será lo que ves.",
+    "SAVE_NOW": "Guardar ahora",
+    "SAVE_PENDING": "Guardar: hay cambios sin guardar",
+    "DISCARDED_TITLE": "Cambios descartados",
+    "DISCARDED": "Los cambios sin guardar de {{name}} se han descartado, porque el guardado automático está desactivado (Configuración)."
   },
   "EXERCISES": {
     "TITLE": "Ejercicios guiados",
@@ -651,7 +662,18 @@
   },
   "LOGGER": {
     "TITLE": "Historial de la simulación",
-    "SHOW_LAST": "Mostrar el último mensaje"
+    "FOLLOW": "Seguir los mensajes nuevos",
+    "COPY": "Copiar el registro",
+    "DOWNLOAD": "Descargar el registro (.txt)",
+    "CLEAR": "Vaciar el registro",
+    "FILTER": "Filtrar: RESET, SimulationNextStep, un valor...",
+    "COUNT": "{{shown}} de {{total}} mensajes",
+    "CYCLE": "Ciclo",
+    "EMPTY": "Aún no hay mensajes: carga un programa y simula unos ciclos.",
+    "NO_MATCHES": "Ningún mensaje contiene ese texto.",
+    "HELP": "Se guardan los últimos {{limit}} mensajes y se muestran los {{shown}} más recientes; copiar y descargar incluye todos los guardados que pasan el filtro. Cada línea: hora, ciclo, tipo y mensaje.",
+    "COPIED": "{{count}} mensajes copiados al portapapeles",
+    "COPY_FAILED": "No se ha podido copiar al portapapeles: descarga el registro"
   },
   "STATUS": {
     "IDLE": "Sin cargar",
@@ -676,25 +698,54 @@
     "DEBUG": "Depuración"
   },
   "DOCS": {
-    "DRAG": "Arrastrar para ordenar",
-    "T_INSTRUCTION_SET": "El juego de instrucciones de DLX",
-    "T_OPCODES": "Tabla de DLX: códigos de operación",
-    "T_ACCOUNT": "La cuenta",
-    "T_EXECUTION": "La ejecución de las instrucciones",
-    "T_REGISTERS": "La ventana de los registros",
-    "T_MEMORY": "La ventana de la memoria",
-    "T_CODE": "La ventana del código",
-    "T_PIPELINE": "La ventana del pipeline",
-    "T_DIAGRAM": "La ventana del diagrama de ciclos",
-    "T_STATISTICS": "La ventana de las estadísticas",
-    "T_BREAKPOINTS": "Los puntos de ruptura",
-    "T_PROCESS": "El proceso de ejecución",
-    "T_CONFIG": "La configuración",
-    "T_FILES": "El gestor de ficheros",
-    "T_EDITOR": "El editor",
-    "T_MULTIVIEW": "La vista múltiple",
+    "TITLE": "Documentación de THUMDER",
+    "INTRO": "Elige una parte: cómo se usa THUMDER, la arquitectura DLX que simula o cómo está hecho por dentro.",
+    "INDEX": "Índice",
+    "HOME": "Inicio de la documentación",
+    "CHOOSE": "Elige una página",
+    "SEARCH": "Buscar una página",
+    "NO_RESULTS": "Ninguna página tiene ese título.",
+    "LOADING": "Cargando la página…",
+    "FAILED": "No se ha podido cargar la página.",
+    "ON_GITHUB": "Ver en GitHub",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",
     "IN_EN": "Documento en inglés",
-    "IN_ES": "Documento en español"
+    "IN_ES": "Documento en español",
+    "SECTIONS": {
+      "USE": "Usar THUMDER",
+      "USE_HELP": "De la primera simulación a cada vista: ficheros, editor, simulación, configuración y vistas.",
+      "DLX": "La arquitectura DLX",
+      "DLX_HELP": "El procesador que simula THUMDER: instrucciones, códigos de operación, el pipeline y ejemplos comentados.",
+      "DEV": "Desarrollo",
+      "DEV_HELP": "Cómo está hecho THUMDER, cómo se prueba y cómo contribuir."
+    },
+    "PAGES": {
+      "START": "Primeros pasos",
+      "INSTALL": "Instalación",
+      "ACCOUNT": "La cuenta",
+      "FILES": "El gestor de ficheros",
+      "EDITOR": "El editor",
+      "PROCESS": "El proceso de simulación",
+      "BREAKPOINTS": "Los puntos de ruptura",
+      "CONFIG": "La configuración",
+      "REGISTERS": "La vista de registros",
+      "MEMORY": "La vista de memoria",
+      "CODE": "La vista de código",
+      "PIPELINE": "La vista del pipeline",
+      "DIAGRAM": "El diagrama de ciclos",
+      "STATISTICS": "Las estadísticas",
+      "MULTIVIEW": "La vista múltiple",
+      "EXECUTION": "La ejecución de las instrucciones",
+      "EXAMPLES": "Ejemplos comentados",
+      "WINDLX": "El manual de WinDLX",
+      "INSTRUCTION_SET": "El juego de instrucciones",
+      "OPCODES": "Los códigos de operación",
+      "INSTRUCTION_TABLE": "La tabla de instrucciones",
+      "README": "El proyecto (README)",
+      "CONTRIBUTING": "Cómo contribuir",
+      "SIMULATOR": "El simulador por dentro"
+    }
   },
   "EDIT": {
     "IN_HEXADECIMAL": "en hexadecimal",
@@ -744,5 +795,59 @@
     "EXACT": "Valor que guardan los bits (exacto)",
     "ROUNDED": "El número escrito no cabe exactamente en {{bits}} bits: se guarda el más cercano, que es el valor exacto de arriba.",
     "ONE_BIT": "1 bit"
+  },
+  "BREADCRUMB": {
+    "NAV": "Estás en",
+    "ABOUT": "Sobre nosotros",
+    "ACCESSIBILITY": "Accesibilidad",
+    "AUTH": "THUMDER",
+    "CALCULATOR": "Calculadora",
+    "CODE": "Código",
+    "CONFIG": "Configuración",
+    "CYCLE_CLOCK_DIAGRAM": "Diagrama de ciclos",
+    "DATAPATH": "Ruta de datos",
+    "DOCUMENTATION": "Documentación",
+    "EDITOR": "Editor",
+    "EXERCISES": "Ejercicios",
+    "FILE_MANAGER": "Gestor de ficheros",
+    "HOME": "Inicio",
+    "LANDING": "Inicio",
+    "LEGAL": "Aviso legal",
+    "LOGGER": "Registro",
+    "MEMORY": "Memoria",
+    "MULTIVIEW": "Vista múltiple",
+    "PIPELINE": "Pipeline",
+    "PRIVACY": "Privacidad",
+    "PROFILE": "Perfil",
+    "REGISTERS": "Registros",
+    "SHARED": "Compartido",
+    "STATISTICS": "Estadísticas"
+  },
+  "LEGAL": {
+    "NAV": "Textos legales",
+    "PRIVACY": "Privacidad y cookies",
+    "NOTICE": "Aviso legal",
+    "ACCESSIBILITY": "Accesibilidad",
+    "SETTINGS": "Ajustes de privacidad",
+    "SETTINGS_HELP": "Elegir qué permites: analíticas e informes de errores"
+  },
+  "CONSENT": {
+    "TITLE": "Tu privacidad",
+    "MESSAGE": "THUMDER guarda en tu navegador lo que necesita para funcionar: tus ficheros, la configuración y el idioma. Con tu permiso, también cuenta las visitas con Google Analytics, que usa cookies, y envía informes técnicos cuando algo falla para poder corregirlo.",
+    "POLICY": "Política de privacidad y cookies",
+    "SETTINGS": "Elegir",
+    "REJECT": "Solo lo necesario",
+    "ACCEPT": "Aceptar todo",
+    "SAVE": "Guardar mi elección",
+    "CHANGE": "Cambiar mi elección",
+    "SETTINGS_TITLE": "Ajustes de privacidad",
+    "SETTINGS_INTRO": "Elige qué permites a THUMDER. Puedes cambiarlo cuando quieras desde «Ajustes de privacidad», en el pie de página.",
+    "NECESSARY": "Necesario",
+    "ALWAYS_ON": "Siempre activo",
+    "NECESSARY_HELP": "Tus ficheros (sin cuenta), la configuración del simulador, el idioma, el tema y esta elección, guardados en tu navegador. No son cookies y no salen de tu equipo. Si inicias sesión, también tu sesión.",
+    "ANALYTICS": "Analíticas",
+    "ANALYTICS_HELP": "Google Analytics para Firebase cuenta de forma agregada las visitas y las vistas que se usan, para saber qué mejorar. Usa las cookies _ga y _ga_<id> (hasta 2 años) y Google puede tratar los datos en Estados Unidos.",
+    "ERRORS": "Informes de errores",
+    "ERRORS_HELP": "Si THUMDER falla, envía el mensaje y la traza del error, la vista, la versión, el navegador y el idioma, sin tu cuenta ni tus ficheros, para poder corregirlo. No usa cookies."
   }
 }

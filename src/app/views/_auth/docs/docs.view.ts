@@ -1,69 +1,131 @@
+import { HttpClient } from "@angular/common/http";
+import { ChangeDetectionStrategy, Component, computed, type ElementRef, effect, inject, signal, ViewChild } from "@angular/core";
+import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
+import { ActivatedRoute, Router, RouterLink } from "@angular/router";
+import { logger } from "@core/logger/logger";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { MarkdownComponent } from "ngx-markdown";
+import { firstValueFrom, map } from "rxjs";
 import {
-  CdkDrag,
-  type CdkDragDrop,
-  CdkDragHandle,
-  CdkDragPlaceholder,
-  CdkDropList,
-  CdkDropListGroup,
-  moveItemInArray,
-} from "@angular/cdk/drag-drop";
-import { type AfterViewInit, Component, inject, type OnInit, type QueryList, ViewChildren } from "@angular/core";
-import type { TypeIdTitleFile } from "@app/Types";
-import { Globals } from "@core/services/globals/globals.service";
-import { TranslatePipe } from "@ngx-translate/core";
-import { DocsItemComponent } from "../../../components/docs-item/docs-item.component";
-// import { fetchAndActivate, getRemoteConfig, getValue } from "@angular/fire/remote-config";
+  assetOf,
+  DOC_PAGES,
+  DOC_SECTIONS,
+  type DocPage,
+  type DocSection,
+  prepareMarkdown,
+  REPOSITORY,
+  sectionOf,
+  slug,
+} from "./docs.catalog";
 
+/**
+ * The documentation: an index by parts (how to use THUMDER, the DLX architecture and how it is made) and one page at a
+ * time, chosen with `?page=` (so a page has its own link). The links between pages and to the sections of a page work
+ * inside THUMDER; without a page, a summary of the three parts.
+ */
 @Component({
   selector: "view-docs",
   templateUrl: "./docs.view.html",
-  styleUrls: [],
-  imports: [CdkDropListGroup, CdkDropList, CdkDrag, CdkDragPlaceholder, DocsItemComponent, CdkDragHandle, TranslatePipe],
+  styleUrls: ["./docs.view.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, MarkdownComponent, TranslatePipe],
 })
-export class DocsView implements OnInit, AfterViewInit {
-  globals = inject(Globals);
+export class DocsView {
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private translate = inject(TranslateService);
 
-  public main_list: TypeIdTitleFile[] = [
-    { id: "README", title: "DOCS.T_INSTRUCTION_SET", file: "assets/docs.md", lang: "en" },
-    { id: "Tabla", title: "DOCS.T_OPCODES", file: "assets/md/DLX-TABLE-Instructions.md", lang: "en" },
-    { id: "Account", title: "DOCS.T_ACCOUNT", file: "assets/wiki/00.Account.md", lang: "es" },
-    { id: "Instructions", title: "DOCS.T_EXECUTION", file: "assets/wiki/00.TheExecutionOfInstructions.md", lang: "es" },
-    { id: "TheRegisterWindow", title: "DOCS.T_REGISTERS", file: "assets/wiki/01.TheRegisterWindow.md", lang: "es" },
-    { id: "TheMemoryWindow", title: "DOCS.T_MEMORY", file: "assets/wiki/02.TheMemoryWindow.md", lang: "es" },
-    { id: "TheCodeWindow", title: "DOCS.T_CODE", file: "assets/wiki/03.TheCodeWindow.md", lang: "es" },
-    { id: "ThePipelineWindow", title: "DOCS.T_PIPELINE", file: "assets/wiki/04.ThePipelineWindow.md", lang: "es" },
-    { id: "TheClockCycleDiagramWindow", title: "DOCS.T_DIAGRAM", file: "assets/wiki/04.TheClockCycleDiagramWindow.md", lang: "es" },
-    { id: "TheStatisticsWindow", title: "DOCS.T_STATISTICS", file: "assets/wiki/05.TheStatisticsWindow.md", lang: "es" },
-    { id: "TheBreakpoints", title: "DOCS.T_BREAKPOINTS", file: "assets/wiki/06.TheBreakpoints.md", lang: "es" },
-    { id: "TheExecutionProcess", title: "DOCS.T_PROCESS", file: "assets/wiki/07.TheExecutionProcess.md", lang: "es" },
-    { id: "TheConfiguration", title: "DOCS.T_CONFIG", file: "assets/wiki/08.TheConfiguration.md", lang: "es" },
-    { id: "FileManager", title: "DOCS.T_FILES", file: "assets/wiki/09.FileManager.md", lang: "es" },
-    { id: "FileEditor", title: "DOCS.T_EDITOR", file: "assets/wiki/10.FileEditor.md", lang: "es" },
-    { id: "Multiview", title: "DOCS.T_MULTIVIEW", file: "assets/wiki/11.Multiview.md", lang: "es" },
-  ];
-  // public docsEnabled: string = "";
+  @ViewChild("article") private article?: ElementRef<HTMLElement>;
 
-  @ViewChildren(CdkDrag)
-  public draggable_list!: QueryList<CdkDrag>;
+  public readonly repository = REPOSITORY;
+  public readonly allSections = DOC_SECTIONS;
+  public readonly filter = signal("");
+  public readonly lang = signal(this.translate.getCurrentLang() ?? "es");
 
-  ngOnInit(): void {}
+  private readonly pageId = toSignal(this.route.queryParamMap.pipe(map((params) => params.get("page"))), { initialValue: null });
+  public readonly current = computed(() => DOC_PAGES.find((page) => page.id === this.pageId()) ?? null);
+  public readonly section = computed(() => {
+    const page = this.current();
+    return page ? sectionOf(page) : null;
+  });
+  public readonly previous = computed(() => this.neighbour(-1));
+  public readonly next = computed(() => this.neighbour(1));
 
-  ngAfterViewInit(): void {
-    // const analytics = getAnalytics();
-    // const remoteConfig = getRemoteConfig();
-    // fetchAndActivate(remoteConfig)
-    //   .then((s) => {
-    //     this.docsEnabled = JSON.parse(getValue(remoteConfig, "docs").asString()) as string;
-    //     logger.info("activar?", this.docsEnabled)
-    //   })
-    //   .catch((err) => {
-    //     // ...
-    //   });
+  public readonly content = signal("");
+  public readonly loading = signal(false);
+  public readonly failed = signal(false);
+
+  /** The parts with the pages whose title has what is written in the search */
+  public readonly sections = computed<DocSection[]>(() => {
+    const text = this.filter().trim().toLowerCase();
+    if (!text) return DOC_SECTIONS;
+    this.lang();
+    return DOC_SECTIONS.map((section) => ({
+      ...section,
+      pages: section.pages.filter((page) => this.translate.instant(page.title).toLowerCase().includes(text)),
+    })).filter((section) => section.pages.length > 0);
+  });
+
+  constructor() {
+    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe((event) => this.lang.set(event.lang));
+    effect(() => {
+      const page = this.current();
+      if (page) void this.load(page);
+    });
   }
 
-  public MyDrop($event: CdkDragDrop<any[]>): void {
-    if ($event.previousContainer === $event.container) {
-      moveItemInArray($event.container.data, $event.previousIndex, $event.currentIndex);
+  private neighbour(step: number): DocPage | null {
+    const page = this.current();
+    if (!page) return null;
+    return DOC_PAGES[DOC_PAGES.indexOf(page) + step] ?? null;
+  }
+
+  private async load(page: DocPage): Promise<void> {
+    this.loading.set(true);
+    this.failed.set(false);
+    try {
+      const markdown = await firstValueFrom(this.http.get(assetOf(page.path), { responseType: "text" }));
+      if (this.current() === page) this.content.set(prepareMarkdown(markdown, page));
+    } catch (error) {
+      logger.error(error);
+      this.failed.set(true);
+    } finally {
+      this.loading.set(false);
     }
+  }
+
+  /** The page is drawn: its headings get the ids of their links, and the section of the address is shown */
+  public onReady(): void {
+    const article = this.article?.nativeElement;
+    if (!article) return;
+    for (const heading of article.querySelectorAll<HTMLElement>("h1, h2, h3, h4, h5, h6")) {
+      if (!heading.id) heading.id = slug(heading.textContent ?? "");
+    }
+    const fragment = this.route.snapshot.fragment;
+    if (fragment) document.getElementById(fragment)?.scrollIntoView();
+    else article.scrollIntoView({ block: "start" });
+  }
+
+  /** The links of a page: to another page or to a section of this one, inside THUMDER */
+  public onClick(event: MouseEvent): void {
+    const anchor = (event.target as HTMLElement).closest("a");
+    const href = anchor?.getAttribute("href");
+    if (!anchor || !href || event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return;
+    if (href.startsWith("#")) {
+      event.preventDefault();
+      document.getElementById(decodeURIComponent(href.slice(1)))?.scrollIntoView({ behavior: "smooth" });
+    } else if (href.startsWith("/auth/documentation")) {
+      event.preventDefault();
+      void this.router.navigateByUrl(href);
+    } else if (/^https?:/.test(href)) {
+      anchor.target = "_blank";
+      anchor.rel = "noopener noreferrer";
+    }
+  }
+
+  /** The select of the index (on narrow screens) */
+  public open(id: string): void {
+    void this.router.navigate([], { relativeTo: this.route, queryParams: id ? { page: id } : {} });
   }
 }

@@ -608,7 +608,7 @@ markdown pre {
 
 // ─── Phones, tablets and desktops ───────────────────────────────────────────────────────────────────────────────────
 // Bootstrap 4 breakpoints: sm 576 px, md 768 px, lg 992 px (from here the sidebar stops covering the content), xl 1200 px.
-// This file is loaded before AdminLTE, Bootstrap and cookieconsent (angular.json): the rules that change theirs start
+// This file is loaded before AdminLTE and Bootstrap (angular.json): the rules that change theirs start
 // with `body` to win.
 
 // The tables of data (code, registers, memory) keep their columns readable: in a narrow card (a phone, a tablet or a
@@ -647,7 +647,7 @@ body .main-header .navbar-nav {
   flex-wrap: nowrap;
 }
 
-// Phones: less space around the content, a smaller title and a compact cookie banner
+// Phones: less space around the content and a smaller title
 @media (max-width: 575.98px) {
   body .content-header {
     padding: 0.5rem 0.25rem;
@@ -678,19 +678,10 @@ body .main-header .navbar-nav {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
   }
-
-  body .cc-window.cc-banner {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  body .cc-window.cc-banner .cc-compliance {
-    margin-top: 0.5rem;
-  }
 }
 
 // Phones (and phones turned sideways, with little height): the footer scrolls with the page instead of taking a line of
-// the screen all the time, and the tab of the cookie policy is smaller
+// the screen all the time
 @media (max-width: 575.98px), (max-height: 500px) {
   body.layout-footer-fixed .wrapper .main-footer {
     position: static;
@@ -698,11 +689,6 @@ body .main-header .navbar-nav {
 
   body.layout-footer-fixed .wrapper .content-wrapper {
     padding-bottom: 0;
-  }
-
-  body .cc-revoke {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
   }
 }
 
@@ -744,4 +730,19 @@ body .main-header .navbar-nav {
 .content-wrapper p a,
 .content-wrapper li a:not(.nav-link):not(.btn) {
   text-decoration: underline;
+}
+
+// The legal links of the footer (privacy, legal notice, accessibility) and the button of the privacy settings
+.thumder-legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.75rem;
+
+  .btn-link {
+    font-size: inherit;
+    line-height: inherit;
+    vertical-align: baseline;
+    text-decoration: underline;
+  }
 }

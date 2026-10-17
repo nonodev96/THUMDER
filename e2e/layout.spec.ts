@@ -1,6 +1,6 @@
 import { expect, go, sidebarBox, sidebarToggle, test } from "./fixtures";
 
-// The layout: the sidebar, the dropdowns of the navbar and the cookie banner
+// The layout: the sidebar, the dropdowns of the navbar, the privacy banner and the legal texts
 
 test.describe("Menú lateral", () => {
   test("en escritorio, el botón lo pliega a iconos y lo despliega, y el estado se conserva al navegar", async ({ page }) => {
@@ -76,12 +76,67 @@ test.describe("Desplegables", () => {
   });
 });
 
-test.describe("Cookies", () => {
+test.describe("Privacidad", () => {
   test.use({ seed: { files: [], open: null, delay: 1, cookiesAnswered: false } });
 
-  test("el aviso sale la primera vez y su enlace lleva a «Sobre nosotros»", async ({ page }) => {
+  test("el aviso sale la primera vez, rechazar es tan fácil como aceptar y la elección se guarda", async ({ page }) => {
     await go(page, "/");
-    await expect(page.locator(".cc-window")).toBeVisible();
-    await expect(page.locator("#cookieconsent\\:link")).toBeVisible();
+    const banner = page.locator("#consentBanner");
+    await expect(banner).toBeVisible();
+    await expect(banner.getByRole("link", { name: "Política de privacidad y cookies" })).toHaveAttribute("href", "/landing/privacy");
+    await expect(page.locator("#consentReject")).toBeVisible();
+    await expect(page.locator("#consentAccept")).toBeVisible();
+
+    await page.locator("#consentReject").click();
+    await expect(banner).toBeHidden();
+    const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("thumder_consent") ?? "null"));
+    expect(stored).toMatchObject({ analytics: false, errors: false, version: 1 });
+
+    await page.reload();
+    await expect(page.locator("#consentBanner")).toBeHidden();
+  });
+
+  test("la ventana de privacidad se abre desde el pie, guarda cada opción y se cierra con Escape", async ({ page }) => {
+    await go(page, "/auth/editor");
+    await page.locator("#consentSettings").click();
+    const dialog = page.locator("#consentDialog");
+    await expect(dialog).toBeVisible();
+    await expect(page.locator("#consentNecessary")).toBeDisabled();
+    await expect(page.locator("#consentAnalytics")).not.toBeChecked();
+    await page.locator("label[for='consentErrors']").click();
+    await expect(page.locator("#consentErrors")).not.toBeChecked();
+    await page.locator("label[for='consentAnalytics']").click();
+    await page.locator("#consentSave").click();
+    await expect(dialog).toBeHidden();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("thumder_consent") ?? "null"))).toMatchObject({ analytics: true, errors: false });
+
+    await page.locator("#footerConsent").click();
+    await expect(dialog).toBeVisible();
+    await expect(page.locator("#consentAnalytics")).toBeChecked();
+    await page.keyboard.press("Escape");
+    await expect(dialog).toBeHidden();
+  });
+
+  test("la cookie del aviso anterior (cookieconsent) cuenta como respuesta", async ({ page, context, baseURL }) => {
+    await context.addCookies([{ name: "cookieconsent_status", value: "deny", url: baseURL as string }]);
+    await go(page, "/");
+    await expect(page.locator("#consentBanner")).toBeHidden();
+    expect(await page.evaluate(() => JSON.parse(localStorage.getItem("thumder_consent") ?? "null"))).toMatchObject({ analytics: false });
+    expect(await page.evaluate(() => document.cookie)).not.toContain("cookieconsent_status");
+  });
+
+  test("los textos legales: privacidad, aviso legal y accesibilidad, en los dos idiomas", async ({ page }) => {
+    for (const [route, title] of [
+      ["/landing/privacy", "Privacidad y cookies"],
+      ["/landing/legal", "Aviso legal"],
+      ["/landing/accessibility", "Declaración de accesibilidad"],
+    ]) {
+      await go(page, route);
+      await expect(page.locator("view-legal h1")).toHaveText(title);
+      await expect(page.locator("view-legal [aria-current='page']")).toHaveCount(1);
+    }
+    await page.locator("#dropdownSubMenuLang").click();
+    await page.locator("#changeLangToEnglish").click();
+    await expect(page.locator("view-legal h1")).toHaveText("Accessibility statement");
   });
 });

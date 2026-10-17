@@ -1,22 +1,103 @@
-<ng-container cdkDropListGroup>
-  <div class="row">
-    <div class="col-12 col-xxl-12 example-list" id="accordion"
-      cdkDropList
-      #mainList="cdkDropList"
-      [cdkDropListData]="main_list"
-      (cdkDropListDropped)="MyDrop($event)">
+<div class="docs">
+  <!-- The index: a list by parts on wide screens, a select on narrow ones -->
+  <nav class="docs-nav card" aria-labelledby="docsIndexTitle">
+    <div class="card-body">
+      <h2 class="docs-nav-title" id="docsIndexTitle">{{ 'DOCS.INDEX' | translate }}</h2>
 
-      @for (document of main_list; track document) {
-        <div cdkDrag>
-          <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-          <THUMDER-docs-item [item]="document">
-          <button type="button" class="btn btn-tool" [title]="'DOCS.DRAG' | translate" cdkDragHandle>
-            <i class="fas fa-arrows-alt" aria-hidden="true"></i>
-          </button>
-        </THUMDER-docs-item>
+      <label class="sr-only" for="docsSelect">{{ 'DOCS.CHOOSE' | translate }}</label>
+      <select class="custom-select d-lg-none" id="docsSelect" [value]="current()?.id ?? ''" (change)="open($any($event.target).value)">
+        <option value="">{{ 'DOCS.HOME' | translate }}</option>
+        @for (part of allSections; track part.id) {
+          <optgroup [label]="part.title | translate">
+            @for (item of part.pages; track item.id) {
+              <option [value]="item.id">{{ item.title | translate }}</option>
+            }
+          </optgroup>
+        }
+      </select>
+
+      <div class="d-none d-lg-block">
+        <input type="search" class="form-control form-control-sm mb-3" id="docsSearch" [placeholder]="'DOCS.SEARCH' | translate"
+          [attr.aria-label]="'DOCS.SEARCH' | translate" [value]="filter()" (input)="filter.set($any($event.target).value)">
+        <a class="docs-nav-home" routerLink="." [queryParams]="{}" [attr.aria-current]="current() ? null : 'page'" [class.active]="!current()">
+          <i class="fas fa-book-open fa-fw" aria-hidden="true"></i> {{ 'DOCS.HOME' | translate }}
+        </a>
+        @for (part of sections(); track part.id) {
+          <h3 class="docs-nav-section"><i class="fas fa-fw" [class]="part.icon" aria-hidden="true"></i> {{ part.title | translate }}</h3>
+          <ul class="docs-nav-list">
+            @for (item of part.pages; track item.id) {
+              <li>
+                <a routerLink="." [queryParams]="{ page: item.id }" [class.active]="current()?.id === item.id"
+                  [attr.aria-current]="current()?.id === item.id ? 'page' : null">
+                  {{ item.title | translate }}
+                  @if (item.lang !== lang()) { <span class="docs-lang" [attr.title]="(item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate">{{ item.lang.toUpperCase() }}</span> }
+                </a>
+              </li>
+            }
+          </ul>
+        } @empty {
+          <p class="text-muted small">{{ 'DOCS.NO_RESULTS' | translate }}</p>
+        }
       </div>
-    }
+    </div>
+  </nav>
 
-  </div>
+  <article class="docs-page card" #article (click)="onClick($event)">
+    <div class="card-body">
+      @if (current(); as item) {
+        <header class="docs-page-header">
+          <p class="docs-page-section">{{ section()!.title | translate }}</p>
+          <h1 class="docs-page-title">{{ item.title | translate }}</h1>
+          <div class="docs-page-meta">
+            @if (item.lang !== lang()) {
+              <span class="badge badge-secondary">{{ (item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate }}</span>
+            }
+            <a [href]="repository + item.path" target="_blank" rel="noopener noreferrer">
+              <i class="fab fa-github" aria-hidden="true"></i> {{ 'DOCS.ON_GITHUB' | translate }}
+            </a>
+          </div>
+        </header>
+
+        @if (loading() && !content()) {
+          <p class="text-muted"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ 'DOCS.LOADING' | translate }}</p>
+        } @else if (failed()) {
+          <p class="text-danger" role="alert">{{ 'DOCS.FAILED' | translate }}</p>
+        } @else {
+          <markdown class="docs-markdown" [data]="content()" (ready)="onReady()" [attr.lang]="item.lang"></markdown>
+        }
+
+        <footer class="docs-page-footer">
+          @if (previous(); as before) {
+            <a class="docs-page-link" routerLink="." [queryParams]="{ page: before.id }">
+              <small>{{ 'DOCS.PREVIOUS' | translate }}</small> <span><i class="fas fa-arrow-left" aria-hidden="true"></i> {{ before.title | translate }}</span>
+            </a>
+          } @else { <span></span> }
+          @if (next(); as after) {
+            <a class="docs-page-link docs-page-link-next" routerLink="." [queryParams]="{ page: after.id }">
+              <small>{{ 'DOCS.NEXT' | translate }}</small> <span>{{ after.title | translate }} <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
+          }
+        </footer>
+      } @else {
+        <!-- Without a page: the three parts -->
+        <header class="docs-page-header">
+          <h1 class="docs-page-title">{{ 'DOCS.TITLE' | translate }}</h1>
+          <p class="text-muted mb-0">{{ 'DOCS.INTRO' | translate }}</p>
+        </header>
+        <div class="docs-parts">
+          @for (part of allSections; track part.id) {
+            <section class="docs-part" [attr.aria-labelledby]="'docsPart-' + part.id">
+              <h2 class="docs-part-title" [id]="'docsPart-' + part.id"><i class="fas fa-fw" [class]="part.icon" aria-hidden="true"></i> {{ part.title | translate }}</h2>
+              <p class="docs-part-help">{{ part.description | translate }}</p>
+              <ul>
+                @for (item of part.pages; track item.id) {
+                  <li><a routerLink="." [queryParams]="{ page: item.id }">{{ item.title | translate }}</a></li>
+                }
+              </ul>
+            </section>
+          }
+        </div>
+      }
+    </div>
+  </article>
 </div>
-</ng-container>

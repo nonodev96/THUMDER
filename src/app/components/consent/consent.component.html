@@ -1,0 +1,73 @@
+@if (consent.asks && !consent.decided() && !consent.settingsOpen()) {
+  <section class="thumder-consent" id="consentBanner" aria-labelledby="consentBannerTitle">
+    <div class="thumder-consent-text">
+      <h2 class="thumder-consent-title" id="consentBannerTitle">
+        <i class="fas fa-user-shield" aria-hidden="true"></i> {{ 'CONSENT.TITLE' | translate }}
+      </h2>
+      <p>
+        {{ 'CONSENT.MESSAGE' | translate }}
+        <a routerLink="/landing/privacy">{{ 'CONSENT.POLICY' | translate }}</a>
+      </p>
+    </div>
+    <div class="thumder-consent-actions">
+      <button type="button" class="btn btn-outline-light" id="consentSettings" (click)="consent.openSettings()">
+        {{ 'CONSENT.SETTINGS' | translate }}
+      </button>
+      <button type="button" class="btn btn-light" id="consentReject" (click)="consent.rejectAll()">{{ 'CONSENT.REJECT' | translate }}</button>
+      <button type="button" class="btn btn-light" id="consentAccept" (click)="consent.acceptAll()">{{ 'CONSENT.ACCEPT' | translate }}</button>
+    </div>
+  </section>
+}
+
+<dialog #dialog class="thumder-dialog" id="consentDialog" aria-labelledby="consentDialogTitle" (close)="onClose()">
+  <div class="thumder-dialog-header">
+    <h2 class="thumder-dialog-title" id="consentDialogTitle">
+      <i class="fas fa-user-shield" aria-hidden="true"></i> {{ 'CONSENT.SETTINGS_TITLE' | translate }}
+    </h2>
+    <button type="button" class="close" [attr.aria-label]="'FORMS.CLOSE' | translate" [title]="'FORMS.CLOSE' | translate" (click)="consent.closeSettings()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="thumder-dialog-body">
+    <p>{{ 'CONSENT.SETTINGS_INTRO' | translate }}</p>
+
+    <div class="thumder-consent-group">
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="consentNecessary" checked disabled aria-describedby="consentNecessaryHelp">
+        <label class="custom-control-label thumder-consent-label" for="consentNecessary">
+          {{ 'CONSENT.NECESSARY' | translate }} <span class="badge badge-secondary">{{ 'CONSENT.ALWAYS_ON' | translate }}</span>
+        </label>
+      </div>
+      <p id="consentNecessaryHelp">{{ 'CONSENT.NECESSARY_HELP' | translate }}</p>
+    </div>
+
+    <div class="thumder-consent-group">
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="consentAnalytics" [checked]="analytics()"
+          (change)="analytics.set($any($event.target).checked)" aria-describedby="consentAnalyticsHelp">
+        <label class="custom-control-label thumder-consent-label" for="consentAnalytics">{{ 'CONSENT.ANALYTICS' | translate }}</label>
+      </div>
+      <p id="consentAnalyticsHelp">{{ 'CONSENT.ANALYTICS_HELP' | translate }}</p>
+    </div>
+
+    <div class="thumder-consent-group">
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="consentErrors" [checked]="errors()"
+          (change)="errors.set($any($event.target).checked)" aria-describedby="consentErrorsHelp">
+        <label class="custom-control-label thumder-consent-label" for="consentErrors">{{ 'CONSENT.ERRORS' | translate }}</label>
+      </div>
+      <p id="consentErrorsHelp">{{ 'CONSENT.ERRORS_HELP' | translate }}</p>
+    </div>
+
+    <p class="small mb-0">
+      <a routerLink="/landing/privacy" (click)="consent.closeSettings()">{{ 'CONSENT.POLICY' | translate }}</a>
+    </p>
+  </div>
+
+  <div class="thumder-dialog-footer">
+    <button type="button" class="btn btn-outline-primary" id="consentDialogReject" (click)="consent.rejectAll()">{{ 'CONSENT.REJECT' | translate }}</button>
+    <button type="button" class="btn btn-outline-primary" id="consentDialogAccept" (click)="consent.acceptAll()">{{ 'CONSENT.ACCEPT' | translate }}</button>
+    <button type="button" class="btn btn-primary" id="consentSave" (click)="saveChoice()">{{ 'CONSENT.SAVE' | translate }}</button>
+  </div>
+</dialog>

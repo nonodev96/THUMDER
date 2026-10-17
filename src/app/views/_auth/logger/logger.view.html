@@ -1,9 +1,22 @@
-<div thumderCard class="card">
+<div thumderCard class="card" id="Logger-card">
   <div class="card-header">
     <h3 class="card-title">{{ 'LOGGER.TITLE' | translate }}</h3>
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" (click)="test()" [title]="'LOGGER.SHOW_LAST' | translate" [attr.aria-label]="'LOGGER.SHOW_LAST' | translate">
-        <i class="fas fa-bug" aria-hidden="true"></i>
+      <button type="button" class="btn btn-tool" id="loggerFollow" [class.btn--active]="follow()" [attr.aria-pressed]="follow()"
+        [title]="'LOGGER.FOLLOW' | translate" [attr.aria-label]="'LOGGER.FOLLOW' | translate" (click)="toggleFollow()">
+        <i class="fas fa-arrow-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-tool" id="loggerCopy" [disabled]="matching().length === 0"
+        [title]="'LOGGER.COPY' | translate" [attr.aria-label]="'LOGGER.COPY' | translate" (click)="copy()">
+        <i class="fas fa-copy" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-tool" id="loggerDownload" [disabled]="matching().length === 0"
+        [title]="'LOGGER.DOWNLOAD' | translate" [attr.aria-label]="'LOGGER.DOWNLOAD' | translate" (click)="download()">
+        <i class="fas fa-download" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-tool" id="loggerClear" [disabled]="matching().length === 0"
+        [title]="'LOGGER.CLEAR' | translate" [attr.aria-label]="'LOGGER.CLEAR' | translate" (click)="clear()">
+        <i class="fas fa-trash-alt" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" thumderCardWidget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
@@ -15,11 +28,31 @@
   </div>
 
   <div class="card-body">
-    <div id="ide-console">
-      <THUMDER-xterm [data]="text" (onKey)="onKey($event)"></THUMDER-xterm>
+    <div class="logger-toolbar">
+      <label class="sr-only" for="loggerFilter">{{ 'LOGGER.FILTER' | translate }}</label>
+      <input type="search" class="form-control form-control-sm logger-filter" id="loggerFilter" [placeholder]="'LOGGER.FILTER' | translate"
+        [value]="filter()" (input)="filter.set($any($event.target).value)">
+      <span class="logger-count" id="loggerCount">
+        {{ 'LOGGER.COUNT' | translate: { shown: shown().length, total: matching().length } }}
+      </span>
+    </div>
+
+    <div #viewer class="logger-viewer" id="loggerViewer" role="log" aria-live="off" tabindex="0" [attr.aria-label]="'LOGGER.TITLE' | translate"
+      (scroll)="onScroll()">
+      @for (entry of shown(); track entry.id) {
+        <div class="logger-line">
+          <span class="logger-time">{{ time(entry) }}</span>
+          <span class="logger-cycle" [title]="'LOGGER.CYCLE' | translate">{{ entry.cycle }}</span>
+          <span class="logger-level" [class]="'logger-level logger-level--' + entry.level.toLowerCase()">{{ entry.level }}</span>
+          <span class="logger-text">{{ entry.text }}</span>
+        </div>
+      } @empty {
+        <p class="logger-empty">{{ (filter() ? 'LOGGER.NO_MATCHES' : 'LOGGER.EMPTY') | translate }}</p>
+      }
     </div>
   </div>
 
-  <div class="card-footer">
+  <div class="card-footer small text-muted">
+    {{ 'LOGGER.HELP' | translate: { limit: limit, shown: shownLimit } }}
   </div>
 </div>

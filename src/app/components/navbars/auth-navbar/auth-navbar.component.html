@@ -65,6 +65,10 @@
             [attr.aria-label]="'SIMULATION.LOAD' | translate" [title]="('SIMULATION.LOAD' | translate) + ' (Shift+F5)'">
             <i class="fas fa-exchange-alt" aria-hidden="true"></i>
           </button>
+          <button type="button" class="btn sim-control" (click)="clear()" id="simulationClear"
+            [attr.aria-label]="'SIMULATION.CLEAR' | translate" [title]="'SIMULATION.CLEAR' | translate">
+            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+          </button>
           <button type="button" class="btn sim-control" (click)="togglePlayPause()"
             [attr.aria-label]="(machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate"
             [title]="((machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate) + ' (F5)'"

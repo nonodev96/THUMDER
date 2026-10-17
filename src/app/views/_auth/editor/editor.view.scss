@@ -1,0 +1,33 @@
+// The changes not saved: a badge next to the name of the file, the save button marked and a warning over the editor
+.editor-unsaved-badge {
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+
+.editor-save--pending {
+  color: var(--thumder-warning-text) !important;
+  box-shadow: inset 0 -3px 0 var(--thumder-warning-bg);
+}
+
+.editor-unsaved {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+
+  .btn {
+    white-space: nowrap;
+  }
+}
+
+// Narrow: the button under the text
+@media (max-width: 575.98px) {
+  .editor-unsaved {
+    grid-template-columns: auto 1fr;
+
+    .btn {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
+}

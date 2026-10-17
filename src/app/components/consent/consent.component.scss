@@ -1,0 +1,122 @@
+// The banner: at the bottom of the screen, over the footer, without covering the whole page (it is not modal)
+.thumder-consent {
+  position: fixed;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 1070;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1rem 1.25rem;
+  border-radius: var(--thumder-radius);
+  box-shadow: var(--thumder-shadow-lg);
+  background-color: var(--thumder-sidebar-bg);
+  color: var(--thumder-sidebar-text);
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  a:focus-visible,
+  .btn:focus-visible {
+    outline: 3px solid var(--thumder-focus-ring);
+    outline-offset: 2px;
+  }
+}
+
+.thumder-consent-text {
+  flex: 1 1 28rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+.thumder-consent-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.thumder-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .btn {
+    min-width: 9rem;
+  }
+}
+
+// The window of the settings
+.thumder-dialog {
+  width: min(40rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  box-shadow: var(--thumder-shadow-lg);
+  background-color: var(--thumder-surface);
+  color: var(--thumder-text);
+
+  &::backdrop {
+    background-color: rgb(15 23 42 / 60%);
+  }
+
+  .close {
+    color: var(--thumder-text);
+  }
+}
+
+.thumder-dialog-header,
+.thumder-dialog-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.25rem;
+}
+
+.thumder-dialog-header {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--thumder-border);
+}
+
+.thumder-dialog-footer {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  border-top: 1px solid var(--thumder-border);
+}
+
+.thumder-dialog-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.thumder-dialog-body {
+  padding: 1rem 1.25rem;
+  overflow-y: auto;
+}
+
+.thumder-consent-group {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+
+  p {
+    margin: 0.4rem 0 0;
+    font-size: 0.9rem;
+    color: var(--thumder-text-2);
+  }
+}
+
+.thumder-consent-label {
+  font-weight: 700;
+}

@@ -8,13 +8,10 @@
       <span thumderCardWidget="collapse">{{'MACHINE.MEMORY' | translate}}</span>
     </h3>
     <div class="card-tools">
-      @for (type of dataTypes; track type.key) {
-        <button type="button" class="btn btn-tool" [class.btn--active]="typeDataSelected === type.key" [attr.aria-pressed]="typeDataSelected === type.key"
-          [title]="type.label | translate" (click)="changeTypeDataInTable(type.key)">
-          <i class="fas fa-table" aria-hidden="true"></i> <span [class.d-xxl-none]="type.wide">{{ type.label | translate }}</span>
-        </button>
-      }
-
+      <button type="button" class="btn btn-tool" id="memoryGoToEntry" [disabled]="machine.entry() === null" (click)="goToEntry()"
+        [title]="(machine.entry()?.main === false ? 'MACHINE.GO_TO_START' : 'MACHINE.GO_TO_MAIN') | translate: { address: entryAddress() }">
+        <i class="fas fa-crosshairs" aria-hidden="true"></i> main
+      </button>
       <button type="button" class="btn btn-tool" thumderModalOpen="editMemoryModal" [title]="'MACHINE.EDIT_MEMORY' | translate" [attr.aria-label]="'MACHINE.EDIT_MEMORY' | translate"
               id="editMemoryModalButton">
         <i class="fas fa-edit" aria-hidden="true"></i>
@@ -32,25 +29,35 @@
     </div>
   </div>
   <div class="card-body" id="Memory-card-body">
-    <thumder-virtual-table [rows]="dataSourceMemory" [columns]="displayedColumnsMemory" [height]="maxHeightCard" [itemSize]="32" minWidth="3780px" [label]="'MACHINE.MEMORY' | translate">
-      <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" width="minmax(4rem, 20fr)" let-index>0x{{ index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"} }}</ng-template>
-      <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" width="minmax(4rem, 20fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_32_64_to_hexadecimal) }}</ng-template>
-      <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" width="minmax(4rem, 40fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
-      <ng-template thumderColumn="BinaryFloat" [header]="'MACHINE.BINARY_FLOAT' | translate" width="minmax(4rem, 40fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
-      <ng-template thumderColumn="BinaryDouble" [header]="'MACHINE.BINARY_DOUBLE' | translate" width="minmax(4rem, 40fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
-      <ng-template thumderColumn="Address-0" [header]="('MACHINE.ADDRESS' | translate) + '+0'" width="minmax(4rem, 15fr)" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index) }}</ng-template>
-      <ng-template thumderColumn="Address-1" [header]="('MACHINE.ADDRESS' | translate) + '+1'" width="minmax(4rem, 15fr)" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index + 1) }}</ng-template>
-      <ng-template thumderColumn="Address-2" [header]="('MACHINE.ADDRESS' | translate) + '+2'" width="minmax(4rem, 15fr)" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index + 2) }}</ng-template>
-      <ng-template thumderColumn="Address-3" [header]="('MACHINE.ADDRESS' | translate) + '+3'" width="minmax(4rem, 15fr)" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index + 3) }}</ng-template>
-      <ng-template thumderColumn="HalfWord-0" [header]="('MACHINE.HALF_WORD' | translate) + '+0'" width="minmax(4rem, 30fr)" let-index>{{ machine.memory.getMemoryHalfWordBinaryByIndex(index) }}</ng-template>
-      <ng-template thumderColumn="HalfWord-1" [header]="('MACHINE.HALF_WORD' | translate) + '+2'" width="minmax(4rem, 30fr)" let-index>{{ machine.memory.getMemoryHalfWordBinaryByIndex(index + 2) }}</ng-template>
-      <ng-template thumderColumn="Bytes" [header]="'MACHINE.BYTE' | translate" width="minmax(4rem, 20fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary32_to_bytes) }}</ng-template>
-      <ng-template thumderColumn="HalfWord" [header]="'MACHINE.HALF_WORD' | translate" width="minmax(4rem, 20fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary32_to_halfword) }}</ng-template>
-      <ng-template thumderColumn="Word" [header]="'MACHINE.WORD' | translate" width="minmax(4rem, 20fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_to_number) }}</ng-template>
-      <ng-template thumderColumn="ASCII" [header]="'MACHINE.ASCII' | translate" width="minmax(4rem, 20fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary32_to_ascii) }}</ng-template>
-      <ng-template thumderColumn="Float" [header]="'MACHINE.FLOAT' | translate" width="minmax(4rem, 20fr)" let-index>{{ ((machine.memory.getMemoryWordBinaryByIndex(index)) | binary32_to_decimal_IEEE754) }}</ng-template>
-      <ng-template thumderColumn="Double" [header]="'MACHINE.DOUBLE' | translate" width="minmax(4rem, 20fr)" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) + machine.memory.getMemoryWordBinaryByIndex(index + 4)) | binary64_to_decimal_IEEE754 }}</ng-template>
-      <ng-template thumderColumn="InstructionCode" [header]="'MACHINE.INSTRUCTION' | translate" width="minmax(4rem, 20fr)" let-index>{{ getInstructionDLXFromIndex(index) }}</ng-template>
+    <div class="memory-types" role="group" [attr.aria-label]="'MACHINE.TYPE_DATA' | translate">
+      <span class="memory-types-label" aria-hidden="true">{{ 'MACHINE.SHOW_AS' | translate }}</span>
+      @for (type of dataTypes; track type.key) {
+        <button type="button" class="btn btn-sm" [class.btn-primary]="typeDataSelected === type.key" [class.btn-outline-secondary]="typeDataSelected !== type.key"
+          [attr.aria-pressed]="typeDataSelected === type.key" (click)="changeTypeDataInTable(type.key)">
+          {{ type.label | translate }}
+        </button>
+      }
+    </div>
+    <thumder-virtual-table [rows]="dataSourceMemory" [columns]="displayedColumnsMemory" [height]="maxHeightCard" [itemSize]="32" [minWidth]="minWidth"
+      [stickyFirst]="true" [label]="'MACHINE.MEMORY' | translate">
+      <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" [width]="width('Address')" let-index>0x{{ index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"} }}</ng-template>
+      <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="width('Hexadecimal')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_32_64_to_hexadecimal) }}</ng-template>
+      <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="width('Binary')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
+      <ng-template thumderColumn="BinaryFloat" [header]="'MACHINE.BINARY_FLOAT' | translate" [width]="width('BinaryFloat')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
+      <ng-template thumderColumn="BinaryDouble" [header]="'MACHINE.BINARY_DOUBLE' | translate" [width]="width('BinaryDouble')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
+      <ng-template thumderColumn="Address-0" [header]="('MACHINE.ADDRESS' | translate) + '+0'" [width]="width('Address-0')" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index) }}</ng-template>
+      <ng-template thumderColumn="Address-1" [header]="('MACHINE.ADDRESS' | translate) + '+1'" [width]="width('Address-1')" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index + 1) }}</ng-template>
+      <ng-template thumderColumn="Address-2" [header]="('MACHINE.ADDRESS' | translate) + '+2'" [width]="width('Address-2')" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index + 2) }}</ng-template>
+      <ng-template thumderColumn="Address-3" [header]="('MACHINE.ADDRESS' | translate) + '+3'" [width]="width('Address-3')" let-index>{{ machine.memory.getMemoryByteBinaryByIndex(index + 3) }}</ng-template>
+      <ng-template thumderColumn="HalfWord-0" [header]="('MACHINE.HALF_WORD' | translate) + '+0'" [width]="width('HalfWord-0')" let-index>{{ machine.memory.getMemoryHalfWordBinaryByIndex(index) }}</ng-template>
+      <ng-template thumderColumn="HalfWord-1" [header]="('MACHINE.HALF_WORD' | translate) + '+2'" [width]="width('HalfWord-1')" let-index>{{ machine.memory.getMemoryHalfWordBinaryByIndex(index + 2) }}</ng-template>
+      <ng-template thumderColumn="Bytes" [header]="'MACHINE.BYTE' | translate" [width]="width('Bytes')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary32_to_bytes) }}</ng-template>
+      <ng-template thumderColumn="HalfWord" [header]="'MACHINE.HALF_WORD' | translate" [width]="width('HalfWord')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary32_to_halfword) }}</ng-template>
+      <ng-template thumderColumn="Word" [header]="'MACHINE.WORD' | translate" [width]="width('Word')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_to_number) }}</ng-template>
+      <ng-template thumderColumn="ASCII" [header]="'MACHINE.ASCII' | translate" [width]="width('ASCII')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary32_to_ascii) }}</ng-template>
+      <ng-template thumderColumn="Float" [header]="'MACHINE.FLOAT' | translate" [width]="width('Float')" let-index>{{ ((machine.memory.getMemoryWordBinaryByIndex(index)) | binary32_to_decimal_IEEE754) }}</ng-template>
+      <ng-template thumderColumn="Double" [header]="'MACHINE.DOUBLE' | translate" [width]="width('Double')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) + machine.memory.getMemoryWordBinaryByIndex(index + 4)) | binary64_to_decimal_IEEE754 }}</ng-template>
+      <ng-template thumderColumn="InstructionCode" [header]="'MACHINE.INSTRUCTION' | translate" [width]="width('InstructionCode')" let-index>{{ getInstructionDLXFromIndex(index) }}</ng-template>
     </thumder-virtual-table>
   </div>
   <div class="card-footer">

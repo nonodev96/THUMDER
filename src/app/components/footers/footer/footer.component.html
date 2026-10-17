@@ -2,14 +2,22 @@
   <!-- The state of the simulation (UI-10): announced to the screen readers when it stops (A11Y-01) -->
   <div class="thumder-status mr-auto" role="status" id="simulationStatus" [attr.aria-live]="machine.state.running() ? 'off' : 'polite'">
     <span class="badge mr-2" [class]="'badge mr-2 ' + statusClass()">{{ statusText() | translate }}</span>
-    @if (machine.state.loads() > 0) {
+    @if (status() !== 'IDLE') {
       <span class="mr-2">{{ 'STATUS.CYCLE' | translate: { cycle: machine.state.cycles() } }}</span>
       @if (machine.state.line() > 0) { <span class="mr-2">{{ 'STATUS.LINE' | translate: { line: machine.state.line() } }}</span> }
       @if (fetched()) { <span class="text-monospace d-none d-md-inline">{{ fetched() }}</span> }
     }
   </div>
 
-  <div class="d-flex align-items-center small">
+  <div class="d-flex flex-wrap align-items-center small">
+    <nav class="thumder-legal mr-3" [attr.aria-label]="'LEGAL.NAV' | translate">
+      <a routerLink="/landing/privacy">{{ 'LEGAL.PRIVACY' | translate }}</a>
+      <a routerLink="/landing/legal">{{ 'LEGAL.NOTICE' | translate }}</a>
+      <a routerLink="/landing/accessibility">{{ 'LEGAL.ACCESSIBILITY' | translate }}</a>
+      <button type="button" class="btn btn-link btn-xs p-0" id="footerConsent" [title]="'LEGAL.SETTINGS_HELP' | translate" (click)="consent.openSettings()">
+        <i class="fas fa-user-shield" aria-hidden="true"></i> {{ 'LEGAL.SETTINGS' | translate }}
+      </button>
+    </nav>
     <button type="button" class="btn btn-xs btn-outline-primary mr-2" (click)="globals.showDebug=!globals.showDebug">{{ 'FOOTER.DEBUG' | translate }}</button>
     <span class="d-none d-sm-inline">
       @if (electronService.isElectronApp) {

@@ -5,15 +5,6 @@
     "TITLE": "Error: {{title}}",
     "MESSAGE": "Message: {{message}}"
   },
-  "cookie": {
-    "header": "Cookies used on the website!",
-    "message": "This website uses cookies to ensure you get the best experience on our website.",
-    "dismiss": "Got it!",
-    "allow": "Allow cookies",
-    "deny": "Decline",
-    "link": "Learn more",
-    "policy": "Cookie Policy"
-  },
   "ACCOUNT": {
     "YOU_FORGOT_YOUR_PASSWORD_HERE_YOU_CAN_EASILY_RETRIEVE_A_NEW_PASSWORD": "You forgot your password? Here you can easily retrieve a new password.",
     "REQUEST_NEW_PASSWORD": "Request new password",
@@ -300,7 +291,14 @@
     "TAB_INTEGER": "Integer",
     "TAB_FLOAT": "Floating point",
     "TAB_DOUBLE": "Double",
-    "REPRESENTATION": "Representation"
+    "REPRESENTATION": "Representation",
+    "DESCRIPTION": "Description",
+    "GO_TO_MAIN": "Go to main ({{address}})",
+    "GO_TO_START": "Go to the start of the program ({{address}}): it has no main label",
+    "DESCRIPTION_HINT": "Press the description of an instruction to see what it does, the fields of its code and what happens in each stage of the pipeline.",
+    "FIELDS": "Fields of the instruction",
+    "STAGES": "In each stage",
+    "SHOW_AS": "Show as:"
   },
   "TYPE_DATA": {
     "BYTE": "Byte",
@@ -446,10 +444,11 @@
       "TITLE_ABOUT": "About",
       "TITLE_README": "Readme",
       "TITLE_LICENSE": "License",
-      "TITLE_COOKIES": "Cookies",
       "TITLE_CHANGELOG": "Changelog",
       "TITLE_DEPENDENCIES": "Dependencies",
-      "LICENSE": "Copyright 2022 - Antonio Mudarra Machuca - <nonodev96@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+      "LICENSE": "Copyright 2022 - Antonio Mudarra Machuca - <nonodev96@gmail.com>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.",
+      "TITLE_LEGAL": "Privacy, legal notice and accessibility",
+      "LEGAL_HELP": "What data THUMDER uses and how you decide, the terms of use and what has been done so that anyone can use it."
     }
   },
   "SIMULATION": {
@@ -467,7 +466,12 @@
     "SPEED_NORMAL": "Normal",
     "SPEED_SLOW": "Slow",
     "SPEED_VERY_SLOW": "Very slow",
-    "RUNNING_QUIET": "Running without drawing"
+    "RUNNING_QUIET": "Running without drawing",
+    "CLEAR": "Reset the machine: memory, code and registers to zero",
+    "CLEARED": "The memory, the code and the registers are zero. Load the program to simulate again.",
+    "CLEARED_TITLE": "Machine reset",
+    "LOADED_UNSAVED_TITLE": "Changes not saved",
+    "LOADED_UNSAVED": "The saved version of the file was loaded. The editor has changes not saved: save (Ctrl+S) and load again to simulate them."
   },
   "IO": {
     "TITLE": "Program console (DLX-I/O)",
@@ -598,7 +602,14 @@
   "EDITOR": {
     "TOOLS": "Tools of the program",
     "TOGGLE_BREAKPOINT": "Set or remove a breakpoint on the line of the cursor",
-    "SAVE": "Save"
+    "SAVE": "Save",
+    "UNSAVED": "Not saved",
+    "UNSAVED_TITLE": "There are changes not saved.",
+    "UNSAVED_HELP": "The simulation uses the last saved version of the file: save (Ctrl+S) before loading the program, or what runs will not be what you see.",
+    "SAVE_NOW": "Save now",
+    "SAVE_PENDING": "Save: there are changes not saved",
+    "DISCARDED_TITLE": "Changes discarded",
+    "DISCARDED": "The changes not saved of {{name}} were discarded, because autosave is off (Settings)."
   },
   "EXERCISES": {
     "TITLE": "Guided exercises",
@@ -651,7 +662,18 @@
   },
   "LOGGER": {
     "TITLE": "Log of the simulation",
-    "SHOW_LAST": "Show the last message"
+    "FOLLOW": "Follow the new messages",
+    "COPY": "Copy the log",
+    "DOWNLOAD": "Download the log (.txt)",
+    "CLEAR": "Empty the log",
+    "FILTER": "Filter: RESET, SimulationNextStep, a value...",
+    "COUNT": "{{shown}} of {{total}} messages",
+    "CYCLE": "Cycle",
+    "EMPTY": "No messages yet: load a program and simulate a few cycles.",
+    "NO_MATCHES": "No message contains that text.",
+    "HELP": "The last {{limit}} messages are kept and the {{shown}} newest are shown; copying and downloading include all the kept ones that pass the filter. Each line: time, cycle, type and message.",
+    "COPIED": "{{count}} messages copied to the clipboard",
+    "COPY_FAILED": "The log could not be copied to the clipboard: download it"
   },
   "STATUS": {
     "IDLE": "Not loaded",
@@ -676,25 +698,54 @@
     "DEBUG": "Debug"
   },
   "DOCS": {
-    "DRAG": "Drag to reorder",
-    "T_INSTRUCTION_SET": "The DLX Instruction Set",
-    "T_OPCODES": "DLX table: opcodes",
-    "T_ACCOUNT": "The account",
-    "T_EXECUTION": "The execution of the instructions",
-    "T_REGISTERS": "The registers window",
-    "T_MEMORY": "The memory window",
-    "T_CODE": "The code window",
-    "T_PIPELINE": "The pipeline window",
-    "T_DIAGRAM": "The cycle clock diagram window",
-    "T_STATISTICS": "The statistics window",
-    "T_BREAKPOINTS": "The breakpoints",
-    "T_PROCESS": "The execution process",
-    "T_CONFIG": "The configuration",
-    "T_FILES": "The file manager",
-    "T_EDITOR": "The editor",
-    "T_MULTIVIEW": "The multiview",
+    "TITLE": "THUMDER documentation",
+    "INTRO": "Choose a part: how to use THUMDER, the DLX architecture it simulates, or how it is made inside.",
+    "INDEX": "Index",
+    "HOME": "Documentation home",
+    "CHOOSE": "Choose a page",
+    "SEARCH": "Search a page",
+    "NO_RESULTS": "No page has that title.",
+    "LOADING": "Loading the page…",
+    "FAILED": "The page could not be loaded.",
+    "ON_GITHUB": "View on GitHub",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
     "IN_EN": "Document in English",
-    "IN_ES": "Document in Spanish"
+    "IN_ES": "Document in Spanish",
+    "SECTIONS": {
+      "USE": "Using THUMDER",
+      "USE_HELP": "From the first simulation to each view: files, editor, simulation, configuration and views.",
+      "DLX": "The DLX architecture",
+      "DLX_HELP": "The processor THUMDER simulates: instructions, opcodes, the pipeline and commented examples.",
+      "DEV": "Development",
+      "DEV_HELP": "How THUMDER is made, how it is tested and how to contribute."
+    },
+    "PAGES": {
+      "START": "Getting started",
+      "INSTALL": "Installation",
+      "ACCOUNT": "The account",
+      "FILES": "The file manager",
+      "EDITOR": "The editor",
+      "PROCESS": "The simulation process",
+      "BREAKPOINTS": "Breakpoints",
+      "CONFIG": "The configuration",
+      "REGISTERS": "The registers view",
+      "MEMORY": "The memory view",
+      "CODE": "The code view",
+      "PIPELINE": "The pipeline view",
+      "DIAGRAM": "The cycle clock diagram",
+      "STATISTICS": "The statistics",
+      "MULTIVIEW": "The multiview",
+      "EXECUTION": "How instructions are executed",
+      "EXAMPLES": "Commented examples",
+      "WINDLX": "The WinDLX manual",
+      "INSTRUCTION_SET": "The instruction set",
+      "OPCODES": "The opcodes",
+      "INSTRUCTION_TABLE": "The instruction table",
+      "README": "The project (README)",
+      "CONTRIBUTING": "How to contribute",
+      "SIMULATOR": "The simulator inside"
+    }
   },
   "EDIT": {
     "IN_HEXADECIMAL": "in hexadecimal",
@@ -744,5 +795,59 @@
     "EXACT": "Value the bits keep (exact)",
     "ROUNDED": "The number written does not fit exactly in {{bits}} bits: the nearest one is kept, the exact value above.",
     "ONE_BIT": "1 bit"
+  },
+  "BREADCRUMB": {
+    "NAV": "You are in",
+    "ABOUT": "About",
+    "ACCESSIBILITY": "Accessibility",
+    "AUTH": "THUMDER",
+    "CALCULATOR": "Calculator",
+    "CODE": "Code",
+    "CONFIG": "Settings",
+    "CYCLE_CLOCK_DIAGRAM": "Clock cycle diagram",
+    "DATAPATH": "Datapath",
+    "DOCUMENTATION": "Documentation",
+    "EDITOR": "Editor",
+    "EXERCISES": "Exercises",
+    "FILE_MANAGER": "File manager",
+    "HOME": "Home",
+    "LANDING": "Home",
+    "LEGAL": "Legal notice",
+    "LOGGER": "Log",
+    "MEMORY": "Memory",
+    "MULTIVIEW": "Multiview",
+    "PIPELINE": "Pipeline",
+    "PRIVACY": "Privacy",
+    "PROFILE": "Profile",
+    "REGISTERS": "Registers",
+    "SHARED": "Shared",
+    "STATISTICS": "Statistics"
+  },
+  "LEGAL": {
+    "NAV": "Legal texts",
+    "PRIVACY": "Privacy and cookies",
+    "NOTICE": "Legal notice",
+    "ACCESSIBILITY": "Accessibility",
+    "SETTINGS": "Privacy settings",
+    "SETTINGS_HELP": "Choose what you allow: analytics and error reports"
+  },
+  "CONSENT": {
+    "TITLE": "Your privacy",
+    "MESSAGE": "THUMDER keeps in your browser what it needs to work: your files, the settings and the language. With your permission, it also counts the visits with Google Analytics, which uses cookies, and sends technical reports when something fails so that it can be fixed.",
+    "POLICY": "Privacy and cookie policy",
+    "SETTINGS": "Choose",
+    "REJECT": "Only what is needed",
+    "ACCEPT": "Accept all",
+    "SAVE": "Save my choice",
+    "CHANGE": "Change my choice",
+    "SETTINGS_TITLE": "Privacy settings",
+    "SETTINGS_INTRO": "Choose what you allow THUMDER to do. You can change it whenever you want from \"Privacy settings\", in the footer.",
+    "NECESSARY": "Necessary",
+    "ALWAYS_ON": "Always on",
+    "NECESSARY_HELP": "Your files (without an account), the settings of the simulator, the language, the theme and this choice, kept in your browser. They are not cookies and they do not leave your computer. If you sign in, your session too.",
+    "ANALYTICS": "Analytics",
+    "ANALYTICS_HELP": "Google Analytics for Firebase counts, in aggregate, the visits and the views used, to know what to improve. It uses the cookies _ga and _ga_<id> (up to 2 years) and Google may process the data in the United States.",
+    "ERRORS": "Error reports",
+    "ERRORS_HELP": "If THUMDER fails, it sends the message and the stack of the error, the view, the version, the browser and the language, without your account or your files, so that it can be fixed. It uses no cookies."
   }
 }

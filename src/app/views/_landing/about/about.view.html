@@ -50,17 +50,24 @@
     </div>
 
     <div class="card card-primary card-outline">
-      <a class="d-block w-100" href="#collapseOne_COOKIES" [thumderCollapseToggle]="panel3">
+      <a class="d-block w-100" href="#collapseOne_LEGAL" [thumderCollapseToggle]="panel3">
         <div class="card-header">
-          <h4 class="card-title w-100" id="collapse-header-cookies">
-            3. {{'VIEWS.ABOUT.TITLE_COOKIES' | translate}}
+          <h4 class="card-title w-100" id="collapse-header-legal">
+            3. {{'VIEWS.ABOUT.TITLE_LEGAL' | translate}}
           </h4>
         </div>
       </a>
-      <div id="collapseOne_COOKIES" class="collapse" thumderCollapse #panel3="thumderCollapse" thumderCollapseGroup="about">
+      <div id="collapseOne_LEGAL" class="collapse" thumderCollapse #panel3="thumderCollapse" thumderCollapseGroup="about">
         <div class="card-body">
-          <markdown [src]="'assets/md/COOKIES.md'" (load)="onMarkdownLoad('markdownComponentID_COOKIES')"
-          #markdownComponentID_COOKIES></markdown>
+          <p>{{ 'VIEWS.ABOUT.LEGAL_HELP' | translate }}</p>
+          <ul>
+            <li><a routerLink="/landing/privacy">{{ 'LEGAL.PRIVACY' | translate }}</a></li>
+            <li><a routerLink="/landing/legal">{{ 'LEGAL.NOTICE' | translate }}</a></li>
+            <li><a routerLink="/landing/accessibility">{{ 'LEGAL.ACCESSIBILITY' | translate }}</a></li>
+          </ul>
+          <button type="button" class="btn btn-outline-primary btn-sm" (click)="consent.openSettings()">
+            <i class="fas fa-user-shield" aria-hidden="true"></i> {{ 'CONSENT.CHANGE' | translate }}
+          </button>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import {
   inject,
   type OnDestroy,
   type OnInit,
+  signal,
   ViewChild,
 } from "@angular/core";
 import type { InterfaceFileItem, TypeBreakpoints, TypeComponentStatus, TypeErrorInCode, TypeTags } from "@app/Types";
@@ -48,6 +49,11 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public breakpoints$: Subject<TypeBreakpoints> = new Subject<TypeBreakpoints>();
   public componentStatus$: Subject<TypeComponentStatus> = new Subject<TypeComponentStatus>();
   public editorFileSave$: Subject<THUMDER_FileItem> = new Subject<THUMDER_FileItem>();
+
+  /** The text as it was opened or last saved, to know whether there are changes */
+  private savedContent = "";
+  /** The text has changes that are not saved (the simulator loads the saved version) */
+  public readonly dirty = signal(false);
 
   private theme = inject(ThemeService);
   private ready = false;
@@ -95,6 +101,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ready = true;
     editor.onDidChangeModelContent(() => {
       this.editorFile.content = editor.getValue();
+      this.dirty.set(this.editorFile.content !== this.savedContent);
     });
     this.editorInitialized(editor);
   }
@@ -289,8 +296,16 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public async setEditorContent(content: string): Promise<void> {
     this.editorFile.content = content;
+    this.savedContent = content;
     this.editor.setValue(this.editorFile.content);
+    this.dirty.set(false);
     return Promise.resolve();
+  }
+
+  /** The text that was just saved: the changes up to here are not pending any more */
+  public markSaved(content: string): void {
+    this.savedContent = content;
+    this.dirty.set((this.editor?.getValue() ?? content) !== content);
   }
 
   public isReadOnly(): boolean {

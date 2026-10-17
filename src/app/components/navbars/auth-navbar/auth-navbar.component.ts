@@ -2,14 +2,16 @@ import { DOCUMENT } from "@angular/common";
 import { Component, computed, HostListener, inject } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { AppComponent } from "@app/app.component";
-import { AUTH_ROUTES } from "@app/CONSTANTS";
+import { AUTH_ROUTES, TOAST } from "@app/CONSTANTS";
 import { AuthService } from "@core/auth/auth.service";
 import { ConfigService } from "@core/config/config.service";
 import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
+import { EditorStateService } from "@core/services/editor/editor-state.service";
 import { SidebarService } from "@core/services/layout/sidebar.service";
 import { type ThemeChoice, ThemeService } from "@core/services/theme/theme.service";
-import { TranslatePipe } from "@ngx-translate/core";
+import { ToastService } from "@core/services/toast/toast.service";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdown.directive";
 
 @Component({
@@ -25,6 +27,9 @@ export class AuthNavbarComponent {
   sidebar = inject(SidebarService);
   config = inject(ConfigService);
   theme = inject(ThemeService);
+  private toast = inject(ToastService);
+  private editorState = inject(EditorStateService);
+  private translate = inject(TranslateService);
 
   public readonly themes: { choice: ThemeChoice; label: string; icon: string }[] = [
     { choice: "light", label: "THEME.LIGHT", icon: "fa-sun" },
@@ -90,7 +95,20 @@ export class AuthNavbarComponent {
 
   public async reset(): Promise<void> {
     await this.machine.reset();
-    return Promise.resolve();
+    // The simulator loads the saved file: the changes of the editor are not in what was loaded
+    if (this.editorState.unsaved()) {
+      this.toast.warning(
+        this.translate.instant("SIMULATION.LOADED_UNSAVED"),
+        this.translate.instant("SIMULATION.LOADED_UNSAVED_TITLE"),
+        TOAST.warning,
+      );
+    }
+  }
+
+  /** Everything to zero (the memory, the code and the registers), without a program: Load loads it again */
+  public async clear(): Promise<void> {
+    await this.machine.clear();
+    this.toast.info(this.translate.instant("SIMULATION.CLEARED"), this.translate.instant("SIMULATION.CLEARED_TITLE"), TOAST.info);
   }
 
   public async nextStep(): Promise<void> {

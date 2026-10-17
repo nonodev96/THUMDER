@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { test as base, expect, type Page } from "@playwright/test";
 
-// What every e2e test starts with: THUMDER in local mode with some DLX programs in the file manager, the cookie banner
+// What every e2e test starts with: THUMDER in local mode with some DLX programs in the file manager, the privacy banner
 // answered, and a check at the end that the page had no errors.
 
 /** A program of src/assets/examples-dlx (for example "prim.s" or "ejemplos/15-hanoi.s") */
@@ -35,7 +35,7 @@ type Seed = {
   open: string | null;
   /** Milliseconds between cycles when running */
   delay: number;
-  /** Whether the user already answered the cookie banner */
+  /** Whether the user already answered the privacy banner */
   cookiesAnswered: boolean;
   /** The breakpoints of the editor, by line (false: removed) */
   breakpoints?: Record<string, boolean>;
@@ -61,12 +61,18 @@ export const test = base.extend<{ seed: Seed; pageErrors: string[] }>({
     { auto: true },
   ],
 
-  page: async ({ page, context, baseURL, seed }, use) => {
-    if (seed.cookiesAnswered) await context.addCookies([{ name: "cookieconsent_status", value: "deny", url: baseURL as string }]);
+  page: async ({ page, context, seed }, use) => {
     await context.addInitScript((seed) => {
       // Only the first time: later navigations keep what the application changed
       if (sessionStorage.getItem("e2e-seeded")) return;
       sessionStorage.setItem("e2e-seeded", "1");
+      // The privacy banner answered with «only what is needed» (ConsentService)
+      if (seed.cookiesAnswered) {
+        localStorage.setItem(
+          "thumder_consent",
+          JSON.stringify({ analytics: false, errors: false, version: 1, date: "2026-01-01T00:00:00.000Z" }),
+        );
+      }
       localStorage.setItem("local_file_items", JSON.stringify(seed.files));
       const open = seed.files.find((file) => file.name === seed.open);
       if (open) localStorage.setItem("interfaceFileItem", JSON.stringify(open));

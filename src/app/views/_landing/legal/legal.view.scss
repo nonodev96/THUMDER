@@ -1,0 +1,43 @@
+.legal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.legal-nav-link {
+  padding: 0.25rem 0;
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+
+  &.active {
+    border-bottom-color: var(--thumder-primary);
+    color: var(--thumder-text);
+  }
+}
+
+.legal-text {
+  max-width: 80ch;
+}
+
+:host ::ng-deep .legal-text {
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  code {
+    white-space: nowrap;
+  }
+}

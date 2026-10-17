@@ -1,19 +1,21 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
-import { getAnalytics, isSupported, logEvent } from "@angular/fire/analytics";
+import { Component, effect, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { getAnalytics, isSupported, logEvent, setAnalyticsCollectionEnabled } from "@angular/fire/analytics";
 import { fetchAndActivate, getBoolean, getRemoteConfig } from "@angular/fire/remote-config";
 import { NavigationStart, Router, RouterOutlet } from "@angular/router";
 import { DEFAULT_LANG, FIREBASE_ENABLED } from "@app/CONSTANTS";
 import type { TypeLang } from "@app/Types";
+import { ConsentComponent } from "@components/consent/consent.component";
+import { ToastsComponent } from "@components/toasts/toasts.component";
 import { AuthService } from "@core/auth/auth.service";
 import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
 import { ElectronService } from "@core/services";
+import { ConsentService } from "@core/services/consent/consent.service";
 import { SIDEBAR_STATE_CLASSES } from "@core/services/layout/sidebar.service";
 import { ThemeService } from "@core/services/theme/theme.service";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateService } from "@ngx-translate/core";
-import { NgcCookieConsentService, type NgcNoCookieLawEvent, type NgcStatusChangeEvent } from "ngx-cookieconsent";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -21,12 +23,12 @@ import { takeUntil } from "rxjs/operators";
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastsComponent, ConsentComponent],
 })
 export class AppComponent implements OnInit, OnDestroy {
   private document = inject<Document>(DOCUMENT);
   auth = inject(AuthService);
-  private ccService = inject(NgcCookieConsentService);
+  private consent = inject(ConsentService);
   private storageService = inject(StorageService);
   private machine = inject(MachineService);
   private electronService = inject(ElectronService);
@@ -39,8 +41,15 @@ export class AppComponent implements OnInit, OnDestroy {
   public translationEnabled: boolean = false;
   private readonly destroy$ = new Subject<void>();
 
+  /** Whether Analytics was started in this page (it cannot be unloaded: it is told to stop collecting) */
+  private static analyticsStarted = false;
+
   constructor() {
-    if (localStorage.getItem("cookieconsent") === "allow") void AppComponent.startAnalytics();
+    // Analytics only with the consent of the user (ConsentService), and it stops if the consent is withdrawn
+    effect(() => {
+      if (this.consent.analytics()) void AppComponent.startAnalytics();
+      else void AppComponent.stopAnalytics();
+    });
 
     // Inicializar idioma en el constructor para que la carga HTTP comience
     // antes de que los componentes hijos rendericen (evita flash de claves sin traducir)
@@ -70,31 +79,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.lang = this.storageService.getItem("lang") ?? DEFAULT_LANG;
     this.setLang(this.lang);
 
-    this.ccService.popupOpen$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const link = document.getElementById("cookieconsent:link");
-      if (link) {
-        link.addEventListener("click", async () => {
-          await this.router.navigateByUrl("/landing/about");
-          await new Promise((resolve) => setTimeout(resolve, 750));
-          document.getElementById("collapse-header-cookies")?.click();
-        });
-      }
-    });
-
-    this.ccService.popupClose$.pipe(takeUntil(this.destroy$)).subscribe();
-    this.ccService.initialized$.pipe(takeUntil(this.destroy$)).subscribe();
-
-    this.ccService.statusChange$.pipe(takeUntil(this.destroy$)).subscribe(($event: NgcStatusChangeEvent) => {
-      localStorage.setItem("cookieconsent", $event.status);
-      if ($event.status === "allow") void AppComponent.startAnalytics();
-    });
-
-    this.ccService.revokeChoice$.pipe(takeUntil(this.destroy$)).subscribe();
-
-    this.ccService.noCookieLaw$.pipe(takeUntil(this.destroy$)).subscribe((_$event: NgcNoCookieLawEvent) => {});
-
-    this.updateCookiesConsentLang();
-
     if (!FIREBASE_ENABLED) return;
     const remoteConfig = getRemoteConfig();
     fetchAndActivate(remoteConfig)
@@ -111,7 +95,19 @@ export class AppComponent implements OnInit, OnDestroy {
   private static async startAnalytics(): Promise<void> {
     try {
       if (!FIREBASE_ENABLED || !(await isSupported())) return;
-      logEvent(getAnalytics(), "start_app_THUMDER", { status: "ok" });
+      const analytics = getAnalytics();
+      setAnalyticsCollectionEnabled(analytics, true);
+      if (!AppComponent.analyticsStarted) logEvent(analytics, "start_app_THUMDER", { status: "ok" });
+      AppComponent.analyticsStarted = true;
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  private static async stopAnalytics(): Promise<void> {
+    if (!AppComponent.analyticsStarted) return;
+    try {
+      setAnalyticsCollectionEnabled(getAnalytics(), false);
     } catch (error) {
       logger.error(error);
     }
@@ -128,26 +124,5 @@ export class AppComponent implements OnInit, OnDestroy {
     this.document.documentElement.lang = lang;
     this.translate.setFallbackLang(lang);
     this.translate.use(lang);
-    // this.updateDevExpressLocation(lang);
-    this.updateCookiesConsentLang();
-  }
-
-  private updateCookiesConsentLang() {
-    this.translate
-      .get(["cookie.header", "cookie.message", "cookie.dismiss", "cookie.allow", "cookie.deny", "cookie.link", "cookie.policy"])
-      .subscribe((data) => {
-        this.ccService.getConfig().content = this.ccService.getConfig().content || {};
-        // Override default messages with the translated ones
-        this.ccService.getConfig().content!.header = data["cookie.header"];
-        this.ccService.getConfig().content!.message = data["cookie.message"];
-        this.ccService.getConfig().content!.dismiss = data["cookie.dismiss"];
-        this.ccService.getConfig().content!.allow = data["cookie.allow"];
-        this.ccService.getConfig().content!.deny = data["cookie.deny"];
-        this.ccService.getConfig().content!.link = data["cookie.link"];
-        this.ccService.getConfig().content!.policy = data["cookie.policy"];
-
-        this.ccService.destroy();
-        this.ccService.init(this.ccService.getConfig());
-      });
   }
 }

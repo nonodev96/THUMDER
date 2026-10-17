@@ -3,6 +3,7 @@ import { addDoc, collection, Firestore, serverTimestamp } from "@angular/fire/fi
 import { Router } from "@angular/router";
 import { NPM_VERSION } from "@app/CONSTANTS";
 import { logger } from "@core/logger/logger";
+import { ConsentService } from "@core/services/consent/consent.service";
 import * as env from "../../../environments/_environment";
 import { ERRORS_COLLECTION, errorKey, errorReport } from "./error-report";
 
@@ -11,17 +12,20 @@ const MAX_REPORTS = 10;
 
 /**
  * The errors nobody catches go to Firestore (client-errors), to see them in the console of Firebase: Crashlytics has no
- * web nor Electron version. Only the production builds with Firebase send them (not the development ones, nor the tests).
+ * web nor Electron version. Only the production builds with Firebase send them (not the development ones, nor the tests),
+ * and only while the user allows it (the privacy settings, ConsentService).
  */
 @Injectable({ providedIn: "root" })
 export class ErrorReporter {
   private readonly firestore = inject(Firestore, { optional: true });
   private readonly injector = inject(EnvironmentInjector);
   private readonly router = inject(Router);
+  private readonly consent = inject(ConsentService);
   private readonly sent = new Set<string>();
 
+  /** Only the production builds with Firebase, and only if the user did not turn the reports off (ConsentService) */
   public get enabled(): boolean {
-    return this.firestore !== null && env.AppConfig.production;
+    return this.firestore !== null && env.AppConfig.production && this.consent.errors();
   }
 
   public report(error: unknown): void {

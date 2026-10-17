@@ -1,6 +1,13 @@
 <div thumderCard class="card" id="card-IDE" (maximized)="onMaximized(true)" (minimized)="onMaximized(false)">
   <div class="card-header">
-    <h3 class="card-title">{{ 'NAVIGATION.EDITOR' | translate }} | {{ interfaceFileItem.name ?? ''}}</h3>
+    <h3 class="card-title">
+      {{ 'NAVIGATION.EDITOR' | translate }} | {{ interfaceFileItem.name ?? ''}}
+      @if (unsaved()) {
+        <span class="badge badge-warning ml-2 editor-unsaved-badge" id="editorUnsavedBadge">
+          <i class="fas fa-pen" aria-hidden="true"></i> {{ 'EDITOR.UNSAVED' | translate }}
+        </span>
+      }
+    </h3>
     <div class="card-tools">
 
       <button type="button" class="btn btn-tool" (click)="toggleDebuggerTag()"
@@ -8,7 +15,8 @@
         <i class="fas fa-circle" aria-hidden="true"></i>
       </button>
 
-      <button type="button" class="btn btn-tool" (click)="closeAndSave()" [title]="'EDITOR.SAVE' | translate" [attr.aria-label]="'EDITOR.SAVE' | translate">
+      <button type="button" class="btn btn-tool" id="editorSave" [class.editor-save--pending]="unsaved()" (click)="closeAndSave()"
+        [title]="('EDITOR.SAVE' | translate) + ' (Ctrl+S)'" [attr.aria-label]="(unsaved() ? 'EDITOR.SAVE_PENDING' : 'EDITOR.SAVE') | translate">
         <i class="fas fa-save" aria-hidden="true"></i>
       </button>
 
@@ -34,6 +42,21 @@
         }
       </div>
     }
+
+    <div role="status" aria-live="polite">
+      @if (unsaved()) {
+        <div class="alert alert-warning editor-unsaved py-2 mb-2" id="editorUnsaved">
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+          <p class="mb-0">
+            <strong>{{ 'EDITOR.UNSAVED_TITLE' | translate }}</strong>
+            {{ 'EDITOR.UNSAVED_HELP' | translate }}
+          </p>
+          <button type="button" class="btn btn-sm btn-dark" id="editorSaveNow" (click)="closeAndSave()">
+            <i class="fas fa-save" aria-hidden="true"></i> {{ 'EDITOR.SAVE_NOW' | translate }}
+          </button>
+        </div>
+      }
+    </div>
 
     @if (builtin()) {
       <p class="small text-muted mb-2" id="editorReadOnly">

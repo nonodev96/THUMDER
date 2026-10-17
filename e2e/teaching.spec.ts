@@ -141,7 +141,7 @@ test.describe("símbolos y puntos de ruptura", () => {
     await page.locator(`#breakpointStage-${store}`).selectOption("MEM");
     await page.keyboard.press("Escape");
     await controls(page).run.click();
-    await expect(page.locator(".ngx-toastr", { hasText: `Parada en la línea ${store}, al llegar a MEM` })).toBeVisible();
+    await expect(page.locator(".thumder-toast", { hasText: `Parada en la línea ${store}, al llegar a MEM` })).toBeVisible();
   });
 
   test("vigilar una dirección para la ejecución cuando se escribe", async ({ page }) => {
@@ -157,7 +157,7 @@ test.describe("símbolos y puntos de ruptura", () => {
     await page.evaluate(() => localStorage.setItem("breakpoints", "{}"));
     await page.evaluate(() => (window as any).ng.getComponent(document.querySelector("thumder-auth-navbar")).machine.breakpointManager.updateManager({}));
     await controls(page).run.click();
-    await expect(page.locator(".ngx-toastr", { hasText: "se ha escrito en 0x00001008" })).toBeVisible();
+    await expect(page.locator(".thumder-toast", { hasText: "se ha escrito en 0x00001008" })).toBeVisible();
   });
 });
 

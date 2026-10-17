@@ -50,7 +50,7 @@ pnpm install
 `pnpm install` crea los ficheros de entorno (`src/environments/environment.{dev,web,production}.ts`) a partir de `src/environments/_environment.ts`. Están en `.gitignore` porque llevan las claves de Firebase:
 
 - **Sin claves de Firebase** (modo local): no hay cuentas, se entra como invitado, los ficheros se guardan en el navegador (IndexedDB) y no hay analítica. Es lo que hace falta para desarrollar y para las pruebas.
-- **Con claves de Firebase**: también se entra como invitado; una cuenta (correo, Google o GitHub) sincroniza los ficheros con Firestore. Analítica solo si se aceptan las cookies. Las reglas de Firestore están en `firestore.rules` (se prueban con `pnpm test:rules`).
+- **Con claves de Firebase**: también se entra como invitado; una cuenta (correo, Google o GitHub) sincroniza los ficheros con Firestore. Analítica solo si se acepta en el aviso de privacidad, y los informes de errores se pueden desactivar en él (ver la [política de privacidad](src/assets/legal/privacy.es.md)). Las reglas de Firestore están en `firestore.rules` (se prueban con `pnpm test:rules`).
 
 ## Desarrollo
 

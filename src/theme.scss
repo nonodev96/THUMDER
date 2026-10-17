@@ -28,6 +28,8 @@
   --thumder-text: #0f172a;
   --thumder-text-2: #334155;
   --thumder-muted: #475569;
+  // Inline code in the texts (Bootstrap's pink does not reach 4.5:1 on white)
+  --thumder-code: #be185d;
   --thumder-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.1);
   --thumder-shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.18), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
   --thumder-radius: 0.5rem;
@@ -123,6 +125,7 @@
   --thumder-text: #e2e8f0;
   --thumder-text-2: #cbd5e1;
   --thumder-muted: #94a3b8;
+  --thumder-code: #f9a8d4;
   --thumder-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.4);
   --thumder-shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 
@@ -734,26 +737,136 @@
     color: var(--thumder-text);
   }
 
-  // ── Notifications (ngx-toastr) ──
-  .toast-success {
-    background-color: var(--thumder-success-bg);
+  // Only the inline code: the blocks keep the colours of their own theme (Prism)
+  :not(pre) > code {
+    color: var(--thumder-code);
   }
 
-  .toast-error {
-    background-color: var(--thumder-danger-bg);
+  // ── Notifications (ToastsComponent) ──
+  .thumder-toasts {
+    position: fixed;
+    right: 1rem;
+    bottom: 3.5rem;
+    z-index: 1080;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: min(24rem, calc(100vw - 2rem));
+    pointer-events: none;
   }
 
-  .toast-info {
-    background-color: var(--thumder-info-bg);
+  .thumder-toasts-region {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .toast-warning {
-    background-color: #b45309;
-  }
-
-  #toast-container > div {
+  .thumder-toast {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.75rem 0.75rem 0.9rem;
+    overflow: hidden;
     border-radius: var(--thumder-radius);
     box-shadow: var(--thumder-shadow-lg);
-    opacity: 1;
+    color: #ffffff;
+    pointer-events: auto;
+    animation: thumder-toast-in 0.18s ease-out;
+
+    &--success {
+      background-color: var(--thumder-success-bg);
+    }
+
+    &--error {
+      background-color: var(--thumder-danger-bg);
+    }
+
+    &--info {
+      background-color: var(--thumder-info-bg);
+    }
+
+    &--warning {
+      background-color: var(--thumder-warning-bg);
+      color: var(--thumder-on-warning);
+    }
+
+    &:hover .thumder-toast-time,
+    &:focus-within .thumder-toast-time {
+      animation-play-state: paused;
+    }
+  }
+
+  .thumder-toast-icon {
+    margin-top: 0.15rem;
+    font-size: 1.1rem;
+  }
+
+  .thumder-toast-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .thumder-toast-title {
+    font-weight: 700;
+  }
+
+  .thumder-toast-close {
+    padding: 0 0.25rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    font-size: 1.4rem;
+    line-height: 1;
+    opacity: 0.85;
+
+    &:hover,
+    &:focus-visible {
+      opacity: 1;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 1px;
+    }
+  }
+
+  // What is left of its time
+  .thumder-toast-time {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    width: 100%;
+    background-color: currentColor;
+    opacity: 0.45;
+    transform-origin: left;
+    animation-name: thumder-toast-time;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+}
+
+@keyframes thumder-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+@keyframes thumder-toast-time {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root body .thumder-toast {
+    animation: none;
   }
 }

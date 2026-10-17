@@ -1,7 +1,9 @@
 import { Component, computed, inject } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { NPM_VERSION } from "@app/CONSTANTS";
 import { MachineService } from "@core/machine/machine.service";
 import { ElectronService } from "@core/services";
+import { ConsentService } from "@core/services/consent/consent.service";
 import { Globals } from "@core/services/globals/globals.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { AppConfig } from "../../../../environments/_environment";
@@ -10,12 +12,13 @@ import { AppConfig } from "../../../../environments/_environment";
 @Component({
   selector: "THUMDER-footer",
   templateUrl: "./footer.component.html",
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, RouterLink],
 })
 export class FooterComponent {
   electronService = inject(ElectronService);
   globals = inject(Globals);
   machine = inject(MachineService);
+  consent = inject(ConsentService);
 
   public version: string = NPM_VERSION;
   public environment: string = AppConfig.environment;
@@ -23,7 +26,8 @@ export class FooterComponent {
   /** What the simulator is doing */
   public readonly status = computed(() => {
     const state = this.machine.state;
-    if (state.loads() === 0) return "IDLE";
+    // Nothing loaded: before the first load, or after the button of the navbar that resets the machine
+    if (state.loads() === 0 || (state.code().length === 0 && state.errors().length === 0 && !state.canSimulate())) return "IDLE";
     if (state.quiet()) return "QUIET";
     if (state.running()) return "RUNNING";
     if (state.complete()) return "COMPLETE";

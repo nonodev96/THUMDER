@@ -1,8 +1,9 @@
-import { AsyncPipe, NgClass } from "@angular/common";
+import { AsyncPipe } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, type Data, type Event, NavigationEnd, Router } from "@angular/router";
 import { Utils } from "@app/Utils";
+import { TranslatePipe } from "@ngx-translate/core";
 import { filter } from "rxjs/operators";
 
 type MenuItem = {
@@ -14,7 +15,7 @@ type MenuItem = {
   selector: "THUMDER-breadcrumb",
   templateUrl: "./breadcrumb.component.html",
   styleUrls: ["./breadcrumb.component.scss"],
-  imports: [NgClass, AsyncPipe],
+  imports: [AsyncPipe, TranslatePipe],
 })
 export class BreadcrumbComponent {
   private router = inject(Router);
@@ -35,6 +36,12 @@ export class BreadcrumbComponent {
       });
   }
 
+  /** The text of a step (BREADCRUMB.<name>: "File Manager" is BREADCRUMB.FILE_MANAGER) */
+  public labelOf(item: MenuItem): string {
+    const name = String(item.label.breadcrumb ?? "");
+    return `BREADCRUMB.${name.toUpperCase().replace(/[^A-Z0-9]+/g, "_")}`;
+  }
+
   private createBreadcrumbs(route: ActivatedRoute, url: string = "", breadcrumbs: MenuItem[] = []): MenuItem[] {
     const children: ActivatedRoute[] = route.children;
     if (children.length === 0) {
@@ -47,7 +54,7 @@ export class BreadcrumbComponent {
           url += `/${routeURL}`;
         }
         const label = child.snapshot.data;
-        if (!Utils.isNullOrUndefined(label)) {
+        if (!Utils.isNullOrUndefined(label?.breadcrumb)) {
           breadcrumbs.push({ label, url });
         }
         return this.createBreadcrumbs(child, url, breadcrumbs);

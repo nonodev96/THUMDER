@@ -14,6 +14,7 @@ import type { TypeRegister, TypeRegisterToEdit } from "@app/Types";
 import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
 import { bitsToFloat32, bitsToFloat64, bitsToHex, float32ToBits, float64ToBits, hexToBits, int32ToBits, isHex } from "@core/numbers";
+import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
 import {
@@ -27,7 +28,6 @@ import {
   NumberToHexadecimalPipe,
   PadStartPipe,
 } from "@shared/pipes/numbers/numbers.pipes";
-import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
 import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 
@@ -55,7 +55,7 @@ import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/mo
 export class EditRegisterBinary32Component implements OnInit {
   machine = inject(MachineService);
   private translate = inject(TranslateService);
-  private toastService = inject(ToastrService);
+  private toastService = inject(ToastService);
 
   readonly MACHINE_TYPE_REGISTERS = MACHINE_TYPE_REGISTERS;
 

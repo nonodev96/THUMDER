@@ -1,0 +1,47 @@
+# Primeros pasos
+
+THUMDER es un simulador del procesador **DLX**: escribes un programa en ensamblador, lo cargas y ves, ciclo a ciclo, cómo avanza cada instrucción por el pipeline, qué registros y qué posiciones de memoria cambia, y por qué se detiene. Todo ocurre en tu navegador (o en la aplicación de escritorio): no hace falta cuenta ni conexión.
+
+## 1. Abre un programa
+
+En el **Gestor de ficheros** tienes siempre dos carpetas de solo lectura:
+
+- **ejemplos**: 20 programas clásicos comentados, de «Hola, mundo» a un bucle DAXPY desenrollado.
+- **ejercicios**: los programas de los ejercicios guiados.
+
+Haz doble clic en uno (por ejemplo `ejemplos/02-suma-vector.s`) y se abre en el **Editor**. Si lo cambias, al guardar se crea una copia en tus ficheros (`mis ejemplos`), porque los originales no se pueden modificar. Para escribir tu propio programa: **Nuevo → Programa DLX (.s)**.
+
+## 2. Carga el código
+
+Pulsa el botón de cargar de la barra superior (las dos flechas) o **Mayúsculas+F5**. THUMDER ensambla el programa, pone el código y los datos en la memoria y deja la máquina en el ciclo 0. Si hay errores, se marcan en su línea del editor y en el panel de **Problemas**.
+
+> La simulación usa la versión **guardada** del fichero. Si el editor avisa de que hay cambios sin guardar, guarda (**Ctrl+S**) antes de cargar.
+
+## 3. Simula
+
+| Acción | Botón | Teclado |
+| :-- | :-- | :-- |
+| Un ciclo | Flecha a la derecha | F10 |
+| Un ciclo atrás | Flecha a la izquierda | Mayúsculas+F10 |
+| Ejecutar o pausar | Triángulo | F5 |
+| Hasta el final, sin dibujar cada ciclo | Doble flecha | F8 |
+| Velocidad | Indicador de velocidad | |
+| Reiniciar la máquina (memoria, código y registros) | Papelera de la barra | |
+
+La simulación se para sola al terminar, en un punto de ruptura, en un error o cuando el programa pide un dato por la consola.
+
+## 4. Mira qué pasa
+
+- **Pipeline**: qué instrucción hay en cada etapa (IF, ID, EX, MEM, WB y las unidades de coma flotante).
+- **Ciclos de reloj**: una fila por instrucción con la etapa de cada ciclo; haz clic en una detención para ver por qué ocurre.
+- **Registros** y **Memoria**: los valores, en varias representaciones.
+- **Código**: el código máquina, la etapa de cada instrucción y una descripción de lo que hace.
+- **Estadísticas**: ciclos, CPI, detenciones por tipo y la comparación con y sin adelantamiento.
+- **Ruta de datos**: el camino de los datos en el ciclo actual.
+- **Vista múltiple**: varias vistas a la vez; cada una puede salir como ventana flotante.
+
+## 5. Sigue aprendiendo
+
+- **Ejercicios**: preguntas sobre un programa que THUMDER comprueba con la propia simulación.
+- **Configuración**: el adelantamiento, las unidades de coma flotante, el tamaño de la memoria y la velocidad.
+- La parte **La arquitectura DLX** de esta documentación explica las instrucciones, sus códigos y el pipeline.

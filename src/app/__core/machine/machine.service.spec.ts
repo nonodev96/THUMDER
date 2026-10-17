@@ -10,7 +10,7 @@ import { LocalSimulatorService } from "@core/services/simulator/local-simulator.
 import { defaultConfig, saveConfig } from "@core/config/config";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
+import { ToastService } from "@core/services/toast/toast.service";
 import { of } from "rxjs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -63,7 +63,7 @@ const providers = (simulator: unknown, programFiles: { name: string; content: st
   // The exercises (their locks) only read the storage; the files of the file manager are not needed here
   { provide: FileSystemStorageService, useValue: {} },
   { provide: TranslateService, useValue: { get: (key: string) => of(key) } },
-  { provide: ToastrService, useValue: { info: vi.fn(), warning: vi.fn(), error: vi.fn() } },
+  { provide: ToastService, useValue: { info: vi.fn(), warning: vi.fn(), error: vi.fn() } },
 ];
 
 describe("MachineService with a fake simulator", () => {
@@ -210,6 +210,30 @@ describe("MachineService with the simulator of THUMDER", () => {
     const primes = Array.from({ length: 10 }, (_, i) => parseInt(machine.memory.getMemoryWordBinaryByIndex(table + 4 * i), 2));
     expect(primes).toEqual([2, 3, 5, 7, 11, 13, 17, 19, 23, 29]);
     expect(machine.registers.PC.hexValue).not.toBe("00000000");
+  });
+
+  it("knows where the program starts, and the button of the navbar resets everything to zero", async () => {
+    const machine = await start("prim.s");
+    const main = machine.state.symbols().find((symbol) => symbol.name === "main");
+    expect(machine.entry()).toEqual(main ? { address: Number.parseInt(main.address, 16), main: true } : { address: Number.parseInt(machine.state.code()[0].address, 16), main: false });
+    await machine.resume();
+    const loads = machine.state.loads();
+    expect(machine.state.cycles()).toBeGreaterThan(0);
+
+    await machine.clear();
+    expect(machine.state.loads()).toBe(loads + 1);
+    expect(machine.canSimulate).toBe(false);
+    expect(machine.state.cycles()).toBe(0);
+    expect(machine.state.code()).toEqual([]);
+    expect(machine.state.symbols()).toEqual([]);
+    expect(machine.entry()).toBeNull();
+    expect(machine.memory.getAllMemoryWord().every((word) => /^0+$/.test(word.binary))).toBe(true);
+    expect(machine.registers.PC.hexValue).toBe("00000000");
+    expect(machine.logHistory().some((entry) => entry.text === "CLEAR")).toBe(true);
+
+    // Load loads it again
+    expect(await machine.resetMachineStatus()).toBe(true);
+    expect(machine.canSimulate).toBe(true);
   });
 
   it("runs gcm.s with input.s: waits for each number and prints the result in the console", async () => {

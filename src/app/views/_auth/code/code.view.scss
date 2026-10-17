@@ -1,0 +1,145 @@
+// The description of each instruction: in its cell (a button that opens it in the footer of the card) and complete in
+// the footer, with the fields of its word and what each stage does
+
+.code-describe {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+
+  &:hover .code-describe-summary,
+  &--open .code-describe-summary {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-focus-ring);
+    outline-offset: -2px;
+  }
+}
+
+.code-describe-summary {
+  font-weight: 700;
+}
+
+.code-detail {
+  max-height: 45vh;
+  overflow-y: auto;
+  background-color: var(--thumder-surface);
+  color: var(--thumder-text);
+  border-top: 1px solid var(--thumder-border);
+}
+
+.code-detail-hint {
+  margin: 0;
+  color: var(--thumder-muted);
+  font-size: 0.875rem;
+}
+
+.code-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.code-detail-instruction {
+  font-family: monospace;
+
+  span {
+    font-weight: 700;
+    color: var(--thumder-primary-text);
+  }
+}
+
+.code-detail-summary {
+  font-size: 0.95rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+  color: var(--thumder-text);
+}
+
+.code-detail-text {
+  margin-bottom: 0.75rem;
+  max-width: 90ch;
+}
+
+.code-detail-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0.4rem;
+}
+
+// The word, field by field: each one as wide as its bits
+.code-fields {
+  display: flex;
+  overflow-x: auto;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: var(--thumder-radius);
+}
+
+.code-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-basis: 0;
+  min-width: max-content;
+  padding: 0.25rem 0.4rem;
+  text-align: center;
+
+  & + & {
+    border-left: 1px solid var(--thumder-border-strong);
+  }
+}
+
+.code-field-name {
+  font-size: 0.75rem;
+  color: var(--thumder-text-2);
+}
+
+.code-field-bits {
+  font-family: monospace;
+  letter-spacing: 0.05em;
+}
+
+.code-field-meaning {
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.code-stages {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 0.75rem;
+  margin: 0;
+
+  dt {
+    font-weight: normal;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.code-stage {
+  display: inline-block;
+  min-width: 7ch;
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--thumder-radius);
+  font-family: monospace;
+  font-weight: 700;
+  text-align: center;
+  color: var(--thumder-on-stage);
+}

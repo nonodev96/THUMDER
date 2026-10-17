@@ -92,7 +92,7 @@ test.describe("errores de ensamblado", () => {
   test("un programa con errores los marca en su línea del editor y no se puede simular", async ({ page }) => {
     await go(page, "/auth/editor");
     await controls(page).load.click();
-    await expect(page.locator(".ngx-toastr", { hasText: "El programa tiene errores" })).toBeVisible();
+    await expect(page.locator(".thumder-toast", { hasText: "El programa tiene errores" })).toBeVisible();
     await expect.poll(() => page.locator(".monaco-editor .squiggly-error").count()).toBeGreaterThanOrEqual(2);
     await expect(controls(page).step).toBeDisabled();
     await expect(controls(page).run).toBeDisabled();

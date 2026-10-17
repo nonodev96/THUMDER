@@ -1,9 +1,11 @@
 import { ViewportScroller } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { type AfterViewInit, Component, inject, type OnInit, Renderer2, ViewChild } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
 import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
+import { ConsentService } from "@core/services/consent/consent.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { type MarkdownComponent, MarkdownComponent as MarkdownComponent_1 } from "ngx-markdown";
 import { firstValueFrom } from "rxjs";
@@ -15,10 +17,11 @@ type LicenseInfo = { name: string; version: string; license: string; author: str
   selector: "app-about",
   templateUrl: "./about.view.html",
   styleUrls: [],
-  imports: [CollapseToggleDirective, CollapseDirective, MarkdownComponent_1, TranslatePipe],
+  imports: [CollapseToggleDirective, CollapseDirective, MarkdownComponent_1, TranslatePipe, RouterLink],
 })
 export class AboutView implements OnInit, AfterViewInit {
   electronService = inject(ElectronService);
+  consent = inject(ConsentService);
   private scroller = inject(ViewportScroller);
   private renderer = inject(Renderer2);
   private httpClient = inject(HttpClient);
@@ -35,9 +38,6 @@ export class AboutView implements OnInit, AfterViewInit {
 
   @ViewChild("markdownComponentID_ABOUT", { static: false })
   private markdownComponentID_ABOUT!: MarkdownComponent;
-
-  @ViewChild("markdownComponentID_COOKIES", { static: false })
-  private markdownComponentID_COOKIES!: MarkdownComponent;
 
   @ViewChild("markdownComponentID_CHANGELOG", { static: false })
   private markdownComponentID_CHANGELOG!: MarkdownComponent;
@@ -75,9 +75,6 @@ export class AboutView implements OnInit, AfterViewInit {
         break;
       case "markdownComponentID_README":
         markdownComponent = this.markdownComponentID_README;
-        break;
-      case "markdownComponentID_COOKIES":
-        markdownComponent = this.markdownComponentID_COOKIES;
         break;
       case "markdownComponentID_CHANGELOG":
         markdownComponent = this.markdownComponentID_CHANGELOG;

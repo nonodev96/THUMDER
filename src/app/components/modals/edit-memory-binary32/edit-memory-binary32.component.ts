@@ -8,6 +8,7 @@ import { BYTES_OF_TYPE_DATA, valueToBinary } from "@core/DLX/typeDataValues";
 import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
 import { bitsToFloat32, bitsToFloat64, bitsToHex, hexToBits, hexToNumber, isHex, toAddress } from "@core/numbers";
+import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
 import {
@@ -21,7 +22,6 @@ import {
   NumberToHexadecimalPipe,
   PadStartPipe,
 } from "@shared/pipes/numbers/numbers.pipes";
-import { ToastrService } from "ngx-toastr";
 import { firstValueFrom } from "rxjs";
 import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 
@@ -50,7 +50,7 @@ export class EditMemoryBinary32Component implements OnInit {
   machine = inject(MachineService);
   private translate = inject(TranslateService);
   private ref = inject(ChangeDetectorRef);
-  private toastService = inject(ToastrService);
+  private toastService = inject(ToastService);
   private sanitized = inject(DomSanitizer);
 
   public readonly MAX_VALUE_TYPE_DATA = MAX_VALUE_TYPE_DATA;
