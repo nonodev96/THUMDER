@@ -1,3 +1,11 @@
+## 1.9.1 (2026-10-17)
+
+### Nuevas funciones
+
+* phone layout: a "More options" menu in the navbar, the title in one line, tabs that wrap, and tables that show first what explains each row ([888930f](https://github.com/nonodev96/THUMDER/commit/888930f))
+
+
+
 ## 1.9.0 (2026-10-17)
 
 ### Nuevas funciones
