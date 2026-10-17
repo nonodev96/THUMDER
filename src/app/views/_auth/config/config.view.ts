@@ -1,14 +1,15 @@
 import { CdkDrag, CdkDragHandle, CdkDragPlaceholder, CdkDropList, CdkDropListGroup } from "@angular/cdk/drag-drop";
 import { UpperCasePipe } from "@angular/common";
-import { Component, effect, inject, signal } from "@angular/core";
+import { Component, computed, effect, inject, signal, untracked } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import type { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration } from "@app/Types";
-import { changesMachine, defaultConfig, type ThumderConfig, validateConfig } from "@core/config/config";
+import { changesMachine, defaultConfig, type SoundConfig, type ThumderConfig, validateConfig } from "@core/config/config";
 import { ConfigService } from "@core/config/config.service";
 import { ExerciseService } from "@core/exercises/exercise.service";
 import type { Lockable } from "@core/exercises/share";
 import { MachineService } from "@core/machine/machine.service";
 import { Globals } from "@core/services/globals/globals.service";
+import { SoundService } from "@core/services/sound/sound.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { ModalService } from "@shared/directives/bootstrap/modal.directive";
 import { ModalDismissDirective } from "../../../__shared/directives/bootstrap/modal.directive";
@@ -22,7 +23,7 @@ const CONFIRM_MODAL = "configConfirmModal";
 @Component({
   selector: "view-config",
   templateUrl: "./config.view.html",
-  styleUrls: [],
+  styleUrls: ["./config.view.scss"],
   imports: [
     CardDirective,
     CardWidgetDirective,
@@ -43,6 +44,7 @@ export class ConfigView {
   private machine = inject(MachineService);
   private modals = inject(ModalService);
   private exercises = inject(ExerciseService);
+  private soundService = inject(SoundService);
 
   /** The options the exercise open in the editor locks (EDU-07): shown, but they cannot change */
   public readonly lock = signal(this.exercises.currentLock());
@@ -66,12 +68,35 @@ export class ConfigView {
   public multiviewConfiguration!: TypeMultiviewConfiguration;
   public diagramHistoryConfiguration = 0;
 
+  /** The sounds: they are saved at once (not with the form), so that they can be tried */
+  public readonly sound = computed(() => this.config.value().sound);
+
+  public setSound(change: Partial<SoundConfig>, preview = false): void {
+    this.config.update({ sound: { ...this.sound(), ...change } });
+    if (preview || change.enabled === true) {
+      this.soundService.unlock();
+      this.soundService.event("load");
+    }
+  }
+
+  public previewSound(): void {
+    this.soundService.preview();
+  }
+
   /** What the user asked to save while the confirmation is open */
   private pending: ThumderConfig | null = null;
 
   constructor() {
-    // The saved configuration (validated: with the values adjusted to their limits) fills the form again
-    effect(() => this.fill(this.config.value()));
+    // The saved configuration (validated: with the values adjusted to their limits) fills the form again; the sounds and
+    // the floating windows are saved apart, and changing them does not undo what the form has not saved yet
+    const formPart = computed(() => {
+      const { sound: _sound, windows: _windows, ...rest } = this.config.value();
+      return JSON.stringify(rest);
+    });
+    effect(() => {
+      formPart();
+      untracked(() => this.fill(this.config.value()));
+    });
   }
 
   private fill(config: ThumderConfig): void {
@@ -95,6 +120,9 @@ export class ConfigView {
       autoSave: this.autoSaveConfiguration,
       multiview: this.multiviewConfiguration,
       diagramHistory: this.diagramHistoryConfiguration,
+      // Not in the form: the floating windows of the multiview and the sounds (saved at once) stay as they are
+      windows: this.config.value().windows,
+      sound: this.config.value().sound,
     });
   }
 

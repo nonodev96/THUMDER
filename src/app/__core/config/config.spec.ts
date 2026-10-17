@@ -7,6 +7,13 @@ describe("validateConfig", () => {
     for (const value of [null, undefined, 3, "x", [], {}]) expect(validateConfig(value)).toEqual(defaultConfig());
   });
 
+  it("keeps the sounds valid: on by default, and a volume between 0 and 100", () => {
+    expect(defaultConfig().sound).toEqual({ enabled: true, volume: 60, stages: true });
+    expect(validateConfig({ sound: { enabled: false, volume: 140, stages: "no" } }).sound).toEqual({ enabled: false, volume: 100, stages: true });
+    expect(validateConfig({ sound: { volume: -3 } }).sound.volume).toBe(0);
+    expect(validateConfig({ sound: "loud" }).sound).toEqual(defaultConfig().sound);
+  });
+
   it("adjusts the values out of range to the limits of WinDLX", () => {
     const config = validateConfig({
       floatingPoint: { addition: { count: 12, delay: 0 }, multiplication: { count: "3", delay: 99 }, division: { count: -1, delay: "x" } },

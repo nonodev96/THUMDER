@@ -833,3 +833,10 @@ body .main-header .navbar-nav {
     text-decoration: underline;
   }
 }
+
+// The muted notes of an option chosen in a menu (the speed: «(250 ms)») keep the contrast on its background
+body .dropdown-item.active .text-muted,
+body .dropdown-item:active .text-muted {
+  color: inherit !important;
+  opacity: 0.85;
+}

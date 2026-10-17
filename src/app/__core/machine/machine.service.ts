@@ -44,6 +44,7 @@ import { logger } from "@core/logger/logger";
 import { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
 import { FileSystemService } from "@core/services/file-system/file-system.service";
 import { LocalSimulatorService } from "@core/services/simulator/local-simulator.service";
+import { SoundService } from "@core/services/sound/sound.service";
 import { ToastService } from "@core/services/toast/toast.service";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -138,6 +139,7 @@ export class MachineService {
   private fileSystem = inject(FileSystemService);
   private translate = inject(TranslateService);
   private toast = inject(ToastService);
+  private sound = inject(SoundService);
 
   public floatingPointStageConfiguration: TypeFloatingPointStageConfiguration;
   public memorySize: number;
@@ -305,6 +307,7 @@ export class MachineService {
       this.enabledForwarding = config.forwarding;
       this.diagram.limit = config.diagramHistory;
       this.emptyState({ keepJournal: options.again === true });
+      this.sound.resetPipeline();
 
       // The configuration first: the simulator assembles the program for its memory size (a program that does not fit
       // is an assembly error, not data out of the memory of the page)
@@ -314,6 +317,7 @@ export class MachineService {
       this.loadsSignal.update((loads) => loads + 1);
 
       // The program loaded is in the status bar; only the errors get a toast (UI-10)
+      if (!options.again) this.sound.event(this.canSimulate ? "load" : "errors");
       if (!options.again && !this.canSimulate) await this.toastAssemblyErrors();
       return true;
     } catch (error) {
@@ -359,6 +363,8 @@ export class MachineService {
    */
   public async clear(): Promise<void> {
     this.writeToLog("CLEAR");
+    this.sound.event("clear");
+    this.sound.resetPipeline();
     this.stopRunning();
     await this.localRun?.catch(() => undefined);
     this.memory.reset();
@@ -468,6 +474,7 @@ export class MachineService {
     const target = this.cyclesSignal() - 1;
     if (target < 0 || this.isRunning || this.lastInit === null) return;
     const journal = this.journal.filter((entry) => entry.at <= target);
+    this.sound.event("back");
     this.replaying = true;
     this.setQuiet(true);
     try {
@@ -616,12 +623,18 @@ export class MachineService {
       this.processStep(step);
       return;
     }
+    // The sounds of the cycle: the stages the instructions enter (only followed when running without drawing)
+    if (step.pipeline) this.sound.cycle(step.pipeline, this.isRunning ? this.config.value().delay : 300, this.quiet);
     if (step.waitingForInput) {
       // The program waits for a line (trap 3): stop until it is typed in the console
       this.stopRunning();
       this.waitingForInputSignal.set(true);
+      this.sound.event("input");
     }
-    if (step.error) await this.toastProgramError(step.error);
+    if (step.error) {
+      this.sound.event("error");
+      await this.toastProgramError(step.error);
+    }
 
     const complete = step.isComplete ?? false;
     // A breakpoint stops the simulation when its instruction is fetched (not again while it waits in IF)
@@ -635,12 +648,14 @@ export class MachineService {
     if (complete) {
       this.canSimulateSignal.set(false);
       this.stopRunning();
+      this.sound.event("complete");
       this.processStep(step);
       await this.toastMessage("TOAST.TITLE_END_SIMULATION", "TOAST.MESSAGE_END_SIMULATION");
       return;
     }
     if (breakpoint) {
       this.stopRunning();
+      this.sound.event("breakpoint");
       this.hitSignal.set(step.hit ?? { kind: "line", line: step.line, stage: "IF" });
       await this.toastBreakpoint(step.hit ?? { kind: "line", line: step.line, stage: "IF" });
     }

@@ -9,6 +9,7 @@ import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
 import { EditorStateService } from "@core/services/editor/editor-state.service";
 import { SidebarService } from "@core/services/layout/sidebar.service";
+import { SoundService } from "@core/services/sound/sound.service";
 import { type ThemeChoice, ThemeService } from "@core/services/theme/theme.service";
 import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -29,6 +30,7 @@ export class AuthNavbarComponent {
   theme = inject(ThemeService);
   private toast = inject(ToastService);
   private editorState = inject(EditorStateService);
+  public sound = inject(SoundService);
   private translate = inject(TranslateService);
 
   public readonly themes: { choice: ThemeChoice; label: string; icon: string }[] = [
@@ -102,6 +104,17 @@ export class AuthNavbarComponent {
         this.translate.instant("SIMULATION.LOADED_UNSAVED_TITLE"),
         TOAST.warning,
       );
+    }
+  }
+
+  /** The sounds of the simulation on or off (the rest of their configuration stays) */
+  public toggleSound(): void {
+    const sound = this.config.value().sound;
+    this.config.update({ sound: { ...sound, enabled: !sound.enabled } });
+    // Turned on: a short chord says it sounds
+    if (!sound.enabled) {
+      this.sound.unlock();
+      this.sound.event("load");
     }
   }
 

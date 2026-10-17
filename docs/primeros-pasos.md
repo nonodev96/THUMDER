@@ -39,9 +39,10 @@ La simulación se para sola al terminar, en un punto de ruptura, en un error o c
 - **Estadísticas**: ciclos, CPI, detenciones por tipo y la comparación con y sin adelantamiento.
 - **Ruta de datos**: el camino de los datos en el ciclo actual.
 - **Vista múltiple**: varias vistas a la vez; cada una puede salir como ventana flotante.
+- **Sonido**: cada etapa del pipeline tiene su nota (un ciclo con el pipeline lleno suena como un acorde), una detención suena como un golpe sordo y una instrucción anulada por un salto, como algo que cae. Se quita o se ajusta en **Configuración → Sonido** y en el menú de la velocidad.
 
 ## 5. Sigue aprendiendo
 
 - **Ejercicios**: preguntas sobre un programa que THUMDER comprueba con la propia simulación.
-- **Configuración**: el adelantamiento, las unidades de coma flotante, el tamaño de la memoria y la velocidad.
+- **Configuración**: el adelantamiento, las unidades de coma flotante, el tamaño de la memoria, la velocidad y el sonido.
 - La parte **La arquitectura DLX** de esta documentación explica las instrucciones, sus códigos y el pipeline.

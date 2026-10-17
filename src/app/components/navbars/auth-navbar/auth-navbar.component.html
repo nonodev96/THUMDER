@@ -103,6 +103,11 @@
                 {{ speed.label | translate }} <span class="text-muted small">({{ speed.delay }} ms)</span>
               </button>
             }
+            <div class="dropdown-divider" role="separator"></div>
+            <button type="button" class="dropdown-item" id="soundToggle" (click)="toggleSound()" [attr.aria-pressed]="config.value().sound.enabled">
+              <i class="fas fa-fw" [class.fa-volume-up]="config.value().sound.enabled" [class.fa-volume-mute]="!config.value().sound.enabled" aria-hidden="true"></i>
+              {{ 'SOUND.NAME' | translate }} <span class="text-muted small">({{ (config.value().sound.enabled ? 'SOUND.ON' : 'SOUND.OFF') | translate }})</span>
+            </button>
           </div>
         </div>
         @if (machine.state.quiet()) {
@@ -131,6 +136,10 @@
             <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i> {{ speed.label | translate }}
           </button>
         }
+        <button type="button" class="dropdown-item" id="moreSoundToggle" (click)="toggleSound()" [attr.aria-pressed]="config.value().sound.enabled">
+          <i class="fas fa-fw" [class.fa-volume-up]="config.value().sound.enabled" [class.fa-volume-mute]="!config.value().sound.enabled" aria-hidden="true"></i>
+          {{ 'SOUND.NAME' | translate }} <span class="text-muted small">({{ (config.value().sound.enabled ? 'SOUND.ON' : 'SOUND.OFF') | translate }})</span>
+        </button>
         <div class="dropdown-divider" role="separator"></div>
         <p class="dropdown-header" aria-hidden="true">{{ 'THEME.TITLE' | translate }}</p>
         @for (option of themes; track option.choice) {

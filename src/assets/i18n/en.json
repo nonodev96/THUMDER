@@ -850,5 +850,21 @@
     "ANALYTICS_HELP": "Google Analytics for Firebase counts, in aggregate, the visits and the views used, to know what to improve. It uses the cookies _ga and _ga_<id> (up to 2 years) and Google may process the data in the United States.",
     "ERRORS": "Error reports",
     "ERRORS_HELP": "If THUMDER fails, it sends the message and the stack of the error, the view, the version, the browser and the language, without your account or your files, so that it can be fixed. It uses no cookies."
+  },
+  "SOUND": {
+    "NAME": "Sound",
+    "ON": "on",
+    "OFF": "off",
+    "SECTION": "Sound",
+    "HELP": "The simulation sounds: each stage of the pipeline has its note, and the stalls, the taken branches and the events have their own sound. You can hear how the program goes on without looking.",
+    "ENABLED": "Turn the sound on",
+    "STAGES": "A note for each stage an instruction enters",
+    "STAGES_HELP": "Without it only the events sound: program loaded, errors, breakpoint, console input and end of the program. When the cycles go very fast, one in a few sounds.",
+    "VOLUME": "Volume",
+    "PREVIEW": "Try the sound",
+    "LEGEND_STAGES": "Stages: IF sounds G, ID C, EX E, MEM G and WB a high C with a little bell when the instruction ends; the floating point units, A, D and a high A. With the pipeline full, each cycle is a chord from low to high.",
+    "LEGEND_PROBLEMS": "Problems: a stalled instruction sounds like a dull knock, and one aborted by a taken branch, like something falling.",
+    "LEGEND_EVENTS": "Events: three notes going up when loading, two clashing notes if there are errors, two bells at a breakpoint, a question when the program waits for a line and a chord at the end.",
+    "NOW": "The changes of the sound are saved at once; it is also turned on and off from the menu of the speed in the navbar."
   }
 }

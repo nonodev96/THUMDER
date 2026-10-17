@@ -80,6 +80,35 @@
       </div>
     </fieldset>
 
+    <fieldset class="mb-4" id="soundSettings">
+      <legend class="h5">{{ 'SOUND.SECTION' | translate }}</legend>
+      <p class="small text-muted mb-2">{{ 'SOUND.HELP' | translate }}</p>
+      <div class="custom-control custom-switch mb-2">
+        <input type="checkbox" class="custom-control-input" id="soundEnabled" [checked]="sound().enabled" (change)="setSound({ enabled: $any($event.target).checked })">
+        <label class="custom-control-label" for="soundEnabled">{{ 'SOUND.ENABLED' | translate }}</label>
+      </div>
+      <div class="custom-control custom-switch mb-2">
+        <input type="checkbox" class="custom-control-input" id="soundStages" [checked]="sound().stages" [disabled]="!sound().enabled"
+          (change)="setSound({ stages: $any($event.target).checked })" aria-describedby="soundStagesHelp">
+        <label class="custom-control-label" for="soundStages">{{ 'SOUND.STAGES' | translate }}</label>
+        <small id="soundStagesHelp" class="form-text text-muted">{{ 'SOUND.STAGES_HELP' | translate }}</small>
+      </div>
+      <div class="form-group sound-volume">
+        <label for="soundVolume">{{ 'SOUND.VOLUME' | translate }}: <strong>{{ sound().volume }} %</strong></label>
+        <input type="range" class="custom-range" id="soundVolume" min="0" max="100" step="5" [value]="sound().volume" [disabled]="!sound().enabled"
+          (change)="setSound({ volume: +$any($event.target).value }, true)">
+      </div>
+      <button type="button" class="btn btn-outline-primary btn-sm" id="soundPreview" [disabled]="!sound().enabled" (click)="previewSound()">
+        <i class="fas fa-play" aria-hidden="true"></i> {{ 'SOUND.PREVIEW' | translate }}
+      </button>
+      <ul class="sound-legend small mt-3 mb-0">
+        <li>{{ 'SOUND.LEGEND_STAGES' | translate }}</li>
+        <li>{{ 'SOUND.LEGEND_PROBLEMS' | translate }}</li>
+        <li>{{ 'SOUND.LEGEND_EVENTS' | translate }}</li>
+      </ul>
+      <small class="form-text text-muted">{{ 'SOUND.NOW' | translate }}</small>
+    </fieldset>
+
     <fieldset class="mb-4">
       <legend class="h5">{{ 'CONFIG.SECTION_EDITOR' | translate }}</legend>
       <div class="form-check">

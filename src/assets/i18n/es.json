@@ -850,5 +850,21 @@
     "ANALYTICS_HELP": "Google Analytics para Firebase cuenta de forma agregada las visitas y las vistas que se usan, para saber qué mejorar. Usa las cookies _ga y _ga_<id> (hasta 2 años) y Google puede tratar los datos en Estados Unidos.",
     "ERRORS": "Informes de errores",
     "ERRORS_HELP": "Si THUMDER falla, envía el mensaje y la traza del error, la vista, la versión, el navegador y el idioma, sin tu cuenta ni tus ficheros, para poder corregirlo. No usa cookies."
+  },
+  "SOUND": {
+    "NAME": "Sonido",
+    "ON": "activado",
+    "OFF": "desactivado",
+    "SECTION": "Sonido",
+    "HELP": "La simulación suena: cada etapa del pipeline tiene su nota, y las detenciones, los saltos tomados y los avisos tienen su propio sonido. Así se oye cómo avanza el programa sin mirar.",
+    "ENABLED": "Activar el sonido",
+    "STAGES": "Una nota por cada etapa a la que entra una instrucción",
+    "STAGES_HELP": "Sin esto solo suenan los avisos: programa cargado, errores, punto de ruptura, entrada por la consola y fin del programa. Cuando los ciclos van muy rápido, suena uno de cada pocos.",
+    "VOLUME": "Volumen",
+    "PREVIEW": "Probar el sonido",
+    "LEGEND_STAGES": "Etapas: IF suena sol, ID do, EX mi, MEM sol y WB do agudo con una campanilla cuando la instrucción termina; las unidades de coma flotante, la, re y la agudo. Con el pipeline lleno, cada ciclo es un acorde de abajo arriba.",
+    "LEGEND_PROBLEMS": "Problemas: una instrucción detenida suena como un golpe sordo, y una anulada por un salto tomado, como algo que cae.",
+    "LEGEND_EVENTS": "Avisos: tres notas que suben al cargar, dos notas que chocan si hay errores, dos campanas en un punto de ruptura, una pregunta cuando el programa espera una línea y un acorde al terminar.",
+    "NOW": "Los cambios del sonido se guardan al momento; también se activa y desactiva desde el menú de la velocidad de la barra superior."
   }
 }

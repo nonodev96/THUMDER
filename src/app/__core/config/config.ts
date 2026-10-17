@@ -27,6 +27,16 @@ export type ThumderConfig = {
   windows: Record<string, TypeWindowGeometry>;
   /** How many cycles the cycle clock diagram keeps (WinDLX: the history of the diagram); the oldest ones go */
   diagramHistory: number;
+  /** The sounds of the simulation (SoundService) */
+  sound: SoundConfig;
+};
+
+export type SoundConfig = {
+  enabled: boolean;
+  /** 0 to 100 */
+  volume: number;
+  /** A note each time an instruction enters a stage of the pipeline; without it, only the events (load, end, errors...) */
+  stages: boolean;
 };
 
 export const CONFIG_KEY = "thumder_configuration";
@@ -41,6 +51,7 @@ export const LIMITS = {
   diagramHistory: { min: 100, max: 100000 },
   windowPlace: { min: -10000, max: 100000 },
   windowSize: { min: 120, max: 10000 },
+  volume: { min: 0, max: 100 },
 } as const;
 
 /** The cycles the diagram keeps by default: enough for the examples, and light for long runs */
@@ -72,6 +83,7 @@ export function defaultConfig(): ThumderConfig {
     multiview: structuredClone(DEFAULT_MULTIVIEW_CONFIGURATION),
     windows: {},
     diagramHistory: DEFAULT_DIAGRAM_HISTORY,
+    sound: { enabled: true, volume: 60, stages: true },
   };
 }
 
@@ -149,6 +161,17 @@ export function validateConfig(value: unknown): ThumderConfig {
     multiview,
     windows: validateWindows(raw.windows, multiview),
     diagramHistory: clamp(raw.diagramHistory, LIMITS.diagramHistory, defaults.diagramHistory),
+    sound: validateSound(raw.sound),
+  };
+}
+
+function validateSound(value: unknown): SoundConfig {
+  const defaults = defaultConfig().sound;
+  const raw = isObject(value) ? value : {};
+  return {
+    enabled: typeof raw.enabled === "boolean" ? raw.enabled : defaults.enabled,
+    volume: clamp(raw.volume, LIMITS.volume, defaults.volume),
+    stages: typeof raw.stages === "boolean" ? raw.stages : defaults.stages,
   };
 }
 

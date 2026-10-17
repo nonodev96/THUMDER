@@ -1,0 +1,13 @@
+.sound-volume {
+  max-width: 24rem;
+  margin-top: 0.5rem;
+}
+
+.sound-legend {
+  padding-left: 1.1rem;
+  color: var(--thumder-text-2);
+
+  li + li {
+    margin-top: 0.2rem;
+  }
+}
