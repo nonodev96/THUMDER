@@ -1,3 +1,11 @@
+## 1.9.0 (2026-10-17)
+
+### Nuevas funciones
+
+* instructions explained in the code view, privacy settings and legal pages, documentation in three parts, and fewer dependencies ([72a3677](https://github.com/nonodev96/THUMDER/commit/72a3677))
+
+
+
 ## 1.8.0 (2026-10-16)
 
 ### Nuevas funciones
