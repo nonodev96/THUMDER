@@ -1,3 +1,11 @@
+## 1.11.0 (2026-10-19)
+
+### Nuevas funciones
+
+* an animated datapath, a pipeline whose instructions travel from stage to stage, a new cycle clock diagram and new editors of registers and memory ([733e9dd](https://github.com/nonodev96/THUMDER/commit/733e9dd))
+
+
+
 ## 1.10.0 (2026-10-17)
 
 ### Nuevas funciones
