@@ -1,6 +1,6 @@
 import { ViewportScroller } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { type AfterViewInit, Component, inject, type OnInit, Renderer2, ViewChild } from "@angular/core";
+import { type AfterViewInit, Component, inject, type OnInit, Renderer2, signal, ViewChild } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
 import { logger } from "@core/logger/logger";
@@ -10,6 +10,7 @@ import { TranslatePipe } from "@ngx-translate/core";
 import { type MarkdownComponent, MarkdownComponent as MarkdownComponent_1 } from "ngx-markdown";
 import { firstValueFrom } from "rxjs";
 import { CollapseDirective, CollapseToggleDirective } from "../../../__shared/directives/bootstrap/collapse.directive";
+import { withoutGitHubOnly } from "../../_auth/docs/docs.catalog";
 
 type LicenseInfo = { name: string; version: string; license: string; author: string; homepage: string; description: string };
 
@@ -29,6 +30,8 @@ export class AboutView implements OnInit, AfterViewInit {
   /** The dependencies and their licences (scripts/licenses.mjs writes them when the project is installed) */
   public dependenciesData: LicenseInfo[] = [];
   public devDependenciesData: LicenseInfo[] = [];
+  /** The README, without what only makes sense on GitHub (its badges) */
+  public readme = signal("");
 
   @ViewChild("markdownComponentID_README", { static: false })
   private markdownComponentID_README!: MarkdownComponent;
@@ -53,6 +56,11 @@ export class AboutView implements OnInit, AfterViewInit {
   }
 
   private async prepareData(): Promise<void> {
+    try {
+      this.readme.set(withoutGitHubOnly(await firstValueFrom(this.httpClient.get("assets/md/README.md", { responseType: "text" }))));
+    } catch (error) {
+      logger.warn(error);
+    }
     try {
       const licenses = await firstValueFrom(
         this.httpClient.get<{ dependencies: LicenseInfo[]; devDependencies: LicenseInfo[] }>("assets/licenses.json"),

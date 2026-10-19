@@ -9,6 +9,10 @@ export type DocPage = {
   /** Where it is in the repository */
   path: string;
   lang: "es" | "en";
+  /** A page that THUMDER draws itself, in the language of the application, instead of its Markdown file */
+  view?: "instruction-table";
+  /** The file the page is made from, for its link to GitHub (`path` if it has none) */
+  source?: string;
 };
 
 export type DocSection = { id: "use" | "dlx" | "dev"; title: string; description: string; icon: string; pages: DocPage[] };
@@ -55,7 +59,12 @@ export const DOC_SECTIONS: DocSection[] = [
       page("windlx", "docs/manual-simulador-dlx.md"),
       page("instruction-set", "src/assets/docs.md", "en"),
       page("opcodes", "src/assets/dlxmap.md", "en"),
-      page("instruction-table", "DLX-TABLE-Instructions.md", "en"),
+      // Made from the definitions of the engine: what THUMDER assembles and simulates
+      {
+        ...page("instruction-table", "DLX-TABLE-Instructions.md", "en"),
+        view: "instruction-table",
+        source: "src/app/__core/engine/isa.ts",
+      },
     ],
   },
   {
@@ -94,8 +103,8 @@ export function assetOf(path: string): string {
   if (path.startsWith("wiki/")) return `assets/${path}`;
   if (path.startsWith("docs/")) return `assets/${path}`;
   if (path.startsWith("src/assets/")) return path.slice("src/".length);
-  // The images of the root folder assets/ (angular.json copies its PNG files)
-  if (/^assets\/[^/]+\.png$/i.test(path)) return path;
+  // The images of the root folder assets/ and of its screenshots (angular.json copies their PNG files)
+  if (/^assets\/(screenshots\/)?[^/]+\.png$/i.test(path)) return path;
   if (!path.includes("/")) return `assets/md/${path}`;
   return `${REPOSITORY}${path}`;
 }
@@ -119,11 +128,19 @@ export function prepareMarkdown(markdown: string, page: DocPage): string {
     if (other) return `/auth/documentation?page=${other.id}${anchor ? `#${anchor}` : ""}`;
     return `${REPOSITORY}${path}${anchor ? `#${anchor}` : ""}`;
   };
-  return withoutTitle(markdown)
+  return withoutTitle(withoutGitHubOnly(markdown))
     .replace(/(!?)\[([^\]]*)\]\(([^)\s]+)((?:\s+"[^"]*")?)\)/g, (_, bang: string, text: string, target: string, title: string) => {
       return `${bang}[${text}](${link(target, bang === "!")}${title})`;
     })
     .replace(/(<img\b[^>]*\bsrc=")([^"]+)(")/gi, (_, start: string, target: string, end: string) => `${start}${link(target, true)}${end}`);
+}
+
+/**
+ * The text without what only makes sense on GitHub (the badges of the README, images of other sites that the Content
+ * Security Policy of THUMDER does not load): a block between `<!-- github-only -->` and `<!-- /github-only -->`
+ */
+export function withoutGitHubOnly(markdown: string): string {
+  return markdown.replace(/<!--\s*github-only\s*-->[\s\S]*?<!--\s*\/github-only\s*-->\s*/g, "");
 }
 
 /** The text without its first title (# Title, or Title and ===): the page shows its own */

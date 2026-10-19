@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, ViewChild } from "@angular/core";
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "@app/CONSTANTS";
 import type { TypeData, TypeDataRepresentation, TypeRegister, TypeRegisterControl, TypeRegisterToEdit } from "@app/Types";
 import { EditRegisterBinary32Component } from "@components/modals/edit-register-binary32/edit-register-binary32.component";
@@ -78,6 +78,16 @@ export class RegistersView {
   machine = inject(MachineService);
   private cdr = inject(ChangeDetectorRef);
   private editRequests = inject(EditRequestService);
+
+  /** The registers written in the last cycle: their rows are lit (what each instruction changed, at a glance) */
+  private readonly written = computed(
+    () => new Set((this.machine.state.cycle()?.registers ?? []).map((change) => String(change.register))),
+  );
+  public readonly controlRowClass = (name: string) => (this.written().has(name) ? "row-written" : "");
+  public readonly integerRowClass = (index: number) => (this.written().has(`R${index}`) ? "row-written" : "");
+  public readonly floatRowClass = (index: number) => (this.written().has(`F${index}`) ? "row-written" : "");
+  public readonly doubleRowClass = (index: number) =>
+    this.written().has(`F${index}`) || this.written().has(`F${index + 1}`) ? "row-written" : "";
 
   @ViewChild(EditRegisterBinary32Component)
   public editRegisterBinary32Component!: EditRegisterBinary32Component;

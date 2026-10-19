@@ -1,5 +1,17 @@
 import { HttpClient } from "@angular/common/http";
-import { ChangeDetectionStrategy, Component, computed, type ElementRef, effect, inject, signal, ViewChild } from "@angular/core";
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  type ElementRef,
+  effect,
+  Injector,
+  inject,
+  signal,
+  untracked,
+  ViewChild,
+} from "@angular/core";
 import { takeUntilDestroyed, toSignal } from "@angular/core/rxjs-interop";
 import { ActivatedRoute, Router, RouterLink } from "@angular/router";
 import { logger } from "@core/logger/logger";
@@ -17,6 +29,7 @@ import {
   sectionOf,
   slug,
 } from "./docs.catalog";
+import { InstructionTableComponent } from "./instruction-table/instruction-table.component";
 
 /**
  * The documentation: an index by parts (how to use THUMDER, the DLX architecture and how it is made) and one page at a
@@ -28,13 +41,14 @@ import {
   templateUrl: "./docs.view.html",
   styleUrls: ["./docs.view.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MarkdownComponent, TranslatePipe],
+  imports: [RouterLink, MarkdownComponent, TranslatePipe, InstructionTableComponent],
 })
 export class DocsView {
   private http = inject(HttpClient);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private translate = inject(TranslateService);
+  private injector = inject(Injector);
 
   @ViewChild("article") private article?: ElementRef<HTMLElement>;
 
@@ -71,8 +85,14 @@ export class DocsView {
     this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe((event) => this.lang.set(event.lang));
     effect(() => {
       const page = this.current();
-      if (page) void this.load(page);
+      if (page?.view) untracked(() => this.shown());
+      else if (page) void this.load(page);
     });
+  }
+
+  /** The page is in another language than the application (the pages that THUMDER draws are in its language) */
+  public foreign(page: DocPage): boolean {
+    return !page.view && page.lang !== this.lang();
   }
 
   private neighbour(step: number): DocPage | null {
@@ -93,6 +113,17 @@ export class DocsView {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  /** A page that THUMDER draws: its top is shown, unless the address names a part of it (?i=ADD) */
+  private shown(): void {
+    afterNextRender(
+      () => {
+        const { queryParamMap, fragment } = this.route.snapshot;
+        if (!queryParamMap.has("i") && !fragment) this.article?.nativeElement.scrollIntoView({ block: "start" });
+      },
+      { injector: this.injector },
+    );
   }
 
   /** The page is drawn: its headings get the ids of their links, and the section of the address is shown */

@@ -1,0 +1,15 @@
+@let current = page();
+<div class="content-header page-header">
+  <div class="container-fluid page-header-row">
+    <div class="page-header-text">
+      <h1 class="page-header-title">
+        <span class="page-header-icon" aria-hidden="true"><i class="fa-fw {{ current.icon }}"></i></span>
+        {{ current.title | translate }}
+      </h1>
+      @if (current.help) {
+        <p class="page-header-help">{{ current.help | translate }}</p>
+      }
+    </div>
+    <THUMDER-breadcrumb class="page-header-breadcrumb"></THUMDER-breadcrumb>
+  </div>
+</div>

@@ -309,7 +309,10 @@
     "DIAGRAM_LEGEND_STALL": "waits for another",
     "DIAGRAM_LEGEND_ABORTED": "aborted",
     "DIAGRAM_LEGEND_FORWARDING": "forwarding",
-    "DIAGRAM_LEGEND_CAUSE": "cause of the stall"
+    "DIAGRAM_LEGEND_CAUSE": "cause of the stall",
+    "WRITTEN_IN_CYCLE": "Written in the last cycle",
+    "MEMORY_WRITTEN": "Word written in the last cycle",
+    "MEMORY_READ": "Word read in the last cycle"
   },
   "TYPE_DATA": {
     "BYTE": "Byte",
@@ -437,7 +440,14 @@
       "CONFIG": "Config",
       "DEBUG": "Debug",
       "PAGES": "Pages",
-      "MORE_INFO": "More info"
+      "MORE_INFO": "More info",
+      "START_TITLE": "How to start",
+      "STEP_1": "Write or open a program",
+      "STEP_1_HELP": "In the editor, or one of the examples of the file manager.",
+      "STEP_2": "Load it in the simulator",
+      "STEP_2_HELP": "With «Load» (Shift+F5): THUMDER assembles it and tells you if it has errors.",
+      "STEP_3": "Run it cycle by cycle",
+      "STEP_3_HELP": "With «Step» (F10), and watch each instruction go through the pipeline."
     },
     "HOME": {
       "TITLE": "THUMDER",
@@ -483,7 +493,14 @@
     "CLEARED": "The memory, the code and the registers are zero. Load the program to simulate again.",
     "CLEARED_TITLE": "Machine reset",
     "LOADED_UNSAVED_TITLE": "Changes not saved",
-    "LOADED_UNSAVED": "The saved version of the file was loaded. The editor has changes not saved: save (Ctrl+S) and load again to simulate them."
+    "LOADED_UNSAVED": "The saved version of the file was loaded. The editor has changes not saved: save (Ctrl+S) and load again to simulate them.",
+    "SHORT_LOAD": "Load",
+    "SHORT_BACK": "Back",
+    "SHORT_RUN": "Run",
+    "SHORT_PAUSE": "Pause",
+    "SHORT_STEP": "Step",
+    "SHORT_END": "To end",
+    "SHORT_CLEAR": "Reset the machine"
   },
   "IO": {
     "TITLE": "Program console (DLX-I/O)",
@@ -712,7 +729,8 @@
     "LOADED": "Loaded",
     "PAUSED": "Paused",
     "CYCLE": "Cycle {{cycle}}",
-    "LINE": "Line {{line}}"
+    "LINE": "Line {{line}}",
+    "HINT_LOAD": "Press «Load» to simulate the program of the editor"
   },
   "NOT_FOUND": {
     "TITLE": "Error 404",
@@ -771,6 +789,78 @@
       "README": "The project (README)",
       "CONTRIBUTING": "How to contribute",
       "SIMULATOR": "The simulator inside"
+    },
+    "ITABLE": {
+      "INTRO": "The {{count}} instructions that THUMDER assembles and simulates, taken from the definitions of its engine. Search for one or filter by type, and tap one to see its syntax, what it does, the fields of its 32-bit word and what happens in each stage of the pipeline.",
+      "LIST": "The instructions",
+      "GO_TO_MAP": "Opcode map",
+      "SEARCH": "Search for an instruction",
+      "SEARCH_PLACEHOLDER": "ADD, load, jump, R31, 0x23…",
+      "FILTER": "Filter by type",
+      "ALL": "All",
+      "RESULTS": "{{count}} instructions",
+      "RESULTS_ONE": "1 instruction",
+      "NO_RESULTS": "No instruction matches the search.",
+      "CLEAR": "Clear the search and the filter",
+      "DETAILS": "Details of {{mnemonic}}",
+      "CATEGORIES": {
+        "ALU": "Arithmetic and logic",
+        "COMPARE": "Comparisons",
+        "SHIFT": "Shifts",
+        "MEMORY": "Loads and stores",
+        "CONTROL": "Branches and jumps",
+        "FLOAT": "Floating point",
+        "CONVERT": "Conversions",
+        "MOVE": "Moves",
+        "OTHER": "Traps and others"
+      },
+      "CATEGORY_HELP": {
+        "ALU": "They add, subtract, multiply, divide or combine bit by bit two registers, or a register and a 16-bit immediate.",
+        "COMPARE": "They compare two integers and leave 1 or 0 in a register; followed by BEQZ or BNEZ, they make a conditional jump.",
+        "SHIFT": "They move the bits of a register left or right: logical (zeros come in) or arithmetic (the sign is copied).",
+        "MEMORY": "The only ones that use memory (in MEM): they read or write a byte, a half word, a word or a floating point number at the address base + displacement.",
+        "CONTROL": "They change the PC. They are decided in ID, and THUMDER predicts not taken: if the jump is taken, the instruction already fetched is aborted. JAL and JALR save the return address in R31.",
+        "FLOAT": "They work on the F registers in single or double precision (IEEE 754), in the floating point units, which take several cycles; the comparisons leave their result in FPSR.",
+        "CONVERT": "They change the type of a number (integer, single or double precision) inside the F registers.",
+        "MOVE": "They copy registers: between F registers, or between the integer and the floating point ones, without converting their bits.",
+        "OTHER": "The system calls (TRAP: end, read, write, printf…), NOP and RFE."
+      },
+      "SYNTAX": "Syntax",
+      "EXAMPLE": "Example",
+      "FORMULA": "What the example does",
+      "DOUBLES": "A double register is a pair: F0 names F0:F1, so its number has to be even.",
+      "OPCODE": "Opcode",
+      "FUNC": "Function code",
+      "UNIT": "Execution unit",
+      "UNITS": {
+        "INT": "intEX, the integer unit (1 cycle)",
+        "FADD": "faddEX, the floating point addition unit (the cycles of the configuration)",
+        "FMUL": "fmultEX, the multiplication unit (the cycles of the configuration)",
+        "FDIV": "fdivEX, the division unit (the cycles of the configuration)"
+      },
+      "READS": "Reads",
+      "WRITES": "Writes",
+      "NONE": "none",
+      "WORD": "The word of the example",
+      "FIELDS": "The fields of the word, from bit 31 to 0",
+      "STAGES": "In each stage of the pipeline",
+      "STAGES_HELP": "With the example at address {{address}}, the first one of the program.",
+      "SERVICES": "The services of the trap",
+      "LINK": "Link to {{mnemonic}}",
+      "MAP": "Opcode map",
+      "MAP_HELP": "Each 6-bit code in an 8 × 8 table: the row gives its 3 high bits and the column the 3 low ones. Tap an instruction to see its details; those that the search or the filter leave out are grey.",
+      "MAP_OPCODE": "Opcode (bits 31–26)",
+      "MAP_OPCODE_HELP": "The I and J type instructions. The codes 0x00 and 0x01 are the R and F types, whose operation is in the function code.",
+      "MAP_R": "R type: function code (bits 5–0)",
+      "MAP_R_HELP": "With opcode 0x00 (SPECIAL): the operations between integer registers.",
+      "MAP_F": "F type: function code (bits 5–0)",
+      "MAP_F_HELP": "With opcode 0x01 (FPARITH): the floating point operations.",
+      "MAP_CORNER_OPCODE": "Rows: bits 31 to 29; columns: bits 28 to 26",
+      "MAP_CORNER_FUNC": "Rows: bits 5 to 3; columns: bits 2 to 0",
+      "MAP_OPENS_R": "see the function codes of the R type",
+      "MAP_OPENS_F": "see the function codes of the F type",
+      "FREE": "free",
+      "UNSIGNED_NOTE": "The unsigned comparisons (SEQU… SGEU and SEQUI… SGEUI) use codes that WinDLX leaves free."
     }
   },
   "EDIT": {
@@ -784,7 +874,9 @@
   },
   "MULTIVIEW": {
     "FLOAT": "Float as a window (move it by its title and resize it from its edges; Alt+arrows move it and Alt+Shift+arrows resize it)",
-    "DOCK": "Put the window back in its column"
+    "DOCK": "Put the window back in its column",
+    "CHOOSE": "The views shown",
+    "NONE": "Choose above the views you want to see at once. The bar at the bottom runs the simulation cycle by cycle."
   },
   "IEEE": {
     "TITLE": "IEEE 754: floating point numbers",
@@ -987,5 +1079,24 @@
     "LEGEND_EDITED": "Bytes of the item",
     "GRID_HELP": "DLX is big-endian: the byte at the lowest address is the most significant.",
     "EDIT_ROW": "Edit the memory at {{address}}"
+  },
+  "PAGE_HELP": {
+    "HOME": "Write a DLX program, load it and watch it go through the pipeline cycle by cycle.",
+    "PIPELINE": "Which instruction is in each stage and how it moves to the next one with each cycle.",
+    "CYCLE_CLOCK_DIAGRAM": "The history of the pipeline: the stage of each instruction in each cycle, and why it stalled.",
+    "REGISTERS": "The control registers, the integer ones R0–R31 and the floating point ones F0–F31.",
+    "MEMORY": "Each word of the memory, as bytes, integers, floating point or instructions.",
+    "CODE": "The machine code of the program: where each instruction is and what it does.",
+    "STATISTICS": "Cycles, CPI and stalls: where the time goes and how to avoid it.",
+    "DATAPATH": "Where the data goes in this cycle: the PC, the registers, the ALU, the memory and the forwarding.",
+    "EXERCISES": "Questions about a program that THUMDER checks with the simulation itself.",
+    "FILE_MANAGER": "Your programs and the examples: open them, put them in folders and share them.",
+    "EDITOR": "Write the program in DLX assembler and load it to simulate it.",
+    "MULTIVIEW": "Several views at once, to follow the simulation from every angle.",
+    "CALCULATOR": "Convert between binary, hexadecimal, decimal and IEEE 754 floating point.",
+    "DOCUMENTATION": "How to use THUMDER and how the DLX processor works.",
+    "CONFIG": "Forwarding, the floating point units, the memory, the speed and the sound.",
+    "LOGGER": "Everything that happened in the simulation, message by message.",
+    "PROFILE": "Your account and the synchronisation of your files."
   }
 }

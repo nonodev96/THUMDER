@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assetOf, DOC_PAGES, DOC_SECTIONS, prepareMarkdown, RAW, REPOSITORY, resolvePath, slug, withoutTitle } from "./docs.catalog";
+import { assetOf, DOC_PAGES, DOC_SECTIONS, prepareMarkdown, RAW, REPOSITORY, resolvePath, slug, withoutGitHubOnly, withoutTitle } from "./docs.catalog";
 
 describe("the documentation", () => {
   const simulator = DOC_PAGES.find((page) => page.id === "simulator")!;
@@ -22,6 +22,7 @@ describe("the documentation", () => {
     expect(assetOf("CONTRIBUTING.md")).toBe("assets/md/CONTRIBUTING.md");
     expect(assetOf("scripts/changelog.mjs")).toBe(`${REPOSITORY}scripts/changelog.mjs`);
     expect(assetOf("assets/favicon.256x256.png")).toBe("assets/favicon.256x256.png");
+    expect(assetOf("assets/screenshots/pipeline.png")).toBe("assets/screenshots/pipeline.png");
   });
 
   it("makes the links between pages open them in THUMDER, and the images point to the build", () => {
@@ -51,5 +52,13 @@ describe("the documentation", () => {
   it("gives the headings the ids of GitHub", () => {
     expect(slug("Notes/Assumptions")).toBe("notesassumptions");
     expect(slug("1. Introducción al simulador WinDLX")).toBe("1-introducción-al-simulador-windlx");
+  });
+});
+
+describe("withoutGitHubOnly", () => {
+  it("removes what only makes sense on GitHub (the badges of the README)", () => {
+    const markdown = "# T\n\n<!-- github-only -->\n<p><img src=\"https://img.shields.io/x\"/></p>\n<!-- /github-only -->\n\nText";
+    expect(withoutGitHubOnly(markdown)).toBe("# T\n\nText");
+    expect(withoutGitHubOnly("Text")).toBe("Text");
   });
 });

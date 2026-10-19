@@ -1,0 +1,116 @@
+// The footer of a wide screen (the status bar of the simulation, the legal texts and the version) and the bar at the
+// bottom of a phone (the state and the controls of the simulation)
+
+.thumder-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.thumder-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.85rem;
+  min-width: 0;
+}
+
+.thumder-status-item {
+  white-space: nowrap;
+  color: var(--thumder-text-2);
+
+  i {
+    color: var(--thumder-muted);
+  }
+}
+
+// The class and the attribute of the component win over the colour of the inline code of theme.scss
+.thumder-status-instruction {
+  padding: 0.05rem 0.45rem;
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+  color: var(--thumder-primary-text);
+  font-size: 0.85rem;
+}
+
+.thumder-footer-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.thumder-footer-debug {
+  font-size: 0.75rem;
+}
+
+.thumder-footer-version {
+  color: var(--thumder-muted);
+}
+
+// ─── The bar of a phone ──────────────────────────────────────────────────────────────────────────────────────────────
+
+.thumder-dock {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1035;
+  padding: 0.2rem 0.5rem calc(0.25rem + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--thumder-border);
+  background-color: color-mix(in srgb, var(--thumder-surface) 94%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.12);
+  transition: transform 0.2s ease;
+
+  // The keyboard is open
+  &--hidden {
+    transform: translateY(110%);
+  }
+}
+
+.thumder-dock-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  height: 1.4rem;
+  padding: 0 0.15rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  color: var(--thumder-text-2);
+
+  .badge {
+    flex: 0 0 auto;
+  }
+}
+
+.thumder-dock-cycle {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+.thumder-dock-instruction {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--thumder-primary-text);
+  font-size: 0.78rem;
+}
+
+.thumder-dock-hint {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--thumder-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumder-dock {
+    transition: none;
+  }
+}

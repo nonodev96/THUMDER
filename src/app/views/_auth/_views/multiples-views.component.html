@@ -1,4 +1,19 @@
 <div class="multiview" #desk [style.min-height.px]="height()">
+  <!-- A phone: the chips choose the views shown -->
+  @if (!wide()) {
+    <div class="multiview-chips" role="group" [attr.aria-label]="'MULTIVIEW.CHOOSE' | translate">
+      @for (view of views(); track view.name) {
+        <button type="button" class="multiview-chip" [class.multiview-chip--on]="phoneShown().includes(view.name)"
+          [attr.aria-pressed]="phoneShown().includes(view.name)" [attr.data-view]="view.name" (click)="togglePhone(view.name)">
+          <i class="fa-fw {{ view.icon }}" aria-hidden="true"></i> {{ 'NAVIGATION.' + view.lang | translate }}
+        </button>
+      }
+    </div>
+    @if (phoneShown().length === 0) {
+      <p class="multiview-empty">{{ 'MULTIVIEW.NONE' | translate }}</p>
+    }
+  }
+
   <ng-container cdkDropListGroup>
     <div class="container-fluid">
       <div class="row">
@@ -9,10 +24,12 @@
           [cdkDropListData]="columns[0]"
           (cdkDropListDropped)="drop($event)">
           @for (component of columns[0]; track component) {
-            <div cdkDrag class="multiview-item">
+            @if (isShown(component)) {
+            <div cdkDrag class="multiview-item" [cdkDragDisabled]="!wide()">
               <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
               <ng-container [ngTemplateOutlet]="BigSwitch" [ngTemplateOutletContext]="{ component: component }"></ng-container>
             </div>
+            }
           }
         </div>
 
@@ -23,10 +40,12 @@
           [cdkDropListData]="columns[1]"
           (cdkDropListDropped)="drop($event)">
           @for (component of columns[1]; track component) {
-            <div cdkDrag class="multiview-item">
+            @if (isShown(component)) {
+            <div cdkDrag class="multiview-item" [cdkDragDisabled]="!wide()">
               <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
               <ng-container [ngTemplateOutlet]="BigSwitch" [ngTemplateOutletContext]="{ component: component }"></ng-container>
             </div>
+            }
           }
         </div>
       </div>
@@ -44,7 +63,7 @@
 
 <!-- The buttons of each window, in the header of its card: drag it in its column, and float it or put it back -->
 <ng-template #Controls let-component="component">
-  @if (!isFloating(component)) {
+  @if (!isFloating(component) && wide()) {
     <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
       <i class="fas fa-arrows-alt" aria-hidden="true"></i>
     </button>

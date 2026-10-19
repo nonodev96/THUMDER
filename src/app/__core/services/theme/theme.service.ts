@@ -39,6 +39,9 @@ export class ThemeService {
     this.document.documentElement.dataset.theme = dark ? "dark" : "light";
     // The scrollbars, the inputs and the menus of the browser
     this.document.documentElement.style.colorScheme = dark ? "dark" : "light";
+    // The bar of the system on a phone, with the colour of the navbar
+    for (const meta of this.document.querySelectorAll('meta[name="theme-color"]'))
+      meta.setAttribute("content", dark ? "#1e293b" : "#ffffff");
   }
 
   /** A colour of theme.scss that changes with the theme (`--thumder-<name>-light` or `-dark`), as a number for PixiJS */

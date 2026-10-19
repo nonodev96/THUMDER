@@ -1,0 +1,220 @@
+// The home page: the steps to start and the views by sections (tiles on a wide screen, a list on a phone)
+
+:host {
+  display: block;
+  padding-bottom: 1rem;
+}
+
+// ─── How to start ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.home-start {
+  margin: 0.5rem 0 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--thumder-radius);
+  color: var(--thumder-on-primary);
+  background-image: linear-gradient(135deg, var(--thumder-primary) 0%, var(--thumder-accent) 100%);
+  box-shadow: var(--thumder-shadow);
+}
+
+.home-start-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-step {
+  display: flex;
+  gap: 0.75rem;
+
+  p {
+    margin: 0.15rem 0 0.35rem;
+    font-size: 0.875rem;
+    opacity: 0.92;
+  }
+}
+
+.home-step-number {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-weight: 800;
+  color: var(--thumder-primary-text);
+  background-color: #ffffff;
+}
+
+// White on the gradient, with the class and the attribute of the component over the links of theme.scss
+.home-step-link {
+  display: inline-block;
+  margin-right: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: underline;
+
+  &:hover,
+  &:focus {
+    color: #ffffff;
+  }
+}
+
+// ─── The views ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.home-section {
+  margin-bottom: 1.5rem;
+}
+
+.home-section-title {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--thumder-muted);
+}
+
+.home-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// With the list, over the underline of the links in a list (styles.scss)
+.home-tiles li a.home-tile {
+  text-decoration: none;
+}
+
+.home-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  height: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  color: var(--thumder-text);
+  background-color: var(--thumder-surface);
+  box-shadow: var(--thumder-shadow);
+  text-decoration: none;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--thumder-text);
+    border-color: var(--thumder-primary);
+    box-shadow: var(--thumder-shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 2px;
+  }
+}
+
+.home-tile-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: var(--thumder-radius);
+  font-size: 1.1rem;
+  color: var(--thumder-on-primary);
+  background-image: linear-gradient(135deg, var(--thumder-primary) 0%, var(--thumder-accent) 100%);
+}
+
+.home-tile-text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.home-tile-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.home-tile-help {
+  font-size: 0.85rem;
+  color: var(--thumder-muted);
+}
+
+.home-tile-go {
+  align-self: center;
+  color: var(--thumder-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-tile {
+    transition: none;
+  }
+}
+
+// Phones: the steps one under the other and the views as a list
+@media (max-width: 767.98px) {
+  .home-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .home-start {
+    padding: 0.85rem 1rem;
+  }
+
+  .home-tiles {
+    grid-template-columns: 1fr;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--thumder-border);
+    border-radius: var(--thumder-radius);
+    box-shadow: var(--thumder-shadow);
+  }
+
+  .home-tile {
+    padding: 0.7rem 0.85rem;
+    border: 0;
+    border-bottom: 1px solid var(--thumder-border);
+    border-radius: 0;
+    box-shadow: none;
+
+    &:hover,
+    &:focus-visible {
+      transform: none;
+      box-shadow: none;
+      background-color: var(--thumder-surface-hover);
+    }
+  }
+
+  li:last-child .home-tile {
+    border-bottom: 0;
+  }
+
+  .home-tile-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 0.95rem;
+  }
+}

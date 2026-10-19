@@ -1,0 +1,17 @@
+{
+  "name": "THUMDER: simulador DLX",
+  "short_name": "THUMDER",
+  "description": "Simulador del procesador DLX con fines didácticos: el pipeline, el diagrama de ciclos, los registros y la memoria, ciclo a ciclo.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "categories": ["education", "developer"],
+  "icons": [
+    { "src": "assets/icons/favicon.256x256.png", "sizes": "256x256", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/favicon.512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

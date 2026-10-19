@@ -30,7 +30,7 @@
                 <a routerLink="." [queryParams]="{ page: item.id }" [class.active]="current()?.id === item.id"
                   [attr.aria-current]="current()?.id === item.id ? 'page' : null">
                   {{ item.title | translate }}
-                  @if (item.lang !== lang()) { <span class="docs-lang" [attr.title]="(item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate">{{ item.lang.toUpperCase() }}</span> }
+                  @if (foreign(item)) { <span class="docs-lang" [attr.title]="(item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate">{{ item.lang.toUpperCase() }}</span> }
                 </a>
               </li>
             }
@@ -49,16 +49,18 @@
           <p class="docs-page-section">{{ section()!.title | translate }}</p>
           <h1 class="docs-page-title">{{ item.title | translate }}</h1>
           <div class="docs-page-meta">
-            @if (item.lang !== lang()) {
+            @if (foreign(item)) {
               <span class="badge badge-secondary">{{ (item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate }}</span>
             }
-            <a [href]="repository + item.path" target="_blank" rel="noopener noreferrer">
+            <a [href]="repository + (item.source ?? item.path)" target="_blank" rel="noopener noreferrer">
               <i class="fab fa-github" aria-hidden="true"></i> {{ 'DOCS.ON_GITHUB' | translate }}
             </a>
           </div>
         </header>
 
-        @if (loading() && !content()) {
+        @if (item.view === 'instruction-table') {
+          <thumder-instruction-table class="docs-view"></thumder-instruction-table>
+        } @else if (loading() && !content()) {
           <p class="text-muted"><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ 'DOCS.LOADING' | translate }}</p>
         } @else if (failed()) {
           <p class="text-danger" role="alert">{{ 'DOCS.FAILED' | translate }}</p>

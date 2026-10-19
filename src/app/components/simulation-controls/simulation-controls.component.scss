@@ -1,0 +1,148 @@
+// The controls of the simulation: a group of icons in the navbar, or the bar of a phone (big buttons with their names)
+
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+.sim-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.1rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: 999px;
+  background-color: var(--thumder-surface-2);
+}
+
+.sim-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 999px;
+  color: var(--thumder-success-text);
+  background: transparent;
+
+  &:hover:not(:disabled) {
+    background-color: var(--thumder-surface-hover);
+  }
+
+  &:disabled {
+    color: var(--thumder-muted);
+    opacity: 0.55;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+
+  // A tap or a click does not leave the ring of the focus (theme.scss), only the keyboard
+  &:focus:not(:focus-visible) {
+    box-shadow: none;
+  }
+}
+
+// Run (or pause): the main button
+.sim-play:not(:disabled) {
+  color: var(--thumder-on-primary);
+  background-color: var(--thumder-success-bg);
+
+  &:hover {
+    background-color: var(--thumder-success-bg);
+    filter: brightness(1.08);
+  }
+}
+
+.sim-play--running:not(:disabled) {
+  background-color: var(--thumder-warning-bg);
+  color: var(--thumder-on-warning);
+}
+
+.sim-separator {
+  width: 1px;
+  height: 1.25rem;
+  margin: 0 0.15rem;
+  background-color: var(--thumder-border-strong);
+}
+
+// ─── The bar of a phone ──────────────────────────────────────────────────────────────────────────────────────────────
+
+:host(.dock) {
+  display: block;
+  width: 100%;
+
+  .sim-controls {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: end;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  .sim-control {
+    flex-direction: column;
+    gap: 0.15rem;
+    height: auto;
+    min-height: 3.1rem;
+    padding: 0.3rem 0.1rem 0.25rem;
+    border-radius: var(--thumder-radius);
+    font-size: 1.15rem;
+    color: var(--thumder-text-2);
+
+    &:disabled {
+      color: var(--thumder-muted);
+      opacity: 0.45;
+    }
+  }
+
+  .sim-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  // Run in the middle, round and raised over the bar
+  .sim-play {
+    justify-self: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    min-height: 0;
+    margin-top: -1rem;
+    border-radius: 50%;
+    font-size: 1.35rem;
+    box-shadow: var(--thumder-shadow-lg);
+    color: var(--thumder-on-primary);
+    background-color: var(--thumder-success-bg);
+
+    .sim-label {
+      position: absolute;
+      bottom: -0.9rem;
+      color: var(--thumder-text-2);
+    }
+
+    &:disabled {
+      background-color: var(--thumder-surface-hover);
+      color: var(--thumder-muted);
+      opacity: 1;
+    }
+  }
+
+  .sim-play {
+    position: relative;
+  }
+
+  .sim-play--running:not(:disabled) {
+    background-color: var(--thumder-warning-bg);
+    color: var(--thumder-on-warning);
+  }
+}

@@ -19,8 +19,8 @@ body .wrapper .content-wrapper {
   min-height: calc(100vh - (3.5rem + 1px));
 }
 
-// Where the footer is not fixed (see the end of this file) it goes under the content: the content leaves room for it
-@media (max-width: 575.98px), (max-height: 500px) {
+// Phones sideways (little height): the footer is not fixed (see the end of this file), it goes under the content
+@media (max-height: 500px) {
   body .wrapper .content-wrapper {
     min-height: calc(100vh - 2 * (3.5rem + 1px));
   }
@@ -360,6 +360,49 @@ span.underline-text:after {
   position: relative;
 }
 
+// A phone: the chips that choose the views shown, under the navbar while the page scrolls
+.multiview-chips {
+  position: sticky;
+  top: calc(3.5rem + 1px);
+  z-index: 5;
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 -0.5rem 0.5rem;
+  padding: 0.4rem 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background-color: var(--thumder-bg);
+}
+
+.multiview-chip {
+  flex: 0 0 auto;
+  min-height: 36px;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--thumder-text-2);
+  background-color: var(--thumder-surface);
+
+  &--on {
+    color: var(--thumder-on-primary);
+    background-color: var(--thumder-primary);
+    border-color: var(--thumder-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 2px;
+  }
+}
+
+.multiview-empty {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  color: var(--thumder-muted);
+}
+
 .thumder-window {
   position: absolute;
   display: flex;
@@ -652,14 +695,33 @@ body .main-header .navbar-nav {
   flex-wrap: nowrap;
 }
 
-// Phones: less space around the content and a smaller title
+// Phones: less space around the content (the name of the view is in the navbar: PageHeaderComponent)
 @media (max-width: 575.98px) {
-  body .content-header {
-    padding: 0.5rem 0.25rem;
+  // The header of a card in one line: the title is cut with «…» and its buttons stay on the right
+  body .card > .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
   }
 
-  body .content-header h1 {
-    font-size: 1.4rem;
+  body .card > .card-header > .card-title {
+    float: none;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body .card > .card-header > .card-tools {
+    float: none;
+    flex: 0 0 auto;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  body .content-header {
+    padding: 0.4rem 0.5rem 0.5rem;
   }
 
   body .content-wrapper > .content {
@@ -677,11 +739,6 @@ body .main-header .navbar-nav {
   body .main-header.navbar {
     padding-left: 0.25rem;
     padding-right: 0.25rem;
-  }
-
-  body .main-header .btn-group > .btn {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
   }
 
   // The tabs (registers, statistics) wrap as buttons instead of hiding the last ones behind a scroll (with :root, over
@@ -722,47 +779,112 @@ body .main-header .navbar-nav {
   body .content-wrapper markdown h3 {
     font-size: 1.15rem;
   }
+}
 
-  // The footer: the links in one line and smaller
-  body .main-footer {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.8rem;
+// Phones sideways (little height): a smaller header
+@media (max-height: 500px) {
+  body .content-header {
+    padding-top: 0.4rem;
+    padding-bottom: 0.25rem;
   }
 }
 
-// Phones, also sideways (little height): the title and where the page is, in one line
-@media (max-width: 575.98px), (max-height: 500px) {
-  body .content-header > .container-fluid > .row {
-    flex-wrap: nowrap;
-    align-items: baseline;
-    margin-bottom: 0 !important;
+// ─── The navbar ──────────────────────────────────────────────────────────────────────────────────────────────────────
+
+// The views, by sections, in columns (with body, over `.dropdown-menu` of Bootstrap, loaded after this file)
+body .navbar-pages {
+  min-width: 32rem;
+  padding: 0.5rem;
+
+  &.show {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 0.5rem;
   }
 
-  body .content-header > .container-fluid > .row > [class*="col-"] {
-    flex: 0 0 auto;
+  .dropdown-header {
+    padding: 0.4rem 0.75rem 0.2rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .dropdown-item {
+    border-radius: var(--thumder-radius);
+
+    i {
+      margin-right: 0.35rem;
+      color: var(--thumder-muted);
+    }
+
+    &.active i {
+      color: inherit;
+    }
+  }
+}
+
+// The names next to the icons of the navbar, only where there is room for all of them (the sidebar takes 250 px); below,
+// the icon and its name for the screen readers
+.main-header .navbar-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (min-width: 1500px) {
+  .main-header .navbar-label {
+    position: static;
     width: auto;
-    max-width: none;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    margin-left: 0.3rem;
   }
+}
 
-  body .content-header > .container-fluid > .row > [class*="col-"]:last-child {
+body .main-header .nav-link {
+  white-space: nowrap;
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 1.5rem;
+  margin: 0 0.35rem;
+  background-color: var(--thumder-border);
+}
+
+// The name of the view, on phones
+.navbar-page {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding-left: 0.15rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--thumder-text);
+
+  i {
+    color: var(--thumder-primary-text);
+  }
+}
+
+.navbar-page-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// On phones the left part takes what the right one leaves (the name of the view is cut with «…»)
+@media (max-width: 575.98px) {
+  body .main-header .navbar-nav-start {
     flex: 1 1 auto;
     min-width: 0;
-  }
-
-  body .content-header .breadcrumb {
-    justify-content: flex-end;
-    margin: 0;
-    padding: 0;
-    font-size: 0.85rem;
-  }
-
-  body .content-header {
-    padding-top: 0.5rem;
-    padding-bottom: 0.25rem;
-  }
-
-  body .content-header h1 {
-    font-size: 1.4rem;
   }
 }
 
@@ -772,9 +894,36 @@ body .main-header .navbar-nav {
   overflow-y: auto;
 }
 
-// Phones (and phones turned sideways, with little height): the footer scrolls with the page instead of taking a line of
-// the screen all the time
-@media (max-width: 575.98px), (max-height: 500px) {
+.navbar-more-version {
+  font-size: 0.72rem;
+}
+
+// ─── The bar at the bottom of a phone (FooterComponent) ──────────────────────────────────────────────────────────────
+// The content, the console of the program and the notifications leave it room
+
+:root {
+  --thumder-dock-height: 4.9rem;
+}
+
+body.thumder-has-dock {
+  .wrapper .content-wrapper {
+    min-height: calc(100vh - (3.5rem + 1px));
+    padding-bottom: calc(var(--thumder-dock-height) + env(safe-area-inset-bottom) + 0.5rem);
+  }
+
+  .thumder-dlx-io {
+    bottom: calc(var(--thumder-dock-height) + env(safe-area-inset-bottom) + 0.5rem);
+  }
+
+}
+
+// With :root, over the place of the notifications in theme.scss
+:root body.thumder-has-dock .thumder-toasts {
+  bottom: calc(var(--thumder-dock-height) + env(safe-area-inset-bottom) + 0.5rem);
+}
+
+// Phones sideways (little height): the footer scrolls with the page instead of taking a line of the screen all the time
+@media (max-height: 500px) {
   body.layout-footer-fixed .wrapper .main-footer {
     position: static;
   }
@@ -792,7 +941,7 @@ body .main-header .navbar-nav {
   }
 
   body .main-header .navbar-nav .nav-link,
-  body .main-header .btn-group > .btn {
+  body .main-header .sim-control {
     min-width: 40px;
     min-height: 40px;
   }

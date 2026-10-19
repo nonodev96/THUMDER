@@ -6,7 +6,15 @@
   <title>THUMDER</title>
   <base href="/">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"/>
+  <!-- Installed on a phone it opens as an app (manifest.webmanifest), with the colour of the theme in the bar of the system -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="THUMDER">
+  <link rel="apple-touch-icon" href="assets/icons/favicon.256x256.png">
   <!-- What the page may load (SEG-03): its own code, the services of Firebase and the images of GitHub and Google.
        Styles inline: Angular, Monaco and PixiJS write them. No eval (PixiJS uses @pixi/unsafe-eval) -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://apis.google.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://avatars.githubusercontent.com https://raw.githubusercontent.com https://*.googleusercontent.com https://www.google-analytics.com; font-src 'self' data:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; frame-src https://*.firebaseapp.com https://accounts.google.com https://github.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">

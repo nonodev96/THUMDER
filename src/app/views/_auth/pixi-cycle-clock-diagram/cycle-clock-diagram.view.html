@@ -4,8 +4,9 @@
       <!-- Drag button -->
       <ng-content></ng-content>
 
-      <span thumderCardWidget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span> |
-      <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}" aria-hidden="true"></i>
+      <span thumderCardWidget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span>
+      <!-- The hand says that the mouse drags it: not on a phone (the finger does) -->
+      <span class="d-none d-md-inline" aria-hidden="true"> | <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}"></i></span>
     </h3>
     <div class="card-tools">
       <!-- The arrows: on a phone the diagram moves with the finger (and with the arrow keys when it has the focus) -->

@@ -109,3 +109,19 @@ test("el diagrama de ciclos se mueve con el teclado solo cuando tiene el foco, y
   await page.locator("button[title$='(F10)']").click();
   await expect.poll(async () => (await cycleScroll(page)).x).toBeGreaterThan(last.x);
 });
+
+test("@movil el pipeline se desplaza en horizontal con el dedo", async ({ page, context }) => {
+  await go(page, "/auth/pipeline");
+  const host = page.locator("thumder-pixi-pipeline");
+  await host.scrollIntoViewIfNeeded();
+  const box = (await host.boundingBox()) as { x: number; y: number; width: number; height: number };
+  expect(await host.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeGreaterThan(50);
+  const cdp = await context.newCDPSession(page);
+  const touch = (type: string, points: { x: number; y: number }[]) =>
+    cdp.send("Input.dispatchTouchEvent", { type, touchPoints: points.map((point, id) => ({ ...point, id })) });
+  const [x, y] = [box.x + box.width - 30, box.y + 100];
+  await touch("touchStart", [{ x, y }]);
+  for (let i = 1; i <= 12; i++) await touch("touchMove", [{ x: x - i * 20, y }]);
+  await touch("touchEnd", []);
+  await expect.poll(() => host.evaluate((element) => element.scrollLeft)).toBeGreaterThan(100);
+});

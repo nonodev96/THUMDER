@@ -1,37 +1,49 @@
-import { DOCUMENT } from "@angular/common";
 import { Component, computed, HostListener, inject } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AppComponent } from "@app/app.component";
-import { AUTH_ROUTES, TOAST } from "@app/CONSTANTS";
+import { AUTH_ROUTES, NPM_VERSION } from "@app/CONSTANTS";
+import type { PublicRoutesList } from "@app/Types";
+import { SimulationControlsComponent } from "@components/simulation-controls/simulation-controls.component";
 import { AuthService } from "@core/auth/auth.service";
 import { ConfigService } from "@core/config/config.service";
-import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
-import { EditorStateService } from "@core/services/editor/editor-state.service";
+import { ConsentService } from "@core/services/consent/consent.service";
+import { PageService } from "@core/services/layout/page.service";
 import { SidebarService } from "@core/services/layout/sidebar.service";
+import { SimulationControlsService } from "@core/services/simulation/simulation-controls.service";
 import { SoundService } from "@core/services/sound/sound.service";
 import { type ThemeChoice, ThemeService } from "@core/services/theme/theme.service";
-import { ToastService } from "@core/services/toast/toast.service";
-import { TranslatePipe, TranslateService } from "@ngx-translate/core";
+import { TranslatePipe } from "@ngx-translate/core";
+import { mediaSignal, PHONE } from "@shared/utils/media";
 import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdown.directive";
 
+type Route = PublicRoutesList[string];
+
+/**
+ * The navbar. On the left, where to go: home, every view by sections and the places of the work (editor, files,
+ * multiview). On the right, the simulation (its controls and its speed) and the preferences (theme, language,
+ * configuration). On a phone it shows the name of the view, and the rest is in «More» (the controls of the simulation
+ * are in the bar at the bottom). It also has the shortcuts of the simulation, as a debugger.
+ */
 @Component({
   selector: "THUMDER-auth-navbar",
   templateUrl: "./auth-navbar.component.html",
-  imports: [RouterLink, DropdownDirective, TranslatePipe],
+  imports: [RouterLink, RouterLinkActive, DropdownDirective, TranslatePipe, SimulationControlsComponent],
 })
 export class AuthNavbarComponent {
-  private _document = inject<Document>(DOCUMENT);
   app = inject<AppComponent>(AppComponent);
   machine = inject(MachineService);
   authService = inject(AuthService);
   sidebar = inject(SidebarService);
   config = inject(ConfigService);
   theme = inject(ThemeService);
-  private toast = inject(ToastService);
-  private editorState = inject(EditorStateService);
+  page = inject(PageService);
+  consent = inject(ConsentService);
+  controls = inject(SimulationControlsService);
   public sound = inject(SoundService);
-  private translate = inject(TranslateService);
+
+  public readonly phone = mediaSignal(PHONE);
+  public readonly version = NPM_VERSION;
 
   public readonly themes: { choice: ThemeChoice; label: string; icon: string }[] = [
     { choice: "light", label: "THEME.LIGHT", icon: "fa-sun" },
@@ -54,7 +66,29 @@ export class AuthNavbarComponent {
     return this.speeds.reduce((best, speed) => (Math.abs(speed.delay - delay) < Math.abs(best.delay - delay) ? speed : best)).label;
   });
 
-  public readonly PRIVATE_AUTH_ROUTES = Object.values(AUTH_ROUTES);
+  /** The views by sections, as in the home page */
+  public readonly groups: { title: string; routes: Route[] }[] = [
+    {
+      title: "PAGES.INDEX.MACHINE",
+      routes: [
+        AUTH_ROUTES.PIPELINE,
+        AUTH_ROUTES.CYCLE_CLOCK_DIAGRAM,
+        AUTH_ROUTES.DATAPATH,
+        AUTH_ROUTES.REGISTERS,
+        AUTH_ROUTES.MEMORY,
+        AUTH_ROUTES.CODE,
+        AUTH_ROUTES.STATISTICS,
+      ],
+    },
+    { title: "PAGES.INDEX.IDE", routes: [AUTH_ROUTES.EDITOR, AUTH_ROUTES.FILE_MANAGER, AUTH_ROUTES.MULTIVIEW, AUTH_ROUTES.EXERCISES] },
+    { title: "PAGES.INDEX.UTILS", routes: [AUTH_ROUTES.CALCULATOR, AUTH_ROUTES.DOCUMENTATION, AUTH_ROUTES.CONFIG] },
+    { title: "PAGES.INDEX.DEBUG", routes: [AUTH_ROUTES.LOGGER, AUTH_ROUTES.PROFILE] },
+  ]
+    .map((group) => ({ ...group, routes: group.routes.filter((route) => route.show) }))
+    .filter((group) => group.routes.length > 0);
+
+  /** The places of the work, always at hand on a wide screen */
+  public readonly quickLinks: Route[] = [AUTH_ROUTES.EDITOR, AUTH_ROUTES.FILE_MANAGER, AUTH_ROUTES.MULTIVIEW];
 
   // F5 runs or pauses, F10 runs one cycle, Shift+F10 goes back one, F8 runs to the end without drawing and Shift+F5 loads
   // the code (like a debugger)
@@ -63,47 +97,19 @@ export class AuthNavbarComponent {
     if (event.ctrlKey || event.altKey || event.metaKey) return;
     if (event.key === "F5" && event.shiftKey) {
       event.preventDefault();
-      await this.reset();
+      await this.controls.load();
     } else if (event.key === "F5" && this.machine.canSimulate) {
       event.preventDefault();
-      await this.togglePlayPause();
+      await this.controls.togglePlayPause();
     } else if (event.key === "F10" && event.shiftKey) {
       event.preventDefault();
-      await this.stepBack();
+      await this.controls.stepBack();
     } else if (event.key === "F10" && this.machine.canSimulate) {
       event.preventDefault();
-      await this.nextStep();
+      await this.controls.step();
     } else if (event.key === "F8" && this.machine.canSimulate) {
       event.preventDefault();
-      await this.runToEnd();
-    }
-  }
-
-  public async stepBack(): Promise<void> {
-    await this.machine.stepBack();
-  }
-
-  public async runToEnd(): Promise<void> {
-    await this.machine.runToEnd();
-  }
-
-  public async togglePlayPause(): Promise<void> {
-    if (this.machine.isRunning === false) {
-      await this.machine.resume();
-    } else {
-      await this.machine.pause();
-    }
-  }
-
-  public async reset(): Promise<void> {
-    await this.machine.reset();
-    // The simulator loads the saved file: the changes of the editor are not in what was loaded
-    if (this.editorState.unsaved()) {
-      this.toast.warning(
-        this.translate.instant("SIMULATION.LOADED_UNSAVED"),
-        this.translate.instant("SIMULATION.LOADED_UNSAVED_TITLE"),
-        TOAST.warning,
-      );
+      await this.controls.runToEnd();
     }
   }
 
@@ -116,26 +122,5 @@ export class AuthNavbarComponent {
       this.sound.unlock();
       this.sound.event("load");
     }
-  }
-
-  /** Everything to zero (the memory, the code and the registers), without a program: Load loads it again */
-  public async clear(): Promise<void> {
-    await this.machine.clear();
-    this.toast.info(this.translate.instant("SIMULATION.CLEARED"), this.translate.instant("SIMULATION.CLEARED_TITLE"), TOAST.info);
-  }
-
-  public async nextStep(): Promise<void> {
-    await this.machine.nextStep();
-    return Promise.resolve();
-  }
-
-  public async end(): Promise<void> {
-    await this.machine.end();
-    return Promise.resolve();
-  }
-
-  public async debug(): Promise<void> {
-    logger.info(this.machine.getAllStatusMachine());
-    return Promise.resolve();
   }
 }

@@ -50,7 +50,7 @@
               }
             </div>
           </div>
-          <thumder-virtual-table [rows]="dataSource" [columns]="displayedColumns" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+          <thumder-virtual-table [rows]="dataSource" [rowClass]="controlRowClass" [columns]="displayedColumns" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(controlWidths)" [label]="'MACHINE.REGISTERS_CONTROL' | translate">
             <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.register" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: element }" (click)="edit(element, $event)">{{ element }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-element>{{ ($any(machine.registers)[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
@@ -62,7 +62,7 @@
           </thumder-virtual-table>
         }
         @case ('R') {
-          <thumder-virtual-table [rows]="dataSourceR" [columns]="displayedColumnsR" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+          <thumder-virtual-table [rows]="dataSourceR" [rowClass]="integerRowClass" [columns]="displayedColumnsR" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(integerWidths)" [label]="'MACHINE.REGISTERS_INTEGER' | translate">
             <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: 'R' + element }" (click)="edit(element, $event)">R{{ element }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-element>{{ (machine.registers.R[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
@@ -80,7 +80,7 @@
               }
             </div>
           </div>
-          <thumder-virtual-table [rows]="dataSourceF" [columns]="displayedColumnsF" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+          <thumder-virtual-table [rows]="dataSourceF" [rowClass]="floatRowClass" [columns]="displayedColumnsF" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(floatWidths)" [label]="'MACHINE.REGISTERS_FLOAT' | translate">
             <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: 'F' + element }" (click)="edit(element, $event)">F{{ element }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-address>{{ (machine.registers.F[address].binary | binary_32_64_to_hexadecimal) }}</ng-template>
@@ -99,7 +99,7 @@
               }
             </div>
           </div>
-          <thumder-virtual-table [rows]="dataSourceD" [columns]="displayedColumnsD" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
+          <thumder-virtual-table [rows]="dataSourceD" [rowClass]="doubleRowClass" [columns]="displayedColumnsD" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(doubleWidths)" [label]="'MACHINE.REGISTERS_DOUBLE' | translate">
             <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.doubleRegister" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: 'F' + element + '-F' + (element + 1) }" (click)="edit(element, $event)">F{{ element }}-F{{ element + 1 }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_32_64_to_hexadecimal }}</ng-template>
@@ -109,6 +109,7 @@
           </thumder-virtual-table>
         }
       }
+      <p class="registers-legend"><span class="registers-legend-mark" aria-hidden="true"></span> {{ 'MACHINE.WRITTEN_IN_CYCLE' | translate }}</p>
     </div>
   </div>
 </div>

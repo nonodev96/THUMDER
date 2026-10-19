@@ -3,6 +3,9 @@ import { DestroyRef, inject, type Signal, signal } from "@angular/core";
 /** Phones and small tablets upright: the tables put first the columns that explain, and the bits last */
 export const NARROW = "(max-width: 767.98px)";
 
+/** Phones upright: the controls of the simulation go to a bar at the bottom of the screen and the navbar shows the view */
+export const PHONE = "(max-width: 575.98px)";
+
 /**
  * Whether a media query matches, as a signal that follows it (the window turned, resized...). In an injection context:
  * it stops listening when the component goes

@@ -48,7 +48,7 @@
         </button>
       }
     </div>
-    <thumder-virtual-table [rows]="dataSourceMemory" [columns]="columns" [height]="maxHeightCard" [itemSize]="32" [minWidth]="minWidth"
+    <thumder-virtual-table [rows]="dataSourceMemory" [rowClass]="rowClass" [columns]="columns" [height]="maxHeightCard" [itemSize]="32" [minWidth]="minWidth"
       [stickyFirst]="true" [label]="'MACHINE.MEMORY' | translate">
       <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" [width]="width('Address')" let-index>@let address = '0x' + (index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"});<button type="button" class="row-edit" [title]="'EDIT_MEMORY.EDIT_ROW' | translate: { address: address }" (click)="edit(index, $event)">{{ address }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
       <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="width('Hexadecimal')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_32_64_to_hexadecimal) }}</ng-template>
@@ -70,8 +70,9 @@
       <ng-template thumderColumn="InstructionCode" [header]="'MACHINE.INSTRUCTION' | translate" [width]="width('InstructionCode')" let-index>{{ getInstructionDLXFromIndex(index) }}</ng-template>
     </thumder-virtual-table>
   </div>
-  <div class="card-footer">
-
+  <div class="card-footer memory-legend">
+    <span><span class="memory-legend-mark memory-legend-mark--written" aria-hidden="true"></span> {{ 'MACHINE.MEMORY_WRITTEN' | translate }}</span>
+    <span><span class="memory-legend-mark memory-legend-mark--read" aria-hidden="true"></span> {{ 'MACHINE.MEMORY_READ' | translate }}</span>
   </div>
 </div>
 

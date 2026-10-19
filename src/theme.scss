@@ -284,14 +284,7 @@
     color: var(--thumder-text-2);
   }
 
-  // The controls of the simulation (auth-navbar): green while they can be used
-  .main-header .btn.sim-control {
-    color: var(--thumder-success-text);
-
-    &:disabled {
-      color: var(--thumder-muted);
-    }
-  }
+  // The controls of the simulation have their colours in their component (SimulationControlsComponent)
 
   // ── The sidebar ──
   .main-sidebar,

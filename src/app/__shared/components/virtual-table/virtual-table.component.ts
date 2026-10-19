@@ -95,6 +95,12 @@ export class VirtualTableColumnDirective {
       :host(.sticky-first) .thumder-table-header .thumder-table-cell:first-child { background-color: var(--thumder-surface-2); }
       /* A row with the colour of a stage (the code): its first column too */
       :host(.sticky-first) .thumder-row[class*="stage-"] > .thumder-table-cell:first-child { background-color: inherit; }
+      /* What the last cycle wrote or read (the registers, the memory) */
+      .thumder-row.row-written { background-color: var(--thumder-success-soft); box-shadow: inset 4px 0 0 var(--thumder-success-text); }
+      .thumder-row.row-read { background-color: var(--thumder-info-soft); box-shadow: inset 4px 0 0 var(--thumder-info-text); }
+      /* The first column stays opaque over what scrolls under it */
+      :host(.sticky-first) .thumder-row.row-written > .thumder-table-cell:first-child { background: linear-gradient(var(--thumder-success-soft), var(--thumder-success-soft)), var(--thumder-surface); box-shadow: inset 4px 0 0 var(--thumder-success-text), 1px 0 0 var(--thumder-border); }
+      :host(.sticky-first) .thumder-row.row-read > .thumder-table-cell:first-child { background: linear-gradient(var(--thumder-info-soft), var(--thumder-info-soft)), var(--thumder-surface); box-shadow: inset 4px 0 0 var(--thumder-info-text), 1px 0 0 var(--thumder-border); }
       /* The row that scrollToIndex() went to, for a moment */
       .thumder-row-target { outline: 3px solid var(--thumder-primary); outline-offset: -3px; }
       .thumder-row-target > .thumder-table-cell:first-child { font-weight: 700; }

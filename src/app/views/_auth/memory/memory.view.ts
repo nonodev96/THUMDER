@@ -1,5 +1,5 @@
 import { UpperCasePipe } from "@angular/common";
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, untracked, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, inject, untracked, ViewChild } from "@angular/core";
 import type { TypeDataDisplayColumn } from "@app/Types";
 import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
@@ -20,6 +20,10 @@ import {
   PadStartPipe,
 } from "@shared/pipes/numbers/numbers.pipes";
 import { mediaSignal, NARROW } from "@shared/utils/media";
+
+/** The bytes of a value of each type */
+const BYTES: Record<string, number> = { Byte: 1, ASCII: 1, HalfWord: 2, Word: 4, Float: 4, Double: 8 };
+
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 /**
@@ -86,6 +90,22 @@ export class MemoryView {
   machine = inject(MachineService);
   private cdr = inject(ChangeDetectorRef);
   private editRequests = inject(EditRequestService);
+
+  /** The words written and read in the last cycle (by the address of the word): their rows are lit */
+  private readonly touched = computed(() => {
+    const cycle = this.machine.state.cycle();
+    const words = (address: number, bytes: number) =>
+      Array.from({ length: Math.ceil(((address % 4) + bytes) / 4) }, (_, i) => (address - (address % 4) + i * 4) >>> 0);
+    const written = new Set(
+      (cycle?.memory ?? []).flatMap((store) => words(Number.parseInt(store.address, 16), BYTES[store.typeData] ?? 4)),
+    );
+    const read = new Set((cycle?.reads ?? []).flatMap((load) => words(load.address, load.bytes)));
+    return { written, read };
+  });
+  public readonly rowClass = (index: number) => {
+    const { written, read } = this.touched();
+    return written.has(index) ? "row-written" : read.has(index) ? "row-read" : "";
+  };
 
   @ViewChild(VirtualTableComponent) private table?: VirtualTableComponent<number>;
 

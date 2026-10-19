@@ -170,6 +170,10 @@ export class PixiPipelineComponent implements AfterViewInit, OnDestroy {
       autoStart: false,
       view: canvas,
     });
+    // The events of PixiJS are not used here: they make the canvas `touch-action: none` and cancel the touches, so a
+    // finger could not scroll the drawing sideways (nor the page up and down)
+    this.pApp.renderer.events.autoPreventDefault = false;
+    canvas.style.touchAction = "pan-x pan-y pinch-zoom";
     this.pApp.stage.addChild(this.pipeline.draw() as PIXI.DisplayObject);
     this.pixiContainer.nativeElement.appendChild(this.pApp.view as unknown as Node);
     canvas.addEventListener("wheel", this.onWheel, { passive: false });

@@ -309,7 +309,10 @@
     "DIAGRAM_LEGEND_STALL": "espera a otra",
     "DIAGRAM_LEGEND_ABORTED": "anulada",
     "DIAGRAM_LEGEND_FORWARDING": "adelantamiento",
-    "DIAGRAM_LEGEND_CAUSE": "causa del atasco"
+    "DIAGRAM_LEGEND_CAUSE": "causa del atasco",
+    "WRITTEN_IN_CYCLE": "Escrito en el último ciclo",
+    "MEMORY_WRITTEN": "Palabra escrita en el último ciclo",
+    "MEMORY_READ": "Palabra leída en el último ciclo"
   },
   "TYPE_DATA": {
     "BYTE": "Byte",
@@ -437,7 +440,14 @@
       "CONFIG": "Configuración",
       "DEBUG": "Desarrollo",
       "PAGES": "Páginas",
-      "MORE_INFO": "Más información"
+      "MORE_INFO": "Más información",
+      "START_TITLE": "Cómo empezar",
+      "STEP_1": "Escribe o abre un programa",
+      "STEP_1_HELP": "En el editor, o uno de los ejemplos del gestor de ficheros.",
+      "STEP_2": "Cárgalo en el simulador",
+      "STEP_2_HELP": "Con «Cargar» (Mayús+F5): THUMDER lo ensambla y te dice si tiene errores.",
+      "STEP_3": "Avánzalo ciclo a ciclo",
+      "STEP_3_HELP": "Con «Paso» (F10) y mira cómo pasa cada instrucción por el pipeline."
     },
     "HOME": {
       "TITLE": "THUMDER",
@@ -483,7 +493,14 @@
     "CLEARED": "La memoria, el código y los registros están a cero. Carga el programa para volver a simular.",
     "CLEARED_TITLE": "Máquina reiniciada",
     "LOADED_UNSAVED_TITLE": "Cambios sin guardar",
-    "LOADED_UNSAVED": "Se ha cargado la versión guardada del fichero. El editor tiene cambios sin guardar: guarda (Ctrl+S) y vuelve a cargar para simularlos."
+    "LOADED_UNSAVED": "Se ha cargado la versión guardada del fichero. El editor tiene cambios sin guardar: guarda (Ctrl+S) y vuelve a cargar para simularlos.",
+    "SHORT_LOAD": "Cargar",
+    "SHORT_BACK": "Atrás",
+    "SHORT_RUN": "Ejecutar",
+    "SHORT_PAUSE": "Pausa",
+    "SHORT_STEP": "Paso",
+    "SHORT_END": "Al final",
+    "SHORT_CLEAR": "Reiniciar la máquina"
   },
   "IO": {
     "TITLE": "Consola del programa (DLX-I/O)",
@@ -712,7 +729,8 @@
     "LOADED": "Cargado",
     "PAUSED": "En pausa",
     "CYCLE": "Ciclo {{cycle}}",
-    "LINE": "Línea {{line}}"
+    "LINE": "Línea {{line}}",
+    "HINT_LOAD": "Pulsa «Cargar» para simular el programa del editor"
   },
   "NOT_FOUND": {
     "TITLE": "Error 404",
@@ -771,6 +789,78 @@
       "README": "El proyecto (README)",
       "CONTRIBUTING": "Cómo contribuir",
       "SIMULATOR": "El simulador por dentro"
+    },
+    "ITABLE": {
+      "INTRO": "Las {{count}} instrucciones que THUMDER ensambla y simula, sacadas de las definiciones de su motor. Busca una o filtra por tipo, y pulsa una para ver su sintaxis, qué hace, los campos de su palabra de 32 bits y lo que pasa en cada etapa del pipeline.",
+      "LIST": "Las instrucciones",
+      "GO_TO_MAP": "Mapa de códigos",
+      "SEARCH": "Buscar una instrucción",
+      "SEARCH_PLACEHOLDER": "ADD, carga, salta, R31, 0x23…",
+      "FILTER": "Filtrar por tipo",
+      "ALL": "Todas",
+      "RESULTS": "{{count}} instrucciones",
+      "RESULTS_ONE": "1 instrucción",
+      "NO_RESULTS": "Ninguna instrucción coincide con la búsqueda.",
+      "CLEAR": "Quitar la búsqueda y el filtro",
+      "DETAILS": "Detalles de {{mnemonic}}",
+      "CATEGORIES": {
+        "ALU": "Aritméticas y lógicas",
+        "COMPARE": "Comparaciones",
+        "SHIFT": "Desplazamientos",
+        "MEMORY": "Cargas y almacenamientos",
+        "CONTROL": "Saltos y bifurcaciones",
+        "FLOAT": "Coma flotante",
+        "CONVERT": "Conversiones",
+        "MOVE": "Movimientos",
+        "OTHER": "Traps y otras"
+      },
+      "CATEGORY_HELP": {
+        "ALU": "Suman, restan, multiplican, dividen o combinan bit a bit dos registros, o un registro y un inmediato de 16 bits.",
+        "COMPARE": "Comparan dos enteros y dejan 1 o 0 en un registro; con BEQZ o BNEZ detrás, hacen un salto condicional.",
+        "SHIFT": "Mueven los bits de un registro a la izquierda o a la derecha: lógicos (entran ceros) o aritméticos (se copia el signo).",
+        "MEMORY": "Las únicas que usan la memoria (en MEM): leen o escriben un byte, media palabra, una palabra o un número de coma flotante en la dirección base + desplazamiento.",
+        "CONTROL": "Cambian el PC. Se deciden en ID, y THUMDER supone que no se salta: si se salta, se anula la instrucción que ya se había leído. JAL y JALR guardan la vuelta en R31.",
+        "FLOAT": "Operan con los registros F en simple o doble precisión (IEEE 754), en las unidades de coma flotante, que tardan varios ciclos; las comparaciones dejan su resultado en FPSR.",
+        "CONVERT": "Cambian un número de tipo (entero, simple o doble precisión) dentro de los registros F.",
+        "MOVE": "Copian registros: entre registros F, o entre los enteros y los de coma flotante, sin convertir sus bits.",
+        "OTHER": "Las llamadas al sistema (TRAP: terminar, leer, escribir, printf…), NOP y RFE."
+      },
+      "SYNTAX": "Sintaxis",
+      "EXAMPLE": "Ejemplo",
+      "FORMULA": "Qué hace el ejemplo",
+      "DOUBLES": "Un registro doble es un par: F0 nombra F0:F1, así que su número tiene que ser par.",
+      "OPCODE": "Código de operación",
+      "FUNC": "Código de función",
+      "UNIT": "Unidad de ejecución",
+      "UNITS": {
+        "INT": "intEX, la unidad de enteros (1 ciclo)",
+        "FADD": "faddEX, la unidad de suma de coma flotante (los ciclos de la configuración)",
+        "FMUL": "fmultEX, la unidad de multiplicación (los ciclos de la configuración)",
+        "FDIV": "fdivEX, la unidad de división (los ciclos de la configuración)"
+      },
+      "READS": "Lee",
+      "WRITES": "Escribe",
+      "NONE": "ninguno",
+      "WORD": "La palabra del ejemplo",
+      "FIELDS": "Los campos de la palabra, del bit 31 al 0",
+      "STAGES": "En cada etapa del pipeline",
+      "STAGES_HELP": "Con el ejemplo en la dirección {{address}}, la primera del programa.",
+      "SERVICES": "Los servicios del trap",
+      "LINK": "Enlace a {{mnemonic}}",
+      "MAP": "Mapa de códigos de operación",
+      "MAP_HELP": "Cada código de 6 bits en una tabla de 8 × 8: la fila da sus 3 bits altos y la columna los 3 bajos. Pulsa una instrucción para ver sus detalles; las que la búsqueda o el filtro dejan fuera se ven en gris.",
+      "MAP_OPCODE": "Código de operación (bits 31–26)",
+      "MAP_OPCODE_HELP": "Las instrucciones de tipo I y J. Los códigos 0x00 y 0x01 son los tipos R y F, cuya operación va en el código de función.",
+      "MAP_R": "Tipo R: código de función (bits 5–0)",
+      "MAP_R_HELP": "Con el código de operación 0x00 (SPECIAL): las operaciones entre registros enteros.",
+      "MAP_F": "Tipo F: código de función (bits 5–0)",
+      "MAP_F_HELP": "Con el código de operación 0x01 (FPARITH): las operaciones de coma flotante.",
+      "MAP_CORNER_OPCODE": "Filas: bits 31 a 29; columnas: bits 28 a 26",
+      "MAP_CORNER_FUNC": "Filas: bits 5 a 3; columnas: bits 2 a 0",
+      "MAP_OPENS_R": "ver los códigos de función del tipo R",
+      "MAP_OPENS_F": "ver los códigos de función del tipo F",
+      "FREE": "libre",
+      "UNSIGNED_NOTE": "Las comparaciones sin signo (SEQU… SGEU y SEQUI… SGEUI) usan códigos que WinDLX deja libres."
     }
   },
   "EDIT": {
@@ -784,7 +874,9 @@
   },
   "MULTIVIEW": {
     "FLOAT": "Sacar como ventana flotante (se mueve por su título y cambia de tamaño desde los bordes; Alt+flechas la mueven y Alt+Mayús+flechas cambian su tamaño)",
-    "DOCK": "Devolver la ventana a su columna"
+    "DOCK": "Devolver la ventana a su columna",
+    "CHOOSE": "Las vistas que se muestran",
+    "NONE": "Elige arriba las vistas que quieres ver a la vez. La barra de abajo avanza la simulación ciclo a ciclo."
   },
   "IEEE": {
     "TITLE": "IEEE 754: números en coma flotante",
@@ -987,5 +1079,24 @@
     "LEGEND_EDITED": "Bytes del dato",
     "GRID_HELP": "DLX es big-endian: el byte de la dirección más baja es el más significativo.",
     "EDIT_ROW": "Editar la memoria en {{address}}"
+  },
+  "PAGE_HELP": {
+    "HOME": "Escribe un programa DLX, cárgalo y míralo avanzar por el pipeline ciclo a ciclo.",
+    "PIPELINE": "Qué instrucción hay en cada etapa y cómo pasa a la siguiente con cada ciclo.",
+    "CYCLE_CLOCK_DIAGRAM": "La historia del pipeline: en qué etapa estaba cada instrucción en cada ciclo y por qué se detuvo.",
+    "REGISTERS": "Los registros de control, los enteros R0–R31 y los de coma flotante F0–F31.",
+    "MEMORY": "Cada palabra de la memoria, como bytes, enteros, coma flotante o instrucciones.",
+    "CODE": "El código máquina del programa: dónde está cada instrucción y qué hace.",
+    "STATISTICS": "Ciclos, CPI y detenciones: dónde se pierde el tiempo y cómo evitarlo.",
+    "DATAPATH": "Por dónde pasan los datos en este ciclo: el PC, los registros, la ALU, la memoria y los adelantamientos.",
+    "EXERCISES": "Preguntas sobre un programa que THUMDER comprueba con la propia simulación.",
+    "FILE_MANAGER": "Tus programas y los ejemplos: ábrelos, ordénalos en carpetas y compártelos.",
+    "EDITOR": "Escribe el programa en ensamblador DLX y cárgalo para simularlo.",
+    "MULTIVIEW": "Varias vistas a la vez, para seguir la simulación desde todos los ángulos.",
+    "CALCULATOR": "Convierte entre binario, hexadecimal, decimal y coma flotante IEEE 754.",
+    "DOCUMENTATION": "Cómo se usa THUMDER y cómo funciona el procesador DLX.",
+    "CONFIG": "El adelantamiento, las unidades de coma flotante, la memoria, la velocidad y el sonido.",
+    "LOGGER": "Todo lo que ha pasado en la simulación, mensaje a mensaje.",
+    "PROFILE": "Tu cuenta y la sincronización de tus ficheros."
   }
 }

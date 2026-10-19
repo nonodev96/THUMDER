@@ -34,6 +34,11 @@
                 "output": "/"
               },
               {
+                "glob": "manifest.webmanifest",
+                "input": "src",
+                "output": "/"
+              },
+              {
                 "glob": "*.md",
                 "input": "./wiki",
                 "output": "./assets/wiki/"
@@ -47,6 +52,11 @@
                 "glob": "*.png",
                 "input": "./assets/",
                 "output": "./assets/"
+              },
+              {
+                "glob": "*.png",
+                "input": "./assets/screenshots/",
+                "output": "./assets/screenshots/"
               },
               {
                 "glob": "LICENSE.md",

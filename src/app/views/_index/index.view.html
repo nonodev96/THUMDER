@@ -1,77 +1,52 @@
-<ng-template #card let-item='item'>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-blue">
-      <div class="inner">
-        <h4>{{ ("NAVIGATION." + item.lang) | translate }}</h4>
-        <p>{{ item.displayName }}</p>
+<!-- How to start: the three steps of the work -->
+<section class="home-start" aria-labelledby="homeStartTitle">
+  <h2 class="home-start-title" id="homeStartTitle">{{ 'PAGES.INDEX.START_TITLE' | translate }}</h2>
+  <ol class="home-steps">
+    <li class="home-step">
+      <span class="home-step-number" aria-hidden="true">1</span>
+      <div>
+        <strong>{{ 'PAGES.INDEX.STEP_1' | translate }}</strong>
+        <p>{{ 'PAGES.INDEX.STEP_1_HELP' | translate }}</p>
+        <a class="home-step-link" routerLink="/auth/editor">{{ 'NAVIGATION.EDITOR' | translate }}</a>
+        <a class="home-step-link" routerLink="/auth/file-manager">{{ 'NAVIGATION.FILE_MANAGER' | translate }}</a>
       </div>
-      <div class="icon">
-        <i class="{{item.icon}}" aria-hidden="true"></i>
+    </li>
+    <li class="home-step">
+      <span class="home-step-number" aria-hidden="true">2</span>
+      <div>
+        <strong>{{ 'PAGES.INDEX.STEP_2' | translate }}</strong>
+        <p>{{ 'PAGES.INDEX.STEP_2_HELP' | translate }}</p>
       </div>
-      <a class="small-box-footer" [routerLink]="item.routerLink">
-        {{ 'PAGES.INDEX.MORE_INFO' | translate }} <i class="fas fa-arrow-circle-right" aria-hidden="true"></i>
-      </a>
-    </div>
-  </div>
-</ng-template>
-
-<div class="container-fluid">
-
-  <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.MACHINE' | translate }}</h4>
-  <div class="row">
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PIPELINE}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CYCLE_CLOCK_DIAGRAM}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.REGISTERS}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MEMORY}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CODE}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.STATISTICS}"></ng-container>
-    <ng-container [ngTemplateOutlet]="card"
-    [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DATAPATH}"></ng-container>
-  </div>
-  <hr>
-
-    <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.IDE' | translate }}</h4>
-    <div class="row">
-      <ng-container [ngTemplateOutlet]="card"
-      [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.FILE_MANAGER}"></ng-container>
-      <ng-container [ngTemplateOutlet]="card"
-      [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.EDITOR}"></ng-container>
-      <ng-container [ngTemplateOutlet]="card"
-      [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.MULTIVIEW}"></ng-container>
-    </div>
-    <hr>
-
-      <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.UTILS' | translate }}</h4>
-      <div class="row">
-        <ng-container [ngTemplateOutlet]="card"
-        [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CALCULATOR}"></ng-container>
-        <ng-container [ngTemplateOutlet]="card"
-        [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.DOCUMENTATION}"></ng-container>
+    </li>
+    <li class="home-step">
+      <span class="home-step-number" aria-hidden="true">3</span>
+      <div>
+        <strong>{{ 'PAGES.INDEX.STEP_3' | translate }}</strong>
+        <p>{{ 'PAGES.INDEX.STEP_3_HELP' | translate }}</p>
+        <a class="home-step-link" routerLink="/auth/pipeline">{{ 'NAVIGATION.PIPELINE' | translate }}</a>
+        <a class="home-step-link" routerLink="/auth/cycle-clock-diagram">{{ 'NAVIGATION.CYCLE_CLOCK_DIAGRAM' | translate }}</a>
       </div>
-      <hr>
+    </li>
+  </ol>
+</section>
 
-
-        <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.CONFIG' | translate }}</h4>
-        <div class="row">
-          <ng-container [ngTemplateOutlet]="card"
-          [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.CONFIG}"></ng-container>
-        </div>
-        <hr>
-
-          @if (AppConfig.environment === 'DEV') {
-            <h4 class="mb-2 mt-4">{{ 'PAGES.INDEX.DEBUG' | translate }}</h4>
-            <div class="row">
-              <ng-container [ngTemplateOutlet]="card"
-              [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.LOGGER}"></ng-container>
-              <ng-container [ngTemplateOutlet]="card"
-              [ngTemplateOutletContext]="{item:PRIVATE_AUTH_ROUTES.PROFILE}"></ng-container>
-            </div>
-          }
-
-        </div>
+<!-- Every view, by sections: what each one is for -->
+@for (section of sections; track section.title) {
+  <section class="home-section" [attr.aria-labelledby]="'homeSection-' + $index">
+    <h2 class="home-section-title" [id]="'homeSection-' + $index">{{ section.title | translate }}</h2>
+    <ul class="home-tiles">
+      @for (item of section.items; track item.key) {
+        <li>
+          <a class="home-tile" [routerLink]="item.route.routerLink">
+            <span class="home-tile-icon" aria-hidden="true"><i class="fa-fw {{ item.route.icon }}"></i></span>
+            <span class="home-tile-text">
+              <span class="home-tile-title">{{ 'NAVIGATION.' + item.route.lang | translate }}</span>
+              <span class="home-tile-help">{{ 'PAGE_HELP.' + item.key | translate }}</span>
+            </span>
+            <i class="fas fa-chevron-right home-tile-go" aria-hidden="true"></i>
+          </a>
+        </li>
+      }
+    </ul>
+  </section>
+}

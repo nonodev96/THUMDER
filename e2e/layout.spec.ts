@@ -1,4 +1,4 @@
-import { expect, go, sidebarBox, sidebarToggle, test } from "./fixtures";
+import { expect, go, loadAndStep, sidebarBox, sidebarToggle, test } from "./fixtures";
 
 // The layout: the sidebar, the dropdowns of the navbar, the privacy banner and the legal texts
 
@@ -149,4 +149,52 @@ test.describe("Privacidad", () => {
     await page.locator("#changeLangToEnglish").click();
     await expect(page.locator("view-legal h1")).toHaveText("Accessibility statement");
   });
+});
+
+test.describe("Móvil como una app", () => {
+  test("@movil la barra de arriba dice la vista; la de abajo tiene el estado y los controles de la simulación", async ({ page }) => {
+    await go(page, "/auth/pipeline");
+    await expect(page.locator(".main-header .navbar-page-title")).toHaveText("Pipeline");
+    await expect(page).toHaveTitle("Pipeline · THUMDER");
+    // The controls are only at the bottom (where the thumb reaches), with their names
+    const dock = page.locator(".thumder-dock");
+    await expect(dock).toBeVisible();
+    await expect(page.locator(".main-header button[title$='(F10)']")).toHaveCount(0);
+    await expect(dock.locator("#simulationStatus")).toContainText("Sin cargar");
+    await loadAndStep(page, 3);
+    await expect(dock.locator("#simulationStatus")).toContainText("Ciclo");
+    await expect(dock.getByRole("button", { name: "Siguiente ciclo" })).toBeVisible();
+    // The legal texts and the configuration are in «More»
+    await page.locator("#navbarMore").tap();
+    await expect(page.locator("#moreConsent")).toBeVisible();
+    await expect(page.locator(".navbar-more-menu a[href='/auth/config']")).toBeVisible();
+  });
+
+  test("@movil la vista múltiple elige con chips las vistas que se ven, abiertas", async ({ page }) => {
+    await go(page, "/auth/multiview");
+    const chip = (name: string) => page.locator(`.multiview-chip[data-view="${name}"]`);
+    await expect(chip("pipeline")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("view-pipeline .card")).not.toHaveClass(/collapsed-card/);
+    await expect(page.locator("view-code")).toHaveCount(0);
+    await chip("code").tap();
+    await expect(chip("code")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator("view-code .card")).toBeVisible();
+    await chip("pipeline").tap();
+    await expect(page.locator("view-pipeline")).toHaveCount(0);
+    // The choice stays
+    await page.reload();
+    await expect(chip("code")).toHaveAttribute("aria-pressed", "true");
+    await expect(chip("pipeline")).toHaveAttribute("aria-pressed", "false");
+  });
+});
+
+test("cada vista dice en su cabecera para qué sirve, y la pestaña del navegador lleva su nombre", async ({ page }) => {
+  await go(page, "/auth/cycle-clock-diagram");
+  await expect(page.locator(".page-header-title")).toHaveText("Ciclos de reloj");
+  await expect(page.locator(".page-header-help")).toContainText("por qué se detuvo");
+  await expect(page).toHaveTitle("Ciclos de reloj · THUMDER");
+  await go(page, "/");
+  // Every view, with what it is for (the tools of development too, in the development build)
+  await expect.poll(() => page.locator(".home-tile").count()).toBeGreaterThanOrEqual(14);
+  await expect(page.locator(".home-tile", { hasText: "Ruta de datos" })).toContainText("adelantamientos");
 });

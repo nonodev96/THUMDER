@@ -1,0 +1,78 @@
+// The header of a page: the name of the view and what it is for on the left, the breadcrumb on the right
+
+:host {
+  display: block;
+}
+
+.page-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.page-header-text {
+  min-width: 0;
+}
+
+// With the class and the attribute of the component, over `.content-header h1` of AdminLTE and theme.scss
+.page-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--thumder-text);
+}
+
+.page-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--thumder-radius);
+  font-size: 1rem;
+  color: var(--thumder-on-primary);
+  background-image: linear-gradient(135deg, var(--thumder-primary) 0%, var(--thumder-accent) 100%);
+  box-shadow: var(--thumder-shadow);
+}
+
+.page-header-help {
+  margin: 0.3rem 0 0;
+  max-width: 80ch;
+  font-size: 0.925rem;
+  color: var(--thumder-muted);
+}
+
+.page-header-breadcrumb {
+  flex: 0 0 auto;
+  padding-top: 0.4rem;
+}
+
+// Phones: the name is in the navbar; the sentence stays, short (two lines at most), and no breadcrumb
+@media (max-width: 575.98px) {
+  .page-header-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .page-header-help {
+    margin: 0;
+    font-size: 0.82rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .page-header-breadcrumb {
+    display: none;
+  }
+}

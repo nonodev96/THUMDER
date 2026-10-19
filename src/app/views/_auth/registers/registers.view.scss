@@ -63,3 +63,22 @@
     outline-offset: 1px;
   }
 }
+
+// What the last cycle wrote: the rows lit in green (VirtualTableComponent, `row-written`)
+.registers-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--thumder-muted);
+}
+
+.registers-legend-mark {
+  display: inline-block;
+  width: 1rem;
+  height: 0.75rem;
+  border-radius: 2px;
+  background-color: var(--thumder-success-soft);
+  box-shadow: inset 3px 0 0 var(--thumder-success-text);
+}

@@ -1,0 +1,980 @@
+// The instruction table: on a phone, cards that unfold; side by side (.itable--wide), a dense list and the details.
+// Only the colours of theme.scss: each category has one (--itable-cat), and its tint is that colour over the surface.
+:host {
+  display: block;
+}
+
+$mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+.itable-cat-alu {
+  --itable-cat: var(--thumder-chart-1);
+}
+
+.itable-cat-compare {
+  --itable-cat: var(--thumder-chart-2);
+}
+
+.itable-cat-shift {
+  --itable-cat: var(--thumder-chart-6);
+}
+
+.itable-cat-memory {
+  --itable-cat: var(--thumder-stage-mem);
+}
+
+.itable-cat-control {
+  --itable-cat: var(--thumder-chart-4);
+}
+
+.itable-cat-float {
+  --itable-cat: var(--thumder-chart-5);
+}
+
+.itable-cat-convert {
+  --itable-cat: var(--thumder-stage-wb);
+}
+
+.itable-cat-move {
+  --itable-cat: var(--thumder-chart-3);
+}
+
+.itable-cat-other {
+  --itable-cat: var(--thumder-muted);
+}
+
+.itable {
+  code {
+    color: inherit;
+    font-family: $mono;
+  }
+}
+
+.itable-intro {
+  color: var(--thumder-text-2);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.itable-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.itable-h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  scroll-margin-top: 4.5rem;
+}
+
+.itable-explorer {
+  scroll-margin-top: 4.5rem;
+}
+
+.itable-skip {
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+// ─── The search and the chips ───────────────────────────────────────────────────────────────────────────────────────
+
+.itable-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-bottom: 0.75rem;
+}
+
+.itable-search {
+  position: relative;
+
+  .form-control {
+    height: 2.75rem;
+    padding-left: 2.4rem;
+    font-size: 1rem;
+    border-radius: var(--thumder-radius);
+  }
+}
+
+.itable-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.875rem;
+  transform: translateY(-50%);
+  color: var(--thumder-muted);
+  pointer-events: none;
+}
+
+.itable-chips {
+  position: relative;
+  display: flex;
+  gap: 0.375rem;
+  // On a phone, one row that slides
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+
+  .itable--wide & {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+.itable-chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 999px;
+  background-color: var(--thumder-surface);
+  color: var(--thumder-text-2);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--thumder-primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--thumder-focus-ring);
+  }
+
+  &[aria-pressed="true"] {
+    border-color: var(--thumder-primary);
+    background-color: var(--thumder-primary-soft);
+    color: var(--thumder-primary-text);
+    font-weight: 600;
+
+    .itable-chip-count {
+      color: var(--thumder-primary-text);
+    }
+  }
+}
+
+.itable-chip-count {
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--thumder-muted);
+}
+
+.itable-dot {
+  display: inline-block;
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background-color: var(--itable-cat);
+}
+
+.itable-count {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--thumder-muted);
+}
+
+// ─── The list ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.itable-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.itable-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--thumder-text-2);
+
+  &:first-child {
+    margin-top: 0.25rem;
+  }
+}
+
+.itable-group-count {
+  font-weight: 400;
+  color: var(--thumder-muted);
+}
+
+.itable-group-help {
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--thumder-muted);
+}
+
+// A card of the list (a phone)
+.itable-item {
+  position: relative;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--thumder-border);
+  border-left: 4px solid var(--itable-cat);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface);
+  scroll-margin-top: 4.5rem;
+
+  &.itable-item--open {
+    border-color: var(--thumder-border-strong);
+    border-left-color: var(--itable-cat);
+    box-shadow: var(--thumder-shadow);
+  }
+}
+
+.itable-item-button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.7rem 0.875rem;
+  border: 0;
+  border-radius: var(--thumder-radius);
+  background: none;
+  color: var(--thumder-text);
+  text-align: left;
+  cursor: pointer;
+  scroll-margin-top: 4.5rem;
+
+  &:hover {
+    background-color: var(--thumder-surface-hover);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--thumder-focus-ring);
+  }
+}
+
+.itable-item-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.itable-mnemonic {
+  flex: none;
+  font-family: $mono;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.itable-name {
+  font-size: 0.875rem;
+  color: var(--thumder-text-2);
+}
+
+.itable-format {
+  flex: none;
+  min-width: 1.4rem;
+  padding: 0 0.3rem;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 4px;
+  font-family: $mono;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--thumder-text-2);
+}
+
+.itable-chevron {
+  flex: none;
+  align-self: center;
+  font-size: 0.75rem;
+  color: var(--thumder-muted);
+  transition: transform 0.15s ease;
+
+  .itable-item--open & {
+    transform: rotate(180deg);
+  }
+}
+
+.itable-item-operands {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: var(--thumder-text-2) !important;
+  overflow-wrap: anywhere;
+}
+
+.itable-item-formula {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--thumder-text);
+  overflow-wrap: anywhere;
+}
+
+.itable-inline {
+  padding: 0.875rem;
+  border-top: 1px solid var(--thumder-border);
+}
+
+.itable-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--thumder-muted);
+}
+
+// Side by side: the list on the left, dense and with its own scroll, and the details on the right
+.itable--wide {
+  .itable-body {
+    display: grid;
+    grid-template-columns: minmax(15rem, 20rem) minmax(0, 1fr);
+    gap: 1rem;
+    height: clamp(24rem, calc(100vh - 19rem), 52rem);
+  }
+
+  .itable-list,
+  .itable-panel {
+    min-height: 0;
+    overflow-y: auto;
+    border: 1px solid var(--thumder-border);
+    border-radius: var(--thumder-radius);
+    background-color: var(--thumder-surface);
+  }
+
+  .itable-list {
+    position: relative;
+  }
+
+  .itable-panel {
+    padding: 1rem 1.25rem 1.25rem;
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--thumder-focus-ring);
+    }
+  }
+
+  .itable-group {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    margin: 0;
+    padding: 0.5rem 0.75rem 0.4rem;
+    border-bottom: 1px solid var(--thumder-border);
+    background-color: var(--thumder-surface-2);
+    font-size: 0.75rem;
+  }
+
+  .itable-group-help {
+    display: none;
+  }
+
+  .itable-item {
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--thumder-border);
+    border-left: 3px solid var(--itable-cat);
+    border-radius: 0;
+    box-shadow: none;
+
+    &.itable-item--open {
+      background-color: var(--thumder-primary-soft);
+
+      .itable-mnemonic {
+        color: var(--thumder-primary-text);
+      }
+    }
+  }
+
+  .itable-item-button {
+    min-height: 0;
+    padding: 0.45rem 0.75rem;
+    border-radius: 0;
+  }
+
+  .itable-item--open .itable-item-button:hover {
+    background-color: transparent;
+  }
+
+  .itable-mnemonic {
+    font-size: 0.9375rem;
+  }
+
+  .itable-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 0.8125rem;
+  }
+
+  .itable-item-operands {
+    font-size: 0.8125rem;
+  }
+
+  .itable-empty {
+    padding: 2rem 1rem;
+  }
+}
+
+// ─── The details ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.itable-detail-head {
+  margin-bottom: 0.5rem;
+}
+
+.itable-detail-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+
+  .itable-mnemonic {
+    font-size: 1.6rem;
+  }
+}
+
+.itable-detail-name {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--thumder-text-2);
+}
+
+.itable-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 0.875rem;
+}
+
+.itable-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--thumder-text-2);
+}
+
+.itable-tag--unit {
+  border-color: transparent;
+  font-family: $mono;
+  font-weight: 700;
+  color: var(--thumder-on-stage);
+}
+
+.itable-code {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+
+  dt {
+    margin-bottom: 0.15rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--thumder-muted);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  code {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--thumder-border);
+    border-radius: 4px;
+    background-color: var(--thumder-surface-2);
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+.itable-formula {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--thumder-primary);
+  border-radius: 4px;
+  background-color: var(--thumder-primary-soft);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--thumder-text);
+  overflow-wrap: anywhere;
+}
+
+.itable-text {
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.itable-hint {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--thumder-muted);
+}
+
+.itable-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: 0.625rem 1rem;
+  margin: 0 0 1rem;
+  padding: 0.75rem;
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+
+  dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--thumder-muted);
+  }
+
+  dd {
+    margin: 0.1rem 0 0;
+    font-size: 0.875rem;
+  }
+}
+
+// The unit takes a whole row on a phone (its text is long)
+.itable-facts-wide {
+  grid-column: 1 / -1;
+
+  .itable--wide & {
+    grid-column: auto;
+  }
+}
+
+.itable-arrow {
+  display: inline-block;
+  margin: 0 0.15em;
+  font-size: 1.3em;
+  line-height: 1;
+  vertical-align: -0.05em;
+}
+
+.itable-register {
+  display: inline-block;
+  margin: 0 0.25rem 0.15rem 0;
+  padding: 0 0.35rem;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 4px;
+  background-color: var(--thumder-surface);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.itable-none {
+  color: var(--thumder-muted);
+}
+
+.itable-h4 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.itable-word-hex {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--thumder-text-2) !important;
+}
+
+// The fields of the word: as wide as their bits
+.itable-fields {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: var(--thumder-radius);
+  overflow: hidden;
+}
+
+.itable-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  flex-basis: 0;
+  min-width: 0;
+  padding: 0.3rem 0.2rem 0.35rem;
+  background-color: color-mix(in srgb, var(--itable-field) 18%, var(--thumder-surface));
+  text-align: center;
+  line-height: 1.2;
+
+  & + & {
+    border-left: 1px solid var(--thumder-border-strong);
+  }
+
+  span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}
+
+.itable-field--opcode {
+  --itable-field: var(--thumder-chart-1);
+}
+
+.itable-field--reg1 {
+  --itable-field: var(--thumder-chart-2);
+}
+
+.itable-field--reg2 {
+  --itable-field: var(--thumder-chart-6);
+}
+
+.itable-field--reg3 {
+  --itable-field: var(--thumder-chart-5);
+}
+
+.itable-field--value {
+  --itable-field: var(--thumder-chart-3);
+}
+
+.itable-field--unused {
+  background: repeating-linear-gradient(-45deg, var(--thumder-surface-2) 0 6px, var(--thumder-surface) 6px 12px);
+
+  .itable-field-meaning {
+    font-weight: 400;
+    color: var(--thumder-muted);
+  }
+}
+
+.itable-field-range {
+  font-family: $mono;
+  font-size: 0.65rem;
+  color: var(--thumder-text-2);
+}
+
+.itable-field-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--thumder-text-2);
+}
+
+.itable-field-bits {
+  font-family: $mono;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.itable-field-meaning {
+  font-family: $mono;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.itable-stages-help {
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--thumder-muted);
+}
+
+.itable-stages {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: grid;
+    grid-template-columns: 4.75rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.625rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+}
+
+.itable-stage {
+  display: inline-block;
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  font-family: $mono;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--thumder-on-stage);
+}
+
+.itable-stage-if {
+  background-color: var(--thumder-stage-if);
+}
+
+.itable-stage-id {
+  background-color: var(--thumder-stage-id);
+}
+
+.itable-stage-ex {
+  background-color: var(--thumder-stage-ex);
+}
+
+.itable-stage-fadd {
+  background-color: var(--thumder-stage-fadd);
+}
+
+.itable-stage-fmult {
+  background-color: var(--thumder-stage-fmult);
+}
+
+.itable-stage-fdiv {
+  background-color: var(--thumder-stage-fdiv);
+}
+
+.itable-stage-mem {
+  background-color: var(--thumder-stage-mem);
+}
+
+.itable-stage-wb {
+  background-color: var(--thumder-stage-wb);
+}
+
+.itable-services {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  dt {
+    font-size: 0.875rem;
+    font-weight: 700;
+
+    code {
+      margin-right: 0.25rem;
+    }
+  }
+
+  dd {
+    margin: 0.1rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--thumder-text-2);
+  }
+}
+
+.itable-permalink {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+
+  a {
+    text-decoration: none;
+  }
+}
+
+// ─── The maps of the codes ──────────────────────────────────────────────────────────────────────────────────────────
+
+.itable-maps {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--thumder-border);
+}
+
+.itable-maps-help {
+  margin: 0.5rem 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--thumder-text-2);
+}
+
+.itable-maps-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.itable-map {
+  min-width: 0;
+  scroll-margin-top: 4.5rem;
+}
+
+.itable-map-title {
+  margin: 0 0 0.15rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.itable-map-help {
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--thumder-muted);
+}
+
+.itable-map-scroll {
+  // Positioned, so that it also clips the texts for screen readers of its cells
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: var(--thumder-radius);
+  -webkit-overflow-scrolling: touch;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--thumder-focus-ring);
+  }
+}
+
+.itable-matrix {
+  width: 100%;
+  min-width: 33rem;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-family: $mono;
+
+  th {
+    padding: 0.35rem 0.25rem;
+    background-color: var(--thumder-surface-2);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--thumder-text-2);
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid var(--thumder-border-strong);
+  }
+
+  tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    border-right: 1px solid var(--thumder-border-strong);
+  }
+
+  td {
+    padding: 0;
+    border-top: 1px solid var(--thumder-border);
+    border-left: 1px solid var(--thumder-border);
+    background-color: var(--thumder-surface);
+  }
+
+  tbody tr:first-child td {
+    border-top: 0;
+  }
+
+  th + td {
+    border-left: 0;
+  }
+}
+
+.itable-matrix-corner {
+  left: 0;
+  z-index: 2 !important;
+  width: 3.75rem;
+  border-right: 1px solid var(--thumder-border-strong);
+  font-size: 0.65rem !important;
+  font-weight: 400 !important;
+  white-space: nowrap;
+}
+
+.itable-matrix-axes {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.itable-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.2rem 0.1rem;
+  border: 0;
+  background-color: color-mix(in srgb, var(--itable-cat, var(--thumder-muted)) 16%, var(--thumder-surface));
+  color: var(--thumder-text);
+  font-family: $mono;
+  line-height: 1.15;
+  text-decoration: none;
+}
+
+button.itable-cell {
+  cursor: pointer;
+
+  &:hover {
+    background-color: color-mix(in srgb, var(--itable-cat) 32%, var(--thumder-surface));
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--thumder-primary);
+  }
+}
+
+.itable-cell-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.itable-cell-code {
+  font-size: 0.65rem;
+  color: var(--thumder-text-2);
+}
+
+// The cells that the search or the filter leave out
+.itable-cell--dim {
+  background-color: var(--thumder-surface);
+  color: var(--thumder-muted);
+
+  .itable-cell-name {
+    font-weight: 400;
+  }
+
+  .itable-cell-code {
+    color: var(--thumder-muted);
+  }
+}
+
+.itable-cell--current {
+  box-shadow: inset 0 0 0 2px var(--thumder-primary-text);
+}
+
+.itable-cell--opens {
+  background-color: var(--thumder-primary-soft);
+  color: var(--thumder-primary-text);
+
+  .itable-cell-code {
+    color: var(--thumder-primary-text);
+  }
+
+  &:hover,
+  &:focus {
+    color: var(--thumder-primary-text);
+    text-decoration: underline;
+  }
+}
+
+.itable-cell--free {
+  background-color: transparent;
+  color: var(--thumder-muted);
+}
+
+.itable-note {
+  margin: 1rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--thumder-muted);
+}

@@ -1,6 +1,6 @@
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-  <!-- Left navbar links -->
-  <ul class="navbar-nav">
+  <!-- Left: the sidebar, and where to go -->
+  <ul class="navbar-nav navbar-nav-start">
     <li class="nav-item">
       <button type="button" class="nav-link btn btn-link" (click)="sidebar.toggle()" [attr.aria-expanded]="sidebar.isExpanded"
         [attr.aria-label]="'NAVBAR.TOGGLE_SIDEBAR' | translate" [title]="'NAVBAR.TOGGLE_SIDEBAR' | translate">
@@ -8,95 +8,62 @@
       </button>
     </li>
 
-    <li class="nav-item d-none d-xl-inline-block">
-      <a [routerLink]="['/']" class="nav-link">{{ 'HOME' | translate }}</a>
+    <!-- Phones: the name of the view that is open (the header of the page is not shown) -->
+    @if (phone()) {
+      @let current = page.page();
+      <li class="nav-item navbar-page" aria-hidden="true">
+        <i class="fa-fw {{ current.icon }}" aria-hidden="true"></i>
+        <span class="navbar-page-title">{{ current.title | translate }}</span>
+      </li>
+    }
+
+    <li class="nav-item d-none d-md-block">
+      <a routerLink="/" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" [title]="'HOME' | translate">
+        <i class="fas fa-home" aria-hidden="true"></i><span class="navbar-label">{{ 'HOME' | translate }}</span>
+      </a>
     </li>
 
-
-    
-      <li class="nav-item dropdown d-none d-md-block" thumderDropdown>
-        <button type="button" id="dropdownSubMenuNavigation" aria-haspopup="true" aria-expanded="false"
+    <!-- All the views, by sections (as the home page and the sidebar) -->
+    <li class="nav-item dropdown d-none d-md-block" thumderDropdown>
+      <button type="button" id="dropdownSubMenuNavigation" aria-haspopup="true" aria-expanded="false"
         class="nav-link btn btn-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</button>
-        <ul aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow">
-          @for (menu of PRIVATE_AUTH_ROUTES; track menu) {
-            <li>
-              @if (menu.show) {
-                <a class="dropdown-item" title="{{menu.path}}" [routerLink]="menu.routerLink">
-                  {{ 'NAVIGATION.' + menu.lang | translate }}
-                </a>
-              }
-            </li>
-          }
-        </ul>
-      </li>
-      <li class="nav-item d-none d-xl-inline-block">
-        <a [routerLink]="['/auth/config']" class="nav-link">
-          {{ 'NAVIGATION.CONFIG' | translate }}
-        </a>
-      </li>
-      <li class="nav-item d-none d-xl-inline-block">
-        <a [routerLink]="['/auth/file-manager']" class="nav-link">
-          {{ 'NAVIGATION.FILE_MANAGER' | translate }}
-        </a>
-      </li>
-      <li class="nav-item d-none d-xl-inline-block">
-        <a [routerLink]="['/auth/editor']" class="nav-link">
-          {{ 'NAVIGATION.EDITOR' | translate }}
-        </a>
-      </li>
-      <li class="nav-item d-none d-xl-inline-block">
-        <a [routerLink]="['/auth/multiview']" class="nav-link">
-          {{ 'NAVIGATION.MULTIVIEW' | translate }}
-        </a>
-      </li>
-    
+      <div aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow navbar-pages">
+        @for (group of groups; track group.title) {
+          <div class="navbar-pages-group">
+            <p class="dropdown-header">{{ group.title | translate }}</p>
+            @for (menu of group.routes; track menu.path) {
+              <a class="dropdown-item" [routerLink]="menu.routerLink" routerLinkActive="active">
+                <i class="fa-fw {{ menu.icon }}" aria-hidden="true"></i> {{ 'NAVIGATION.' + menu.lang | translate }}
+              </a>
+            }
+          </div>
+        }
+      </div>
+    </li>
 
+    <!-- The places of the work, at hand -->
+    @for (link of quickLinks; track link.path) {
+      <li class="nav-item d-none d-lg-block">
+        <a [routerLink]="link.routerLink" class="nav-link" routerLinkActive="active" [title]="'NAVIGATION.' + link.lang | translate">
+          <i class="fa-fw {{ link.icon }}" aria-hidden="true"></i><span class="navbar-label">{{ 'NAVIGATION.' + link.lang | translate }}</span>
+        </a>
+      </li>
+    }
   </ul>
 
-  <!-- Right navbar links -->
-  <ul class="navbar-nav ml-auto">
-
-
-    
-      <li class="nav-item d-flex flex-nowrap align-items-center ml-2">
-        <div class="btn-group" role="group" [attr.aria-label]="'SIMULATION.CONTROLS' | translate"
-          [title]="'SIMULATION.SHORTCUTS' | translate">
-          <button type="button" class="btn sim-control" (click)="reset()"
-            [attr.aria-label]="'SIMULATION.LOAD' | translate" [title]="('SIMULATION.LOAD' | translate) + ' (Shift+F5)'">
-            <i class="fas fa-exchange-alt" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn sim-control" (click)="clear()" id="simulationClear"
-            [attr.aria-label]="'SIMULATION.CLEAR' | translate" [title]="'SIMULATION.CLEAR' | translate">
-            <i class="fas fa-trash-alt" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn sim-control" (click)="togglePlayPause()"
-            [attr.aria-label]="(machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate"
-            [title]="((machine.state.running() ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate) + ' (F5)'"
-            [disabled]="!machine.state.canSimulate()">
-            <i class="fas" [class.fa-pause]="machine.state.running()" [class.fa-play]="!machine.state.running()" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn sim-control" (click)="stepBack()" id="simulationStepBack"
-            [attr.aria-label]="'SIMULATION.STEP_BACK' | translate" [title]="('SIMULATION.STEP_BACK' | translate) + ' (Shift+F10)'"
-            [disabled]="machine.state.cycles() === 0 || machine.state.running()">
-            <i class="fas fa-angle-left" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn sim-control" (click)="nextStep()"
-            [attr.aria-label]="'SIMULATION.STEP' | translate" [title]="('SIMULATION.STEP' | translate) + ' (F10)'"
-            [disabled]="!machine.state.canSimulate() || machine.state.running()">
-            <i class="fas fa-angle-right" aria-hidden="true"></i>
-          </button>
-          <button type="button" class="btn sim-control d-none d-sm-inline-block" (click)="runToEnd()" id="simulationRunToEnd"
-            [attr.aria-label]="'SIMULATION.RUN_TO_END' | translate" [title]="('SIMULATION.RUN_TO_END' | translate) + ' (F8)'"
-            [disabled]="!machine.state.canSimulate() || machine.state.running()">
-            <i class="fas fa-fast-forward" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div class="dropdown d-none d-sm-inline-block" thumderDropdown>
-          <button type="button" class="btn dropdown-toggle" id="simulationSpeed" aria-haspopup="true" aria-expanded="false"
+  <!-- Right: the simulation (on phones it is in the bar at the bottom) and the preferences -->
+  <ul class="navbar-nav ml-auto align-items-center">
+    @if (!phone()) {
+      <li class="nav-item d-flex flex-nowrap align-items-center">
+        <thumder-simulation-controls variant="bar"></thumder-simulation-controls>
+        <div class="dropdown d-inline-block ml-1" thumderDropdown>
+          <button type="button" class="btn dropdown-toggle navbar-speed" id="simulationSpeed" aria-haspopup="true" aria-expanded="false"
             [attr.aria-label]="('SIMULATION.SPEED' | translate) + ': ' + (speedLabel() | translate)" [title]="('SIMULATION.SPEED' | translate) + ': ' + (speedLabel() | translate)">
             <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+            <span class="navbar-label small" aria-hidden="true">{{ speedLabel() | translate }}</span>
           </button>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="simulationSpeed">
+            <p class="dropdown-header" aria-hidden="true">{{ 'SIMULATION.SPEED' | translate }}</p>
             @for (speed of speeds; track speed.delay) {
               <button type="button" class="dropdown-item" (click)="machine.setSpeed(speed.delay)"
                 [class.active]="config.value().delay === speed.delay" [attr.aria-pressed]="config.value().delay === speed.delay">
@@ -116,29 +83,31 @@
           </span>
         }
       </li>
-    
+      <li class="nav-item navbar-divider d-none d-sm-block" aria-hidden="true"></li>
+    }
 
-    <!-- Phones: the speed, the theme and the language in one menu (the navbar does not have room for three) -->
+    <!-- Phones: everything else in one menu (the navbar does not have room) -->
     <li class="nav-item dropdown d-sm-none" thumderDropdown>
       <button type="button" id="navbarMore" aria-haspopup="true" aria-expanded="false" class="nav-link btn btn-link dropdown-toggle navbar-more"
         [title]="'NAVBAR.MORE' | translate" [attr.aria-label]="'NAVBAR.MORE' | translate">
         <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
       </button>
       <div aria-labelledby="navbarMore" class="dropdown-menu dropdown-menu-right border-0 shadow navbar-more-menu">
-        <button type="button" class="dropdown-item" id="moreRunToEnd" (click)="runToEnd()" [disabled]="!machine.state.canSimulate() || machine.state.running()">
-          <i class="fas fa-fw fa-fast-forward" aria-hidden="true"></i> {{ 'SIMULATION.RUN_TO_END' | translate }}
-        </button>
-        <div class="dropdown-divider" role="separator"></div>
         <p class="dropdown-header" aria-hidden="true">{{ 'SIMULATION.SPEED' | translate }}</p>
-        @for (speed of speeds; track speed.delay) {
-          <button type="button" class="dropdown-item" (click)="machine.setSpeed(speed.delay)"
-            [class.active]="config.value().delay === speed.delay" [attr.aria-pressed]="config.value().delay === speed.delay">
-            <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i> {{ speed.label | translate }}
-          </button>
-        }
+        <div class="navbar-more-speeds">
+          @for (speed of speeds; track speed.delay) {
+            <button type="button" class="dropdown-item" (click)="machine.setSpeed(speed.delay)"
+              [class.active]="config.value().delay === speed.delay" [attr.aria-pressed]="config.value().delay === speed.delay">
+              <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i> {{ speed.label | translate }}
+            </button>
+          }
+        </div>
         <button type="button" class="dropdown-item" id="moreSoundToggle" (click)="toggleSound()" [attr.aria-pressed]="config.value().sound.enabled">
           <i class="fas fa-fw" [class.fa-volume-up]="config.value().sound.enabled" [class.fa-volume-mute]="!config.value().sound.enabled" aria-hidden="true"></i>
           {{ 'SOUND.NAME' | translate }} <span class="text-muted small">({{ (config.value().sound.enabled ? 'SOUND.ON' : 'SOUND.OFF') | translate }})</span>
+        </button>
+        <button type="button" class="dropdown-item" id="moreClear" (click)="controls.clear()">
+          <i class="fas fa-fw fa-trash-alt" aria-hidden="true"></i> {{ 'SIMULATION.SHORT_CLEAR' | translate }}
         </button>
         <div class="dropdown-divider" role="separator"></div>
         <p class="dropdown-header" aria-hidden="true">{{ 'THEME.TITLE' | translate }}</p>
@@ -156,6 +125,15 @@
         <button type="button" class="dropdown-item" id="moreLangEnglish" lang="en" (click)="app.setLang('en')" [class.active]="app.lang === 'en'">
           <span class="flag-icon flag-icon-gbr" aria-hidden="true"></span> English
         </button>
+        <div class="dropdown-divider" role="separator"></div>
+        <a class="dropdown-item" routerLink="/auth/config"><i class="fas fa-fw fa-wrench" aria-hidden="true"></i> {{ 'NAVIGATION.CONFIG' | translate }}</a>
+        <a class="dropdown-item" routerLink="/landing/privacy"><i class="fas fa-fw fa-user-secret" aria-hidden="true"></i> {{ 'LEGAL.PRIVACY' | translate }}</a>
+        <a class="dropdown-item" routerLink="/landing/legal"><i class="fas fa-fw fa-balance-scale" aria-hidden="true"></i> {{ 'LEGAL.NOTICE' | translate }}</a>
+        <a class="dropdown-item" routerLink="/landing/accessibility"><i class="fas fa-fw fa-universal-access" aria-hidden="true"></i> {{ 'LEGAL.ACCESSIBILITY' | translate }}</a>
+        <button type="button" class="dropdown-item" id="moreConsent" (click)="consent.openSettings()">
+          <i class="fas fa-fw fa-user-shield" aria-hidden="true"></i> {{ 'LEGAL.SETTINGS' | translate }}
+        </button>
+        <p class="dropdown-header navbar-more-version">THUMDER {{ version }}</p>
       </div>
     </li>
 
@@ -179,19 +157,19 @@
     <li class="nav-item dropdown d-none d-sm-block" thumderDropdown>
       <button type="button" id="dropdownSubMenuLang" aria-haspopup="true" aria-expanded="false"
       class="nav-link btn btn-link dropdown-toggle" [title]="'CONFIG.LANG' | translate">
-        <i class="fas fa-language d-lg-none" aria-hidden="true"></i>
-        <span class="d-none d-lg-inline">{{ 'CONFIG.LANG' | translate }}</span>
-        <span class="sr-only d-lg-none">{{ 'CONFIG.LANG' | translate }}</span>
+        <i class="fas fa-language" aria-hidden="true"></i>
+        <span class="d-none d-xl-inline ml-1">{{ (app.lang === 'en' ? 'EN' : 'ES') }}</span>
+        <span class="sr-only">{{ 'CONFIG.LANG' | translate }}</span>
       </button>
       <ul aria-labelledby="dropdownSubMenuLang" class="dropdown-menu dropdown-menu-right border-0 shadow">
         <li>
-          <button type="button" class="dropdown-item" (click)="app.setLang('es')" id="changeLangToSpanish" lang="es">
+          <button type="button" class="dropdown-item" (click)="app.setLang('es')" id="changeLangToSpanish" lang="es" [class.active]="app.lang === 'es'">
             <span class="flag-icon flag-icon-esp" aria-hidden="true"></span>
             Español
           </button>
         </li>
         <li>
-          <button type="button" class="dropdown-item" (click)="app.setLang('en')" id="changeLangToEnglish" lang="en">
+          <button type="button" class="dropdown-item" (click)="app.setLang('en')" id="changeLangToEnglish" lang="en" [class.active]="app.lang === 'en'">
             <span class="flag-icon flag-icon-gbr" aria-hidden="true"></span>
             English
           </button>
@@ -199,7 +177,11 @@
       </ul>
     </li>
 
-
+    <li class="nav-item d-none d-sm-block">
+      <a routerLink="/auth/config" class="nav-link" routerLinkActive="active" [title]="'NAVIGATION.CONFIG' | translate">
+        <i class="fas fa-wrench" aria-hidden="true"></i><span class="sr-only">{{ 'NAVIGATION.CONFIG' | translate }}</span>
+      </a>
+    </li>
 
     @if (!authService.isGuest()) {
       <li class="nav-item">

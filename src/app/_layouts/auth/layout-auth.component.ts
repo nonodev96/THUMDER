@@ -3,15 +3,14 @@ import { Component, inject, type OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { Globals } from "@core/services/globals/globals.service";
 import { SidebarService } from "@core/services/layout/sidebar.service";
-import { TranslatePipe } from "@ngx-translate/core";
 import { AsideLeftComponent } from "../../components/aside/aside-left/aside-left.component";
 import { AsideRightComponent } from "../../components/aside/aside-right/aside-right.component";
-import { BreadcrumbComponent } from "../../components/breadcrumb/breadcrumb.component";
 import { DlxIoComponent } from "../../components/dlx-io/dlx-io.component";
 import { FooterComponent } from "../../components/footers/footer/footer.component";
 import { EditMemoryBinary32Component } from "../../components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { EditRegisterBinary32Component } from "../../components/modals/edit-register-binary32/edit-register-binary32.component";
 import { AuthNavbarComponent } from "../../components/navbars/auth-navbar/auth-navbar.component";
+import { PageHeaderComponent } from "../../components/page-header/page-header.component";
 import { DebugComponent } from "../../components/windows/debug/debug.component";
 
 @Component({
@@ -20,7 +19,7 @@ import { DebugComponent } from "../../components/windows/debug/debug.component";
   imports: [
     AuthNavbarComponent,
     AsideLeftComponent,
-    BreadcrumbComponent,
+    PageHeaderComponent,
     RouterOutlet,
     EditMemoryBinary32Component,
     EditRegisterBinary32Component,
@@ -28,7 +27,6 @@ import { DebugComponent } from "../../components/windows/debug/debug.component";
     FooterComponent,
     DlxIoComponent,
     DebugComponent,
-    TranslatePipe,
   ],
 })
 export class LayoutAuthComponent implements OnInit {

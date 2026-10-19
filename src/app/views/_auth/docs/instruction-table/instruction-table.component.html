@@ -1,0 +1,263 @@
+<div class="itable" [class.itable--wide]="wide()" [attr.lang]="lang()">
+  <p class="itable-intro">{{ 'DOCS.ITABLE.INTRO' | translate: { count: entries().length } }}</p>
+
+  <!-- The search, the chips of the categories and the list -->
+  <section class="itable-explorer" #explorer aria-labelledby="itableListTitle">
+    <div class="itable-heading">
+      <h2 class="itable-h2" id="itableListTitle">{{ 'DOCS.ITABLE.LIST' | translate }}</h2>
+      <a class="itable-skip" href="#itableMapTitle">
+        <i class="fas fa-th fa-fw" aria-hidden="true"></i> {{ 'DOCS.ITABLE.GO_TO_MAP' | translate }}
+      </a>
+    </div>
+
+    <div class="itable-toolbar">
+      <div class="itable-search">
+        <label class="sr-only" for="itableSearch">{{ 'DOCS.ITABLE.SEARCH' | translate }}</label>
+        <i class="fas fa-search itable-search-icon" aria-hidden="true"></i>
+        <input type="search" class="form-control" id="itableSearch" autocomplete="off" spellcheck="false" enterkeyhint="search"
+          [placeholder]="'DOCS.ITABLE.SEARCH_PLACEHOLDER' | translate" [value]="query()" (input)="query.set($any($event.target).value)">
+      </div>
+      <div class="itable-chips" role="group" [attr.aria-label]="'DOCS.ITABLE.FILTER' | translate">
+        <button type="button" class="itable-chip" [attr.aria-pressed]="category() === null" (click)="setCategory(null)">
+          {{ 'DOCS.ITABLE.ALL' | translate }} <span class="itable-chip-count">{{ total() }}</span>
+        </button>
+        @for (item of categories; track item) {
+          <button type="button" class="itable-chip" [class]="'itable-cat-' + item" [attr.aria-pressed]="category() === item"
+            (click)="setCategory(item)">
+            <span class="itable-dot" aria-hidden="true"></span>
+            {{ 'DOCS.ITABLE.CATEGORIES.' + item.toUpperCase() | translate }} <span class="itable-chip-count">{{ counts()[item] }}</span>
+          </button>
+        }
+      </div>
+      <p class="itable-count" role="status">
+        {{ (results().length === 1 ? 'DOCS.ITABLE.RESULTS_ONE' : 'DOCS.ITABLE.RESULTS') | translate: { count: results().length } }}
+      </p>
+    </div>
+
+    <div class="itable-body">
+      <div class="itable-list" (keydown)="onListKey($event)">
+        @for (group of groups(); track group.category) {
+          @if (group.entries.length) {
+            @if (group.category; as name) {
+              <h3 class="itable-group" [class]="'itable-cat-' + name">
+                <span class="itable-dot" aria-hidden="true"></span>
+                {{ 'DOCS.ITABLE.CATEGORIES.' + name.toUpperCase() | translate }} <span class="itable-group-count">{{ group.entries.length }}</span>
+              </h3>
+              <p class="itable-group-help">{{ 'DOCS.ITABLE.CATEGORY_HELP.' + name.toUpperCase() | translate }}</p>
+            }
+            <ul class="itable-items">
+              @for (entry of group.entries; track entry.mnemonic) {
+                @let open = wide() ? shown()?.mnemonic === entry.mnemonic : selected() === entry.mnemonic;
+                <li class="itable-item" [class]="'itable-cat-' + entry.category" [class.itable-item--open]="open">
+                  <button type="button" class="itable-item-button" [id]="'itable-' + entry.mnemonic" (click)="toggle(entry)"
+                    [attr.aria-expanded]="wide() ? null : open" [attr.aria-current]="wide() && open ? 'true' : null"
+                    [attr.aria-controls]="wide() ? 'itableDetail' : open ? 'itableDetail-' + entry.mnemonic : null">
+                    <span class="itable-item-head">
+                      <span class="itable-mnemonic">{{ entry.mnemonic }}</span>
+                      <code class="itable-item-operands">{{ entry.operands }}</code>
+                      <span class="itable-format" [attr.title]="entry.description.format">{{ entry.format }}</span>
+                      @if (!wide()) { <i class="fas fa-chevron-down itable-chevron" aria-hidden="true"></i> }
+                    </span>
+                    <span class="itable-name">{{ entry.name }}</span>
+                    @if (!wide() && !open) {
+                      <span class="itable-item-formula">
+                        @for (part of formula(entry.description.summary); track $index) { @if ($index) { <span class="itable-arrow">←</span> }{{ part }} }
+                      </span>
+                    }
+                  </button>
+                  @if (!wide() && open) {
+                    <div class="itable-inline" role="region" [id]="'itableDetail-' + entry.mnemonic" [attr.aria-labelledby]="'itable-' + entry.mnemonic">
+                      <ng-container *ngTemplateOutlet="detail; context: { $implicit: entry, inline: true }"></ng-container>
+                    </div>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        }
+        @if (!results().length) {
+          <div class="itable-empty">
+            <p>{{ 'DOCS.ITABLE.NO_RESULTS' | translate }}</p>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="clear()">{{ 'DOCS.ITABLE.CLEAR' | translate }}</button>
+          </div>
+        }
+      </div>
+
+      @if (wide()) {
+        <div class="itable-panel" #panel id="itableDetail" role="region" tabindex="0"
+          [attr.aria-label]="'DOCS.ITABLE.DETAILS' | translate: { mnemonic: shown()?.mnemonic ?? '' }">
+          @if (shown(); as entry) {
+            <ng-container *ngTemplateOutlet="detail; context: { $implicit: entry, inline: false }"></ng-container>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- The maps of the codes -->
+  <section class="itable-maps" aria-labelledby="itableMapTitle">
+    <h2 class="itable-h2" id="itableMapTitle">{{ 'DOCS.ITABLE.MAP' | translate }}</h2>
+    <p class="itable-maps-help">{{ 'DOCS.ITABLE.MAP_HELP' | translate }}</p>
+    <div class="itable-maps-grid">
+      @for (matrix of matrices; track matrix.id) {
+        <div class="itable-map" [id]="'itableMap-' + matrix.id">
+          <h3 class="itable-map-title" [id]="'itableMapTitle-' + matrix.id">{{ 'DOCS.ITABLE.MAP_' + matrix.id.toUpperCase() | translate }}</h3>
+          <p class="itable-map-help">{{ 'DOCS.ITABLE.MAP_' + matrix.id.toUpperCase() + '_HELP' | translate }}</p>
+          <div class="itable-map-scroll" tabindex="0" role="region" [attr.aria-labelledby]="'itableMapTitle-' + matrix.id">
+            <table class="itable-matrix">
+              <thead>
+                <tr>
+                  <th scope="col" class="itable-matrix-corner">
+                    <span class="itable-matrix-axes" aria-hidden="true">
+                      <span>↓ {{ matrix.id === 'opcode' ? '31–29' : '5–3' }}</span><span>→ {{ matrix.id === 'opcode' ? '28–26' : '2–0' }}</span>
+                    </span>
+                    <span class="sr-only">{{ (matrix.id === 'opcode' ? 'DOCS.ITABLE.MAP_CORNER_OPCODE' : 'DOCS.ITABLE.MAP_CORNER_FUNC') | translate }}</span>
+                  </th>
+                  @for (column of bits; track column) { <th scope="col">{{ column }}</th> }
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of matrix.rows; track row.bits) {
+                  <tr>
+                    <th scope="row">{{ row.bits }}</th>
+                    @for (cell of row.cells; track cell.code) {
+                      <td [class]="cell.category ? 'itable-cat-' + cell.category : ''">
+                        @if (cell.mnemonic) {
+                          <button type="button" class="itable-cell" [class.itable-cell--dim]="!matching().has(cell.mnemonic)"
+                            [class.itable-cell--current]="shown()?.mnemonic === cell.mnemonic"
+                            [attr.aria-current]="shown()?.mnemonic === cell.mnemonic ? 'true' : null" (click)="openCell(cell)">
+                            <span class="itable-cell-name">{{ cell.mnemonic }}</span>
+                            <span class="itable-cell-code">{{ hex2(cell.code) }}</span>
+                          </button>
+                        } @else if (cell.opens) {
+                          <a class="itable-cell itable-cell--opens" [href]="'#itableMap-' + cell.opens">
+                            <span class="itable-cell-name">{{ cell.opens === 'R' ? 'SPECIAL' : 'FPARITH' }}</span>
+                            <span class="itable-cell-code">{{ hex2(cell.code) }} ↓ {{ cell.opens }}</span>
+                            <span class="sr-only">: {{ 'DOCS.ITABLE.MAP_OPENS_' + cell.opens | translate }}</span>
+                          </a>
+                        } @else {
+                          <span class="itable-cell itable-cell--free"><span aria-hidden="true">·</span><span class="sr-only">{{ 'DOCS.ITABLE.FREE' | translate }}</span></span>
+                        }
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+    <p class="itable-note"><i class="fas fa-info-circle" aria-hidden="true"></i> {{ 'DOCS.ITABLE.UNSIGNED_NOTE' | translate }}</p>
+  </section>
+</div>
+
+<!-- The details of an instruction: unfolded in its card (inline) or next to the list -->
+<ng-template #detail let-entry let-inline="inline">
+  <div class="itable-detail">
+    @if (!inline) {
+      <header class="itable-detail-head">
+        <h3 class="itable-detail-title">
+          <span class="itable-mnemonic">{{ entry.mnemonic }}</span> <span class="itable-detail-name">{{ entry.name }}</span>
+        </h3>
+      </header>
+    }
+    <div class="itable-tags">
+      <span class="itable-tag">{{ entry.description.format }}</span>
+      <span class="itable-tag itable-tag--unit" [class]="'itable-stage-' + unitColour(entry.unit)">{{ unitStage(entry.unit) }}</span>
+      <span class="itable-tag" [class]="'itable-cat-' + entry.category">
+        <span class="itable-dot" aria-hidden="true"></span> {{ 'DOCS.ITABLE.CATEGORIES.' + entry.category.toUpperCase() | translate }}
+      </span>
+    </div>
+
+    <dl class="itable-code">
+      <div><dt>{{ 'DOCS.ITABLE.SYNTAX' | translate }}</dt><dd><code>{{ entry.syntax }}</code></dd></div>
+      <div><dt>{{ 'DOCS.ITABLE.EXAMPLE' | translate }}</dt><dd><code>{{ entry.example }}</code></dd></div>
+    </dl>
+
+    <p class="itable-formula">
+      <span class="sr-only">{{ 'DOCS.ITABLE.FORMULA' | translate }}: </span>
+      @for (part of formula(entry.description.summary); track $index) { @if ($index) { <span class="itable-arrow">←</span> }{{ part }} }
+    </p>
+    <p class="itable-text">{{ entry.description.text }}</p>
+    @if (entry.def.doubles?.length) {
+      <p class="itable-hint"><i class="fas fa-info-circle" aria-hidden="true"></i> {{ 'DOCS.ITABLE.DOUBLES' | translate }}</p>
+    }
+
+    <dl class="itable-facts">
+      <div>
+        <dt>{{ 'DOCS.ITABLE.OPCODE' | translate }}</dt>
+        <dd><code>{{ bitsOf(entry.opcode) }}</code> · <code>{{ hex2(entry.opcode) }}</code>
+          @if (entry.format === 'R') { (SPECIAL) } @else if (entry.format === 'F') { (FPARITH) }
+        </dd>
+      </div>
+      @if (entry.func !== null) {
+        <div>
+          <dt>{{ 'DOCS.ITABLE.FUNC' | translate }}</dt>
+          <dd><code>{{ bitsOf(entry.func) }}</code> · <code>{{ hex2(entry.func) }}</code></dd>
+        </div>
+      }
+      <div class="itable-facts-wide">
+        <dt>{{ 'DOCS.ITABLE.UNIT' | translate }}</dt>
+        <dd>{{ 'DOCS.ITABLE.UNITS.' + entry.unit.toUpperCase() | translate }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'DOCS.ITABLE.READS' | translate }}</dt>
+        <dd>
+          @for (register of entry.reads; track register) { <code class="itable-register">{{ register }}</code> }
+          @empty { <span class="itable-none">{{ 'DOCS.ITABLE.NONE' | translate }}</span> }
+        </dd>
+      </div>
+      <div>
+        <dt>{{ 'DOCS.ITABLE.WRITES' | translate }}</dt>
+        <dd>
+          @for (register of entry.writes; track register) { <code class="itable-register">{{ register }}</code> }
+          @empty { <span class="itable-none">{{ 'DOCS.ITABLE.NONE' | translate }}</span> }
+        </dd>
+      </div>
+    </dl>
+
+    <h4 class="itable-h4">{{ 'DOCS.ITABLE.WORD' | translate }} <code class="itable-word-hex">0x{{ entry.word.toString(16).toUpperCase().padStart(8, '0') }}</code></h4>
+    <ol class="itable-fields" [attr.aria-label]="'DOCS.ITABLE.FIELDS' | translate">
+      @for (field of entry.fields; track $index) {
+        <li class="itable-field" [class]="'itable-field--' + field.kind" [class.itable-field--unused]="field.unused"
+          [style.flex-grow]="field.bits.length">
+          <span class="itable-field-range">{{ field.from === field.to ? field.from : field.from + '–' + field.to }}</span>
+          <span class="itable-field-name">{{ field.name }}</span>
+          <span class="itable-field-bits">{{ field.bits }}</span>
+          <span class="itable-field-meaning">{{ field.meaning }}</span>
+        </li>
+      }
+    </ol>
+
+    <h4 class="itable-h4">{{ 'DOCS.ITABLE.STAGES' | translate }}</h4>
+    <p class="itable-stages-help">{{ 'DOCS.ITABLE.STAGES_HELP' | translate: { address } }}</p>
+    <ol class="itable-stages">
+      @for (stage of entry.description.stages; track stage.stage) {
+        <li>
+          <span class="itable-stage" [class]="'itable-stage-' + stageColour(stage.stage)">{{ stage.stage }}</span>
+          <span>{{ stage.text }}</span>
+        </li>
+      }
+    </ol>
+
+    @if (entry.services; as services) {
+      <h4 class="itable-h4">{{ 'DOCS.ITABLE.SERVICES' | translate }}</h4>
+      <dl class="itable-services">
+        @for (service of services.list; track service.number) {
+          <div>
+            <dt><code>TRAP {{ service.number }}</code> {{ service.name }}</dt>
+            <dd>{{ service.text }}</dd>
+          </div>
+        }
+      </dl>
+      <p class="itable-hint"><i class="fas fa-info-circle" aria-hidden="true"></i> {{ services.note }}</p>
+    }
+
+    <p class="itable-permalink">
+      <a routerLink="." [queryParams]="{ i: entry.mnemonic }" queryParamsHandling="merge">
+        <i class="fas fa-link" aria-hidden="true"></i> {{ 'DOCS.ITABLE.LINK' | translate: { mnemonic: entry.mnemonic } }}
+      </a>
+    </p>
+  </div>
+</ng-template>
