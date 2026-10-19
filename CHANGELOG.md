@@ -1,3 +1,11 @@
+## 1.11.1 (2026-10-19)
+
+### Nuevas funciones
+
+* the phone as an app, a navbar and a header that say where you are, melodic sounds and an explorer of the instructions ([917cfbd](https://github.com/nonodev96/THUMDER/commit/917cfbd))
+
+
+
 ## 1.11.0 (2026-10-19)
 
 ### Nuevas funciones
