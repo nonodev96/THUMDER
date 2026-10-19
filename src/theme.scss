@@ -63,17 +63,26 @@
   --thumder-console-bg: #0f172a;
   --thumder-console-text: #e2e8f0;
 
-  // The canvases: their background in each theme (the TypeScript reads both), and the parts of the cycle diagram
+  // The canvases: their background in each theme (the TypeScript reads both), the texts of the exported diagram and
+  // the cell chosen in the cycle diagram
   --thumder-canvas-bg-light: #f8fafc;
   --thumder-canvas-bg-dark: #0f172a;
   --thumder-canvas-bg: var(--thumder-canvas-bg-light);
-  --thumder-diagram-header-bg: #1e293b;
-  --thumder-diagram-label-bg: #e0e7ff;
-  --thumder-diagram-label-border: #6366f1;
   --thumder-diagram-label-text: #1e1b4b;
-  --thumder-diagram-cell-bg: #f1f5f9;
-  --thumder-diagram-cell-text: #0f172a;
   --thumder-diagram-selected: #4f46e5;
+  // The canvas of the cycle diagram: its surfaces (the cells, the stripes of the rows, the headers), its lines and
+  // texts, the row and the cycle under the mouse, the current cycle and its arrows (on the cells, in each theme)
+  --thumder-diagram-bg: #ffffff;
+  --thumder-diagram-stripe: #f8fafc;
+  --thumder-diagram-head: #f1f5f9;
+  --thumder-diagram-grid: #e9eef4;
+  --thumder-diagram-border: #cbd5e1;
+  --thumder-diagram-text: #1e293b;
+  --thumder-diagram-muted: #64748b;
+  --thumder-diagram-hover: #eef2ff;
+  --thumder-diagram-now: #4f46e5;
+  --thumder-diagram-forwarding: #16a34a;
+  --thumder-diagram-stall-arrow: #dc2626;
 
   // The stages of the pipeline (as in WinDLX: IF yellow, ID orange, EX red, MEM green, WB violet) and the stalls (shades
   // of amber), the same in both themes: their texts are dark
@@ -144,6 +153,16 @@
   --thumder-console-bg: #020617;
   --thumder-canvas-bg: var(--thumder-canvas-bg-dark);
   --thumder-diagram-selected: #a5b4fc;
+  --thumder-diagram-bg: #0f172a;
+  --thumder-diagram-stripe: #162136;
+  --thumder-diagram-head: #1e293b;
+  --thumder-diagram-grid: #1e293b;
+  --thumder-diagram-border: #334155;
+  --thumder-diagram-text: #e2e8f0;
+  --thumder-diagram-muted: #94a3b8;
+  --thumder-diagram-hover: #1e2947;
+  --thumder-diagram-forwarding: #4ade80;
+  --thumder-diagram-stall-arrow: #f87171;
 
   --thumder-debug-line: #0f2a24;
   --thumder-debug-line-mark: #2fd8a8;

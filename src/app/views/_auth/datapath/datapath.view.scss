@@ -1,63 +1,442 @@
+// The datapath: an SVG with the colours of the theme. The movements of a cycle last --dp-duration (DatapathView): the
+// instructions slide to their stage, a pulse runs along each wire used and the registers between the stages flash.
+
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace;
+$ease: cubic-bezier(0.45, 0, 0.2, 1);
+
+// A narrow card (the multiview, a tablet) scrolls the drawing sideways: below this width its texts would be too small
+.datapath-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-canvas-bg);
+}
+
 .datapath-svg {
+  display: block;
   width: 100%;
+  min-width: 920px;
   height: auto;
-  max-height: 70vh;
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  // The default, for the views that do not set it
+  --dp-duration: 650ms;
+  --dp-colour: var(--thumder-primary);
+}
 
-  .block {
-    stroke: var(--thumder-border-strong);
-    stroke-width: 1.5;
+// ─── Stages ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.dp-zone {
+  fill: transparent;
+  stroke: transparent;
+  transition:
+    fill var(--dp-duration) $ease,
+    stroke var(--dp-duration) $ease;
+
+  &--busy {
+    fill: color-mix(in srgb, var(--dp-colour) 12%, transparent);
   }
 
-  // The boxes without a stage (the registers, the memories, the ALU...)
-  .box {
-    fill: var(--thumder-surface);
+  &--stalled {
+    stroke: var(--thumder-stall-r);
+    stroke-width: 2;
+    stroke-dasharray: 8 6;
+  }
+}
+
+.dp-stage-pill {
+  fill: var(--thumder-surface);
+  stroke: var(--thumder-border);
+}
+
+.dp-stage-dot {
+  fill: var(--dp-colour);
+  stroke: color-mix(in srgb, var(--dp-colour) 60%, var(--thumder-text));
+  stroke-width: 1;
+}
+
+.dp-stage-name {
+  font-size: 15px;
+  font-weight: 700;
+  fill: var(--thumder-text);
+}
+
+.dp-stage-subtitle {
+  font-size: 10.5px;
+  fill: var(--thumder-muted);
+}
+
+// ─── Wires ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.dp-wire {
+  fill: none;
+  stroke: var(--thumder-border-strong);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+
+  &--forward {
+    stroke-dasharray: 6 5;
   }
 
-  .stage-title {
+  &--wb {
+    stroke-dasharray: 2 4;
+  }
+
+  // In use in this cycle: in the colour of its stage, darker on the light theme and lighter on the dark one
+  &--on {
+    stroke: color-mix(in srgb, var(--dp-colour) 70%, var(--thumder-text));
+    stroke-width: 3.5;
+    stroke-dasharray: none;
+    animation: dp-fade-in calc(var(--dp-duration) * 0.4) ease-out;
+  }
+}
+
+// The forwarding in use: green and moving, so it is not taken for a wire of MEM (also green)
+.dp-wire--marching {
+  stroke: var(--thumder-forwarding);
+  stroke-width: 4;
+  stroke-dasharray: 10 6;
+  animation: dp-march 0.6s linear infinite;
+}
+
+@keyframes dp-march {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+// The head of each arrow, in the colour of its wire (where the browser can: context-stroke)
+.dp-arrow-head {
+  fill: var(--thumder-border-strong);
+  fill: context-stroke;
+}
+
+.dp-joint {
+  fill: var(--thumder-muted);
+}
+
+.dp-wire-label {
+  font-size: 10px;
+  fill: var(--thumder-muted);
+
+  &--forward {
+    fill: var(--thumder-success-text);
+  }
+}
+
+// The pulse: a short bright stroke that goes from the start of the wire to its end, once per cycle
+.dp-flow {
+  fill: none;
+  stroke: var(--dp-colour);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-dasharray: 9 200;
+  stroke-dashoffset: 9;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--dp-colour) 80%, transparent));
+  animation: dp-flow var(--dp-duration) $ease forwards;
+}
+
+@keyframes dp-flow {
+  0% {
+    stroke-dashoffset: 9;
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
+@keyframes dp-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+// ─── Boxes ───────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.dp-box {
+  fill: var(--thumder-surface);
+  stroke: var(--thumder-border-strong);
+  stroke-width: 1.5;
+  transition:
+    fill var(--dp-duration) $ease,
+    stroke var(--dp-duration) $ease;
+}
+
+.dp-bank-row {
+  stroke: var(--thumder-border);
+  stroke-width: 1;
+}
+
+// A box used in this cycle: the colour of its stage
+.dp-unit--on .dp-box {
+  fill: color-mix(in srgb, var(--dp-colour) 26%, var(--thumder-surface));
+  stroke: color-mix(in srgb, var(--dp-colour) 70%, var(--thumder-text));
+  stroke-width: 2;
+}
+
+.dp-box-title {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--thumder-text);
+
+  &--big {
     font-size: 15px;
-    font-weight: bold;
-    fill: var(--thumder-text);
+  }
+}
+
+.dp-tiny {
+  font-size: 9px;
+  fill: var(--thumder-muted);
+}
+
+.dp-value {
+  font-family: $mono;
+  font-size: 10px;
+  fill: var(--thumder-text-2);
+
+  &--changed {
+    font-weight: 700;
+    fill: var(--thumder-primary-text);
   }
 
-  .label {
-    font-size: 11px;
-    fill: var(--thumder-text-2);
+  &--written {
+    font-weight: 700;
+    fill: var(--thumder-success-text);
+  }
+}
 
-    // On a box with the colour of its stage
-    &.on-stage {
-      fill: var(--thumder-on-stage);
-    }
+.dp-slot {
+  fill: var(--thumder-surface-2);
+  stroke: var(--thumder-border);
+
+  &--busy {
+    fill: color-mix(in srgb, var(--dp-colour) 40%, var(--thumder-surface));
+  }
+}
+
+// ─── Registers between the stages ────────────────────────────────────────────────────────────────────────────────────
+
+.dp-latch-bar {
+  fill: var(--thumder-surface-2);
+  stroke: var(--thumder-border-strong);
+  stroke-width: 1.5;
+}
+
+// The clock: the registers capture their values (they are drawn again each cycle, so the flash runs again)
+.dp-latches .dp-latch-bar {
+  animation: dp-tick var(--dp-duration) ease-out;
+}
+
+@keyframes dp-tick {
+  0% {
+    fill: var(--thumder-primary-soft);
+    stroke: var(--thumder-primary);
+  }
+}
+
+.dp-latch-name {
+  font-size: 11px;
+  font-weight: 700;
+  fill: var(--thumder-text);
+}
+
+.dp-field-box {
+  fill: var(--thumder-surface);
+  stroke: var(--thumder-border);
+}
+
+.dp-field-name {
+  font-size: 8.5px;
+  fill: var(--thumder-muted);
+}
+
+.dp-field-value {
+  font-family: $mono;
+  font-size: 9.5px;
+  fill: var(--thumder-text-2);
+}
+
+.dp-field--changed {
+  .dp-field-box {
+    fill: var(--thumder-primary-soft);
+    stroke: var(--thumder-primary);
+    animation: dp-field var(--dp-duration) ease-out;
   }
 
-  // Inside the coloured boxes: dark, as on every stage colour
-  .occupant {
-    font-size: 11px;
-    font-family: "Courier New", monospace;
+  .dp-field-value {
+    font-weight: 700;
+    fill: var(--thumder-primary-text);
+  }
+}
+
+@keyframes dp-field {
+  0% {
+    fill: var(--thumder-primary);
+  }
+}
+
+// ─── Instructions ────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.dp-token {
+  transition: transform var(--dp-duration) $ease;
+}
+
+// A new instruction comes in from the left
+.dp-token-body {
+  animation: dp-token-in var(--dp-duration) $ease;
+}
+
+@keyframes dp-token-in {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+}
+
+.dp-token-pill {
+  fill: var(--dp-colour);
+  stroke: color-mix(in srgb, var(--dp-colour) 55%, #0f172a);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.25));
+  transition: fill var(--dp-duration) $ease;
+}
+
+.dp-token-text {
+  font-family: $mono;
+  font-size: 12.5px;
+  font-weight: 700;
+  fill: var(--thumder-on-stage);
+}
+
+.dp-token--stalled .dp-token-pill {
+  fill: url(#dpStall);
+  stroke: var(--thumder-stall-r);
+  stroke-width: 2.5;
+  animation: dp-stalled 1.2s ease-in-out infinite;
+}
+
+.dp-token--aborted {
+  .dp-token-pill {
+    opacity: 0.75;
+  }
+
+  .dp-token-text {
+    text-decoration: line-through;
+  }
+}
+
+.dp-stall-bg {
+  fill: var(--thumder-stall-w);
+}
+
+.dp-stall-stripe {
+  fill: var(--thumder-stall-r);
+  opacity: 0.45;
+}
+
+@keyframes dp-stalled {
+  50% {
+    stroke-width: 4;
+  }
+}
+
+.dp-token-stall {
+  rect {
+    fill: var(--thumder-stall-r);
+    stroke: var(--thumder-surface);
+  }
+
+  text {
+    font-family: $mono;
+    font-size: 9.5px;
+    font-weight: 700;
     fill: var(--thumder-on-stage);
   }
+}
 
-  .latch {
-    fill: var(--thumder-border-strong);
-    stroke: var(--thumder-muted);
+// Running too fast to follow the movements, or the user prefers less movement: the drawing changes without them
+.datapath-still,
+.datapath-still * {
+  transition: none !important;
+  animation: none !important;
+}
+
+.datapath-still .dp-flow {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .datapath-svg,
+  .datapath-svg * {
+    transition: none !important;
+    animation: none !important;
   }
 
-  .wire {
-    stroke: var(--thumder-muted);
-    stroke-width: 2;
-    fill: none;
+  .dp-flow {
+    display: none;
   }
+}
 
-  .forward {
-    stroke: var(--thumder-border-strong);
-    stroke-width: 2;
-    stroke-dasharray: 6 4;
-    fill: none;
+// ─── The legend and the footer ───────────────────────────────────────────────────────────────────────────────────────
 
-    &.active {
-      stroke: var(--thumder-forwarding);
-      stroke-width: 4;
-      stroke-dasharray: none;
-    }
+.datapath-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--thumder-muted);
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
   }
+}
+
+.datapath-legend-wire {
+  display: inline-block;
+  width: 1.75rem;
+  height: 0;
+  border-top: 3px solid var(--thumder-stage-ex);
+
+  &--forward {
+    border-top-color: var(--thumder-forwarding);
+  }
+}
+
+.datapath-legend-field {
+  display: inline-block;
+  width: 1rem;
+  height: 0.75rem;
+  border: 1px solid var(--thumder-primary);
+  border-radius: 3px;
+  background-color: var(--thumder-primary-soft);
+}
+
+.datapath-legend-stall {
+  display: inline-block;
+  width: 1.25rem;
+  height: 0.75rem;
+  border: 2px solid var(--thumder-stall-r);
+  border-radius: 999px;
+  background: repeating-linear-gradient(45deg, var(--thumder-stall-w) 0 4px, var(--thumder-stall-r) 4px 6px);
+}
+
+.datapath-footer {
+  max-height: 45vh;
+  overflow-y: auto;
+  background-color: var(--thumder-surface);
+  color: var(--thumder-text);
+  border-top: 1px solid var(--thumder-border);
 }

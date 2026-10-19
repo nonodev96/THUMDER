@@ -237,6 +237,21 @@ test.describe("la ruta de datos", () => {
     await expect(page.locator("#datapathSummary")).toContainText("IF:");
     await expect(page.locator("#datapathSummary")).not.toContainText("IF: vacía");
     await expect(page.locator(".datapath-svg")).toBeVisible();
+    // The instructions are drawn on their stages, and the footer says what each stage does, with the values it moves
+    await expect(page.locator(".datapath-svg .dp-token").first()).toBeVisible();
+    await expect(page.locator("#datapathSummary .stage-line")).toHaveCount(5);
+    await expect(page.locator("#datapathSummary .stage-line").first()).toContainText("Se lee la instrucción de la dirección");
+    await expect(page.locator("#datapathSummary .stage-value").first()).toContainText("IR");
+  });
+
+  test("el pie del pipeline explica qué hace cada etapa", async ({ page }) => {
+    await go(page, "/auth/pipeline");
+    await expect(page.locator("#pipelineText")).toContainText("IF: vacía");
+    await loadAndStep(page, 5);
+    const lines = page.locator("#pipelineText .stage-line");
+    await expect(lines).toHaveCount(5);
+    await expect(lines.nth(4)).toContainText("WB");
+    await expect(page.locator("#pipelineText")).not.toContainText("WB: vacía");
   });
 });
 

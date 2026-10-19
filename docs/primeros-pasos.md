@@ -32,12 +32,12 @@ La simulación se para sola al terminar, en un punto de ruptura, en un error o c
 
 ## 4. Mira qué pasa
 
-- **Pipeline**: qué instrucción hay en cada etapa (IF, ID, EX, MEM, WB y las unidades de coma flotante).
+- **Pipeline**: qué instrucción hay en cada etapa (IF, ID, EX, MEM, WB y las unidades de coma flotante); con cada ciclo las instrucciones se desplazan a su etapa siguiente, y el pie explica qué hace cada etapa con la suya y qué valores mueve.
 - **Ciclos de reloj**: una fila por instrucción con la etapa de cada ciclo; haz clic en una detención para ver por qué ocurre.
 - **Registros** y **Memoria**: los valores, en varias representaciones.
 - **Código**: el código máquina, la etapa de cada instrucción y una descripción de lo que hace.
 - **Estadísticas**: ciclos, CPI, detenciones por tipo y la comparación con y sin adelantamiento.
-- **Ruta de datos**: el camino de los datos en el ciclo actual.
+- **Ruta de datos**: el camino de los datos en el ciclo actual: el PC que lee la memoria de instrucciones, los registros que se leen y se escriben en el banco, la ALU, la memoria de datos y los adelantamientos. Los cables que se usan se iluminan, los registros entre etapas (IF/ID, ID/EX, EX/MEM, MEM/WB) enseñan lo que capturan con el reloj y el pie lo cuenta etapa por etapa.
 - **Vista múltiple**: varias vistas a la vez; cada una puede salir como ventana flotante.
 - **Sonido**: cada etapa del pipeline tiene su nota (un ciclo con el pipeline lleno suena como un acorde), una detención suena como un golpe sordo y una instrucción anulada por un salto, como algo que cae. Se quita o se ajusta en **Configuración → Sonido** y en el menú de la velocidad.
 

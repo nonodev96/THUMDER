@@ -1,0 +1,59 @@
+<div class="stages-head">
+  <h4 class="stages-title">{{ 'STAGES.TITLE' | translate: { cycle: step() } }}</h4>
+</div>
+
+<ol class="stages" [attr.aria-label]="'STAGES.TITLE' | translate: { cycle: step() }">
+  @for (line of lines(); track line.key) {
+    @let occupant = line.occupant;
+    <li class="stage-line" [class.stage-line--empty]="occupant === null" [class.stage-line--stalled]="occupant?.stall && occupant?.stall !== 'Aborted'"
+      [class.stage-line--aborted]="occupant?.stall === 'Aborted'">
+      <span [class]="'stage-badge ' + line.colour">{{ line.name }}<span class="sr-only">: </span></span>
+      <div class="stage-body">
+        @if (occupant === null) {
+          <span class="stage-empty">{{ 'DATAPATH.EMPTY' | translate }}</span>
+        } @else {
+          <div class="stage-head">
+            <code class="stage-instruction">{{ occupant.text }}</code>
+            @if (occupant.address !== null) {
+              <span class="stage-address">{{ '0x' + occupant.address.toString(16).toUpperCase().padStart(8, '0') }}</span>
+            }
+            @if (occupant.stall) {
+              <span class="stage-stall">{{ occupant.stall }}</span>
+            }
+          </div>
+          @for (text of line.texts; track $index) {
+            <p class="stage-text">{{ text }}</p>
+          }
+          @if (line.values.length > 0) {
+            <ul class="stage-values">
+              @for (value of line.values; track $index) {
+                <li class="stage-value">
+                  <span class="stage-value-name">{{ value.name }}</span>
+                  <span class="stage-value-arrow" aria-hidden="true">{{ value.arrow ?? '←' }}</span>
+                  <span class="sr-only">{{ (value.arrow === '=' ? 'STAGES.HAS' : 'STAGES.GETS') | translate }}</span>
+                  <span class="stage-value-value">{{ value.value }}</span>
+                  @if (value.note) {
+                    <span class="stage-value-note">{{ value.note }}</span>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        }
+      </div>
+    </li>
+  }
+  @for (forward of activity().forwarding; track $index) {
+    <li class="stage-line stage-line--forwarding">
+      <span class="stage-badge stage-badge--forwarding">{{ 'STAGES.FORWARDING' | translate }}<span class="sr-only">: </span></span>
+      <div class="stage-body">
+        <div class="stage-head">
+          <code class="stage-instruction">{{ forward.producer }}</code>
+          <span class="stage-value-arrow" aria-hidden="true">→</span>
+          <code class="stage-instruction">{{ forward.consumer }}</code>
+        </div>
+        <p class="stage-text">{{ 'STAGES.FORWARDED' | translate: { from: forward.from, to: forward.to } }}</p>
+      </div>
+    </li>
+  }
+</ol>

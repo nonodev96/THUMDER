@@ -93,6 +93,8 @@ export class VirtualTableColumnDirective {
         font-weight: 600;
       }
       :host(.sticky-first) .thumder-table-header .thumder-table-cell:first-child { background-color: var(--thumder-surface-2); }
+      /* A row with the colour of a stage (the code): its first column too */
+      :host(.sticky-first) .thumder-row[class*="stage-"] > .thumder-table-cell:first-child { background-color: inherit; }
       /* The row that scrollToIndex() went to, for a moment */
       .thumder-row-target { outline: 3px solid var(--thumder-primary); outline-offset: -3px; }
       .thumder-row-target > .thumder-table-cell:first-child { font-weight: 700; }

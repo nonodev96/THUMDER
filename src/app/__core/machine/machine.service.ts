@@ -15,6 +15,7 @@ import {
   type TypeLogger,
   type TypeMemoryToUpdate,
   type TypeMemoryToUpdateResponse,
+  type TypePipelineCellInstruction,
   type TypePipelineInstructions,
   type TypeRegisterToUpdate,
   type TypeRegisterToUpdateResponse,
@@ -63,6 +64,17 @@ export type StagesByAddress = ReadonlyMap<TypeAddress, TypeStage>;
 /** The stage of the breakpoint of each line that does not stop in IF (storage: "breakpoint_stages") */
 export type BreakpointStages = Record<string, BreakpointStage>;
 
+/**
+ * What a cycle changed, for the datapath: the registers written (PC, IR, A, B, ALU, DMAR, LDR... and the general purpose
+ * ones in WB), the memory written and what the loads read
+ */
+export type CycleChanges = {
+  step: number;
+  registers: readonly TypeRegisterToUpdate[];
+  memory: readonly TypeMemoryToUpdate[];
+  reads: readonly { address: number; bytes: number }[];
+};
+
 /** The modules chosen for each program, by the key of its file (storage: "program_modules"); without one, automatic */
 export type ProgramModules = Record<string, string[]>;
 
@@ -99,6 +111,8 @@ export type MachineState = {
   stages: Signal<StagesByAddress>;
   /** The pipeline of this cycle, with the text of each instruction */
   pipeline: Signal<TypePipelineInstructions | null>;
+  /** What this cycle changed (null before the first one) */
+  cycle: Signal<CycleChanges | null>;
   units: Signal<FloatingPointUnits>;
   statistics: Signal<TypeDataStatistics>;
   /** Changes when the registers or the memory change */
@@ -166,6 +180,7 @@ export class MachineService {
   private readonly codeSignal = signal<TypeInstructionsData[]>([]);
   private readonly stagesSignal = signal<StagesByAddress>(new Map());
   private readonly pipelineSignal = signal<TypePipelineInstructions | null>(null);
+  private readonly cycleSignal = signal<CycleChanges | null>(null);
   private readonly unitsSignal = signal<FloatingPointUnits>({ fadd: 1, fmul: 1, fdiv: 1 });
   private readonly statisticsSignal = signal<TypeDataStatistics>(this.dataStatistics.getData());
   private readonly valuesSignal = signal(0);
@@ -191,6 +206,7 @@ export class MachineService {
     code: this.codeSignal.asReadonly(),
     stages: this.stagesSignal.asReadonly(),
     pipeline: this.pipelineSignal.asReadonly(),
+    cycle: this.cycleSignal.asReadonly(),
     units: this.unitsSignal.asReadonly(),
     statistics: this.statisticsSignal.asReadonly(),
     values: this.valuesSignal.asReadonly(),
@@ -346,6 +362,7 @@ export class MachineService {
     this.codeSignal.set([]);
     this.stagesSignal.set(new Map());
     this.pipelineSignal.set(null);
+    this.cycleSignal.set(null);
     this.unitsSignal.set(MachineService.unitsOf(this.floatingPointStageConfiguration));
     this.statisticsSignal.set(this.dataStatistics.getData());
     this.cyclesSignal.set(0);
@@ -703,8 +720,9 @@ export class MachineService {
   }
 
   /** The pipeline of a cycle and where each instruction is, for the views */
-  private publishPipeline(step: TypeSimulationStep): void {
+  private publishPipeline(step: Step): void {
     const { pipeline } = step;
+    this.cycleSignal.set({ step: step.step, registers: step.registers ?? [], memory: step.memory ?? [], reads: step.reads ?? [] });
     const unit = (cell: TypeCycleCell & { unit?: number }) => ({ unit: cell.unit ?? 0, ...this.instructionInCell(cell) });
     this.pipelineSignal.set({
       IF: this.instructionInCell(pipeline.IF),
@@ -727,9 +745,9 @@ export class MachineService {
     this.stagesSignal.set(stages);
   }
 
-  private instructionInCell(cell: TypeCycleCell): { text: string; draw: TypeCycleCell["draw"] } {
+  private instructionInCell(cell: TypeCycleCell): TypePipelineCellInstruction {
     if (cell.address === undefined || (cell.address as string).length === 0) return { text: "", draw: cell.draw };
-    return { text: this.getCode(cell.address).instruction, draw: cell.draw };
+    return { text: this.getCode(cell.address).instruction, draw: cell.draw, address: cell.address, id: cell.addressRow };
   }
 
   /** The registers or the memory changed (they are mutable objects) */

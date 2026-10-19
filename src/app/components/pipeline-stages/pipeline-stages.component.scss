@@ -1,0 +1,171 @@
+// What each stage does in this cycle: one line each, as the stages of an instruction in the footer of the code (a badge
+// with the colour of the stage, the instruction, what the stage does and the values it moves). In a narrow card the
+// text goes under the instruction.
+
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+.stages-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.stages-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.stages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage-line {
+  display: grid;
+  grid-template-columns: 9ch 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.35rem 0;
+
+  & + & {
+    border-top: 1px dashed var(--thumder-border);
+  }
+}
+
+.stage-badge {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: var(--thumder-radius);
+  font-family: monospace;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--thumder-on-stage);
+}
+
+.stage-badge--forwarding {
+  background-color: var(--thumder-forwarding);
+  color: #ffffff;
+}
+
+// An empty stage: its badge without colour
+.stage-line--empty .stage-badge {
+  background-color: var(--thumder-surface-2);
+  color: var(--thumder-text-2);
+  box-shadow: inset 0 0 0 1px var(--thumder-border-strong);
+}
+
+.stage-empty {
+  color: var(--thumder-muted);
+  font-style: italic;
+}
+
+.stage-body {
+  min-width: 0;
+}
+
+.stage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+}
+
+// The class and the attribute of the component win over the colour of the inline code of theme.scss
+.stage-instruction {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--thumder-primary-text);
+}
+
+.stage-address {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--thumder-muted);
+}
+
+.stage-stall {
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: var(--thumder-stall-r);
+  color: var(--thumder-on-stage);
+}
+
+.stage-line--aborted {
+  .stage-instruction {
+    text-decoration: line-through;
+  }
+
+  .stage-stall {
+    background-color: var(--thumder-stage-aborted);
+  }
+}
+
+.stage-text {
+  margin: 0.1rem 0 0;
+  max-width: 90ch;
+  font-size: 0.875rem;
+  color: var(--thumder-text-2);
+}
+
+.stage-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.4rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stage-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  padding: 0.05rem 0.45rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface);
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+.stage-value-name {
+  font-weight: 700;
+}
+
+.stage-value-arrow {
+  color: var(--thumder-muted);
+}
+
+.stage-value-note {
+  color: var(--thumder-muted);
+}
+
+.stage-line--forwarding {
+  .stage-text {
+    color: var(--thumder-success-text);
+  }
+}
+
+@container (max-width: 420px) {
+  .stage-line {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .stage-badge {
+    justify-self: start;
+    min-width: 7ch;
+  }
+}

@@ -727,15 +727,21 @@ export type TypePipeline = {
   arrows: TypeArrowCycle[];
 };
 
+/**
+ * An instruction in a stage of the pipeline: its text, whether it is drawn (or its stall) and, when there is one, its
+ * address and the id of its row in the cycle clock diagram (the same while it goes through the stages)
+ */
+export type TypePipelineCellInstruction = { text: string; draw: boolean | TypeStall; address?: TypeAddress; id?: number };
+
 export type TypePipelineInstructions = {
-  IF: { text: string; draw: boolean | TypeStall };
-  ID: { text: string; draw: boolean | TypeStall };
-  intEX: { text: string; draw: boolean | TypeStall };
-  MEM: { text: string; draw: boolean | TypeStall };
-  WB: { text: string; draw: boolean | TypeStall };
-  faddEX: { unit: number; text: string; draw: boolean | TypeStall }[];
-  fmultEX: { unit: number; text: string; draw: boolean | TypeStall }[];
-  fdivEX: { unit: number; text: string; draw: boolean | TypeStall }[];
+  IF: TypePipelineCellInstruction;
+  ID: TypePipelineCellInstruction;
+  intEX: TypePipelineCellInstruction;
+  MEM: TypePipelineCellInstruction;
+  WB: TypePipelineCellInstruction;
+  faddEX: (TypePipelineCellInstruction & { unit: number })[];
+  fmultEX: (TypePipelineCellInstruction & { unit: number })[];
+  fdivEX: (TypePipelineCellInstruction & { unit: number })[];
 };
 
 export type TypeErrorInCode = {

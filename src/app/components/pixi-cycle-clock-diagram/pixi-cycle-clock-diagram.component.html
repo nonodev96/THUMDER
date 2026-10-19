@@ -1,1 +1,30 @@
-<div #pixiCycleContainer></div>
+<div class="diagram-frame" #pixiCycleContainer></div>
+
+<!-- What the colours, the stripes and the arrows of the diagram mean -->
+<div class="diagram-legend" role="group" [attr.aria-label]="'MACHINE.DIAGRAM_LEGEND' | translate">
+  <div class="legend-group">
+    <span class="legend-title">{{ 'MACHINE.DIAGRAM_LEGEND_STAGES' | translate }}</span>
+    @for (stage of stages; track stage.label) {
+      <span class="legend-cell" [style.background-color]="stage.colour">{{ stage.label }}</span>
+    }
+  </div>
+  <div class="legend-group">
+    <span class="legend-title">{{ 'MACHINE.DIAGRAM_LEGEND_STALLS' | translate }}</span>
+    @for (stall of stalls; track stall.label) {
+      <span class="legend-entry">
+        <span class="legend-cell" [class.striped]="stall.striped" [style.background-color]="stall.colour">{{ stall.label }}</span>
+        {{ stall.meaning | translate }}
+      </span>
+    }
+  </div>
+  <div class="legend-group">
+    <span class="legend-entry">
+      <svg class="legend-arrow forwarding" viewBox="0 0 28 14" aria-hidden="true"><path d="M3 2 Q3 10 21 10" /><path class="head" d="M27 10 L20 6.5 L20 13.5 Z" /></svg>
+      {{ 'MACHINE.DIAGRAM_LEGEND_FORWARDING' | translate }}
+    </span>
+    <span class="legend-entry">
+      <svg class="legend-arrow cause" viewBox="0 0 28 14" aria-hidden="true"><path d="M3 2 Q3 10 21 10" /><path class="head" d="M27 10 L20 6.5 L20 13.5 Z" /></svg>
+      {{ 'MACHINE.DIAGRAM_LEGEND_CAUSE' | translate }}
+    </span>
+  </div>
+</div>

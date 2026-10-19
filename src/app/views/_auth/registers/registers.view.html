@@ -9,7 +9,7 @@
     </h3>
     <div class="card-tools">
       <button type="button" class="btn btn-tool" [title]="'MACHINE.EDIT_REGISTER' | translate" [attr.aria-label]="'MACHINE.EDIT_REGISTER' | translate"
-        thumderModalOpen="modal-EditRegister" id="modal-EditRegister-Button">
+        (click)="edit(null, $event)" id="modal-EditRegister-Button">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" [title]="'FORMS.REFRESH' | translate" [attr.aria-label]="'FORMS.REFRESH' | translate" (click)="refresh()">
@@ -52,7 +52,7 @@
           </div>
           <thumder-virtual-table [rows]="dataSource" [columns]="displayedColumns" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(controlWidths)" [label]="'MACHINE.REGISTERS_CONTROL' | translate">
-            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.register" let-element>{{ element }}</ng-template>
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.register" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: element }" (click)="edit(element, $event)">{{ element }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-element>{{ ($any(machine.registers)[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
             <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary" let-register>{{ $any(machine.registers)[register].binary | binary_groups }}</ng-template>
             <ng-template thumderColumn="Byte" [header]="'MACHINE.BYTES' | translate" [width]="widths.control('Byte')" let-element>{{ $any(machine.registers)[element].binary | binary32_to_bytes }}</ng-template>
@@ -64,7 +64,7 @@
         @case ('R') {
           <thumder-virtual-table [rows]="dataSourceR" [columns]="displayedColumnsR" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(integerWidths)" [label]="'MACHINE.REGISTERS_INTEGER' | translate">
-            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element>R{{ element }}</ng-template>
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: 'R' + element }" (click)="edit(element, $event)">R{{ element }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-element>{{ (machine.registers.R[element].binary | binary_32_64_to_hexadecimal) }}</ng-template>
             <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary" let-element>{{ machine.registers.R[element].binary | binary_groups }}</ng-template>
             <ng-template thumderColumn="Integer" [header]="'MACHINE.INTEGER' | translate" [width]="widths.integer" let-element>{{ machine.registers.R[element].binary | binary_to_number }}</ng-template>
@@ -82,7 +82,7 @@
           </div>
           <thumder-virtual-table [rows]="dataSourceF" [columns]="displayedColumnsF" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(floatWidths)" [label]="'MACHINE.REGISTERS_FLOAT' | translate">
-            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element>F{{ element }}</ng-template>
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.integerRegister" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: 'F' + element }" (click)="edit(element, $event)">F{{ element }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex" let-address>{{ (machine.registers.F[address].binary | binary_32_64_to_hexadecimal) }}</ng-template>
             <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary" let-address>{{ machine.registers.F[address].binary | binary_groups }}</ng-template>
             <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" [width]="widths.uint8" let-address>{{ (machine.registers.F[address].binary | binary32_to_decimal_IEEE754 | uint_IEEE754_32) }}</ng-template>
@@ -101,7 +101,7 @@
           </div>
           <thumder-virtual-table [rows]="dataSourceD" [columns]="displayedColumnsD" [height]="maxHeightCard" [itemSize]="32" [stickyFirst]="true"
             [minWidth]="minWidth(doubleWidths)" [label]="'MACHINE.REGISTERS_DOUBLE' | translate">
-            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.doubleRegister" let-element>F{{ element }}-F{{ element + 1 }}</ng-template>
+            <ng-template thumderColumn="Register" [header]="'MACHINE.REGISTER' | translate" [width]="widths.doubleRegister" let-element><button type="button" class="row-edit" [title]="'EDIT_REGISTER.EDIT_ROW' | translate: { name: 'F' + element + '-F' + (element + 1) }" (click)="edit(element, $event)">F{{ element }}-F{{ element + 1 }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
             <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="widths.hex64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_32_64_to_hexadecimal }}</ng-template>
             <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="widths.binary64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary_groups }}</ng-template>
             <ng-template thumderColumn="Uint8Array" [header]="'MACHINE.UINT8ARRAY' | translate" [width]="widths.uint8_64" let-address>{{ (machine.registers.F[address].binary + machine.registers.F[address + 1].binary) | binary64_to_decimal_IEEE754 | uint_IEEE754_64 }}</ng-template>

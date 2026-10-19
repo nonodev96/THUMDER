@@ -31,19 +31,8 @@
   <div class="card-body">
     <THUMDER-pixi-pipeline></THUMDER-pixi-pipeline>
   </div>
-  <div class="card-footer">
-    <!-- The pipeline in text (A11Y-01): what each stage and each unit has in this cycle -->
-    <h4 class="h6">{{ 'MACHINE.PIPELINE_TEXT' | translate: { cycle: machine.state.step() } }}</h4>
-    @let p = machine.state.pipeline();
-    <ul class="list-unstyled small mb-0 text-monospace" id="pipelineText">
-      @for (stage of stages; track stage) {
-        <li><strong>{{ stage }}</strong>: {{ describe(p?.[stage]) }}</li>
-      }
-      @for (unit of units; track unit.key) {
-        @for (cell of p?.[unit.key] ?? []; track $index) {
-          @if (cell.text) { <li><strong>{{ unit.name }} {{ $index + 1 }}</strong>: {{ describe(cell) }}</li> }
-        }
-      }
-    </ul>
+  <!-- The pipeline in text (A11Y-01): what each stage and each unit does in this cycle -->
+  <div class="card-footer pipeline-footer" id="pipelineText" aria-live="polite">
+    <thumder-pipeline-stages></thumder-pipeline-stages>
   </div>
 </div>

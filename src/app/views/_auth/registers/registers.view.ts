@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, ViewChild } from "@angular/core";
 import { MACHINE_REGISTERS_C, MACHINE_REGISTERS_D, MACHINE_REGISTERS_F, MACHINE_REGISTERS_R } from "@app/CONSTANTS";
-import type { TypeData, TypeDataRepresentation, TypeRegisterControl } from "@app/Types";
+import type { TypeData, TypeDataRepresentation, TypeRegister, TypeRegisterControl, TypeRegisterToEdit } from "@app/Types";
 import { EditRegisterBinary32Component } from "@components/modals/edit-register-binary32/edit-register-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
+import { EditRequestService } from "@core/services/edit/edit-request.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
 import {
@@ -18,7 +19,6 @@ import {
   Uint_IEEE754_32_Pipe,
   Uint_IEEE754_64_Pipe,
 } from "@shared/pipes/numbers/numbers.pipes";
-import { ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 /** The groups of registers, one tab each */
@@ -30,6 +30,9 @@ const TABS: { id: RegisterTab; label: string }[] = [
   { id: "F", label: "MACHINE.TAB_FLOAT" },
   { id: "D", label: "MACHINE.TAB_DOUBLE" },
 ];
+
+/** The kind of register of each tab, for the dialog that edits them */
+const KIND_OF_TAB: Record<RegisterTab, TypeRegister> = { Control: "Control", R: "Integer", F: "Float", D: "Double" };
 
 /** The tab chosen last (only this browser) */
 const TAB_KEY = "registers_tab";
@@ -55,7 +58,6 @@ const CHARS: Record<string, number> = { Byte: 17, HalfWord: 13, Word: 12, ASCII:
   imports: [
     CardDirective,
     CardWidgetDirective,
-    ModalOpenDirective,
     TranslatePipe,
     Binary32ToASCIIPipe,
     Binary32ToBytesPipe,
@@ -75,6 +77,7 @@ const CHARS: Record<string, number> = { Byte: 17, HalfWord: 13, Word: 12, ASCII:
 export class RegistersView {
   machine = inject(MachineService);
   private cdr = inject(ChangeDetectorRef);
+  private editRequests = inject(EditRequestService);
 
   @ViewChild(EditRegisterBinary32Component)
   public editRegisterBinary32Component!: EditRegisterBinary32Component;
@@ -198,6 +201,12 @@ export class RegistersView {
   public changeTypeDataInTableDoubleRegisters(typeData: TypeDataRepresentation): void {
     this.typeDataSelectedDouble = typeData;
     this.displayedColumnsD = ["Register", "Hexadecimal", typeData.toString(), "Double"];
+  }
+
+  /** Opens the dialog that edits the registers on the kind of the tab: on a register (its row) or on the last one chosen */
+  public edit(register: TypeRegisterToEdit | null, event: Event): void {
+    const kind = KIND_OF_TAB[this.tab];
+    this.editRequests.editRegister(register === null ? { kind } : { kind, register }, event.currentTarget as HTMLElement);
   }
 
   public refresh(): void {

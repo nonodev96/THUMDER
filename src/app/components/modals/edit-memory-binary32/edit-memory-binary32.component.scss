@@ -1,0 +1,127 @@
+// The memory dialog: what it adds to the styles of the dialogs of edition (edit-register-binary32.component.scss), the
+// address with its buttons and labels, and the bytes of the word around the data
+
+.memory-address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.memory-address-input {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.memory-labels {
+  flex: 0 1 15rem;
+  width: auto;
+  min-width: 0;
+}
+
+// The aligned addresses next to a misaligned one, to go to them
+.memory-fix {
+  margin-left: 0.35rem;
+  padding: 0;
+  border: 0;
+  font-family: monospace;
+  font-size: inherit;
+  vertical-align: baseline;
+}
+
+.memory-address-help {
+  margin-top: 0.35rem;
+}
+
+// The labels of the program on the address (or the one before it)
+.memory-labels-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.memory-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.1rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background-color: var(--thumder-primary-soft);
+  color: var(--thumder-primary-text);
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  i {
+    font-size: 0.65rem;
+  }
+}
+
+.memory-label-near {
+  border-color: var(--thumder-border);
+  background-color: var(--thumder-surface-2);
+  color: var(--thumder-text-2);
+  font-weight: 500;
+}
+
+// The bytes of the word: the ones of the data on a tint, with their address and the bits they hold of the value
+.memory-byte {
+  padding: 0.2rem 0.25rem 0.1rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+
+.memory-byte-edited {
+  border-color: color-mix(in srgb, var(--thumder-primary) 45%, transparent);
+  background-color: var(--thumder-primary-soft);
+}
+
+.memory-byte-address {
+  margin-bottom: 0.1rem;
+  font-family: monospace;
+  font-size: 0.68rem;
+  color: var(--thumder-muted);
+}
+
+.memory-byte-edited .memory-byte-address {
+  color: var(--thumder-primary-text);
+  font-weight: 600;
+}
+
+// On the tint the muted colour does not reach 4.5:1 in the dark theme
+.memory-byte-edited .edit-byte-index {
+  color: var(--thumder-text-2);
+}
+
+.memory-bit-around {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background-color: transparent;
+  cursor: default;
+  opacity: 0.6;
+}
+
+.memory-swatch-edited {
+  border-color: color-mix(in srgb, var(--thumder-primary) 45%, transparent);
+  background-color: var(--thumder-primary-soft);
+}
+
+@media (max-width: 575.98px) {
+  .memory-address-input,
+  .memory-labels {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .memory-byte {
+    padding: 0.15rem 0.1rem 0.05rem;
+  }
+
+  .edit-bits-bytes {
+    gap: 0.35rem 0.4rem;
+  }
+}

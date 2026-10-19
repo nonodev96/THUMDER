@@ -1,0 +1,666 @@
+// The dialogs that edit a register and the memory (EditMemoryBinary32Component uses these styles too): one section
+// under the other, the value now and the new one, the inputs, the grid of bits, what IEEE 754 means and the
+// representations. Every colour is a variable of theme.scss, so they follow the light and the dark theme.
+
+.edit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.edit-section {
+  min-width: 0;
+}
+
+.edit-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--thumder-text-2);
+}
+
+.edit-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--thumder-muted);
+}
+
+// ── A segmented control: one button for each option, the chosen one filled ──
+.edit-segmented {
+  --segments: 4;
+  display: grid;
+  grid-template-columns: repeat(var(--segments), minmax(0, 1fr));
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+}
+
+.edit-segmented-5 {
+  --segments: 5;
+}
+
+.edit-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.3rem 0.35rem;
+  border: 0;
+  border-radius: calc(var(--thumder-radius) - 2px);
+  background-color: transparent;
+  color: var(--thumder-text-2);
+  font: inherit;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--thumder-surface-hover);
+    color: var(--thumder-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+
+  &.active,
+  &.active:hover {
+    background-color: var(--thumder-primary);
+    color: var(--thumder-on-primary);
+    box-shadow: var(--thumder-shadow);
+  }
+}
+
+.edit-segment-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.edit-segment-sub {
+  font-family: monospace;
+  font-size: 0.72rem;
+  opacity: 0.85;
+}
+
+// ── The registers: a chip each, with its value (the ones that are not zero stand out) ──
+.register-chips {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(4.6rem, 1fr));
+  gap: 0.3rem;
+
+  @media (min-width: 576px) {
+    display: grid;
+  }
+
+  &.register-chips-wide {
+    grid-template-columns: repeat(auto-fill, minmax(8.75rem, 1fr));
+  }
+}
+
+.register-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-width: 0;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: calc(var(--thumder-radius) - 0.15rem);
+  background-color: var(--thumder-surface);
+  color: var(--thumder-text);
+  font: inherit;
+  line-height: 1.15;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--thumder-border-strong);
+    background-color: var(--thumder-surface-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+
+  &.active,
+  &.active:hover {
+    border-color: var(--thumder-primary);
+    background-color: var(--thumder-primary-soft);
+    box-shadow: inset 0 0 0 1px var(--thumder-primary);
+  }
+}
+
+.register-chip-name {
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+
+  i {
+    margin-left: 0.15rem;
+    font-size: 0.6rem;
+    color: var(--thumder-muted);
+    vertical-align: 0.1em;
+  }
+}
+
+.register-chip-value {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--thumder-primary-text);
+}
+
+.register-chip-zero .register-chip-value {
+  font-weight: 400;
+  color: var(--thumder-muted);
+}
+
+// On the tint of the chosen one the muted colour does not reach 4.5:1 in the dark theme
+.register-chip.active.register-chip-zero .register-chip-value {
+  color: var(--thumder-text-2);
+}
+
+// ── The value: what it is, the current one and the new one ──
+.edit-value {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--thumder-border);
+}
+
+.edit-value-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+}
+
+.edit-value-name {
+  margin: 0;
+  font-family: monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--thumder-text);
+}
+
+.edit-value-help {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--thumder-text-2);
+}
+
+.edit-note {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.55rem 0.8rem;
+  border-left: 4px solid var(--thumder-info-text);
+  border-radius: 0 var(--thumder-radius) var(--thumder-radius) 0;
+  background-color: var(--thumder-info-soft);
+  color: var(--thumder-text);
+  font-size: 0.875rem;
+}
+
+.edit-note-locked {
+  border-left-color: var(--thumder-warning-bg);
+  background-color: var(--thumder-warning-soft);
+
+  i {
+    color: var(--thumder-warning-text);
+  }
+}
+
+.edit-note-info i {
+  color: var(--thumder-info-text);
+}
+
+.edit-compare {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.edit-compare-item {
+  display: flex;
+  flex: 1 1 13rem;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface-2);
+}
+
+.edit-compare-new {
+  border-color: var(--thumder-primary);
+  background-color: var(--thumder-primary-soft);
+
+  .edit-compare-label {
+    color: var(--thumder-text-2);
+  }
+}
+
+.edit-compare-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--thumder-muted);
+}
+
+.edit-compare-hex {
+  font-family: monospace;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--thumder-text);
+  overflow-wrap: anywhere;
+}
+
+.edit-compare-decimal {
+  font-size: 0.85rem;
+  color: var(--thumder-text-2);
+  overflow-wrap: anywhere;
+}
+
+.edit-compare-arrow {
+  align-self: center;
+  color: var(--thumder-muted);
+}
+
+.edit-revert {
+  align-self: center;
+  white-space: nowrap;
+}
+
+// ── The inputs of the new value ──
+.edit-inputs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: 0 0.75rem;
+
+  .form-group {
+    min-width: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  label {
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .invalid-feedback {
+    width: 100%;
+  }
+}
+
+// Validation in the colours of the theme
+.edit-body {
+  .invalid-feedback {
+    color: var(--thumder-danger-text);
+  }
+
+  .form-control.is-invalid {
+    border-color: var(--thumder-danger-text);
+  }
+}
+
+// ── The bits, by byte: the IEEE 754 fields in their colour (the ones of the calculator) and the changed ones marked ──
+[data-field="sign"] {
+  --edit-tint: var(--thumder-chart-4);
+}
+
+[data-field="exponent"] {
+  --edit-tint: var(--thumder-chart-2);
+}
+
+[data-field="fraction"] {
+  --edit-tint: var(--thumder-chart-1);
+}
+
+.edit-bits-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.edit-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.78rem;
+  color: var(--thumder-text-2);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+}
+
+.edit-swatch {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 1px solid var(--edit-tint);
+  border-radius: 3px;
+  background-color: color-mix(in srgb, var(--edit-tint) 30%, var(--thumder-surface));
+}
+
+.edit-swatch-changed {
+  border-color: var(--thumder-border-strong);
+  background-color: var(--thumder-surface);
+  box-shadow: inset 0 -3px 0 var(--thumder-primary);
+}
+
+.edit-bits {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-bits-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.edit-bits-row-label {
+  min-width: 2.4rem;
+  padding-top: 0.4rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--thumder-text-2);
+}
+
+.edit-bits-bytes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.6rem;
+}
+
+.edit-byte-cells {
+  display: flex;
+  gap: 2px;
+}
+
+.edit-bit {
+  width: 1.15rem;
+  height: 1.9rem;
+  padding: 0;
+  border: 1px solid var(--thumder-border-strong);
+  border-radius: 4px;
+  background-color: var(--thumder-surface);
+  color: var(--thumder-muted);
+  font-family: monospace;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--thumder-primary) 45%, var(--thumder-border-strong));
+    background-color: color-mix(in srgb, var(--thumder-primary) 14%, var(--thumder-surface));
+    color: var(--thumder-text);
+    font-weight: 700;
+  }
+
+  &[data-field] {
+    border-color: color-mix(in srgb, var(--edit-tint) 60%, transparent);
+    background-color: color-mix(in srgb, var(--edit-tint) 10%, var(--thumder-surface));
+  }
+
+  &[data-field][aria-pressed="true"] {
+    background-color: color-mix(in srgb, var(--edit-tint) 32%, var(--thumder-surface));
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--thumder-primary);
+  }
+
+  &:focus-visible {
+    position: relative;
+    z-index: 1;
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &.edit-bit-changed {
+    box-shadow: inset 0 -3px 0 var(--thumder-primary);
+    color: var(--thumder-primary-text);
+  }
+
+  // A small space between the two nibbles of a byte
+  &.edit-bit-gap {
+    margin-right: 0.3rem;
+  }
+}
+
+.edit-byte-index {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.1rem;
+  padding: 0 0.1rem;
+  font-family: monospace;
+  font-size: 0.68rem;
+  color: var(--thumder-muted);
+}
+
+// ── What the fields of IEEE 754 mean ──
+.edit-ieee {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem 1rem;
+  margin: 0;
+
+  > div {
+    min-width: 0;
+    padding: 0.3rem 0 0.3rem 0.6rem;
+    border-left: 3px solid var(--edit-tint, var(--thumder-border-strong));
+  }
+
+  dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--thumder-muted);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+}
+
+.edit-ieee-exact {
+  grid-column: span 2;
+
+  dd {
+    font-family: monospace;
+  }
+}
+
+// The dialog is narrower on tablets: the fields two by two (the exact value under them)
+@media (max-width: 991.98px) {
+  .edit-ieee {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+// ── The representations: a name and a value per line ──
+.edit-representations-title {
+  margin: 0.25rem 0 0;
+}
+
+.edit-representations {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0 1.25rem;
+  margin: 0;
+
+  &.edit-representations-wide {
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  }
+
+  > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 0.75rem;
+    min-width: 0;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--thumder-border);
+  }
+
+  dt {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--thumder-muted);
+    white-space: nowrap;
+  }
+
+  dd {
+    min-width: 0;
+    margin: 0 0 0 auto;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: var(--thumder-text);
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+}
+
+// ── The footer: what happened with the last value, and the buttons ──
+.edit-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+
+  > * {
+    margin: 0;
+  }
+}
+
+.edit-footer-status {
+  flex: 1 1 16rem;
+  min-width: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--thumder-muted);
+
+  i {
+    margin-right: 0.25rem;
+  }
+}
+
+.edit-footer-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.edit-status-saved {
+  color: var(--thumder-success-text);
+}
+
+.edit-status-adjusted {
+  color: var(--thumder-info-text);
+}
+
+.edit-status-rejected,
+.edit-status-error {
+  color: var(--thumder-warning-text);
+}
+
+// ── Phones: everything one under the other, two bytes of bits per line ──
+@media (max-width: 575.98px) {
+  .edit-body {
+    padding: 0.75rem;
+  }
+
+  .edit-inputs,
+  .edit-ieee {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .edit-ieee-exact {
+    grid-column: auto;
+  }
+
+  .edit-representations.edit-representations-wide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .edit-compare-item {
+    flex-basis: 100%;
+  }
+
+  .edit-compare-arrow {
+    margin: 0 auto;
+    transform: rotate(90deg);
+  }
+
+  .edit-revert {
+    margin-left: auto;
+  }
+
+  .edit-bits-row {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .edit-bits-row-label {
+    padding-top: 0;
+  }
+
+  .edit-bit {
+    width: 1rem;
+    height: 2rem;
+    font-size: 0.85rem;
+  }
+
+  .edit-bit.edit-bit-gap {
+    margin-right: 0.25rem;
+  }
+
+  .edit-segment-name {
+    font-size: 0.82rem;
+  }
+
+  .edit-footer-buttons {
+    width: 100%;
+
+    .btn {
+      flex: 1 1 0;
+    }
+  }
+}

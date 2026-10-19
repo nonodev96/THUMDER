@@ -1,268 +1,301 @@
-<div class="modal fade" id="editMemoryModal" tabindex="-1" role="dialog"
-  aria-labelledby="editMemoryModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+@let f = format();
+@let value = bits();
+@let now = current();
+@let ieeeValue = ieee();
+@let addressError = check().error;
+@let at = index();
+@let before = previous();
+@let after = next();
+<div class="modal fade" id="editMemoryModal" tabindex="-1" role="dialog" aria-labelledby="editMemoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="editMemoryModalLabel">{{'MACHINE.EDIT_MEMORY' | translate}}</h5>
+        <h5 class="modal-title" id="editMemoryModalLabel">{{ 'MACHINE.EDIT_MEMORY' | translate }}</h5>
         <button type="button" class="close" thumderModalDismiss [attr.aria-label]="'FORMS.CLOSE' | translate">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body">
-        <form action="">
-          <div class="row">
 
-            <div class="col-sm-12">
-              <h4>{{'MACHINE.TYPE_DATA' | translate}}</h4>
+      <div class="modal-body edit-body">
+        <!-- The type of data -->
+        <div class="edit-section">
+          <span class="edit-label" id="editMemoryTypeLabel">{{ 'MACHINE.TYPE_DATA' | translate }}</span>
+          <div class="edit-segmented edit-segmented-5" role="group" aria-labelledby="editMemoryTypeLabel">
+            @for (option of types; track option.type) {
+              <button type="button" class="edit-segment" [id]="'editMemoryType-' + option.type" [class.active]="typeData() === option.type"
+                [attr.aria-pressed]="typeData() === option.type" (click)="selectType(option.type)">
+                <span class="edit-segment-name">{{ option.label | translate }}</span>
+                <small class="edit-segment-sub">{{ 'IEEE.BITS_COUNT' | translate: { count: 8 * (option.type === 'Byte' ? 1 : option.type === 'HalfWord' ? 2 : option.type === 'Double' ? 8 : 4) } }}</small>
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- The address: checked as it is typed, with the previous and the next data and the labels of the program -->
+        <div class="edit-section">
+          <label class="edit-label" for="editMemoryAddress">{{ 'MACHINE.ADDRESS' | translate }}</label>
+          <div class="memory-address">
+            <div class="input-group memory-address-input">
+              <div class="input-group-prepend">
+                <button type="button" class="btn btn-outline-secondary" id="editMemoryPrevious" [disabled]="before === null" (click)="step(-1)"
+                  [attr.aria-label]="'EDIT_MEMORY.PREVIOUS' | translate: { address: before === null ? '' : hexAddress(before) }"
+                  [title]="'EDIT_MEMORY.PREVIOUS' | translate: { address: before === null ? '' : hexAddress(before) }">
+                  <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <span class="input-group-text">0x</span>
+              </div>
+              <input type="text" class="form-control text-monospace" id="editMemoryAddress" autocomplete="off" spellcheck="false" maxlength="10"
+                [class.is-invalid]="addressError" [value]="addressText()" [attr.aria-invalid]="!!addressError"
+                aria-describedby="editMemoryAddressFeedback editMemoryAddressHelp" [attr.cdkFocusInitial]="addressError && !narrow() ? '' : null"
+                (input)="onAddress($any($event.target).value)" (blur)="onAddressBlur()" (keydown)="onAddressKeydown($event)">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-outline-secondary" id="editMemoryNext" [disabled]="after === null" (click)="step(1)"
+                  [attr.aria-label]="'EDIT_MEMORY.NEXT' | translate: { address: after === null ? '' : hexAddress(after) }"
+                  [title]="'EDIT_MEMORY.NEXT' | translate: { address: after === null ? '' : hexAddress(after) }">
+                  <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback" id="editMemoryAddressFeedback" [class.d-block]="!!addressError" aria-live="polite">
+                @if (addressError) {
+                  {{ addressError.key | translate: addressError.params }}
+                  @for (fix of addressError.fixes; track fix) {
+                    <button type="button" class="btn btn-link memory-fix" (click)="goTo(fix)">{{ hexAddress(fix) }}</button>
+                  }
+                }
+              </div>
+            </div>
+            @if (symbols().length > 0) {
+              <select class="custom-select memory-labels" id="editMemoryLabel" [attr.aria-label]="'EDIT_MEMORY.GO_TO_LABEL' | translate"
+                (change)="goToLabel($any($event.target).value); $any($event.target).value = ''">
+                <option value="">{{ 'EDIT_MEMORY.GO_TO_LABEL' | translate }}…</option>
+                @for (symbol of symbols(); track symbol.name) {
+                  <option [value]="symbol.index">{{ symbol.name }} · {{ hexAddress(symbol.index) }}</option>
+                }
+              </select>
+            }
+          </div>
+          <p class="edit-hint memory-address-help" id="editMemoryAddressHelp">
+            {{ (typeData() === 'Byte' ? 'EDIT_MEMORY.SIZE_BYTE' : typeData() === 'Double' ? 'EDIT_MEMORY.SIZE_DOUBLE' : 'EDIT_MEMORY.SIZE')
+              | translate: { bytes: bytes(), bits: f.bits, align: alignment() } }}
+            {{ 'EDIT_MEMORY.ARROWS_HELP' | translate }}
+          </p>
+        </div>
+
+        @if (at !== null) {
+          <!-- The data at the address: its labels, its value now and the new one -->
+          <section class="edit-value" aria-labelledby="editMemoryName">
+            <div class="edit-value-head">
+              <h6 class="edit-value-name" id="editMemoryName">{{ hexAddress(at) }}</h6>
+              <div class="memory-labels-list">
+                @for (label of labels().at; track label) {
+                  <span class="memory-label"><i class="fas fa-tag" aria-hidden="true"></i> {{ label }}</span>
+                } @empty {
+                  @if (labels().near; as near) {
+                    <span class="memory-label memory-label-near">{{ 'EDIT_MEMORY.LABEL_NEAR' | translate: { label: near.name, offset: near.offset } }}</span>
+                  } @else {
+                    <span class="edit-hint">{{ 'EDIT_MEMORY.NO_LABEL' | translate }}</span>
+                  }
+                }
+              </div>
             </div>
 
-            <div class="col-sm-4 col-lg-4">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="typeData"
-                  id="typeDataByte" value="Byte"
-                  (change)="changeTypeData('Byte')">
-                  <label class="form-check-label" for="typeDataByte">
-                    {{'MACHINE.BYTE' | translate}}
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="typeData"
-                    id="typeDataHalfWord" value="HalfWord"
-                    (change)="changeTypeData('HalfWord')">
-                    <label class="form-check-label" for="typeDataHalfWord">
-                      {{'MACHINE.HALF_WORD' | translate}}
-                    </label>
+            @if (instructions().length > 0) {
+              <p class="edit-note edit-note-locked" id="editMemoryInstruction">
+                <i class="fas fa-code" aria-hidden="true"></i>
+                <span>{{ 'EDIT_MEMORY.INSTRUCTION' | translate: { instruction: instructions().join(' · ') } }}</span>
+              </p>
+            }
+
+            <div class="edit-compare">
+              <div class="edit-compare-item">
+                <span class="edit-compare-label">{{ 'EDIT_VALUE.CURRENT' | translate }}</span>
+                <span class="edit-compare-hex" id="editMemoryCurrent">{{ hexOf(now) }}</span>
+                <span class="edit-compare-decimal">{{ decimalOf(now) }}</span>
+              </div>
+              <i class="fas fa-arrow-right edit-compare-arrow" aria-hidden="true"></i>
+              <div class="edit-compare-item" [class.edit-compare-new]="dirty()">
+                <span class="edit-compare-label">{{ 'EDIT_VALUE.NEW' | translate }}</span>
+                <span class="edit-compare-hex" id="editMemoryNew">{{ hexOf(value) }}</span>
+                <span class="edit-compare-decimal">
+                  @if (dirty()) {
+                    {{ decimalOf(value) }} ·
+                    {{ (changedBits() === 1 ? 'EDIT_VALUE.CHANGED_BIT' : 'EDIT_VALUE.CHANGED_BITS') | translate: { count: changedBits() } }}
+                  } @else {
+                    {{ 'EDIT_VALUE.UNCHANGED' | translate }}
+                  }
+                </span>
+              </div>
+              @if (dirty()) {
+                <button type="button" class="btn btn-link btn-sm edit-revert" (click)="revert()">
+                  <i class="fas fa-undo" aria-hidden="true"></i> {{ 'EDIT_VALUE.REVERT' | translate }}
+                </button>
+              }
+            </div>
+
+            <!-- The new value, written in each way -->
+            <div class="edit-inputs">
+              @for (field of fields(); track field) {
+                <div class="form-group">
+                  <label [for]="'editMemory-' + field">{{ ('EDIT_VALUE.FIELD_' + field.toUpperCase()) | translate }}</label>
+                  <div class="input-group">
+                    @if (field === 'hex') {
+                      <div class="input-group-prepend"><span class="input-group-text">0x</span></div>
+                    }
+                    <input type="text" class="form-control" [id]="'editMemory-' + field" [class.text-monospace]="field !== 'float'"
+                      [class.is-invalid]="isInvalid(field)" [value]="text(field)" autocomplete="off" spellcheck="false"
+                      [attr.inputmode]="field === 'hex' || field === 'char' ? 'text' : field === 'float' ? 'decimal' : 'numeric'"
+                      [attr.maxlength]="field === 'hex' ? f.bits / 4 + 2 : field === 'char' ? 2 : null" [attr.aria-invalid]="isInvalid(field)"
+                      [attr.aria-describedby]="'editMemory-' + field + '-feedback'"
+                      [attr.cdkFocusInitial]="field === 'hex' && !narrow() ? '' : null"
+                      (input)="onInput(field, $any($event.target).value)" (blur)="onBlur(field)" (keydown.enter)="onEnter($event)">
+                    <div class="invalid-feedback" [class.d-block]="isInvalid(field)" [id]="'editMemory-' + field + '-feedback'" aria-live="polite">
+                      @if (isInvalid(field)) {
+                        @switch (field) {
+                          @case ('hex') { {{ 'EDIT_VALUE.INVALID_HEX' | translate: { digits: f.bits / 4 } }} }
+                          @case ('float') { {{ 'EDIT_VALUE.INVALID_NUMBER' | translate }} }
+                          @case ('char') { {{ 'EDIT_VALUE.INVALID_CHAR' | translate }} }
+                          @default { {{ 'EDIT_VALUE.INVALID_RANGE' | translate: range(field) }} }
+                        }
+                      }
+                    </div>
                   </div>
                 </div>
+              }
+            </div>
+            @if (rounded(); as note) {
+              <p class="edit-note edit-note-info" role="status">
+                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                {{ 'EDIT_VALUE.ROUNDED' | translate: { text: note.text, bits: f.bits, exact: note.exact } }}
+              </p>
+            }
 
-                <div class="col-sm-4 col-lg-4">
-                  <!-- checked -->
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="typeData"
-                      id="typeDataWord" value="Word" checked
-                      (change)="changeTypeData('Word')">
-                      <label class="form-check-label" for="typeDataWord">
-                        {{ 'MACHINE.WORD' | translate }}
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="radio" name="typeData"
-                        id="typeDataSimpleFloatingPoint" value="Float"
-                        (change)="changeTypeData('Float')">
-                        <label class="form-check-label" for="typeDataSimpleFloatingPoint">
-                          {{ 'MACHINE.SIMPLE_FLOATING_POINT' | translate }}
-                        </label>
-                      </div>
-                    </div>
-
-                    <div class="col-sm-4 col-lg-4">
-                      <div class="form-check">
-                        <input class="form-check-input" type="radio" name="typeData"
-                          id="typeDataDoubleFloatingPoint" value="Double"
-                          (change)="changeTypeData('Double')">
-                          <label class="form-check-label" for="typeDataDoubleFloatingPoint">
-                            {{ 'MACHINE.DOUBLE_FLOATING_POINT' | translate }}
-                          </label>
-                        </div>
-                      </div>
-
-                      <!-- ADDRESS in hexadecimal, multiple of data size -->
-                      <div class="col-sm-12">
-                        <label for="itemSelectedEditMemoryId">{{ 'MACHINE.SELECT_ADDRESS' | translate }}</label>
-                        <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">0x</span>
-                          </div>
-                          <input type="text" class="form-control {{ this.addressIsValid ? 'is-valid' : 'is-invalid' }}"
-                            id="itemSelectedEditMemoryId" pattern="[a-fA-F\d]+"
-                            placeholder="{{ 'FORMS.ENTER_VALUE' | translate }}"
-                            [ngModel]="addressMemory"
-                            [ngModelOptions]="{standalone: true}"
-                            (change)="changeAddressMemoryToEdit($event.target)">
-                            <div class="input-group-append">
-                              <span class="input-group-text">{{ 'EDIT.IN_HEXADECIMAL' | translate }}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- VALUE in Hexadecimal -->
-                        <div class="col-sm-6">
-                          <label for="itemSelectedEditMemoryValueHexadecimalId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
-                          <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                              <span class="input-group-text">0x</span>
-                            </div>
-                            <input type="text" class="form-control" id="itemSelectedEditMemoryValueHexadecimalId"
-                              placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
-                              [ngModel]="valueInSection_Hexadecimal"
-                              [ngModelOptions]="{standalone: true}"
-                              (ngModelChange)="ngModelChange_ValueInSection_Hexadecimal($event)">
-                              <div class="input-group-append">
-                                <span class="input-group-text">{{ 'EDIT.IN_HEXADECIMAL' | translate }}</span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <!-- VALUE in decimal -->
-                          @if (typeDataSelected === 'Byte') {
-                            <div class="col-sm-6">
-                              <label for="itemSelectedEditMemoryValueByteId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
-                              <div class="input-group mb-3">
-                                <input type="number" class="form-control" id="itemSelectedEditMemoryValueByteId"
-                                  placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
-                                  min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
-                                  [ngModel]="valueInSection_Byte"
-                                  [ngModelOptions]="{standalone: true}"
-                                  (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
-                                  <div class="input-group-append">
-                                    <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
-                                  </div>
-                                </div>
-                              </div>
+            <!-- The word (or the two words) that hold the data: its bytes marked, a click changes one of their bits -->
+            <div class="edit-bits-head">
+              <span class="edit-label mb-0" id="editMemoryBitsLabel">{{ 'MACHINE.BINARY' | translate }}</span>
+              <ul class="edit-legend" [attr.aria-label]="'EDIT_VALUE.LEGEND' | translate">
+                <li><span class="edit-swatch memory-swatch-edited"></span>{{ 'EDIT_MEMORY.LEGEND_EDITED' | translate }}</li>
+                @if (f.float) {
+                  <li><span class="edit-swatch" data-field="sign"></span>{{ 'IEEE.SIGN' | translate }}</li>
+                  <li><span class="edit-swatch" data-field="exponent"></span>{{ 'IEEE.EXPONENT' | translate }}</li>
+                  <li><span class="edit-swatch" data-field="fraction"></span>{{ 'IEEE.FRACTION' | translate }}</li>
+                }
+                <li><span class="edit-swatch edit-swatch-changed"></span>{{ 'EDIT_VALUE.LEGEND_CHANGED' | translate }}</li>
+              </ul>
+            </div>
+            <div class="edit-bits" role="group" aria-labelledby="editMemoryBitsLabel" (keydown)="onBitKeydown($event)">
+              @for (word of words(); track $index) {
+                <div class="edit-bits-row">
+                  <div class="edit-bits-bytes">
+                    @for (byte of word; track byte.address) {
+                      <div class="edit-byte memory-byte" [class.memory-byte-edited]="byte.edited">
+                        <div class="memory-byte-address">{{ byte.address }}</div>
+                        <div class="edit-byte-cells">
+                          @for (cell of byte.cells; track $index) {
+                            @if (byte.edited) {
+                              <button type="button" class="edit-bit" [attr.data-bit]="cell.index" [attr.data-field]="cell.field" [class.edit-bit-gap]="cell.gap"
+                                [class.edit-bit-changed]="cell.changed" [attr.aria-pressed]="cell.bit === '1'" [tabIndex]="cell.index === focusBit() ? 0 : -1"
+                                [attr.aria-label]="'IEEE.BIT' | translate: { position: cell.position, value: cell.bit }"
+                                [title]="'IEEE.BIT' | translate: { position: cell.position, value: cell.bit }" (click)="toggle(cell.index)">{{ cell.bit }}</button>
+                            } @else {
+                              <span class="edit-bit memory-bit-around" [class.edit-bit-gap]="cell.gap" aria-hidden="true">{{ cell.bit }}</span>
                             }
-
-                            @if (typeDataSelected === 'HalfWord') {
-                              <div class="col-sm-6">
-                                <label for="itemSelectedEditMemoryValueHalfWordId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
-                                <div class="input-group mb-3">
-                                  <input type="number" class="form-control" id="itemSelectedEditMemoryValueHalfWordId"
-                                    placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
-                                    min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
-                                    [ngModel]="valueInSection_HalfWord"
-                                    [ngModelOptions]="{standalone: true}"
-                                    (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
-                                    <div class="input-group-append">
-                                      <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              }
-
-                              @if (typeDataSelected === 'Word') {
-                                <div class="col-sm-6">
-                                  <label for="itemSelectedEditMemoryValueDecimalId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
-                                  <div class="input-group mb-3">
-                                    <input type="number" class="form-control" id="itemSelectedEditMemoryValueDecimalId"
-                                      placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
-                                      min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
-                                      [ngModel]="valueInSection_Word"
-                                      [ngModelOptions]="{standalone: true}"
-                                      (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
-                                      <div class="input-group-append">
-                                        <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                }
-
-                                @if (typeDataSelected === 'Float') {
-                                  <div class="col-sm-6">
-                                    <label for="itemSelectedEditMemoryValueFloatId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
-                                    <div class="input-group mb-3">
-                                      <input type="number" class="form-control" id="itemSelectedEditMemoryValueFloatId"
-                                        placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
-                                        min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
-                                        [ngModel]="valueInSection_Float_Binary32_IEEE754"
-                                        [ngModelOptions]="{standalone: true}"
-                                        (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
-                                        <div class="input-group-append">
-                                          <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  }
-
-                                  @if (typeDataSelected === 'Double') {
-                                    <div class="col-sm-6">
-                                      <label for="itemSelectedEditMemoryValueDoubleId">{{ 'MACHINE.SET_MEMORY_VALUE' | translate }}</label>
-                                      <div class="input-group mb-3">
-                                        <input type="number" class="form-control" id="itemSelectedEditMemoryValueDoubleId"
-                                          placeholder="{{'FORMS.ENTER_VALUE' | translate}}" lang="en"
-                                          min="0" max="{{ MAX_VALUE_TYPE_DATA[typeDataSelected] }}"
-                                          [ngModel]="valueInSection_Double_Binary64_IEEE754"
-                                          [ngModelOptions]="{standalone: true}"
-                                          (ngModelChange)="ngModelChange_ValueInSection_Decimal($event)">
-                                          <div class="input-group-append">
-                                            <span class="input-group-text">{{ 'EDIT.IN_DECIMAL' | translate }}</span>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    }
-
-
-                                    <div class="col-sm-6">
-                                      <p>{{ 'EDIT.MIN_VALUE' | translate: { value: 0 } }}</p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                      <p>{{ 'EDIT.MAX_VALUE' | translate: { value: MAX_VALUE_TYPE_DATA[typeDataSelected] } }}</p>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                      <p><strong>{{ 'MACHINE.DECIMAL' | translate }}:</strong></p>
-                                      <p class="text-monospace">{{ (memoryValueBinary32Display | binary_to_number) }}</p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                      <p><strong>{{ 'MACHINE.OCTAL' | translate }}:</strong></p>
-                                      <p
-                                      class="text-monospace">{{ (memoryValueBinary32Display | binary_to_number | number_to_base: {base: 8}) }}</p>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                      <p><strong>{{ 'MACHINE.HEXADECIMAL' | translate }}:</strong></p>
-                                      <p
-                                        class="text-monospace">{{ (memoryValueBinary32Display | binary_to_number | number_to_hexadecimal | uppercase | pad_start: {
-                                        maxLength: typeDataSelected === 'Double' ? 16 : 8,
-                                        fillString: '0'
-                                      }) }}</p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                      <p><strong>{{ 'MACHINE.BYTE' | translate }}:</strong></p>
-                                      <p class="text-monospace">{{ (memoryValueBinary32Display | binary32_to_bytes) }}</p>
-                                    </div>
-
-                                    <div class="col-sm-6">
-                                      <p><strong>{{ 'MACHINE.HALF_WORD' | translate }}:</strong></p>
-                                      <p class="text-monospace">{{ (memoryValueBinary32Display | binary32_to_halfword) }}</p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                      <p><strong>{{ 'MACHINE.ASCII' | translate }}:</strong></p>
-                                      <p class="text-monospace">{{ (memoryValueBinary32Display | binary32_to_ascii) }}</p>
-                                    </div>
-
-                                    @if (typeDataSelected === 'Float' || typeDataSelected === 'Double') {
-                                      <div class="col-sm-12">
-                                        <p class="text-monospace"><strong>{{ (typeDataSelected === 'Double' ? 'TYPE_DATA.IEEE754_64' : 'TYPE_DATA.IEEE754') | translate }}:</strong></p>
-                                        @if (typeDataSelected === 'Float') {
-                                          <p class="text-monospace"
-                                          >{{ (memoryValueBinary32Display | binary32_to_decimal_IEEE754) }}</p>
-                                        }
-                                        @if (typeDataSelected === 'Double') {
-                                          <p class="text-monospace"
-                                          >{{ (memoryValueBinary64Display | binary64_to_decimal_IEEE754) }}</p>
-                                        }
-                                      </div>
-                                    }
-
-                                    <div class="col-sm-3">
-                                      <p><strong>{{ 'MACHINE.ADDRESS' | translate }}: </strong></p>
-                                      <!-- address -->
-                                      <p class="text-right" id="address" style="line-height: 2em">{{ displayAddressMemory }}</p>
-                                      <!-- address + 32 bits -->
-                                      <p class="text-right" id="next_address" style="line-height: 2em">{{ displayAddressMemoryNext }}</p>
-                                    </div>
-                                    <div class="col-sm-9">
-                                      <p><strong>{{ 'MACHINE.BINARY' | translate }}: </strong></p>
-                                      <div [innerHTML]="drawDigitsToChangeByTypeData()" [attr.data-id]="'drawBinary'"></div>
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-                              <!--
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" thumderModalDismiss>{{'FORMS.CLOSE' | translate}}</button>
-                                <button type="button" class="btn btn-primary">{{'FORMS.SAVE' | translate}}</button>
-                              </div>
-                              -->
-                            </div>
-                          </div>
+                          }
                         </div>
+                        <div class="edit-byte-index" aria-hidden="true">
+                          @if (byte.edited) {
+                            <span>{{ byte.high }}</span><span>{{ byte.low }}</span>
+                          } @else {
+                            <span>&nbsp;</span>
+                          }
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+            <p class="edit-hint">{{ 'EDIT_MEMORY.GRID_HELP' | translate }} {{ 'EDIT_VALUE.BITS_HELP' | translate }}</p>
+
+            <!-- What the fields of IEEE 754 mean -->
+            @if (ieeeValue) {
+              <dl class="edit-ieee">
+                <div data-field="sign">
+                  <dt>{{ 'IEEE.SIGN' | translate }}</dt>
+                  <dd>s = {{ ieeeValue.sign }} → {{ (ieeeValue.sign === 0 ? 'IEEE.POSITIVE' : 'IEEE.NEGATIVE') | translate }}</dd>
+                </div>
+                <div data-field="exponent">
+                  <dt>{{ 'IEEE.EXPONENT' | translate }}</dt>
+                  <dd>
+                    e = {{ ieeeValue.storedExponent }}
+                    @switch (ieeeValue.kind) {
+                      @case ('normal') { → {{ ieeeValue.storedExponent }} − {{ ieeeValue.bias }} = <strong>{{ ieeeValue.exponent }}</strong> }
+                      @case ('subnormal') { → {{ 'IEEE.EXPONENT_SUBNORMAL' | translate: { exponent: ieeeValue.exponent, bias: ieeeValue.bias } }} }
+                      @case ('zero') { → {{ 'IEEE.EXPONENT_ZERO' | translate }} }
+                      @default { → {{ 'IEEE.EXPONENT_SPECIAL' | translate }} }
+                    }
+                  </dd>
+                </div>
+                <div data-field="fraction">
+                  <dt>{{ 'IEEE.FRACTION' | translate }}</dt>
+                  <dd>
+                    @if (ieeeValue.kind === 'nan') {
+                      {{ 'IEEE.FRACTION_NAN' | translate }}
+                    } @else if (ieeeValue.kind === 'infinity') {
+                      {{ 'IEEE.FRACTION_INFINITY' | translate }}
+                    } @else {
+                      {{ ieeeValue.kind === 'normal' ? '1.f' : '0.f' }} = {{ ieeeValue.significand }}
+                    }
+                  </dd>
+                </div>
+                <div>
+                  <dt>{{ 'IEEE.KIND' | translate }}</dt>
+                  <dd>{{ ('IEEE.KIND_' + ieeeValue.kind.toUpperCase()) | translate }}</dd>
+                </div>
+                <div class="edit-ieee-exact">
+                  <dt>{{ 'IEEE.EXACT' | translate }}</dt>
+                  <dd>{{ ieeeValue.exact }}</dd>
+                </div>
+              </dl>
+            }
+
+            <!-- The new value in every representation -->
+            <h6 class="edit-label edit-representations-title" id="editMemoryRepresentations">{{ 'EDIT_VALUE.REPRESENTATIONS' | translate }}</h6>
+            <dl class="edit-representations" [class.edit-representations-wide]="f.bits === 64" aria-labelledby="editMemoryRepresentations">
+              @for (item of representations(); track item.label) {
+                <div>
+                  <dt>{{ item.label | translate }}</dt>
+                  <dd>{{ item.value }}</dd>
+                </div>
+              }
+            </dl>
+          </section>
+        }
+      </div>
+
+      <div class="modal-footer edit-footer">
+        <p class="edit-footer-status" role="status">
+          @if (status(); as result) {
+            <span [class]="'edit-status edit-status-' + result.kind">
+              <i class="fas" [class.fa-check-circle]="result.kind === 'saved'" [class.fa-info-circle]="result.kind === 'adjusted'"
+                [class.fa-exclamation-triangle]="result.kind === 'rejected' || result.kind === 'error'" aria-hidden="true"></i>
+              {{ ('EDIT_VALUE.STATUS_' + result.kind.toUpperCase()) | translate: { name: result.name, value: result.value } }}
+            </span>
+          } @else if (!hasProgram()) {
+            <span class="edit-status edit-status-rejected"><i class="fas fa-info-circle" aria-hidden="true"></i> {{ 'EDIT_VALUE.NO_PROGRAM' | translate }}</span>
+          } @else {
+            <span class="edit-status">{{ 'EDIT_VALUE.APPLY_HINT' | translate }}</span>
+          }
+        </p>
+        <div class="edit-footer-buttons">
+          <button type="button" class="btn btn-secondary" thumderModalDismiss>{{ 'FORMS.CANCEL' | translate }}</button>
+          <button type="button" class="btn btn-primary" id="editMemoryApply" [disabled]="!canApply()" (click)="apply()">
+            @if (applying()) {
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+            }
+            {{ 'EDIT_VALUE.APPLY' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

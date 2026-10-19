@@ -14,95 +14,225 @@
       </button>
     </div>
   </div>
-  <div class="card-body">
-    @let s = stages();
-    @let f = forwarding();
-    <svg class="datapath-svg" viewBox="0 0 1000 440" role="img" aria-labelledby="datapathTitle datapathSummary">
-      <title id="datapathTitle">{{ 'DATAPATH.TITLE' | translate }}</title>
+  <div class="card-body datapath-body">
+    @let b = boxes();
+    @let f = fields();
+    @let units = unitsConfig();
+    <!-- A narrow card scrolls the drawing sideways (its texts stay readable) -->
+    <div class="datapath-scroll">
+      <svg class="datapath-svg" [class.datapath-still]="duration() === 0" viewBox="0 0 1200 640" role="img" aria-labelledby="datapathTitle"
+        aria-describedby="datapathSummary" [style.--dp-duration.ms]="duration()">
+        <title id="datapathTitle">{{ 'DATAPATH.TITLE' | translate }}</title>
+        <defs>
+          <marker id="dpArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" class="dp-arrow-head"></path>
+          </marker>
+          <pattern id="dpStall" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="8" height="8" class="dp-stall-bg"></rect>
+            <rect width="3" height="8" class="dp-stall-stripe"></rect>
+          </pattern>
+        </defs>
 
-      <!-- The stages -->
-      @for (stage of [{ x: 95, name: 'IF' }, { x: 285, name: 'ID' }, { x: 500, name: 'EX' }, { x: 705, name: 'MEM' }, { x: 890, name: 'WB' }]; track stage.name) {
-        <text class="stage-title" [attr.x]="stage.x" y="22" text-anchor="middle">{{ stage.name }}</text>
-      }
-
-      <!-- The registers between the stages -->
-      @for (latch of [{ x: 175, name: 'IF/ID' }, { x: 380, name: 'ID/EX' }, { x: 615, name: 'EX/MEM' }, { x: 790, name: 'MEM/WB' }]; track latch.name) {
-        <rect class="latch" [attr.x]="latch.x" y="40" width="16" height="330"></rect>
-        <text class="label" [attr.x]="latch.x + 8" y="385" text-anchor="middle">{{ latch.name }}</text>
-      }
-
-      <!-- The wires of each instruction, from left to right, and the write of WB in the registers -->
-      <path class="wire" d="M 70 170 H 85 M 165 170 H 175 M 191 170 H 205 M 370 170 H 380 M 396 135 H 405 M 605 135 H 615 M 631 170 H 640 M 780 170 H 790 M 806 170 H 815"></path>
-      <path class="wire" d="M 897 130 V 112 H 287 V 130"></path>
-      <text class="label" x="590" y="106" text-anchor="middle">{{ 'DATAPATH.WRITE_BACK' | translate }}</text>
-
-      <!-- IF -->
-      <rect class="block" x="20" y="48" width="150" height="40" rx="4" [style.fill]="fill('IF', s.IF)"></rect>
-      <text class="occupant" x="95" y="73" text-anchor="middle">{{ s.IF ? short(s.IF.text) : '' }}</text>
-      <rect class="block box" x="20" y="150" width="50" height="40"></rect>
-      <text class="label" x="45" y="174" text-anchor="middle">PC</text>
-      <rect class="block box" x="85" y="130" width="80" height="80"></rect>
-      <text class="label" x="125" y="166" text-anchor="middle">{{ 'DATAPATH.INSTRUCTION' | translate }}</text>
-      <text class="label" x="125" y="180" text-anchor="middle">{{ 'DATAPATH.MEMORY' | translate }}</text>
-
-      <!-- ID: the registers are read and the branches are resolved -->
-      <rect class="block" x="205" y="48" width="165" height="40" rx="4" [style.fill]="fill('ID', s.ID)"></rect>
-      <text class="occupant" x="287" y="66" text-anchor="middle">{{ s.ID ? short(s.ID.text) : '' }}</text>
-      <text class="label" x="287" y="81" text-anchor="middle">{{ s.ID?.stall ?? '' }}</text>
-      <rect class="block box" x="205" y="130" width="165" height="80"></rect>
-      <text class="label" x="287" y="174" text-anchor="middle">{{ 'DATAPATH.REGISTERS' | translate }}</text>
-      <rect class="block box" x="205" y="230" width="165" height="50"></rect>
-      <text class="label" x="287" y="252" text-anchor="middle">{{ 'DATAPATH.BRANCHES' | translate }}</text>
-      <text class="label" x="287" y="267" text-anchor="middle">{{ 'DATAPATH.NOT_TAKEN' | translate }}</text>
-
-      <!-- EX: the integer unit and the floating point units -->
-      <rect class="block" x="405" y="110" width="200" height="50" rx="4" [style.fill]="fill('intEX', s.intEX)"></rect>
-      <text class="label" [class.on-stage]="s.intEX" x="505" y="128" text-anchor="middle">{{ 'DATAPATH.ALU' | translate }}</text>
-      <text class="occupant" x="505" y="146" text-anchor="middle">{{ s.intEX ? short(s.intEX.text) + (s.intEX.stall ? ' (' + s.intEX.stall + ')' : '') : '' }}</text>
-      @for (unit of [{ y: 172, key: 'faddEX', label: 'DATAPATH.FADD', cells: s.faddEX }, { y: 237, key: 'fmultEX', label: 'DATAPATH.FMUL', cells: s.fmultEX }, { y: 302, key: 'fdivEX', label: 'DATAPATH.FDIV', cells: s.fdivEX }]; track unit.key) {
-        @let busy = unit.cells.find(isBusy);
-        <rect class="block" x="405" [attr.y]="unit.y" width="200" height="56" rx="4" [style.fill]="busy ? fill(unit.key, busy) : 'var(--thumder-surface-2)'"></rect>
-        <text class="label" [class.on-stage]="busy" x="505" [attr.y]="unit.y + 16" text-anchor="middle">{{ unit.label | translate: { count: unit.cells.length } }}</text>
-        @for (cell of unit.cells.slice(0, 2); track $index) {
-          <text class="occupant" x="505" [attr.y]="unit.y + 31 + $index * 14" text-anchor="middle">{{ cell ? short(cell.text) + (cell.stall ? ' (' + cell.stall + ')' : '') : '' }}</text>
+        <!-- The stages: their name and, when they have an instruction, their column lit with its colour -->
+        @for (zone of zones(); track zone.key) {
+          <rect class="dp-zone" [class.dp-zone--busy]="zone.busy" [class.dp-zone--stalled]="zone.stalled" [attr.x]="zone.x" y="96"
+            [attr.width]="zone.width" height="450" rx="10" [style.--dp-colour]="zone.colour"></rect>
+          <g class="dp-stage-title" [style.--dp-colour]="zone.colour">
+            <rect class="dp-stage-pill" [attr.x]="zone.x" y="8" [attr.width]="zone.width" height="38" rx="10"></rect>
+            <circle class="dp-stage-dot" [attr.cx]="zone.x + 18" cy="27" r="7"></circle>
+            <text class="dp-stage-name" [attr.x]="zone.x + 32" y="25">{{ zone.name }}</text>
+            <text class="dp-stage-subtitle" [attr.x]="zone.x + 32" y="39">{{ zone.title | translate }}</text>
+          </g>
         }
-      }
 
-      <!-- MEM -->
-      <rect class="block" x="640" y="48" width="140" height="40" rx="4" [style.fill]="fill('MEM', s.MEM)"></rect>
-      <text class="occupant" x="710" y="73" text-anchor="middle">{{ s.MEM ? short(s.MEM.text, 19) : '' }}</text>
-      <rect class="block box" x="640" y="130" width="140" height="80"></rect>
-      <text class="label" x="710" y="166" text-anchor="middle">{{ 'DATAPATH.DATA' | translate }}</text>
-      <text class="label" x="710" y="180" text-anchor="middle">{{ 'DATAPATH.MEMORY' | translate }}</text>
+        <!-- The wires, under everything -->
+        <g class="dp-wires">
+          @for (key of baseWires; track key) {
+            <path class="dp-wire" [attr.d]="wires[key].d" marker-end="url(#dpArrow)"></path>
+          }
+          <path class="dp-wire" [attr.d]="wires.npcMux.d" marker-end="url(#dpArrow)"></path>
+          <path class="dp-wire" [attr.d]="wires.btaMux.d" marker-end="url(#dpArrow)"></path>
+          <path class="dp-wire" [attr.d]="wires.bypass.d" marker-end="url(#dpArrow)"></path>
+          <path class="dp-wire dp-wire--wb" [attr.d]="wires.wbRf.d" marker-end="url(#dpArrow)"></path>
+          <circle class="dp-joint" cx="170" cy="151" r="3"></circle>
+          <circle class="dp-joint" cx="286" cy="300" r="3"></circle>
+          <circle class="dp-joint" cx="548" cy="320" r="3"></circle>
+          <circle class="dp-joint" cx="820" cy="275" r="3"></circle>
+          <circle class="dp-joint" cx="1130" cy="375" r="3"></circle>
+          <text class="dp-wire-label" x="125" y="106" text-anchor="middle">PC+4</text>
+          <text class="dp-wire-label" x="238" y="90" text-anchor="middle">BTA<title>{{ 'DATAPATH.TARGET' | translate }}</title></text>
+          <text class="dp-wire-label" x="780" y="630" text-anchor="middle">{{ 'DATAPATH.WRITE_BACK' | translate }}</text>
+          @if (forwardingEnabled()) {
+            <path class="dp-wire dp-wire--forward" [attr.d]="wires.fwdMemEx.d" marker-end="url(#dpArrow)"></path>
+            <path class="dp-wire dp-wire--forward" [attr.d]="wires.fwdWbEx.d" marker-end="url(#dpArrow)"></path>
+            <text class="dp-wire-label dp-wire-label--forward" x="690" y="551" text-anchor="middle">{{ 'DATAPATH.FROM_EX_MEM' | translate }}</text>
+            <text class="dp-wire-label dp-wire-label--forward" x="850" y="579" text-anchor="middle">{{ 'DATAPATH.FROM_MEM_WB' | translate }}</text>
+          } @else {
+            <text class="dp-wire-label" x="690" y="566" text-anchor="middle">{{ 'DATAPATH.NO_FORWARDING' | translate }}</text>
+          }
+        </g>
 
-      <!-- WB -->
-      <rect class="block" x="815" y="48" width="165" height="40" rx="4" [style.fill]="fill('WB', s.WB)"></rect>
-      <text class="occupant" x="897" y="73" text-anchor="middle">{{ s.WB ? short(s.WB.text) : '' }}</text>
-      <rect class="block box" x="815" y="130" width="165" height="80"></rect>
-      <text class="label" x="897" y="174" text-anchor="middle">{{ 'DATAPATH.WRITE' | translate }}</text>
+        <!-- The wires used in this cycle, in the colour of their stage, and a pulse along each one (again each cycle) -->
+        <g class="dp-active">
+          @for (key of active(); track key + '@' + step()) {
+            <path class="dp-wire dp-wire--on" [class.dp-wire--marching]="key.startsWith('fwd')" [attr.d]="wires[key].d" [style.--dp-colour]="wireColour(key)"
+              marker-end="url(#dpArrow)"></path>
+            <path class="dp-flow" [attr.d]="wires[key].d" pathLength="100" [style.--dp-colour]="wireColour(key)"></path>
+          }
+        </g>
 
-      <!-- Forwarding: from the registers after EX and after MEM, back to EX (and to ID for the branches) -->
-      @if (forwardingEnabled()) {
-        <path class="forward" [class.active]="f.fromMem" d="M 623 370 V 398 H 418 V 160"></path>
-        <path class="forward" [class.active]="f.fromWb" d="M 798 370 V 414 H 410 V 160"></path>
-        <path class="forward" [class.active]="f.toId" d="M 410 406 H 300 V 280"></path>
-        <text class="label" x="520" y="394" text-anchor="middle">{{ 'DATAPATH.FROM_EX_MEM' | translate }}</text>
-        <text class="label" x="600" y="430" text-anchor="middle">{{ 'DATAPATH.FROM_MEM_WB' | translate }}</text>
-      } @else {
-        <text class="label" x="500" y="410" text-anchor="middle">{{ 'DATAPATH.NO_FORWARDING' | translate }}</text>
-      }
-    </svg>
+        <!-- IF: the PC, the multiplexer of the next PC, +4 and the instruction memory -->
+        <g class="dp-unit" [class.dp-unit--on]="b.branch?.taken || b.fetched">
+          <polygon class="dp-box dp-mux" points="24,176 98,176 90,200 32,200"></polygon>
+          <text class="dp-tiny" x="61" y="192" text-anchor="middle">mux</text>
+        </g>
+        <g class="dp-unit" [class.dp-unit--on]="b.pc.changed">
+          <rect class="dp-box dp-register" x="24" y="246" width="74" height="58" rx="8"></rect>
+          <text class="dp-box-title" x="61" y="268" text-anchor="middle">PC</text>
+          <text class="dp-value" [class.dp-value--changed]="b.pc.changed" x="61" y="290" text-anchor="middle">{{ b.pc.value }}</text>
+        </g>
+        <g class="dp-unit" [class.dp-unit--on]="b.fetched">
+          <polygon class="dp-box dp-alu" points="118,118 152,132 152,170 118,184 118,160 126,151 118,142"></polygon>
+          <text class="dp-box-title" x="138" y="156" text-anchor="middle">+4</text>
+        </g>
+        <g class="dp-unit" [class.dp-unit--on]="b.fetched" [style.--dp-colour]="'var(--thumder-stage-if)'">
+          <rect class="dp-box" x="114" y="222" width="80" height="130" rx="8"></rect>
+          <text class="dp-box-title" x="154" y="262" text-anchor="middle">{{ 'DATAPATH.INSTRUCTION_MEMORY_1' | translate }}</text>
+          <text class="dp-box-title" x="154" y="276" text-anchor="middle">{{ 'DATAPATH.INSTRUCTION_MEMORY_2' | translate }}</text>
+          @if (b.fetched) {
+            <text class="dp-tiny" x="154" y="318" text-anchor="middle">{{ 'DATAPATH.READS' | translate }}</text>
+            <text class="dp-value dp-value--changed" x="154" y="332" text-anchor="middle">{{ b.fetched }}</text>
+          }
+        </g>
 
-    <!-- The same, as text -->
-    <div id="datapathSummary" class="small mt-2" aria-live="polite">
-      <ul class="list-inline mb-1">
-        @for (item of [{ name: 'IF', cell: s.IF }, { name: 'ID', cell: s.ID }, { name: 'EX', cell: s.intEX }, { name: 'MEM', cell: s.MEM }, { name: 'WB', cell: s.WB }]; track item.name) {
-          <li class="list-inline-item"><strong>{{ item.name }}</strong>: {{ item.cell ? item.cell.text + (item.cell.stall ? ' (' + item.cell.stall + ')' : '') : ('DATAPATH.EMPTY' | translate) }}</li>
+        <!-- ID: the branches (resolved here), the bank of registers and the extension of the immediate -->
+        <g class="dp-unit" [class.dp-unit--on]="b.branch" [style.--dp-colour]="'var(--thumder-stage-id)'">
+          <rect class="dp-box" x="300" y="124" width="120" height="50" rx="8"></rect>
+          <text class="dp-box-title" x="360" y="144" text-anchor="middle">{{ 'DATAPATH.BRANCHES' | translate }}</text>
+          @if (b.branch; as branch) {
+            <text class="dp-value dp-value--changed" x="360" y="162" text-anchor="middle">{{ (branch.taken ? 'DATAPATH.TAKEN' : 'DATAPATH.NOT_TAKEN_NOW') | translate: { target: branch.target } }}</text>
+          } @else {
+            <text class="dp-tiny" x="360" y="162" text-anchor="middle">{{ 'DATAPATH.NOT_TAKEN' | translate }}</text>
+          }
+        </g>
+        <g class="dp-unit" [class.dp-unit--on]="b.reads || b.writes.length > 0" [style.--dp-colour]="'var(--thumder-stage-id)'">
+          <rect class="dp-box dp-bank" x="300" y="196" width="120" height="158" rx="8"></rect>
+          @for (row of [0, 1, 2, 3, 4, 5]; track row) {
+            <line class="dp-bank-row" x1="306" [attr.y1]="210 + row * 7" x2="414" [attr.y2]="210 + row * 7"></line>
+          }
+          <text class="dp-box-title" x="360" y="268" text-anchor="middle">{{ 'DATAPATH.REGISTERS' | translate }}</text>
+          @if (b.reads) {
+            <text class="dp-tiny" x="360" y="292" text-anchor="middle">{{ 'DATAPATH.READS' | translate }}</text>
+            <text class="dp-value dp-value--changed" x="360" y="306" text-anchor="middle">{{ b.reads }}</text>
+          }
+          @for (write of b.writes.slice(0, 2); track write.name) {
+            <text class="dp-value dp-value--written" x="360" [attr.y]="326 + $index * 14" text-anchor="middle">{{ write.name }} ← {{ write.value }}</text>
+          }
+        </g>
+        <g class="dp-unit" [class.dp-unit--on]="f[1][2].changed" [style.--dp-colour]="'var(--thumder-stage-id)'">
+          <rect class="dp-box" x="306" y="396" width="96" height="34" rx="17"></rect>
+          <text class="dp-box-title" x="354" y="417" text-anchor="middle">{{ 'DATAPATH.SIGN_EXTEND' | translate }}</text>
+        </g>
+
+        <!-- EX: the multiplexers of the forwarding, the ALU and the floating point units -->
+        <g class="dp-unit" [class.dp-unit--on]="b.alu" [style.--dp-colour]="'var(--thumder-stage-ex)'">
+          <rect class="dp-box dp-mux" x="556" y="210" width="24" height="130" rx="6"></rect>
+          <text class="dp-tiny dp-vertical" x="572" y="275" text-anchor="middle" transform="rotate(-90 572 275)">{{ 'DATAPATH.MUX' | translate }}</text>
+          <polygon class="dp-box dp-alu" points="600,206 680,240 680,310 600,344 600,292 614,275 600,258"></polygon>
+          <text class="dp-box-title dp-box-title--big" x="648" y="272" text-anchor="middle">ALU</text>
+          @if (b.alu) {
+            <text class="dp-value dp-value--changed" x="648" y="290" text-anchor="middle">{{ b.alu }}</text>
+          }
+        </g>
+        @for (row of unitRows; track row.key) {
+          @let cells = unitCells(row.key);
+          @let slot = slotWidth(row.key);
+          <g class="dp-unit dp-fp" [class.dp-unit--on]="cells.some(isBusy)" [style.--dp-colour]="row.colour">
+            <path class="dp-wire" [attr.d]="'M 542 ' + (row.y + 15) + ' H ' + unitX" marker-end="url(#dpArrow)"></path>
+            <path class="dp-wire" [attr.d]="'M ' + (unitX + unitWidth) + ' ' + (row.y + 15) + ' H 742'" marker-end="url(#dpArrow)"></path>
+            <rect class="dp-box" [attr.x]="unitX" [attr.y]="row.y" [attr.width]="unitWidth" height="30" rx="8"></rect>
+            <text class="dp-box-title" [attr.x]="unitX + 8" [attr.y]="row.y + 13">{{ row.name }}</text>
+            <text class="dp-tiny" [attr.x]="unitX + 8" [attr.y]="row.y + 25">{{ 'DATAPATH.UNITS' | translate: { count: units[row.key].count, cycles: units[row.key].delay } }}</text>
+            @for (cell of cells; track $index) {
+              <rect class="dp-slot" [class.dp-slot--busy]="cell" [attr.x]="unitSlotsX + $index * slot + 1" [attr.y]="row.y + 4" [attr.width]="slot - 2" height="22" rx="5"></rect>
+            }
+          </g>
         }
-      </ul>
-      @if (f.texts.length > 0) {
-        <p class="mb-0 text-success">{{ 'DATAPATH.FORWARDED' | translate: { list: f.texts.join('; ') } }}</p>
-      }
+
+        <!-- MEM: the data memory -->
+        <g class="dp-unit" [class.dp-unit--on]="b.memory" [style.--dp-colour]="'var(--thumder-stage-mem)'">
+          <rect class="dp-box" x="834" y="222" width="124" height="168" rx="8"></rect>
+          <text class="dp-box-title" x="896" y="262" text-anchor="middle">{{ 'DATAPATH.DATA_MEMORY_1' | translate }}</text>
+          <text class="dp-box-title" x="896" y="276" text-anchor="middle">{{ 'DATAPATH.DATA_MEMORY_2' | translate }}</text>
+          <text class="dp-tiny" x="840" y="289" text-anchor="start">{{ 'DATAPATH.ADDRESS' | translate }}</text>
+          <text class="dp-tiny" x="840" y="367" text-anchor="start">{{ 'DATAPATH.DATA_IN' | translate }}</text>
+          @if (b.memory; as memory) {
+            <text class="dp-tiny" x="896" y="306" text-anchor="middle">{{ (memory.kind === 'read' ? 'DATAPATH.READS' : 'DATAPATH.WRITES') | translate }}</text>
+            <text class="dp-value dp-value--changed" x="896" y="320" text-anchor="middle">[{{ memory.address }}]</text>
+            <text class="dp-value dp-value--changed" x="896" y="336" text-anchor="middle">{{ memory.kind === 'read' ? '→' : '←' }} {{ memory.value }}</text>
+          }
+        </g>
+
+        <!-- WB: the multiplexer of what is written, and the register written -->
+        <g class="dp-unit" [class.dp-unit--on]="b.writes.length > 0" [style.--dp-colour]="'var(--thumder-stage-wb)'">
+          <polygon class="dp-box dp-mux" points="1080,280 1104,292 1104,458 1080,470"></polygon>
+          <text class="dp-tiny dp-vertical" x="1093" y="375" text-anchor="middle" transform="rotate(-90 1093 375)">{{ 'DATAPATH.MUX' | translate }}</text>
+          @if (b.writes[0]; as write) {
+            <rect class="dp-box dp-register" x="1110" y="486" width="74" height="42" rx="8"></rect>
+            <text class="dp-box-title" x="1147" y="503" text-anchor="middle">{{ write.name }} ←</text>
+            <text class="dp-value dp-value--written" x="1147" y="519" text-anchor="middle">{{ write.value }}</text>
+          }
+        </g>
+
+        <!-- The registers between the stages: they capture what their stage leaves at the end of the cycle (a flash with
+             each clock) -->
+        @for (tick of [step()]; track tick) {
+          <g class="dp-latches">
+            @for (latch of latches; track latch.name; let index = $index) {
+              <g class="dp-latch">
+                <rect class="dp-latch-bar" [attr.x]="latch.x" y="100" [attr.width]="latchWidth" height="442" rx="8"></rect>
+                <text class="dp-latch-name" [attr.x]="latch.x + latchWidth / 2" y="118" text-anchor="middle">{{ latch.name }}</text>
+                @for (field of f[index]; track field.name) {
+                  <g class="dp-field" [class.dp-field--changed]="field.changed">
+                    <rect class="dp-field-box" [attr.x]="latch.x + 4" [attr.y]="field.y - 17" [attr.width]="latchWidth - 8" height="34" rx="5"></rect>
+                    <text class="dp-field-name" [attr.x]="latch.x + latchWidth / 2" [attr.y]="field.y - 5" text-anchor="middle">{{ field.name }}</text>
+                    <text class="dp-field-value" [attr.x]="latch.x + latchWidth / 2" [attr.y]="field.y + 10" text-anchor="middle">{{ field.value }}</text>
+                  </g>
+                }
+              </g>
+            }
+          </g>
+        }
+
+        <!-- The instructions: each one keeps its element and slides to its stage with the clock -->
+        @for (token of tokens(); track token.id) {
+          <g class="dp-token" [class.dp-token--stalled]="token.stall && token.stall !== 'Aborted'" [class.dp-token--aborted]="token.stall === 'Aborted'"
+            [style.transform]="'translate(' + token.x + 'px, ' + token.y + 'px) scale(' + token.scale + ')'" [style.--dp-colour]="token.colour">
+            <g class="dp-token-body">
+              <rect class="dp-token-pill" [attr.width]="tokenWidth" [attr.height]="tokenHeight" rx="14"></rect>
+              <text class="dp-token-text" [attr.x]="tokenWidth / 2" y="18.5" text-anchor="middle">{{ token.text }}</text>
+              @if (token.stall) {
+                <g class="dp-token-stall">
+                  <rect [attr.x]="tokenWidth - 58" y="-9" width="62" height="16" rx="8"></rect>
+                  <text [attr.x]="tokenWidth - 27" y="3" text-anchor="middle">{{ token.stall }}</text>
+                </g>
+              }
+              <title>{{ token.text }}{{ token.stall ? ' (' + token.stall + ')' : '' }}</title>
+            </g>
+          </g>
+        }
+      </svg>
     </div>
+    <ul class="datapath-legend" aria-hidden="true">
+      <li><span class="datapath-legend-wire datapath-legend-wire--on"></span>{{ 'DATAPATH.LEGEND_ACTIVE' | translate }}</li>
+      <li><span class="datapath-legend-field"></span>{{ 'DATAPATH.LEGEND_CHANGED' | translate }}</li>
+      <li><span class="datapath-legend-wire datapath-legend-wire--forward"></span>{{ 'DATAPATH.LEGEND_FORWARDING' | translate }}</li>
+      <li><span class="datapath-legend-stall"></span>{{ 'DATAPATH.LEGEND_STALL' | translate }}</li>
+    </ul>
+  </div>
+
+  <!-- The same, stage by stage: what each one does in this cycle -->
+  <div class="card-footer datapath-footer" id="datapathSummary" aria-live="polite">
+    <thumder-pipeline-stages></thumder-pipeline-stages>
   </div>
 </div>

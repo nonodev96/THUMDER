@@ -12,7 +12,7 @@
         [title]="(machine.entry()?.main === false ? 'MACHINE.GO_TO_START' : 'MACHINE.GO_TO_MAIN') | translate: { address: entryAddress() }">
         <i class="fas fa-crosshairs" aria-hidden="true"></i> main
       </button>
-      <button type="button" class="btn btn-tool" thumderModalOpen="editMemoryModal" [title]="'MACHINE.EDIT_MEMORY' | translate" [attr.aria-label]="'MACHINE.EDIT_MEMORY' | translate"
+      <button type="button" class="btn btn-tool" (click)="edit(null, $event)" [title]="'MACHINE.EDIT_MEMORY' | translate" [attr.aria-label]="'MACHINE.EDIT_MEMORY' | translate"
               id="editMemoryModalButton">
         <i class="fas fa-edit" aria-hidden="true"></i>
       </button>
@@ -50,7 +50,7 @@
     </div>
     <thumder-virtual-table [rows]="dataSourceMemory" [columns]="columns" [height]="maxHeightCard" [itemSize]="32" [minWidth]="minWidth"
       [stickyFirst]="true" [label]="'MACHINE.MEMORY' | translate">
-      <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" [width]="width('Address')" let-index>0x{{ index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"} }}</ng-template>
+      <ng-template thumderColumn="Address" [header]="'MACHINE.ADDRESS' | translate" [width]="width('Address')" let-index>@let address = '0x' + (index | number_to_hexadecimal | uppercase | pad_start: {maxLength: 8, fillString: "0"});<button type="button" class="row-edit" [title]="'EDIT_MEMORY.EDIT_ROW' | translate: { address: address }" (click)="edit(index, $event)">{{ address }}<i class="fas fa-pen" aria-hidden="true"></i></button></ng-template>
       <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" [width]="width('Hexadecimal')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index) | binary_32_64_to_hexadecimal) }}</ng-template>
       <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" [width]="width('Binary')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>
       <ng-template thumderColumn="BinaryFloat" [header]="'MACHINE.BINARY_FLOAT' | translate" [width]="width('BinaryFloat')" let-index>{{ (machine.memory.getMemoryWordBinaryByIndex(index)) }}</ng-template>

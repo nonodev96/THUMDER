@@ -1,0 +1,105 @@
+:host {
+  display: block;
+}
+
+// The canvas in a frame of the theme, which shows the focus when it comes from the keyboard
+.diagram-frame {
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  overflow: hidden;
+  background-color: var(--thumder-diagram-bg);
+  transition: box-shadow 0.15s ease;
+
+  &.focused {
+    box-shadow: 0 0 0 2px var(--thumder-diagram-selected);
+  }
+}
+
+// The legend: cells like the ones of the canvas, with the same monospaced labels
+.diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--thumder-muted);
+}
+
+.legend-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.375rem;
+}
+
+.legend-title {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 0.125rem;
+}
+
+.legend-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.375rem;
+}
+
+.legend-cell {
+  display: inline-block;
+  min-width: 2.25rem;
+  padding: 0.0625rem 0.375rem;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  border-radius: 4px;
+  font-family: "JetBrains Mono", "Fira Code", "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", monospace;
+  font-weight: 700;
+  font-size: 0.6875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  color: var(--thumder-on-stage);
+
+  // The stalls are striped, as in the canvas
+  &.striped {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(15, 23, 42, 0.16) 0,
+      rgba(15, 23, 42, 0.16) 1.25px,
+      transparent 1.25px,
+      transparent 6px
+    );
+  }
+}
+
+.legend-arrow {
+  width: 1.75rem;
+  height: 0.875rem;
+
+  path {
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+  }
+
+  &.forwarding {
+    path {
+      stroke: var(--thumder-diagram-forwarding);
+    }
+
+    .head {
+      fill: var(--thumder-diagram-forwarding);
+      stroke: none;
+    }
+  }
+
+  &.cause {
+    path {
+      stroke: var(--thumder-diagram-stall-arrow);
+    }
+
+    .head {
+      fill: var(--thumder-diagram-stall-arrow);
+      stroke: none;
+    }
+  }
+}

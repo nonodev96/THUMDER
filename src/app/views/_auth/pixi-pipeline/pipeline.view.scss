@@ -1,0 +1,8 @@
+// The footer: what each stage does in this cycle (as the footer of the code)
+.pipeline-footer {
+  max-height: 45vh;
+  overflow-y: auto;
+  background-color: var(--thumder-surface);
+  color: var(--thumder-text);
+  border-top: 1px solid var(--thumder-border);
+}

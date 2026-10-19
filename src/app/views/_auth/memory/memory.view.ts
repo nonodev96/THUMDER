@@ -1,9 +1,10 @@
 import { UpperCasePipe } from "@angular/common";
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, effect, inject, untracked, ViewChild } from "@angular/core";
-import type { TypeAddress, TypeDataDisplayColumn } from "@app/Types";
+import type { TypeDataDisplayColumn } from "@app/Types";
 import { EditMemoryBinary32Component } from "@components/modals/edit-memory-binary32/edit-memory-binary32.component";
 import { MachineService } from "@core/machine/machine.service";
 import { toAddress } from "@core/numbers";
+import { EditRequestService, type MemoryTypeData } from "@core/services/edit/edit-request.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { VirtualTableColumnDirective, VirtualTableComponent } from "@shared/components/virtual-table/virtual-table.component";
 import { PadStartFilterPipe } from "@shared/pipes/filter/LeftPadFilter.pipe";
@@ -19,7 +20,6 @@ import {
   PadStartPipe,
 } from "@shared/pipes/numbers/numbers.pipes";
 import { mediaSignal, NARROW } from "@shared/utils/media";
-import { ModalOpenDirective } from "../../../__shared/directives/bootstrap/modal.directive";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 
 /**
@@ -48,6 +48,16 @@ const COLUMN_WIDTHS: Record<string, { ch: number; grow?: boolean }> = {
   InstructionCode: { ch: 28, grow: true },
 };
 
+/** The type of data the dialog that edits the memory opens with, from how the table shows the words */
+const EDIT_TYPE: Partial<Record<TypeDataDisplayColumn, MemoryTypeData>> = {
+  Byte: "Byte",
+  "Address-0-1-2-3": "Byte",
+  HalfWord: "HalfWord",
+  "HalfWord-0-1": "HalfWord",
+  Float: "Float",
+  Double: "Double",
+};
+
 @Component({
   selector: "view-memory",
   templateUrl: "./memory.view.html",
@@ -56,7 +66,6 @@ const COLUMN_WIDTHS: Record<string, { ch: number; grow?: boolean }> = {
   imports: [
     CardDirective,
     CardWidgetDirective,
-    ModalOpenDirective,
     UpperCasePipe,
     TranslatePipe,
     Binary32ToASCIIPipe,
@@ -76,6 +85,7 @@ const COLUMN_WIDTHS: Record<string, { ch: number; grow?: boolean }> = {
 export class MemoryView {
   machine = inject(MachineService);
   private cdr = inject(ChangeDetectorRef);
+  private editRequests = inject(EditRequestService);
 
   @ViewChild(VirtualTableComponent) private table?: VirtualTableComponent<number>;
 
@@ -183,6 +193,13 @@ export class MemoryView {
     return entry === null ? "" : toAddress(entry.address);
   }
 
+  /** Opens the dialog that edits the memory: on the word of a row (as the table shows it), or where it was */
+  public edit(index: number | null, event: Event): void {
+    const opener = event.currentTarget as HTMLElement;
+    if (index === null) this.editRequests.editMemory({}, opener);
+    else this.editRequests.editMemory({ address: index, typeData: EDIT_TYPE[this.typeDataSelected] ?? "Word" }, opener);
+  }
+
   public refresh(): void {
     this.dataSourceMemory = [...this.dataSourceMemory];
     this.cdr.markForCheck();
@@ -194,7 +211,7 @@ export class MemoryView {
   }
 
   public getInstructionDLXFromIndex(index: number): string {
-    const address: TypeAddress = `0x${index.toString(16).padStart(8, "0")}`;
-    return this.machine.code.get(address)?.instruction ?? "";
+    // The addresses of the code are in capitals (toAddress)
+    return this.machine.code.get(toAddress(index))?.instruction ?? "";
   }
 }

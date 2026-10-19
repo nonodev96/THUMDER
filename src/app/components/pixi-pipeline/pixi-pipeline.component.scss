@@ -1,5 +1,18 @@
-// A phone scrolls the drawing sideways (see MIN_PIPELINE_SCALE)
+// A card narrower than the drawing scrolls it sideways: with its scrollbar, Mayús + wheel, a finger, or dragging it with
+// the mouse (see MIN_PIPELINE_SCALE)
 :host {
   display: block;
   overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: var(--thumder-radius);
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumder-border-strong) transparent;
+}
+
+:host(.pannable) canvas {
+  cursor: grab;
+}
+
+:host(.panning) canvas {
+  cursor: grabbing;
 }

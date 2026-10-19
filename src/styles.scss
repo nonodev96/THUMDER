@@ -387,14 +387,13 @@ span.underline-text:after {
     box-shadow: none;
   }
 
-  // The title bars move the window, and stay at the top while its content scrolls
+  // The title bars move the window, and stay at the top while its content scrolls (their background: see below)
   .card-header {
     position: sticky;
     top: 0;
     z-index: 2;
     cursor: move;
     user-select: none;
-    background-color: var(--thumder-surface-2);
   }
 
   .card-header :is(button, a, input, select) {
@@ -416,6 +415,12 @@ span.underline-text:after {
     user-select: none;
     opacity: 0.96;
   }
+}
+
+// The title bar of a window covers the content that scrolls under it: the headers of the cards are transparent
+// (theme.scss), so this one takes the colour of the card, with `:root body` to win over that rule
+:root body .thumder-window .card > .card-header {
+  background-color: var(--thumder-surface);
 }
 
 .thumder-window-handle {

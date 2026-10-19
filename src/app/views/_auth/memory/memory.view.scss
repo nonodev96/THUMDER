@@ -25,3 +25,40 @@
     flex: 1 1 auto;
   }
 }
+
+// The address of each word (the first column) is a button that opens the dialog that edits the memory there
+.row-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  margin: 0 -0.2rem;
+  padding: 0 0.2rem;
+  border: 0;
+  border-radius: 3px;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+
+  i {
+    font-size: 0.65rem;
+    color: var(--thumder-primary-text);
+    opacity: 0.35;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--thumder-primary-text);
+    text-decoration: underline;
+
+    i {
+      opacity: 1;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+}
