@@ -1,3 +1,11 @@
+## 1.11.3 (2026-10-20)
+
+### Nuevas funciones
+
+* the console of the program as a terminal, a debug window that explains everything, F9/F8 keys that leave F5 to the browser, and stepping back without flicker ([c9eeb8e](https://github.com/nonodev96/THUMDER/commit/c9eeb8e))
+
+
+
 ## 1.11.2 (2026-10-20)
 
 ### Nuevas funciones
