@@ -5,6 +5,7 @@ import { type CycleActivity, cycleActivity, type Occupant, type StageKey, UNIT_K
 import { MachineService } from "@core/machine/machine.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 
 /** The colours of the stages (the variables of theme.scss), as in the cycle clock diagram */
 const COLOURS: Record<StageKey | UnitKey, string> = {
@@ -134,7 +135,7 @@ const binaryValue = (binary: string) => Number.parseInt(binary || "0", 2) >>> 0;
   templateUrl: "./datapath.view.html",
   styleUrls: ["./datapath.view.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardDirective, CardWidgetDirective, PipelineStagesComponent, TranslatePipe],
+  imports: [CardDirective, CardWidgetDirective, DetailsDirective, PipelineStagesComponent, TranslatePipe],
 })
 export class DatapathView {
   private machine = inject(MachineService);
@@ -278,12 +279,12 @@ export class DatapathView {
       ],
       [
         {
-          name: exAddress === undefined ? "ALU" : "ALU·dir",
+          name: exAddress === undefined ? "ALU" : "ALU/dir",
           y: 275,
           value: hex8(exAddress ?? binaryValue(registers.ALU.binary)),
           changed: written.has("ALU") || exAddress !== undefined,
         },
-        { name: "B·SDR", y: 372, value: hex8(binaryValue(registers.SDR.binary)), changed: written.has("SDR") },
+        { name: "B/SDR", y: 372, value: hex8(binaryValue(registers.SDR.binary)), changed: written.has("SDR") },
       ],
       [
         { name: "LMD", y: 300, value: hex8(binaryValue(registers.LDR.binary)), changed: written.has("LDR") },

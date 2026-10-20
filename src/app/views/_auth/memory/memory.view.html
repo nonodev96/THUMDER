@@ -70,9 +70,12 @@
       <ng-template thumderColumn="InstructionCode" [header]="'MACHINE.INSTRUCTION' | translate" [width]="width('InstructionCode')" let-index>{{ getInstructionDLXFromIndex(index) }}</ng-template>
     </thumder-virtual-table>
   </div>
-  <div class="card-footer memory-legend">
-    <span><span class="memory-legend-mark memory-legend-mark--written" aria-hidden="true"></span> {{ 'MACHINE.MEMORY_WRITTEN' | translate }}</span>
-    <span><span class="memory-legend-mark memory-legend-mark--read" aria-hidden="true"></span> {{ 'MACHINE.MEMORY_READ' | translate }}</span>
+  <details class="card-footer" thumderDetails="memory">
+    <summary>{{ 'DETAILS.MEMORY' | translate }}</summary>
+    <div class="memory-legend">
+      <span><span class="memory-legend-mark memory-legend-mark--written" aria-hidden="true"></span> {{ 'MACHINE.MEMORY_WRITTEN' | translate }}</span>
+      <span><span class="memory-legend-mark memory-legend-mark--read" aria-hidden="true"></span> {{ 'MACHINE.MEMORY_READ' | translate }}</span>
   </div>
+  </details>
 </div>
 

@@ -37,11 +37,17 @@ test("«Editar memoria» abre y la X la cierra", async ({ page }) => {
   await expect(page.locator("#editMemoryModal")).toBeHidden();
 });
 
-test("la información del diagrama de ciclos abre y su botón la cierra", async ({ page }) => {
+test("la ayuda del diagrama de ciclos está en su pie, que se oculta y se queda oculto", async ({ page }) => {
   await go(page, "/auth/cycle-clock-diagram");
-  await page.locator("app-modal > button").first().click();
-  const modal = page.locator("#modal-info-pixi-id");
-  await expect(modal).toBeVisible();
-  await modal.locator(".modal-footer button.btn-default").click();
-  await expect(modal).toBeHidden();
+  const footer = page.locator("details.card-footer", { hasText: "Cómo moverse por el diagrama" });
+  const help = footer.locator(".diagram-help");
+  await expect(help).toBeVisible();
+  await expect(help.locator("li")).toHaveCount(5);
+  await footer.locator("summary").click();
+  await expect(help).toBeHidden();
+  // As the user left it, the next time
+  await page.reload();
+  await expect(page.locator("details.card-footer .diagram-help")).toBeHidden();
+  await page.locator("details.card-footer summary").click();
+  await expect(page.locator("details.card-footer .diagram-help")).toBeVisible();
 });

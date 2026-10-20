@@ -4,6 +4,7 @@ import { LOG_LIMIT, type LogEntry, MachineService } from "@core/machine/machine.
 import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 
 /** The lines drawn at most (the newest ones): the whole log can be copied or downloaded */
 const SHOWN = 500;
@@ -17,7 +18,7 @@ const SHOWN = 500;
   templateUrl: "./logger.view.html",
   styleUrls: ["./logger.view.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardDirective, CardWidgetDirective, TranslatePipe],
+  imports: [CardDirective, CardWidgetDirective, DetailsDirective, TranslatePipe],
 })
 export class LoggerView {
   machine = inject(MachineService);

@@ -4,21 +4,32 @@ import { MachineService } from "@core/machine/machine.service";
 import { ToastService } from "@core/services/toast/toast.service";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { DetailsDirective } from "../../__shared/directives/details/details.directive";
+import { ResizableDirective } from "../../__shared/directives/resizable/resizable.directive";
 
-/** A line of the screen of the console: what the program wrote, or what was typed for it (after its prompt or not) */
-type ScreenPiece = { kind: "out" | "in"; text: string; prompt: boolean };
+/** The names of the traps, as the C functions they are (WinDLX) */
+const CALLS: Record<number, string> = { 0: "halt", 1: "open", 2: "close", 3: "read", 4: "write", 5: "printf" };
+const DESCRIPTORS = ["stdin", "stdout", "stderr"] as const;
+
+/** The rows of the list of the traps drawn, the last ones */
+const SHOWN_TRAPS = 500;
+
+/** A row of the list of the traps: what one read or wrote, in which cycle and on which descriptor */
+type TrapRow = { cycle: number; trap: number; call: string; descriptor: number; device: string; bytes: number; data: string };
 
 /**
- * The console of the simulated program (the DLX-I/O window of WinDLX), as the terminal of an operating system: the
- * command that started the program, what it writes (traps 4 and 5), the lines typed for it (trap 3) after a prompt or
- * after what it asked, and how it ended. When the program waits for a line, the cursor is on the screen: Enter sends it
- * and the arrows bring back the lines sent before. It opens by itself when the program writes or waits for input.
+ * The console of the simulated program (the DLX-I/O window of WinDLX) as the device it is for the processor: a screen
+ * that only shows the bytes the traps write (1, the output, and 2, the errors) and the lines typed for the trap 3, and
+ * the list of those traps, cycle by cycle, with their descriptor, their bytes and their data. A light says what the
+ * program is doing. When the program waits for a line, the cursor is on the screen: Enter sends it and the arrows bring
+ * back the lines sent before. It opens by itself when the program writes or waits for input, and it is resized from its
+ * free edges (the top and the left).
  */
 @Component({
   selector: "THUMDER-dlx-io",
   templateUrl: "./dlx-io.component.html",
   styleUrls: ["./dlx-io.component.scss"],
-  imports: [FormsModule, TranslateModule],
+  imports: [FormsModule, TranslateModule, ResizableDirective, DetailsDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DlxIoComponent {
@@ -27,48 +38,56 @@ export class DlxIoComponent {
   private toast = inject(ToastService);
   private translate = inject(TranslateService);
 
-  @ViewChild("screenBox") private screenElement?: ElementRef<HTMLElement>;
+  @ViewChild("bodyBox") private bodyElement?: ElementRef<HTMLElement>;
   @ViewChild("lineInput") private lineElement?: ElementRef<HTMLInputElement>;
 
   public readonly open = signal(false);
   /** Folded: only its title bar */
   public readonly folded = signal(false);
+  /** What it shows: the screen of the program or the list of the traps */
+  public readonly view = signal<"screen" | "traps">("screen");
   public line = "";
   /** The lines sent, for the arrows (as the history of a shell); -1: the one being written */
   private readonly sent: string[] = [];
   private back = -1;
 
-  /** The file of the program (the command of the first line) */
+  /** The file of the program */
   public readonly program = computed(() => {
     this.machine.state.loads();
     const item = untracked(() => this.storage.getItem("interfaceFileItem")) as { name?: string } | null;
     return item?.name ?? "programa.s";
   });
 
-  /** The pieces of the screen: a line typed after what the program asked (without a new line) goes on its line */
-  public readonly screen = computed<ScreenPiece[]>(() => {
-    let atLineStart = true;
-    return this.machine.state.console().map((chunk) => {
-      const piece: ScreenPiece = { kind: chunk.kind, text: chunk.text, prompt: chunk.kind === "in" && atLineStart };
-      atLineStart = chunk.kind === "in" || chunk.text.endsWith("\n");
-      return piece;
-    });
-  });
-
-  /** The cursor waits after what the program wrote: on its line if it did not end it */
-  public readonly inputAtLineStart = computed(() => {
-    const pieces = this.machine.state.console();
-    const last = pieces[pieces.length - 1];
-    return last === undefined || last.kind === "in" || last.text.endsWith("\n");
-  });
-
-  /** What the program is doing, for the title bar */
+  /** What the program is doing, for its light */
   public readonly state = computed<"input" | "running" | "done" | "paused">(() => {
     const state = this.machine.state;
     if (state.waitingForInput()) return "input";
     if (state.running()) return "running";
     if (state.complete()) return "done";
     return "paused";
+  });
+
+  /** The traps that read and wrote, the last ones */
+  public readonly traps = computed(() => {
+    const all = this.machine.state.traps();
+    const rows = all.slice(-SHOWN_TRAPS).map<TrapRow>((record) => ({
+      cycle: record.cycle,
+      trap: record.trap,
+      call: CALLS[record.trap] ?? "?",
+      descriptor: record.descriptor,
+      device: DESCRIPTORS[record.descriptor],
+      bytes: record.text.length,
+      // The bytes as they are: the new lines, the tabs and the control characters with their escape
+      data: JSON.stringify(record.text),
+    }));
+    return { total: all.length, rows };
+  });
+
+  /** The bytes read and written on each descriptor */
+  public readonly bytes = computed(() => {
+    const bytes = [0, 0, 0];
+    for (const record of this.machine.state.traps()) bytes[record.descriptor] += record.text.length;
+    return DESCRIPTORS.map((device, descriptor) => ({ descriptor, device, bytes: bytes[descriptor] }));
   });
 
   constructor() {
@@ -80,21 +99,32 @@ export class DlxIoComponent {
       this.scrollDown();
     });
     effect(() => {
+      this.machine.state.traps();
+      this.scrollDown();
+    });
+    effect(() => {
       if (!this.machine.state.waitingForInput()) return;
       this.open.set(true);
       this.folded.set(false);
+      this.view.set("screen");
       this.scrollDown();
       setTimeout(() => this.lineElement?.nativeElement.focus());
     });
   }
 
+  public show(view: "screen" | "traps"): void {
+    this.view.set(view);
+    this.scrollDown();
+    if (view === "screen") setTimeout(() => this.lineElement?.nativeElement.focus());
+  }
+
   private scrollDown(): void {
-    setTimeout(() => this.screenElement?.nativeElement.scrollTo({ top: this.screenElement.nativeElement.scrollHeight }));
+    setTimeout(() => this.bodyElement?.nativeElement.scrollTo({ top: this.bodyElement.nativeElement.scrollHeight }));
   }
 
   /** A click on the screen (not to select text) puts the cursor in the line */
   public focusLine(): void {
-    if (!window.getSelection()?.toString()) this.lineElement?.nativeElement.focus();
+    if (this.view() === "screen" && !window.getSelection()?.toString()) this.lineElement?.nativeElement.focus();
   }
 
   public async send(): Promise<void> {
@@ -115,10 +145,17 @@ export class DlxIoComponent {
     this.line = this.back === -1 ? "" : this.sent[this.back];
   }
 
+  /** Copies what it shows: the screen, or the list of the traps (by tabs) */
   public async copy(): Promise<void> {
+    const traps = this.view() === "traps";
+    const text = traps
+      ? this.traps()
+          .rows.map((row) => [row.cycle, row.trap, row.call, row.descriptor, row.bytes, row.data].join("\t"))
+          .join("\n")
+      : this.machine.state.output();
     try {
-      await navigator.clipboard.writeText(this.machine.state.output());
-      this.toast.success(this.translate.instant("IO.COPIED"));
+      await navigator.clipboard.writeText(text);
+      this.toast.success(this.translate.instant(traps ? "IO.COPIED_TRAPS" : "IO.COPIED"));
     } catch {
       this.toast.error(this.translate.instant("IO.COPY_FAILED"));
     }

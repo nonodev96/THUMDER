@@ -145,6 +145,28 @@ describe("Pipeline timing", () => {
     const run = simulate([{ name: "gcm.s", content: EXAMPLES["gcm.s"] }, { name: "input.s", content: EXAMPLES["input.s"] }]);
     expect(run.reports.at(-1)?.waitingForInput).toBe(true);
     expect(run.output).toBe("First Number:");
+    expect(run.reports.flatMap((report) => report.io)).toEqual([{ trap: 5, descriptor: 1, text: "First Number:" }]);
+  });
+
+  it("says what each trap writes and on which descriptor: write on the errors (fd 2), and open warns there too", () => {
+    const program = [
+      " .data",
+      "args: .word 2, text, 5",
+      'text: .ascii "oops\\n"',
+      " .text",
+      " addi r14,r0,args",
+      " trap 4",
+      " trap 1",
+      " trap 0",
+    ].join("\n");
+    const run = simulate(source(program));
+    const io = run.reports.flatMap((report) => report.io);
+    expect(io).toEqual([
+      { trap: 4, descriptor: 2, text: "oops\n" },
+      { trap: 1, descriptor: 2, text: "Trap #1: files cannot be opened in THUMDER\n" },
+    ]);
+    // Each one in the cycle its trap went on to EX
+    expect(run.reports.filter((report) => report.io.length > 0)).toHaveLength(2);
   });
 });
 

@@ -11,13 +11,22 @@ import { FromBaseToBasePipe } from "@shared/pipes/numbers/numbers.pipes";
 import { mediaSignal, NARROW } from "@shared/utils/media";
 import { map } from "rxjs";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 
 @Component({
   selector: "view-code",
   templateUrl: "./code.view.html",
   styleUrls: ["./code.view.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardDirective, CardWidgetDirective, VirtualTableComponent, VirtualTableColumnDirective, TranslatePipe, FromBaseToBasePipe],
+  imports: [
+    CardDirective,
+    CardWidgetDirective,
+    DetailsDirective,
+    VirtualTableComponent,
+    VirtualTableColumnDirective,
+    TranslatePipe,
+    FromBaseToBasePipe,
+  ],
 })
 export class CodeView {
   machine = inject(MachineService);

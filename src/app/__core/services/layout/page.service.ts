@@ -14,7 +14,7 @@ const OTHER: PageInfo = { key: "OTHER", title: "PAGES.HOME.TITLE", icon: "fas fa
 
 /**
  * The view that is open, from the address: the header of the page, the title of the navbar on a phone and the title of
- * the tab of the browser («Pipeline · THUMDER») say which one it is and what it is for
+ * the tab of the browser («Pipeline | THUMDER») say which one it is and what it is for
  */
 @Injectable({ providedIn: "root" })
 export class PageService {
@@ -51,6 +51,6 @@ export class PageService {
   private updateTitle(): void {
     const page = this.page();
     const name = page === OTHER ? "" : this.translate.instant(page.title);
-    this.title.setTitle(name && page !== HOME ? `${name} · THUMDER` : "THUMDER");
+    this.title.setTitle(name && page !== HOME ? `${name} | THUMDER` : "THUMDER");
   }
 }

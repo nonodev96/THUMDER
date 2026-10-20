@@ -136,7 +136,7 @@
                             <span class="sr-only">: {{ 'DOCS.ITABLE.MAP_OPENS_' + cell.opens | translate }}</span>
                           </a>
                         } @else {
-                          <span class="itable-cell itable-cell--free"><span aria-hidden="true">·</span><span class="sr-only">{{ 'DOCS.ITABLE.FREE' | translate }}</span></span>
+                          <span class="itable-cell itable-cell--free"><span aria-hidden="true">–</span><span class="sr-only">{{ 'DOCS.ITABLE.FREE' | translate }}</span></span>
                         }
                       </td>
                     }
@@ -187,14 +187,14 @@
     <dl class="itable-facts">
       <div>
         <dt>{{ 'DOCS.ITABLE.OPCODE' | translate }}</dt>
-        <dd><code>{{ bitsOf(entry.opcode) }}</code> · <code>{{ hex2(entry.opcode) }}</code>
+        <dd><code>{{ bitsOf(entry.opcode) }}</code> = <code>{{ hex2(entry.opcode) }}</code>
           @if (entry.format === 'R') { (SPECIAL) } @else if (entry.format === 'F') { (FPARITH) }
         </dd>
       </div>
       @if (entry.func !== null) {
         <div>
           <dt>{{ 'DOCS.ITABLE.FUNC' | translate }}</dt>
-          <dd><code>{{ bitsOf(entry.func) }}</code> · <code>{{ hex2(entry.func) }}</code></dd>
+          <dd><code>{{ bitsOf(entry.func) }}</code> = <code>{{ hex2(entry.func) }}</code></dd>
         </div>
       }
       <div class="itable-facts-wide">

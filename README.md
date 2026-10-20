@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://thumder.netlify.app"><strong>Abrir en el navegador</strong></a> ·
-  <a href="https://github.com/nonodev96/THUMDER/releases">Descargar la aplicación de escritorio</a> ·
+  <a href="https://thumder.netlify.app"><strong>Abrir en el navegador</strong></a> |
+  <a href="https://github.com/nonodev96/THUMDER/releases">Descargar la aplicación de escritorio</a> |
   <a href="https://thumder.netlify.app/auth/documentation">Documentación</a>
 </p>
 

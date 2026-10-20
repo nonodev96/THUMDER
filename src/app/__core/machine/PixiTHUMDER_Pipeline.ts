@@ -21,7 +21,7 @@ export type PipelineLabels = {
   stages: Record<StageKey, string>;
   empty: string;
   registers: string;
-  /** The units of a kind: «×2 · 5 ciclos» */
+  /** The units of a kind: «×2, 5 ciclos» */
   units: (count: number, cycles: number) => string;
 };
 

@@ -17,6 +17,8 @@ import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { filter, map } from "rxjs";
 import { AppConfig } from "../../../../environments/_environment";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
+import { ResizableDirective } from "../../../__shared/directives/resizable/resizable.directive";
 
 /** A fact of the state: its name, its value and what it means (texts of the translations, or a value as it is) */
 type Fact = { label: string; value: string; translate?: boolean; params?: Record<string, unknown>; help?: string; mono?: boolean };
@@ -41,7 +43,7 @@ const hex = (binary: string) =>
   selector: "THUMDER-windows-debug",
   templateUrl: "./debug.component.html",
   styleUrls: ["./debug.component.scss"],
-  imports: [CardDirective, CdkDrag, CdkDragHandle, CardWidgetDirective, TranslatePipe],
+  imports: [CardDirective, CdkDrag, CdkDragHandle, CardWidgetDirective, TranslatePipe, ResizableDirective, DetailsDirective],
 })
 export class DebugComponent {
   router = inject(Router);
@@ -55,7 +57,7 @@ export class DebugComponent {
   private translate = inject(TranslateService);
   private element: HTMLElement = inject(ElementRef<HTMLElement>).nativeElement;
 
-  public readonly version = `${NPM_VERSION} · ${AppConfig.environment}`;
+  public readonly version = `${NPM_VERSION} (${AppConfig.environment})`;
   public readonly tab = signal<"state" | "messages">("state");
   public readonly filter = signal("");
   public readonly follow = signal(true);
@@ -89,7 +91,7 @@ export class DebugComponent {
       (cells ?? [])
         .filter((cell) => cell.text && cell.draw !== false)
         .map((cell) => cell.text.replace(/\s+/g, " "))
-        .join(" · ");
+        .join(" | ");
     const file = untracked(() => this.storage.getItem("interfaceFileItem")) as { name?: string } | null;
     const loaded = this.status() !== "IDLE";
     return [
@@ -132,7 +134,7 @@ export class DebugComponent {
           {
             label: "DEBUG_PANEL.FP_UNITS",
             value:
-              [busy(pipeline?.faddEX), busy(pipeline?.fmultEX), busy(pipeline?.fdivEX)].filter(Boolean).join(" · ") || "DATAPATH.EMPTY",
+              [busy(pipeline?.faddEX), busy(pipeline?.fmultEX), busy(pipeline?.fdivEX)].filter(Boolean).join(" | ") || "DATAPATH.EMPTY",
             translate: ![busy(pipeline?.faddEX), busy(pipeline?.fmultEX), busy(pipeline?.fdivEX)].some(Boolean),
             mono: true,
           },
@@ -151,7 +153,7 @@ export class DebugComponent {
           {
             label: "DEBUG_PANEL.UNITS",
             value: fp
-              ? `fadd ${fp.addition.count} × ${fp.addition.delay} · fmul ${fp.multiplication.count} × ${fp.multiplication.delay} · fdiv ${fp.division.count} × ${fp.division.delay}`
+              ? `fadd ${fp.addition.count} × ${fp.addition.delay}, fmul ${fp.multiplication.count} × ${fp.multiplication.delay}, fdiv ${fp.division.count} × ${fp.division.delay}`
               : "—",
             mono: true,
             help: "DEBUG_PANEL.UNITS_HELP",
@@ -165,7 +167,7 @@ export class DebugComponent {
         title: "DEBUG_PANEL.APPLICATION",
         icon: "fa-info-circle",
         facts: [
-          { label: "DEBUG_PANEL.VERSION", value: `${NPM_VERSION} · ${AppConfig.environment}`, mono: true },
+          { label: "DEBUG_PANEL.VERSION", value: `${NPM_VERSION} (${AppConfig.environment})`, mono: true },
           { label: "DEBUG_PANEL.ROUTE", value: this.url(), mono: true },
           {
             label: "DEBUG_PANEL.PLATFORM",
@@ -174,7 +176,7 @@ export class DebugComponent {
           },
           { label: "DEBUG_PANEL.THEME", value: `THEME.${this.theme.choice().toUpperCase()}`, translate: true },
           { label: "DEBUG_PANEL.LANGUAGE", value: this.translate.getCurrentLang() ?? "es", mono: true },
-          { label: "DEBUG_PANEL.SCREEN", value: `${window.innerWidth} × ${window.innerHeight} · ${window.devicePixelRatio}x`, mono: true },
+          { label: "DEBUG_PANEL.SCREEN", value: `${window.innerWidth} × ${window.innerHeight} (${window.devicePixelRatio}x)`, mono: true },
         ],
       },
     ];

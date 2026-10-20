@@ -22,7 +22,7 @@ import {
   writeBack,
 } from "@core/engine/cpu";
 import { type Decoded, decode, type RegisterUse, registerUse, type Unit } from "@core/engine/isa";
-import { type ProgramIO, runTrap } from "@core/engine/traps";
+import { type ProgramIO, runTrap, type TrapIO } from "@core/engine/traps";
 
 export type StallLabel = "R-Stall" | "W-Stall" | "S-Stall" | "T-Stall" | "Stall" | "Aborted";
 export type FloatingUnit = Exclude<Unit, "int">;
@@ -134,6 +134,8 @@ export type CycleReport = {
   registers: RegisterChange[];
   memory: MemoryChange[];
   output: string;
+  /** What the traps read and wrote in this cycle, in order */
+  io: TrapIO[];
   waitingForInput: boolean;
   /** The program has ended (trap 0 in WB) */
   halted: boolean;
@@ -295,6 +297,7 @@ export class Pipeline {
       registers: [],
       memory: [],
       output: "",
+      io: [],
       waitingForInput: false,
       halted: false,
     };
@@ -446,7 +449,17 @@ export class Pipeline {
     }
     // A trap runs when it goes on to EX (the pipeline is empty: it waited in IF)
     if (x.isTrap) {
-      const trap = runTrap(x.decoded?.offset ?? 0, this.registers, this.memory, io);
+      const number = x.decoded?.offset ?? 0;
+      // What it writes and reads, with its number
+      const recorded: ProgramIO = {
+        write: (text, descriptor) => {
+          this.report.io.push({ trap: number, descriptor, text });
+          io.write(text, descriptor);
+        },
+        readLine: () => io.readLine(),
+      };
+      const trap = runTrap(number, this.registers, this.memory, recorded);
+      if (trap.read !== undefined) this.report.io.push({ trap: number, descriptor: 0, text: trap.read });
       if (trap.waitingForInput) {
         this.report.waitingForInput = true;
         return { label: "T-Stall", kind: "input" };

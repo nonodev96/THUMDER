@@ -1,44 +1,102 @@
 @if (open()) {
-  <section class="thumder-dlx-io terminal" [class.terminal--folded]="folded()" [attr.aria-label]="'IO.TITLE' | translate">
-    <!-- The title bar: what the program is doing, and the buttons of the window -->
-    <header class="terminal-bar">
-      <span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-      <h2 class="terminal-title">
-        <i class="fas fa-terminal" aria-hidden="true"></i> {{ 'IO.TITLE' | translate }}
-        <span class="terminal-program">— {{ program() }}</span>
-      </h2>
-      <span [class]="'terminal-state terminal-state--' + state()">{{ ('IO.STATE_' + state().toUpperCase()) | translate }}</span>
-      <div class="terminal-tools">
-        <button type="button" class="terminal-tool" (click)="copy()" [title]="'IO.COPY' | translate" [attr.aria-label]="'IO.COPY' | translate">
+  <section class="thumder-dlx-io tty" [class.tty--folded]="folded()" [attr.aria-label]="'IO.TITLE' | translate"
+    thumderResizable="console" [edges]="['n', 'w', 'nw']">
+    <!-- The bar: the light of the device, its name, the program and its buttons -->
+    <header class="tty-bar">
+      <span [class]="'tty-led tty-led--' + state()" aria-hidden="true"></span>
+      <h2 class="tty-title"><span class="tty-title-long">{{ 'IO.TITLE' | translate }}</span><span class="tty-title-short" aria-hidden="true">DLX-I/O</span></h2>
+      <span class="tty-program" [title]="program()">{{ program() }}</span>
+      <div class="tty-tools">
+        <button type="button" class="tty-tool" (click)="copy()" [title]="(view() === 'traps' ? 'IO.COPY_TRAPS' : 'IO.COPY') | translate"
+          [attr.aria-label]="(view() === 'traps' ? 'IO.COPY_TRAPS' : 'IO.COPY') | translate">
           <i class="far fa-copy" aria-hidden="true"></i>
         </button>
-        <button type="button" class="terminal-tool" (click)="clear()" [title]="'IO.CLEAR' | translate" [attr.aria-label]="'IO.CLEAR' | translate">
+        <button type="button" class="tty-tool" (click)="clear()" [title]="'IO.CLEAR' | translate" [attr.aria-label]="'IO.CLEAR' | translate">
           <i class="fas fa-eraser" aria-hidden="true"></i>
         </button>
-        <button type="button" class="terminal-tool" (click)="folded.set(!folded())" [attr.aria-expanded]="!folded()"
+        <button type="button" class="tty-tool" (click)="folded.set(!folded())" [attr.aria-expanded]="!folded()"
           [title]="(folded() ? 'IO.UNFOLD' : 'IO.FOLD') | translate" [attr.aria-label]="(folded() ? 'IO.UNFOLD' : 'IO.FOLD') | translate">
-          <i class="fas" [class.fa-window-minimize]="!folded()" [class.fa-window-maximize]="folded()" aria-hidden="true"></i>
+          <i class="fas" [class.fa-chevron-down]="!folded()" [class.fa-chevron-up]="folded()" aria-hidden="true"></i>
         </button>
-        <button type="button" class="terminal-tool" (click)="open.set(false)" [title]="'IO.CLOSE' | translate" [attr.aria-label]="'IO.CLOSE' | translate">
+        <button type="button" class="tty-tool" (click)="open.set(false)" [title]="'IO.CLOSE' | translate" [attr.aria-label]="'IO.CLOSE' | translate">
           <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
     </header>
 
     @if (!folded()) {
-      <!-- The screen: the command, what the program wrote, the lines typed for it and, when it waits, the cursor -->
-      <div class="terminal-screen" #screenBox (click)="focusLine()">
-        <p class="terminal-command" aria-hidden="true"><span class="terminal-user">thumder@dlx</span>:<span class="terminal-path">~</span>$ ./{{ program() }}</p>
-        <div class="thumder-dlx-io-output terminal-text" role="log" aria-live="polite">@for (piece of screen(); track $index) {@if (piece.kind === 'in') {<span class="terminal-in">@if (piece.prompt) {<span class="terminal-prompt" aria-hidden="true">&gt; </span>}{{ piece.text }}
-</span>} @else {<span class="terminal-out">{{ piece.text }}</span>}}@if (machine.state.waitingForInput()) {@if (inputAtLineStart()) {<span class="terminal-prompt" aria-hidden="true">&gt; </span>}<form class="terminal-line" (ngSubmit)="send()"><label class="sr-only" for="thumderDlxIoLine">{{ 'IO.INPUT' | translate }}</label><input #lineInput id="thumderDlxIoLine" name="line" class="terminal-input" autocomplete="off" spellcheck="false"
+      <!-- What it shows, and what the program is doing -->
+      <div class="tty-strip">
+        <div class="tty-views" role="tablist" [attr.aria-label]="'IO.VIEWS' | translate">
+          <button type="button" role="tab" id="ioTab-screen" class="tty-view" [class.tty-view--active]="view() === 'screen'"
+            [attr.aria-selected]="view() === 'screen'" aria-controls="ioPanel" (click)="show('screen')">{{ 'IO.VIEW_SCREEN' | translate }}</button>
+          <button type="button" role="tab" id="ioTab-traps" class="tty-view" [class.tty-view--active]="view() === 'traps'"
+            [attr.aria-selected]="view() === 'traps'" aria-controls="ioPanel" (click)="show('traps')">
+            {{ 'IO.VIEW_TRAPS' | translate }} <span class="tty-count">{{ traps().total }}</span>
+          </button>
+        </div>
+        <span [class]="'tty-state tty-state--' + state()" role="status">{{ ('IO.STATE_' + state().toUpperCase()) | translate }}</span>
+      </div>
+
+      <div class="tty-body" id="ioPanel" role="tabpanel" [attr.aria-labelledby]="'ioTab-' + view()" #bodyBox (click)="focusLine()">
+        @if (view() === 'screen') {
+          <!-- The screen: only the bytes written (the errors in another colour) and the lines typed, then the cursor -->
+          <div class="thumder-dlx-io-output tty-screen" role="log" aria-live="polite">@for (piece of machine.state.console(); track $index) {<span [class]="'tty-' + piece.kind">{{ piece.text }}@if (piece.kind === 'in') {
+}</span>}@if (machine.state.waitingForInput()) {<form class="tty-line" (ngSubmit)="send()"><label class="sr-only" for="thumderDlxIoLine">{{ 'IO.INPUT' | translate }}</label><input #lineInput id="thumderDlxIoLine" name="line" class="tty-input" autocomplete="off" spellcheck="false"
             [(ngModel)]="line" [style.width.ch]="line.length + 1" (keydown)="onKeydown($event)"></form>}</div>
-        @if (machine.state.waitingForInput()) {
-          <p class="terminal-hint"><i class="fas fa-keyboard" aria-hidden="true"></i> {{ 'IO.WAITING' | translate }}</p>
-        } @else if (state() === 'done') {
-          <p class="terminal-end">[{{ 'IO.ENDED' | translate: { cycle: machine.state.step(), cycles: machine.state.step() + 1 } }}]</p>
+          @if (machine.state.waitingForInput()) {
+            <p class="tty-note">{{ 'IO.WAITING' | translate }}</p>
+          } @else if (state() === 'done') {
+            <p class="tty-end">[{{ 'IO.ENDED' | translate: { cycle: machine.state.step(), cycles: machine.state.step() + 1 } }}]</p>
+          }
+        } @else {
+          <!-- The traps: what each one read or wrote, in which cycle, on which descriptor -->
+          <ul class="tty-devices">
+            @for (device of bytes(); track device.descriptor) {
+              <li [title]="'IO.FD_' + device.descriptor | translate">fd {{ device.descriptor }} {{ device.device }} <strong>{{ device.bytes }} B</strong></li>
+            }
+          </ul>
+          @if (traps().total === 0) {
+            <p class="tty-note">{{ 'IO.TRAPS_EMPTY' | translate }}</p>
+          } @else {
+            @if (traps().total > traps().rows.length) {
+              <p class="tty-note">{{ 'IO.TRAPS_LAST' | translate: { shown: traps().rows.length, total: traps().total } }}</p>
+            }
+            <table class="tty-traps">
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'IO.COL_CYCLE' | translate }}</th>
+                  <th scope="col">{{ 'IO.COL_TRAP' | translate }}</th>
+                  <th scope="col">fd</th>
+                  <th scope="col">{{ 'IO.COL_BYTES' | translate }}</th>
+                  <th scope="col">{{ 'IO.COL_DATA' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of traps().rows; track $index) {
+                  <tr [class]="'tty-trap tty-trap--fd' + row.descriptor">
+                    <td>{{ row.cycle }}</td>
+                    <td>{{ row.trap }} <span class="tty-call">{{ row.call }}</span></td>
+                    <td>{{ row.descriptor }} <span class="tty-call">{{ row.device }}</span></td>
+                    <td>{{ row.bytes }}</td>
+                    <td class="tty-data">{{ row.data }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
         }
       </div>
-      <footer class="terminal-footer">{{ 'IO.TRAPS' | translate }}</footer>
+
+      <!-- How the program uses the console -->
+      <details class="tty-footer" thumderDetails="console" [startOpen]="false">
+        <summary>{{ 'IO.TRAPS' | translate }}</summary>
+        <ul>
+          @for (n of [0, 3, 4, 5, 1, 6]; track n) {
+            <li>{{ 'IO.TRAP_HELP_' + n | translate }}</li>
+          }
+        </ul>
+      </details>
     }
   </section>
 }

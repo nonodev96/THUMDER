@@ -20,7 +20,7 @@ import type {
 import { type AssemblyResult, assemble, globalNames, type SourceFile } from "@core/engine/assembler";
 import { DEFAULT_MACHINE_CONFIG, type MachineConfig, SimulationError } from "@core/engine/cpu";
 import { type Cell, type CycleReport, type FloatingUnit, Pipeline, type StallLabel, type Statistics } from "@core/engine/pipeline";
-import type { ProgramIO } from "@core/engine/traps";
+import type { ProgramIO, TrapIO } from "@core/engine/traps";
 
 /** Why an instruction (the row of the diagram) is stalled in a cycle: pipeline.ts, StallReason */
 export type StallInfo = {
@@ -44,6 +44,8 @@ export type BreakpointStage = "IF" | "ID" | "EX" | "MEM" | "WB";
 export type SimulationStepExtra = {
   /** What the program wrote in this cycle */
   output?: string;
+  /** What the traps read and wrote in this cycle, in order (the console at the level of the machine) */
+  io?: TrapIO[];
   /** The program waits for a line of input (trap 3): send it with SimulationInputRequest */
   waitingForInput?: boolean;
   /** An error of the program (bad address, division by zero...): the simulation has stopped */
@@ -402,6 +404,7 @@ export class DLXSimulator {
       memory,
       statistics: this.statistics(pipeline.stats),
       output: report.output || undefined,
+      io: report.io.length > 0 ? report.io : undefined,
       waitingForInput: report.waitingForInput || undefined,
       error: report.error,
       stalls: report.stalls.map((stall) => ({

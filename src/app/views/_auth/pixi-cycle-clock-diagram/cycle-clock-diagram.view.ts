@@ -7,7 +7,7 @@ import { TranslatePipe } from "@ngx-translate/core";
 import { DropdownDirective } from "@shared/directives/bootstrap/dropdown.directive";
 import { download } from "@shared/utils/download";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
-import { ModalComponent } from "../../../components/modals/modal/modal.component";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 
 /** The cycles of the table of the diagram */
 const TABLE_CYCLES = 30;
@@ -15,7 +15,7 @@ const TABLE_CYCLES = 30;
 @Component({
   selector: "view-cycle-clock-diagram",
   templateUrl: "./cycle-clock-diagram.view.html",
-  imports: [CardDirective, CardWidgetDirective, PixiCycleClockDiagramComponent, ModalComponent, TranslatePipe, DropdownDirective],
+  imports: [CardDirective, CardWidgetDirective, DetailsDirective, PixiCycleClockDiagramComponent, TranslatePipe, DropdownDirective],
 })
 export class CycleClockDiagramView {
   private machine = inject(MachineService);

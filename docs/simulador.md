@@ -117,7 +117,12 @@ La dirección del primer parámetro va en R14 y el resultado se deja en R1 (secc
 | 4 | Escribe un bloque en la salida estándar o en la de errores (descriptores 1 y 2) |
 | 5 | `printf` con `%d %i %u %x %X %o %c %s %f %e %g` y sus opciones (anchura, precisión, `-`, `+`, `0`, `#`); los `double` ocupan 8 bytes en los parámetros |
 
-Lo que escribe el programa aparece en la **consola del programa**, que se abre sola. Cuando el programa pide una línea, la consola muestra un campo para escribirla.
+Lo que escribe el programa aparece en la **consola del programa**, que se abre sola. Es el dispositivo de caracteres del procesador y tiene dos vistas:
+
+- **Pantalla:** solo los bytes que escriben los traps (lo de la salida de errores, el descriptor 2, en rojo) y las líneas tecleadas para el trap 3. Cuando el programa pide una línea, el cursor está en la pantalla: Intro la envía y las flechas recuperan las anteriores.
+- **Traps:** cada trap que ha leído o escrito, con su ciclo, su número y su función (`read`, `write`, `printf`…), su descriptor, sus bytes y sus datos tal cual (con `\n` y los caracteres de control escapados), y cuántos bytes ha pasado cada descriptor.
+
+Una luz dice qué hace el programa: verde mientras se ejecuta, ámbar (parpadeando) mientras espera una línea y roja cuando ha terminado. La consola se cambia de tamaño desde su borde superior, su borde izquierdo y su esquina superior izquierda; THUMDER recuerda el tamaño en ese navegador, y un doble clic en el borde lo devuelve al de siempre. La ventana de depuración se cambia de tamaño igual, desde su borde derecho, su borde inferior y su esquina inferior derecha.
 
 ## 5. Errores durante la ejecución
 

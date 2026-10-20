@@ -113,20 +113,12 @@
       </div>
     </section>
   </div>
-  <div class="card-footer">
-    <app-modal [modalID]="'modal-info-pixi-id'"
-               [buttonText]="'MODAL.INFO'"
-               [modalType]=""
-               [buttonSize]="'btn-sm'"
-               [modalTitle]="'MODAL.INFO'"
-               [buttonCloseText]=""
-               [buttonSaveText]="">
-      <h2>{{ 'MACHINE.DIAGRAM_HELP_TITLE' | translate }}</h2>
-      <ul>
-        @for (n of [1, 2, 3, 4, 5]; track n) {
-          <li>{{ 'MACHINE.DIAGRAM_HELP_' + n | translate }}</li>
-        }
-      </ul>
-    </app-modal>
-  </div>
+  <details class="card-footer" thumderDetails="diagram">
+    <summary>{{ 'MACHINE.DIAGRAM_HELP_TITLE' | translate }}</summary>
+    <ul class="diagram-help">
+      @for (n of [1, 2, 3, 4, 5]; track n) {
+        <li>{{ 'MACHINE.DIAGRAM_HELP_' + n | translate }}</li>
+      }
+    </ul>
+  </details>
 </div>

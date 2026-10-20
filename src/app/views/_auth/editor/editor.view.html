@@ -68,25 +68,28 @@
 
   </div>
 
-  <div class="card-footer">
-    <div class="btn-toolbar mb-2" role="toolbar" [attr.aria-label]="'EDITOR.TOOLS' | translate">
-      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorModules" (click)="modules.open($event.currentTarget)">
-        <i class="fas fa-puzzle-piece" aria-hidden="true"></i> {{ 'MODULES.BUTTON' | translate }}
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorSymbols" thumderModalOpen="programSymbolsModal">
-        <i class="fas fa-tags" aria-hidden="true"></i> {{ 'SYMBOLS.BUTTON' | translate }}
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorBreakpoints"
-        (click)="breakpointsModal.open(monacoEditorComponent.getBreakpoints(), monacoEditorComponent.getContent(), $event.currentTarget)">
-        <i class="fas fa-stop-circle" aria-hidden="true"></i> {{ 'BREAKPOINTS.BUTTON' | translate }}
-      </button>
-      <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorShare"
-        (click)="share.open({ name: interfaceFileItem.name, content: monacoEditorComponent.getContent() }, $event.currentTarget)">
-        <i class="fas fa-share-alt" aria-hidden="true"></i> {{ 'SHARE.BUTTON' | translate }}
-      </button>
-    </div>
-    <thumder-problems-panel (goToLine)="monacoEditorComponent.goToLine($event)"></thumder-problems-panel>
+  <details class="card-footer" thumderDetails="editor" [reveal]="problemsPanel.problems().length">
+    <summary>{{ 'DETAILS.EDITOR' | translate }}</summary>
+    <div>
+      <div class="btn-toolbar mb-2" role="toolbar" [attr.aria-label]="'EDITOR.TOOLS' | translate">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorModules" (click)="modules.open($event.currentTarget)">
+          <i class="fas fa-puzzle-piece" aria-hidden="true"></i> {{ 'MODULES.BUTTON' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorSymbols" thumderModalOpen="programSymbolsModal">
+          <i class="fas fa-tags" aria-hidden="true"></i> {{ 'SYMBOLS.BUTTON' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorBreakpoints"
+          (click)="breakpointsModal.open(monacoEditorComponent.getBreakpoints(), monacoEditorComponent.getContent(), $event.currentTarget)">
+          <i class="fas fa-stop-circle" aria-hidden="true"></i> {{ 'BREAKPOINTS.BUTTON' | translate }}
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-1 mb-1" id="editorShare"
+          (click)="share.open({ name: interfaceFileItem.name, content: monacoEditorComponent.getContent() }, $event.currentTarget)">
+          <i class="fas fa-share-alt" aria-hidden="true"></i> {{ 'SHARE.BUTTON' | translate }}
+        </button>
+      </div>
+      <thumder-problems-panel #problemsPanel (goToLine)="monacoEditorComponent.goToLine($event)"></thumder-problems-panel>
   </div>
+  </details>
 </div>
 <!-- /.card -->
 

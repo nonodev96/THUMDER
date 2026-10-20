@@ -155,7 +155,7 @@ test.describe("Móvil como una app", () => {
   test("@movil la barra de arriba dice la vista; la de abajo tiene el estado y los controles de la simulación", async ({ page }) => {
     await go(page, "/auth/pipeline");
     await expect(page.locator(".main-header .navbar-page-title")).toHaveText("Pipeline");
-    await expect(page).toHaveTitle("Pipeline · THUMDER");
+    await expect(page).toHaveTitle("Pipeline | THUMDER");
     // The controls are only at the bottom (where the thumb reaches), with their names
     const dock = page.locator(".thumder-dock");
     await expect(dock).toBeVisible();
@@ -192,7 +192,7 @@ test("cada vista dice en su cabecera para qué sirve, y la pestaña del navegado
   await go(page, "/auth/cycle-clock-diagram");
   await expect(page.locator(".page-header-title")).toHaveText("Ciclos de reloj");
   await expect(page.locator(".page-header-help")).toContainText("por qué se detuvo");
-  await expect(page).toHaveTitle("Ciclos de reloj · THUMDER");
+  await expect(page).toHaveTitle("Ciclos de reloj | THUMDER");
   await go(page, "/");
   // Every view, with what it is for (the tools of development too, in the development build)
   await expect.poll(() => page.locator(".home-tile").count()).toBeGreaterThanOrEqual(14);

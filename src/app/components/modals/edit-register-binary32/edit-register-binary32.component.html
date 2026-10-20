@@ -32,7 +32,7 @@
           <label class="edit-label" for="editRegisterSelect" id="editRegisterListLabel">{{ 'MACHINE.REGISTER' | translate }}</label>
           <select class="custom-select d-sm-none" id="editRegisterSelect" (change)="selectRegister($any($event.target).value)">
             @for (item of registers(); track item.id) {
-              <option [value]="item.id" [selected]="item.id === register()">{{ item.name }} · 0x{{ item.hex }}{{ item.editable ? '' : ' (' + ('EDIT_REGISTER.READ_ONLY' | translate) + ')' }}</option>
+              <option [value]="item.id" [selected]="item.id === register()">{{ item.name }}: 0x{{ item.hex }}{{ item.editable ? '' : ' (' + ('EDIT_REGISTER.READ_ONLY' | translate) + ')' }}</option>
             }
           </select>
           <div class="register-chips" [class.register-chips-wide]="kind() === 'Double'" role="radiogroup"
@@ -87,7 +87,7 @@
                 <span class="edit-compare-hex" id="editRegisterNew">{{ hexOf(value) }}</span>
                 <span class="edit-compare-decimal">
                   @if (dirty()) {
-                    {{ decimalOf(value) }} ·
+                    {{ decimalOf(value) }},
                     {{ (changedBits() === 1 ? 'EDIT_VALUE.CHANGED_BIT' : 'EDIT_VALUE.CHANGED_BITS') | translate: { count: changedBits() } }}
                   } @else {
                     {{ 'EDIT_VALUE.UNCHANGED' | translate }}

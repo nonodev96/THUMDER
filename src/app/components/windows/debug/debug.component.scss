@@ -15,8 +15,15 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", "DejaVu
 .debug-body {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   max-height: min(70vh, calc(100vh - var(--thumder-navbar-height) - var(--thumder-footer-height) - 9rem));
   padding: 0.75rem 1rem;
+
+  // Resized by the user: as tall as the window
+  .thumder-resized & {
+    max-height: none;
+  }
 }
 
 .debug-intro {

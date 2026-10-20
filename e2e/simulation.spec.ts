@@ -53,32 +53,59 @@ test.describe("con entrada por la consola", () => {
     await expect(output).toContainText("gcM=12");
   });
 
-  test("la consola es un terminal: lo que escribe el programa, las líneas tecleadas y el final; todo con el teclado", async ({ page }) => {
+  test("la consola es el dispositivo del programa: la pantalla, lo tecleado y la lista de los traps, todo con el teclado", async ({ page }) => {
     await go(page, "/auth/editor");
     // With the editor focused: the keys of the simulation are THUMDER's, not the editor's nor the browser's
     await page.locator(".monaco-editor .view-lines").first().click();
     await page.keyboard.press("Control+F9");
     await expect(controls(page).run).toBeEnabled();
     await page.keyboard.press("F9");
-    const terminal = page.locator(".thumder-dlx-io");
-    await expect(terminal.locator(".terminal-command")).toContainText("$ ./gcm.s");
-    await expect(terminal.locator(".terminal-state")).toHaveText("esperando entrada");
-    await expect(terminal.locator(".terminal-out").first()).toContainText("First Number:");
+    const tty = page.locator(".thumder-dlx-io");
+    await expect(tty.locator(".tty-state")).toHaveText("trap 3: espera entrada");
+    await expect(tty.locator(".tty-led")).toHaveClass(/tty-led--input/);
+    await expect(tty.locator(".tty-out").first()).toContainText("First Number:");
     const line = page.getByLabel("Línea para el programa");
     await expect(line).toBeFocused();
     await page.keyboard.type("84");
     await page.keyboard.press("Enter");
-    await expect(terminal.locator(".terminal-in").first()).toHaveText("84");
-    await expect(terminal.locator(".terminal-out", { hasText: "Second Number:" })).toBeVisible();
+    await expect(tty.locator(".tty-in").first()).toHaveText("84");
+    await expect(tty.locator(".tty-out", { hasText: "Second Number:" })).toBeVisible();
     // The arrows bring back the lines typed before, as in a shell
     await line.press("ArrowUp");
     await expect(line).toHaveValue("84");
     await line.fill("36");
     await line.press("Enter");
-    await expect(terminal.locator(".terminal-in")).toHaveText(["84", "36"]);
-    await expect(terminal.locator(".terminal-state")).toHaveText("terminado");
-    await expect(terminal.locator(".terminal-end")).toContainText("El programa ha terminado en el ciclo");
+    await expect(tty.locator(".tty-in")).toHaveText(["84", "36"]);
+    await expect(tty.locator(".tty-state")).toHaveText("fin del programa");
+    await expect(tty.locator(".tty-end")).toContainText("El programa ha terminado en el ciclo");
     await expect(page.locator(".thumder-dlx-io-output")).toContainText("gcM=12");
+
+    // The traps: what each one read or wrote, in which cycle and on which descriptor
+    await tty.locator("#ioTab-traps").click();
+    const rows = tty.locator(".tty-trap");
+    await expect(rows).toHaveCount(5);
+    await expect(rows.nth(0)).toContainText("5 printf");
+    await expect(rows.nth(1)).toContainText("3 read");
+    await expect(rows.nth(1).locator(".tty-data")).toHaveText('"84\\n"');
+    await expect(tty.locator(".tty-devices")).toContainText("fd 0 stdin 6 B");
+    const cycles = (await rows.locator("td:first-child").allTextContents()).map(Number);
+    expect(cycles).toEqual([...cycles].sort((a, b) => a - b));
+
+    // Resized from its top left corner: its bottom right corner stays where it is, and a double click undoes it
+    const before = (await tty.boundingBox()) as { x: number; y: number; width: number; height: number };
+    const corner = (await tty.locator(".thumder-window-handle-nw").boundingBox()) as { x: number; y: number };
+    await page.mouse.move(corner.x + 4, corner.y + 4);
+    await page.mouse.down();
+    await page.mouse.move(corner.x - 116, corner.y - 76, { steps: 6 });
+    await page.mouse.up();
+    const after = (await tty.boundingBox()) as { x: number; y: number; width: number; height: number };
+    expect(Math.round(after.width - before.width)).toBe(120);
+    expect(Math.round(after.height - before.height)).toBe(80);
+    expect(Math.round(after.x + after.width)).toBe(Math.round(before.x + before.width));
+    expect(Math.round(after.y + after.height)).toBe(Math.round(before.y + before.height));
+    await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("thumder_panel_sizes") ?? "{}").console?.width)).toBe(Math.round(after.width));
+    await tty.locator(".thumder-window-handle-nw").dblclick();
+    await expect.poll(async () => Math.round(((await tty.boundingBox()) as { width: number }).width)).toBe(Math.round(before.width));
   });
 });
 

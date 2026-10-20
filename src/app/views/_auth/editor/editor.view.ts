@@ -35,6 +35,7 @@ import { ModalOpenDirective } from "@shared/directives/bootstrap/modal.directive
 import { firstValueFrom, Subscription } from "rxjs";
 import * as env from "../../../../environments/_environment";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 import { MonacoEditorComponent as MonacoEditorComponent_1 } from "../../../components/monaco-editor/monaco-editor.component";
 
 @Component({
@@ -44,6 +45,7 @@ import { MonacoEditorComponent as MonacoEditorComponent_1 } from "../../../compo
   imports: [
     CardDirective,
     CardWidgetDirective,
+    DetailsDirective,
     MonacoEditorComponent_1,
     TranslatePipe,
     ModalOpenDirective,

@@ -45,39 +45,42 @@
     </thumder-virtual-table>
   </div>
 
-  <div class="card-footer code-detail" id="codeDetail" aria-live="polite">
-    @if (detail(); as detail) {
-      <div class="code-detail-head">
-        <strong class="code-detail-instruction">{{ detail.row.address }} <span>{{ detail.row.instruction }}</span></strong>
-        <code class="code-detail-summary">{{ detail.description.summary }}</code>
-        <span class="badge badge-secondary">{{ detail.description.format }}</span>
-        <button type="button" class="close ml-auto" [attr.aria-label]="'FORMS.CLOSE' | translate" (click)="select(null)">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <p class="code-detail-text">{{ detail.description.text }}</p>
+  <details class="card-footer code-detail thumder-details--scroll" thumderDetails="code" [reveal]="detail()">
+    <summary>{{ 'DETAILS.CODE' | translate }}</summary>
+    <div id="codeDetail" aria-live="polite">
+      @if (detail(); as detail) {
+        <div class="code-detail-head">
+          <strong class="code-detail-instruction">{{ detail.row.address }} <span>{{ detail.row.instruction }}</span></strong>
+          <code class="code-detail-summary">{{ detail.description.summary }}</code>
+          <span class="badge badge-secondary">{{ detail.description.format }}</span>
+          <button type="button" class="close ml-auto" [attr.aria-label]="'FORMS.CLOSE' | translate" (click)="select(null)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <p class="code-detail-text">{{ detail.description.text }}</p>
 
-      <div class="code-fields" role="group" [attr.aria-label]="'MACHINE.FIELDS' | translate">
-        @for (field of detail.description.fields; track $index) {
-          <div class="code-field" [style.flex-grow]="field.bits.length">
-            <span class="code-field-name">{{ field.name }}</span>
-            <span class="code-field-bits">{{ field.bits }}</span>
-            <span class="code-field-meaning">{{ field.meaning }}</span>
-          </div>
-        }
-      </div>
+        <div class="code-fields" role="group" [attr.aria-label]="'MACHINE.FIELDS' | translate">
+          @for (field of detail.description.fields; track $index) {
+            <div class="code-field" [style.flex-grow]="field.bits.length">
+              <span class="code-field-name">{{ field.name }}</span>
+              <span class="code-field-bits">{{ field.bits }}</span>
+              <span class="code-field-meaning">{{ field.meaning }}</span>
+            </div>
+          }
+        </div>
 
-      <h4 class="code-detail-title">{{ 'MACHINE.STAGES' | translate }}</h4>
-      <dl class="code-stages">
-        @for (stage of detail.description.stages; track stage.stage) {
-          <dt><span [class]="'code-stage ' + stageBadge(stage.stage)">{{ stage.stage }}</span></dt>
-          <dd>{{ stage.text }}</dd>
-        }
-      </dl>
-    } @else {
-      <p class="code-detail-hint">
-        <i class="fas fa-info-circle" aria-hidden="true"></i> {{ 'MACHINE.DESCRIPTION_HINT' | translate }}
-      </p>
-    }
+        <h4 class="code-detail-title">{{ 'MACHINE.STAGES' | translate }}</h4>
+        <dl class="code-stages">
+          @for (stage of detail.description.stages; track stage.stage) {
+            <dt><span [class]="'code-stage ' + stageBadge(stage.stage)">{{ stage.stage }}</span></dt>
+            <dd>{{ stage.text }}</dd>
+          }
+        </dl>
+      } @else {
+        <p class="code-detail-hint">
+          <i class="fas fa-info-circle" aria-hidden="true"></i> {{ 'MACHINE.DESCRIPTION_HINT' | translate }}
+        </p>
+      }
   </div>
+  </details>
 </div>

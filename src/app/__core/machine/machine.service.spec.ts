@@ -247,6 +247,18 @@ describe("MachineService with the simulator of THUMDER", () => {
     await machine.resume();
     expect(machine.isComplete).toBe(true);
     expect(machine.state.output()).toBe("First Number:84\nSecond Number: 36\ngcM=12\n\n");
+    // Each trap, with what it read or wrote, its descriptor and its cycle
+    const traps = machine.state.traps();
+    expect(traps.map(({ trap, descriptor, text }) => ({ trap, descriptor, text }))).toEqual([
+      { trap: 5, descriptor: 1, text: "First Number:" },
+      { trap: 3, descriptor: 0, text: "84\n" },
+      { trap: 5, descriptor: 1, text: "Second Number: " },
+      { trap: 3, descriptor: 0, text: "36\n" },
+      { trap: 5, descriptor: 1, text: "gcM=12\n\n" },
+    ]);
+    expect(traps.map((record) => record.cycle)).toEqual([...traps.map((record) => record.cycle)].sort((a, b) => a - b));
+    expect(traps[traps.length - 1].cycle).toBeLessThanOrEqual(machine.state.step());
+    expect(machine.state.console().map((chunk) => chunk.kind)).toEqual(["out", "in", "out", "in", "out"]);
   });
 });
 

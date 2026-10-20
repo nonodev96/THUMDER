@@ -114,6 +114,22 @@ test("la ventana de depuración se abre desde el pie, explica el estado y los me
   await debug.locator("#debugFilter").fill("SimulationInit");
   await expect(debug.locator(".debug-message")).toHaveCount(1);
   await expect(debug.locator(".debug-meaning")).toContainText("ensambla el programa");
+  // Resized from its bottom right corner
+  const before = (await debug.boundingBox()) as { x: number; y: number; width: number; height: number };
+  const corner = (await debug.locator(".thumder-window-handle-se").boundingBox()) as { x: number; y: number };
+  await page.mouse.move(corner.x + 6, corner.y + 6);
+  await page.mouse.down();
+  await page.mouse.move(corner.x - 94, corner.y - 54, { steps: 6 });
+  await page.mouse.up();
+  const after = (await debug.boundingBox()) as { x: number; y: number; width: number; height: number };
+  expect(Math.round(before.width - after.width)).toBe(100);
+  expect(Math.round(before.height - after.height)).toBe(60);
+  expect(Math.round(after.x)).toBe(Math.round(before.x));
+  // Its footer hides
+  const footer = debug.locator("details.card-footer");
+  await expect(footer.locator(".debug-footer")).toContainText("/auth/code");
+  await footer.locator("summary").click();
+  await expect(footer.locator(".debug-footer")).toBeHidden();
   await debug.locator(".card-tools button:has(.fa-minus)").click();
   await expect(debug).toHaveClass(/collapsed-card/);
   await debug.locator(".card-tools button:has(.fa-times)").click();

@@ -52,7 +52,10 @@
     </div>
   </div>
 
-  <div class="card-footer small text-muted">
-    {{ 'LOGGER.HELP' | translate: { limit: limit, shown: shownLimit } }}
+  <details class="card-footer" thumderDetails="logger">
+    <summary>{{ 'DETAILS.LOGGER' | translate }}</summary>
+    <div class="small text-muted">
+      {{ 'LOGGER.HELP' | translate: { limit: limit, shown: shownLimit } }}
   </div>
+  </details>
 </div>

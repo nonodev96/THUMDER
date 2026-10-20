@@ -1,16 +1,22 @@
-// The console of the program as the terminal of an operating system: a dark window over the views, above the footer (or
-// the bar of a phone) as tall as it is (--thumder-footer-height), in the same colours in both themes
+// The console of the program as the device it is for the processor: a flat panel of a terminal of characters, all in
+// monospace, square, with a light for what the program does; over the views, above the footer (or the bar of a phone)
+// as tall as it is (--thumder-footer-height), anchored to the bottom right and resized from its top and its left. The
+// same colours in both themes.
 
 $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace;
 
-.terminal {
-  --terminal-bg: var(--thumder-console-bg);
-  --terminal-bar: #1e293b;
-  --terminal-text: #e2e8f0;
-  --terminal-muted: #94a3b8;
-  --terminal-prompt: #4ade80;
-  --terminal-in: #7dd3fc;
-  --terminal-path: #93c5fd;
+.tty {
+  --tty-bg: #07090b;
+  --tty-bar: #0f1417;
+  --tty-line: #232d33;
+  --tty-text: #b6f2c4;
+  --tty-dim: #6d8577;
+  --tty-in: #ffd166;
+  --tty-err: #ff8a80;
+  --tty-bright: #e6f4ea;
+  --tty-running: #4ade80;
+  --tty-input: #fbbf24;
+  --tty-halt: #f87171;
 
   position: fixed;
   right: 1rem;
@@ -19,241 +25,431 @@ $mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", "DejaVu
   display: flex;
   flex-direction: column;
   width: min(36rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 1rem);
+  max-height: calc(100vh - var(--thumder-navbar-height, 3.5rem) - var(--thumder-footer-height, 3.6rem) - 1.5rem);
   overflow: hidden;
-  border: 1px solid #334155;
-  border-radius: 0.65rem;
-  color: var(--terminal-text);
-  background-color: var(--terminal-bg);
-  box-shadow: 0 18px 40px -10px rgba(2, 6, 23, 0.55), 0 0 0 1px rgba(15, 23, 42, 0.2);
-  animation: terminal-in 0.18s ease-out;
-}
+  border: 1px solid var(--tty-line);
+  border-radius: 2px;
+  font-family: $mono;
+  color: var(--tty-text);
+  background-color: var(--tty-bg);
+  box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.6);
 
-// ─── The title bar ───────────────────────────────────────────────────────────────────────────────────────────────────
+  // Folded, only its bar, whatever its size
+  &.tty--folded {
+    height: auto !important;
+  }
 
-.terminal-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.35rem 0.4rem 0.35rem 0.75rem;
-  background-color: var(--terminal-bar);
-  border-bottom: 1px solid #334155;
-}
-
-.terminal-lights {
-  display: inline-flex;
-  gap: 0.35rem;
-
-  i {
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background-color: #f87171;
-
-    &:nth-child(2) {
-      background-color: #fbbf24;
-    }
-
-    &:nth-child(3) {
-      background-color: #4ade80;
-    }
+  &.thumder-resizing {
+    user-select: none;
   }
 }
 
-.terminal-title {
-  flex: 1 1 auto;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  font-size: 0.82rem;
-  font-weight: 600;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  color: var(--terminal-text);
+// ─── The bar ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.tty-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.2rem 0.25rem 0.2rem 0.65rem;
+  background-color: var(--tty-bar);
+  border-bottom: 1px solid var(--tty-line);
 }
 
-.terminal-program {
-  font-family: $mono;
-  font-weight: 400;
-  color: var(--terminal-muted);
-}
-
-// What the program is doing
-.terminal-state {
+// The light of the device: green while it runs, amber (blinking) while it waits for a line, red when it has ended
+.tty-led {
   flex: 0 0 auto;
-  padding: 0.05rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #0f172a;
-  background-color: #cbd5e1;
+  width: 0.55rem;
+  height: 0.55rem;
+  background-color: #3a4249;
 
-  &::before {
-    content: "● ";
+  &--running {
+    background-color: var(--tty-running);
+    box-shadow: 0 0 6px var(--tty-running);
+    animation: tty-blink 0.5s steps(2, jump-none) infinite;
   }
 
   &--input {
-    background-color: #fbbf24;
-    animation: terminal-blink 1.2s ease-in-out infinite;
+    background-color: var(--tty-input);
+    box-shadow: 0 0 6px var(--tty-input);
+    animation: tty-blink 1s steps(2, jump-none) infinite;
   }
 
-  &--running {
-    background-color: #4ade80;
+  &--done {
+    background-color: var(--tty-halt);
+    box-shadow: 0 0 6px var(--tty-halt);
   }
 }
 
-.terminal-tools {
+.tty-title {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-family: $mono;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--tty-bright);
+}
+
+// On a phone, only its short name
+.tty-title-short {
+  display: none;
+}
+
+.tty-program {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.74rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--tty-dim);
+}
+
+.tty-tools {
   display: inline-flex;
   flex: 0 0 auto;
+  gap: 1px;
 }
 
-.terminal-tool {
+.tty-tool {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   padding: 0;
   border: 0;
-  border-radius: 0.4rem;
-  color: var(--terminal-muted);
+  border-radius: 0;
+  font-size: 0.8rem;
+  color: var(--tty-dim);
   background: none;
 
   &:hover {
-    color: var(--terminal-text);
-    background-color: rgba(148, 163, 184, 0.18);
+    color: var(--tty-bright);
+    background-color: var(--tty-line);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--terminal-in);
-    outline-offset: -2px;
+    outline: 1px solid var(--tty-in);
+    outline-offset: -1px;
   }
 }
 
-// ─── The screen ──────────────────────────────────────────────────────────────────────────────────────────────────────
+// ─── What it shows, and the state ────────────────────────────────────────────────────────────────────────────────────
 
-.terminal-screen {
-  max-height: 42vh;
-  min-height: 7rem;
+.tty-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  padding: 0 0.65rem 0 0;
+  border-bottom: 1px solid var(--tty-line);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tty-views {
+  display: inline-flex;
+}
+
+.tty-view {
+  padding: 0.25rem 0.65rem;
+  border: 0;
+  border-right: 1px solid var(--tty-line);
+  border-radius: 0;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  color: var(--tty-dim);
+  background: none;
+
+  &:hover {
+    color: var(--tty-bright);
+  }
+
+  &--active {
+    color: var(--tty-bg);
+    background-color: var(--tty-text);
+
+    &:hover {
+      color: var(--tty-bg);
+    }
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--tty-in);
+    outline-offset: -1px;
+  }
+}
+
+.tty-count {
+  font-weight: 700;
+}
+
+.tty-state {
+  color: var(--tty-dim);
+
+  &--running {
+    color: var(--tty-running);
+  }
+
+  &--input {
+    color: var(--tty-input);
+  }
+
+  &--done {
+    color: var(--tty-halt);
+  }
+}
+
+// ─── The screen and the list of the traps ────────────────────────────────────────────────────────────────────────────
+
+.tty-body {
+  flex: 1 1 auto;
+  min-height: 6rem;
+  max-height: min(18rem, 42vh);
   overflow: auto;
-  padding: 0.65rem 0.85rem 0.75rem;
-  font-family: $mono;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  padding: 0.5rem 0.7rem 0.6rem;
+  font-size: 0.84rem;
+  line-height: 1.45;
   cursor: text;
   scrollbar-width: thin;
-  scrollbar-color: #475569 transparent;
+  scrollbar-color: var(--tty-line) transparent;
+
+  // Resized by the user: as tall as the panel
+  .thumder-resized & {
+    max-height: none;
+  }
 
   p {
     margin: 0;
   }
 }
 
-// The command that started the program
-.terminal-command {
-  color: var(--terminal-muted);
-}
-
-.terminal-user {
-  font-weight: 700;
-  color: var(--terminal-prompt);
-}
-
-.terminal-path {
-  font-weight: 700;
-  color: var(--terminal-path);
-}
-
-.terminal-text {
+.tty-screen {
   white-space: pre-wrap;
   word-break: break-word;
 }
 
-.terminal-out {
-  color: var(--terminal-text);
+.tty-out {
+  color: var(--tty-text);
 }
 
-// What was typed for the program
-.terminal-in {
-  font-weight: 700;
-  color: var(--terminal-in);
+// What the program wrote on the errors (descriptor 2)
+.tty-err {
+  color: var(--tty-err);
 }
 
-.terminal-prompt {
-  font-weight: 700;
-  color: var(--terminal-prompt);
+// What was typed for the program (the trap 3 reads it)
+.tty-in {
+  color: var(--tty-in);
 }
 
 // The line being typed: where the cursor is, as wide as what is written
-.terminal-line {
+.tty-line {
   display: inline;
 }
 
-.terminal-input {
+.tty-input {
   min-width: 1ch;
   max-width: 100%;
   padding: 0;
   border: 0;
   outline: 0;
   font: inherit;
-  font-weight: 700;
-  color: var(--terminal-in);
+  color: var(--tty-in);
   background: transparent;
-  caret-color: var(--terminal-prompt);
+  caret-color: var(--tty-in);
+
+  // Not focused, the cursor of the terminal blinks after what was typed (the last cell of the line, always empty)
+  &:not(:focus) {
+    animation: tty-cursor 1s steps(2, jump-none) infinite;
+  }
 }
 
-.terminal-hint {
+@keyframes tty-cursor {
+  0% {
+    box-shadow: inset -1ch 0 0 0 var(--tty-in);
+  }
+
+  100% {
+    box-shadow: inset -1ch 0 0 0 transparent;
+  }
+}
+
+.tty-note {
   margin-top: 0.5rem !important;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.78rem;
-  color: #fbbf24;
+  font-size: 0.74rem;
+  color: var(--tty-dim);
 }
 
-.terminal-end {
-  margin-top: 0.35rem !important;
-  color: var(--terminal-prompt);
+.tty-end {
+  margin-top: 0.4rem !important;
+  color: var(--tty-halt);
 }
 
-.terminal-footer {
-  padding: 0.3rem 0.85rem;
-  border-top: 1px solid #1e293b;
+// The bytes of each descriptor
+.tty-devices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0 0 0.4rem;
+  padding: 0;
+  list-style: none;
   font-size: 0.72rem;
-  color: var(--terminal-muted);
-  background-color: rgba(30, 41, 59, 0.5);
-}
+  color: var(--tty-dim);
 
-@keyframes terminal-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.75rem);
+  strong {
+    color: var(--tty-bright);
   }
 }
 
-@keyframes terminal-blink {
+.tty-traps {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+  cursor: default;
+
+  th,
+  td {
+    padding: 0.12rem 0.5rem 0.12rem 0;
+    vertical-align: top;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  // The trap and the descriptor, with their names, to the left; the cycle and the bytes, numbers, to the right
+  :is(th, td):is(:nth-child(2), :nth-child(3)),
+  th:last-child,
+  td:last-child {
+    text-align: left;
+  }
+
+  th:last-child,
+  td:last-child {
+    width: 100%;
+  }
+
+  th {
+    position: sticky;
+    top: -0.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--tty-dim);
+    background-color: var(--tty-bg);
+    border-bottom: 1px solid var(--tty-line);
+  }
+}
+
+.tty-call {
+  color: var(--tty-dim);
+}
+
+.tty-data {
+  white-space: pre-wrap !important;
+  word-break: break-all;
+}
+
+.tty-trap--fd0 .tty-data {
+  color: var(--tty-in);
+}
+
+.tty-trap--fd2 .tty-data {
+  color: var(--tty-err);
+}
+
+// ─── How the program uses it ─────────────────────────────────────────────────────────────────────────────────────────
+
+.tty-footer {
+  flex: 0 0 auto;
+  max-height: 40%;
+  overflow: auto;
+  border-top: 1px solid var(--tty-line);
+  font-size: 0.72rem;
+  color: var(--tty-dim);
+  background-color: var(--tty-bar);
+
+  summary {
+    padding: 0.25rem 0.65rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &:hover {
+      color: var(--tty-bright);
+    }
+
+    &:focus-visible {
+      outline: 1px solid var(--tty-in);
+      outline-offset: -1px;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding: 0 0.65rem 0.45rem 1.75rem;
+  }
+}
+
+// ─── The edges it is resized from ────────────────────────────────────────────────────────────────────────────────────
+
+// The corner it is resized from, marked (the handles are not of this template: ::ng-deep)
+:host ::ng-deep .tty > .thumder-window-handle-nw::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid var(--tty-dim);
+  border-left: 1px solid var(--tty-dim);
+}
+
+@keyframes tty-blink {
   50% {
-    opacity: 0.55;
+    opacity: 0.25;
   }
 }
 
-// Phones: the width of the screen, over the bar of the simulation
+// A phone: as wide as the screen, resized only from its top
 @media (max-width: 575.98px) {
-  .terminal {
+  .tty {
     right: 0.5rem;
     left: 0.5rem;
-    width: auto;
+    bottom: calc(var(--thumder-footer-height, 3.6rem) + 0.5rem);
+    width: auto !important;
+    max-width: none;
   }
 
-  .terminal-screen {
-    max-height: 35vh;
+  .tty-title-long {
+    display: none;
   }
 
-  .terminal-lights {
+  .tty-title-short {
+    display: inline;
+  }
+
+  :host ::ng-deep .tty > :is(.thumder-window-handle-w, .thumder-window-handle-nw) {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .terminal,
-  .terminal-state--input {
+  .tty-led {
+    animation: none !important;
+  }
+
+  .tty-input:not(:focus) {
     animation: none;
+    box-shadow: inset -1ch 0 0 0 var(--tty-in);
   }
 }

@@ -25,6 +25,7 @@ import { mediaSignal, NARROW } from "@shared/utils/media";
 const BYTES: Record<string, number> = { Byte: 1, ASCII: 1, HalfWord: 2, Word: 4, Float: 4, Double: 8 };
 
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 
 /**
  * The width of each column, in characters of the font of the table (monospace): what its values take and the padding of
@@ -70,6 +71,7 @@ const EDIT_TYPE: Partial<Record<TypeDataDisplayColumn, MemoryTypeData>> = {
   imports: [
     CardDirective,
     CardWidgetDirective,
+    DetailsDirective,
     UpperCasePipe,
     TranslatePipe,
     Binary32ToASCIIPipe,

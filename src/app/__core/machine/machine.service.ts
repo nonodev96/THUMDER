@@ -40,6 +40,7 @@ import type {
   SimulationStepExtra,
   SymbolInfo,
 } from "@core/engine/simulator";
+import type { TrapIO } from "@core/engine/traps";
 import { ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
 import { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
@@ -75,15 +76,19 @@ export type CycleChanges = {
   reads: readonly { address: number; bytes: number }[];
 };
 
-/** A piece of the console of the program: what it wrote (traps 4 and 5) or a line typed for it (trap 3) */
-export type ConsoleChunk = { kind: "out" | "in"; text: string };
+/** A piece of the console of the program: what it wrote on the output (descriptor 1) or on the errors (2) with the
+ * traps 1, 4 and 5, or a line typed for it (trap 3) */
+export type ConsoleChunk = { kind: "out" | "err" | "in"; text: string };
 
-/** The console with more pieces: what the program writes follows what it wrote before */
+/** A read or a write of a trap, with the cycle it ran in (as the views number them) */
+export type TrapRecord = TrapIO & { cycle: number };
+
+/** The console with more pieces: what the program writes follows what it wrote before on the same descriptor */
 function addChunks(console: readonly ConsoleChunk[], chunks: readonly ConsoleChunk[]): ConsoleChunk[] {
   const result = [...console];
   for (const chunk of chunks) {
     const last = result[result.length - 1];
-    if (chunk.kind === "out" && last?.kind === "out") result[result.length - 1] = { kind: "out", text: last.text + chunk.text };
+    if (chunk.kind !== "in" && last?.kind === chunk.kind) result[result.length - 1] = { kind: chunk.kind, text: last.text + chunk.text };
     else result.push(chunk);
   }
   return result;
@@ -120,6 +125,8 @@ export type MachineState = {
   output: Signal<string>;
   /** The same, piece by piece: what the program wrote and what was typed for it */
   console: Signal<readonly ConsoleChunk[]>;
+  /** What each trap read and wrote, cycle by cycle */
+  traps: Signal<readonly TrapRecord[]>;
   /** The errors of the assembler, with their line */
   errors: Signal<TypeErrorInCode[]>;
   /** The instructions of the program loaded */
@@ -192,6 +199,7 @@ export class MachineService {
   private readonly canSimulateSignal = signal(false);
   private readonly waitingForInputSignal = signal(false);
   private readonly consoleSignal = signal<readonly ConsoleChunk[]>([]);
+  private readonly trapsSignal = signal<readonly TrapRecord[]>([]);
   private readonly outputSignal = computed(() =>
     this.consoleSignal()
       .map((chunk) => (chunk.kind === "in" ? `${chunk.text}\n` : chunk.text))
@@ -240,6 +248,7 @@ export class MachineService {
     waitingForInput: this.held(this.waitingForInputSignal),
     output: this.held(this.outputSignal),
     console: this.held(this.consoleSignal),
+    traps: this.held(this.trapsSignal),
     errors: this.held(this.errorsSignal),
     code: this.held(this.codeSignal),
     stages: this.held(this.stagesSignal),
@@ -296,6 +305,7 @@ export class MachineService {
   private replaying = false;
   /** What the console gets while the simulation runs without drawing (the views get it when it stops) */
   private pendingConsole: ConsoleChunk[] = [];
+  private pendingTraps: TrapRecord[] = [];
   private lastStep: Step | null = null;
 
   constructor() {
@@ -398,6 +408,7 @@ export class MachineService {
     this.canSimulateSignal.set(false);
     this.waitingForInputSignal.set(false);
     this.consoleSignal.set([]);
+    this.trapsSignal.set([]);
     this.errorsSignal.set([]);
     this.codeSignal.set([]);
     this.stagesSignal.set(new Map());
@@ -408,6 +419,7 @@ export class MachineService {
     this.cyclesSignal.set(0);
     this.hitSignal.set(null);
     this.pendingConsole = [];
+    this.pendingTraps = [];
     this.lastStep = null;
     if (!options.keepJournal) this.journal = [];
     this.touchValues();
@@ -561,7 +573,9 @@ export class MachineService {
   /** After running without drawing: the views get the state where it stopped */
   private publish(): void {
     if (this.pendingConsole.length > 0) this.consoleSignal.update((console) => addChunks(console, this.pendingConsole));
+    if (this.pendingTraps.length > 0) this.trapsSignal.update((traps) => [...traps, ...this.pendingTraps]);
     this.pendingConsole = [];
+    this.pendingTraps = [];
     const step = this.lastStep;
     if (step !== null) {
       this.stepSignal.set(step.step);
@@ -670,7 +684,21 @@ export class MachineService {
   private async handleStep(step: Step): Promise<void> {
     this.lastStep = step;
     this.cyclesSignal.set(step.step + 1);
-    if (step.output) {
+    if (step.io) {
+      // The screen gets what was written (what was read, it got when it was typed), and the list of the traps all
+      const chunks: ConsoleChunk[] = step.io
+        .filter((entry) => entry.descriptor !== 0)
+        .map((entry) => ({ kind: entry.descriptor === 2 ? "err" : "out", text: entry.text }));
+      const records: TrapRecord[] = step.io.map((entry) => ({ ...entry, cycle: step.step }));
+      if (this.quiet) {
+        this.pendingConsole.push(...chunks);
+        this.pendingTraps.push(...records);
+      } else {
+        if (chunks.length > 0) this.consoleSignal.update((console) => addChunks(console, chunks));
+        this.trapsSignal.update((traps) => [...traps, ...records]);
+      }
+    } else if (step.output) {
+      // A simulator that only says what was written
       const chunk: ConsoleChunk = { kind: "out", text: step.output };
       if (this.quiet) this.pendingConsole.push(chunk);
       else this.consoleSignal.update((console) => addChunks(console, [chunk]));
@@ -817,6 +845,7 @@ export class MachineService {
   /** Clears the console of the program */
   public clearOutput(): void {
     this.consoleSignal.set([]);
+    this.trapsSignal.set([]);
   }
 
   /** Sends the registers to the simulator and applies the values it has stored. Returns whether all were accepted */

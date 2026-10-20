@@ -4,12 +4,13 @@ import { PixiPipelineComponent } from "@components/pixi-pipeline/pixi-pipeline.c
 import { MachineService } from "@core/machine/machine.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
+import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
 
 @Component({
   selector: "view-pipeline",
   templateUrl: "./pipeline.view.html",
   styleUrls: ["./pipeline.view.scss"],
-  imports: [CardDirective, CardWidgetDirective, PixiPipelineComponent, PipelineStagesComponent, TranslatePipe],
+  imports: [CardDirective, CardWidgetDirective, DetailsDirective, PixiPipelineComponent, PipelineStagesComponent, TranslatePipe],
 })
 export class PipelineView {
   public machine = inject(MachineService);

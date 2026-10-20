@@ -16,7 +16,13 @@ export type TrapResult = {
   halt?: boolean;
   /** Trap 3 on stdin with no input: the trap must run again when there is a line */
   waitingForInput?: boolean;
+  /** Trap 3: the bytes of the line copied to the memory */
+  read?: string;
 };
+
+/** What a trap read (descriptor 0) or wrote (1, the output, or 2, the errors) in a cycle: the console at the level of
+ * the machine */
+export type TrapIO = { trap: number; descriptor: 0 | 1 | 2; text: string };
 
 export function runTrap(trap: number, registers: Registers, memory: Memory, io: ProgramIO): TrapResult {
   const parameter = (index: number) => memory.readU32((registers.R[14] + 4 * index) >>> 0);
@@ -39,7 +45,7 @@ export function runTrap(trap: number, registers: Registers, memory: Memory, io: 
       if (line === null) return { waitingForInput: true };
       const bytes = Math.min(size, line.length);
       for (let i = 0; i < bytes; i++) memory.writeU8(buffer + i, line.charCodeAt(i));
-      return { r1: bytes };
+      return { r1: bytes, read: line.slice(0, bytes) };
     }
     case 4: {
       const [descriptor, buffer, size] = [parameter(0), parameter(1), parameter(2)];

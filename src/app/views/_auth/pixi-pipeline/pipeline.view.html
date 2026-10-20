@@ -32,7 +32,10 @@
     <THUMDER-pixi-pipeline></THUMDER-pixi-pipeline>
   </div>
   <!-- The pipeline in text (A11Y-01): what each stage and each unit does in this cycle -->
-  <div class="card-footer pipeline-footer" id="pipelineText" aria-live="polite">
-    <thumder-pipeline-stages></thumder-pipeline-stages>
+  <details class="card-footer pipeline-footer thumder-details--scroll" thumderDetails="pipeline">
+    <summary>{{ 'DETAILS.STAGES' | translate }}</summary>
+    <div id="pipelineText" aria-live="polite">
+      <thumder-pipeline-stages></thumder-pipeline-stages>
   </div>
+  </details>
 </div>

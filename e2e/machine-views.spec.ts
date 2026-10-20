@@ -43,6 +43,15 @@ test("código: cada instrucción explica qué hace, y «main» lleva a su fila y
   await expect(detail).toContainText("Pulsa la descripción");
   await describe.click();
   await expect(detail.locator(".code-detail-text")).not.toBeEmpty();
+
+  // The footer hides with its line, and choosing another instruction shows it again
+  const footer = page.locator("#Code-card details.card-footer");
+  await footer.locator("summary").click();
+  await expect(detail).toBeHidden();
+  await describe.click();
+  await describe.click();
+  await expect(detail).toBeVisible();
+  await expect(detail.locator(".code-detail-text")).not.toBeEmpty();
 });
 
 test("memoria: «main» lleva a su palabra y la dirección se queda al desplazar la tabla en horizontal", async ({ page }) => {
