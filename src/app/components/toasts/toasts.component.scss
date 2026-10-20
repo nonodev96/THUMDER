@@ -1,0 +1,208 @@
+// The notices: cards over the content, in the bottom right corner (over the footer); on a phone, the width of the
+// screen over the bar of the simulation. Each kind has its colour in the icon, the border on the left and the time.
+
+.thumder-toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: calc(var(--thumder-footer-height, 3.6rem) + 0.75rem);
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(23rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.thumder-toasts-region {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.thumder-toast {
+  --toast-colour: var(--thumder-info-text);
+  --toast-soft: var(--thumder-info-soft);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0.6rem 0.85rem 0.85rem;
+  overflow: hidden;
+  border: 1px solid var(--thumder-border);
+  border-left: 4px solid var(--toast-colour);
+  border-radius: var(--thumder-radius);
+  color: var(--thumder-text);
+  background-color: var(--thumder-surface);
+  box-shadow: var(--thumder-shadow-lg);
+  pointer-events: auto;
+  touch-action: pan-y;
+  animation: toast-in 0.24s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+
+  &--success {
+    --toast-colour: var(--thumder-success-text);
+    --toast-soft: var(--thumder-success-soft);
+  }
+
+  &--warning {
+    --toast-colour: var(--thumder-warning-text);
+    --toast-soft: var(--thumder-warning-soft);
+  }
+
+  &--error {
+    --toast-colour: var(--thumder-danger-text);
+    --toast-soft: var(--thumder-danger-soft);
+  }
+
+  // Going away: out to the side, folding its place
+  &--leaving {
+    opacity: 0;
+    transform: translateX(1.5rem) scale(0.98);
+  }
+
+  // A finger slides it
+  &--dragging {
+    transition: none;
+  }
+
+  // While the pointer or the focus is on it, its time waits
+  &:hover .thumder-toast-time,
+  &:focus-within .thumder-toast-time {
+    animation-play-state: paused;
+  }
+}
+
+.thumder-toast-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  color: var(--toast-colour);
+  background-color: var(--toast-soft);
+}
+
+.thumder-toast-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-top: 0.1rem;
+  overflow-wrap: anywhere;
+
+  p {
+    margin: 0;
+  }
+}
+
+.thumder-toast-title {
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.thumder-toast-message {
+  margin-top: 0.1rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--thumder-text-2);
+}
+
+// The same notice more times
+.thumder-toast-count {
+  display: inline-block;
+  margin-left: 0.3rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--toast-colour);
+  background-color: var(--toast-soft);
+}
+
+.thumder-toast-close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  margin: -0.2rem 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: var(--thumder-muted);
+  background: none;
+
+  &:hover {
+    color: var(--thumder-text);
+    background-color: var(--thumder-surface-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+    outline-offset: 1px;
+  }
+}
+
+// What is left of its time
+.thumder-toast-time {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background-color: var(--toast-colour);
+  opacity: 0.6;
+  transform-origin: left;
+  animation-name: toast-time;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(1.5rem);
+  }
+}
+
+@keyframes toast-time {
+  to {
+    transform: scaleX(0);
+  }
+}
+
+// Phones: the width of the screen, over the bar of the simulation, coming in from below
+@media (max-width: 575.98px) {
+  .thumder-toasts {
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+  }
+
+  .thumder-toast {
+    animation-name: toast-up;
+  }
+
+  .thumder-toast--leaving {
+    transform: translateY(0.75rem) scale(0.98);
+  }
+}
+
+@keyframes toast-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumder-toast {
+    animation: none;
+    transition: none;
+  }
+}

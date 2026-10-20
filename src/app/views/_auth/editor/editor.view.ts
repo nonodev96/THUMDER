@@ -14,7 +14,7 @@ import {
   viewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { DEFAULT_INTERFACE_FILE_ITEM, TOAST } from "@app/CONSTANTS";
+import { DEFAULT_INTERFACE_FILE_ITEM } from "@app/CONSTANTS";
 import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "@app/Types";
 import { MonacoEditorComponent } from "@components/monaco-editor/monaco-editor.component";
 import { BreakpointsModalComponent } from "@components/program-tools/breakpoints-modal.component";
@@ -173,7 +173,7 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       if (unsaved) {
         const title = await firstValueFrom(this.translate.get("EDITOR.DISCARDED_TITLE"));
         const message = await firstValueFrom(this.translate.get("EDITOR.DISCARDED", { name: this.interfaceFileItem.name }));
-        this.toastService.warning(message, title, TOAST.warning);
+        this.toastService.warning(message, title);
       }
     }
     this.initializedSubscription.unsubscribe();
@@ -247,12 +247,12 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       const message = wasBuiltin
         ? await firstValueFrom(this.translate.get("FILE_MANAGER.COPIED", { path: FileSystemService.join(saved.path, saved.name) }))
         : await firstValueFrom(this.translate.get("TOAST.MESSAGE_SAVE_FILE"));
-      this.toastService.success(message, title, TOAST.success);
+      this.toastService.success(message, title);
     } catch (error) {
       logger.error(error);
       const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ERROR_SAVE_FILE"));
       const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ERROR_SAVE_FILE"));
-      this.toastService.error(message, title, TOAST.error);
+      this.toastService.error(message, title);
     }
   }
 }

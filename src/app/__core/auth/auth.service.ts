@@ -15,7 +15,7 @@ import {
 } from "@angular/fire/auth";
 import { doc, Firestore, setDoc } from "@angular/fire/firestore";
 import { Router } from "@angular/router";
-import { DEFAULT_CONFIG_TOAST, LOCAL_USER } from "@app/CONSTANTS";
+import { LOCAL_USER } from "@app/CONSTANTS";
 import type { InterfaceUser } from "@app/Types";
 import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
@@ -217,11 +217,7 @@ export class AuthService implements OnDestroy {
     if (this.afAuth === null || this.isGuest()) return;
     try {
       if (!(await this.files.disconnect())) {
-        this.toast.warning(
-          this.translate.instant("TOAST.MESSAGE_SYNC_PENDING"),
-          this.translate.instant("TOAST.TITLE_SYNC"),
-          DEFAULT_CONFIG_TOAST,
-        );
+        this.toast.warning(this.translate.instant("TOAST.MESSAGE_SYNC_PENDING"), this.translate.instant("TOAST.TITLE_SYNC"));
         return;
       }
       for (const key of USER_DATA_KEYS) localStorage.removeItem(key);
@@ -267,13 +263,13 @@ export class AuthService implements OnDestroy {
   }
 
   private displayMessage(message: string) {
-    this.toast.info(message, "", DEFAULT_CONFIG_TOAST);
+    this.toast.info(message, "");
   }
 
   private displayError(error: unknown) {
     const err = error as { code?: string; message?: string };
     const error_title = this.translate.instant("ERROR.TITLE", { title: err?.code ?? "" });
     const error_message = this.translate.instant("ERROR.MESSAGE", { message: err?.message ?? "" });
-    this.toast.error(error_message, error_title, DEFAULT_CONFIG_TOAST);
+    this.toast.error(error_message, error_title);
   }
 }

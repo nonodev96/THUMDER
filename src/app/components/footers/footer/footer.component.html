@@ -1,10 +1,13 @@
 @if (phone()) {
   <!-- Phones: a bar at the bottom, as in an app: the state of the simulation and its controls, where the thumb reaches -->
-  <div class="thumder-dock" [class.thumder-dock--hidden]="typing()">
+  <div class="thumder-dock" #bar [class.thumder-dock--hidden]="typing()">
     <div class="thumder-dock-status" role="status" id="simulationStatus" [attr.aria-live]="machine.state.running() ? 'off' : 'polite'">
       <span [class]="'badge ' + statusClass()">{{ statusText() | translate }}</span>
       @if (status() !== 'IDLE') {
-        <span class="thumder-dock-cycle">{{ 'STATUS.CYCLE' | translate: { cycle: machine.state.cycles() } }}</span>
+        <!-- The cycle shown, numbered as in the views and the cycle diagram (from 0) -->
+        @if (machine.state.cycles() > 0) {
+          <span class="thumder-dock-cycle">{{ 'STATUS.CYCLE' | translate: { cycle: machine.state.step() } }}</span>
+        }
         @if (fetched()) { <code class="thumder-dock-instruction">{{ fetched() }}</code> }
       } @else {
         <span class="thumder-dock-hint">{{ 'STATUS.HINT_LOAD' | translate }}</span>
@@ -13,12 +16,15 @@
     <thumder-simulation-controls variant="dock"></thumder-simulation-controls>
   </div>
 } @else {
-  <footer class="main-footer thumder-footer">
+  <footer class="main-footer thumder-footer" #bar>
     <!-- The state of the simulation (UI-10): announced to the screen readers when it stops (A11Y-01) -->
     <div class="thumder-status" role="status" id="simulationStatus" [attr.aria-live]="machine.state.running() ? 'off' : 'polite'">
       <span [class]="'badge ' + statusClass()">{{ statusText() | translate }}</span>
       @if (status() !== 'IDLE') {
-        <span class="thumder-status-item"><i class="far fa-clock" aria-hidden="true"></i> {{ 'STATUS.CYCLE' | translate: { cycle: machine.state.cycles() } }}</span>
+        <!-- The cycle shown, numbered as in the views and the cycle diagram (from 0) -->
+        @if (machine.state.cycles() > 0) {
+          <span class="thumder-status-item"><i class="far fa-clock" aria-hidden="true"></i> {{ 'STATUS.CYCLE' | translate: { cycle: machine.state.step() } }}</span>
+        }
         @if (machine.state.line() > 0) {
           <span class="thumder-status-item"><i class="fas fa-code" aria-hidden="true"></i> {{ 'STATUS.LINE' | translate: { line: machine.state.line() } }}</span>
         }

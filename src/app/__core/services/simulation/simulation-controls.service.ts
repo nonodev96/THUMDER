@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { TOAST } from "@app/CONSTANTS";
+
 import { MachineService } from "@core/machine/machine.service";
 import { EditorStateService } from "@core/services/editor/editor-state.service";
 import { ToastService } from "@core/services/toast/toast.service";
@@ -20,11 +20,7 @@ export class SimulationControlsService {
   public async load(): Promise<void> {
     await this.machine.reset();
     if (this.editorState.unsaved()) {
-      this.toast.warning(
-        this.translate.instant("SIMULATION.LOADED_UNSAVED"),
-        this.translate.instant("SIMULATION.LOADED_UNSAVED_TITLE"),
-        TOAST.warning,
-      );
+      this.toast.warning(this.translate.instant("SIMULATION.LOADED_UNSAVED"), this.translate.instant("SIMULATION.LOADED_UNSAVED_TITLE"));
     }
   }
 
@@ -48,6 +44,6 @@ export class SimulationControlsService {
   /** Everything to zero (the memory, the code and the registers), without a program: Load loads it again */
   public async clear(): Promise<void> {
     await this.machine.clear();
-    this.toast.info(this.translate.instant("SIMULATION.CLEARED"), this.translate.instant("SIMULATION.CLEARED_TITLE"), TOAST.info);
+    this.toast.info(this.translate.instant("SIMULATION.CLEARED"), this.translate.instant("SIMULATION.CLEARED_TITLE"));
   }
 }

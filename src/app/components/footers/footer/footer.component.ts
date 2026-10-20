@@ -1,5 +1,5 @@
 import { DOCUMENT } from "@angular/common";
-import { Component, computed, DestroyRef, effect, inject, signal } from "@angular/core";
+import { Component, computed, DestroyRef, type ElementRef, effect, inject, signal, viewChild } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { NPM_VERSION } from "@app/CONSTANTS";
 import { SimulationControlsComponent } from "@components/simulation-controls/simulation-controls.component";
@@ -33,12 +33,33 @@ export class FooterComponent {
   public environment: string = AppConfig.environment;
 
   public readonly phone = mediaSignal(PHONE);
+  /** The bar shown (the footer or the bar of the phone), to measure it */
+  private readonly bar = viewChild<ElementRef<HTMLElement>>("bar");
+
   /** The keyboard of the phone is open (a text field, or the editor, has the focus): the bar leaves it the room */
   public readonly typing = signal(false);
 
   constructor() {
     // The content leaves room for the bar of the phone
     effect(() => this.document.body.classList.toggle("thumder-has-dock", this.phone()));
+    // What the bar takes at the bottom of the screen (--thumder-footer-height): the content, the panels that stay on the
+    // screen, the console and the notices leave it room. It changes with the width (a line or two), the state of the
+    // simulation and the bar of a phone; a footer that is not fixed (a phone sideways) takes nothing
+    const measure = () => {
+      const element = this.bar()?.nativeElement;
+      const fixed = element !== undefined && getComputedStyle(element).position === "fixed";
+      const height = fixed ? Math.ceil(element.getBoundingClientRect().height) : 0;
+      this.document.documentElement.style.setProperty("--thumder-footer-height", `${height}px`);
+    };
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(measure) : null;
+    effect((onCleanup) => {
+      const element = this.bar()?.nativeElement;
+      if (!element) return;
+      observer?.observe(element);
+      measure();
+      onCleanup(() => observer?.unobserve(element));
+    });
+    this.document.defaultView?.addEventListener("resize", measure);
     // The keyboard of a phone is open: a text field has the focus and the screen lost most of its height
     let tallest = this.document.defaultView?.innerHeight ?? 0;
     const onChange = () => {
@@ -60,6 +81,8 @@ export class FooterComponent {
     view?.visualViewport?.addEventListener("resize", onChange);
     view?.addEventListener("resize", onChange);
     inject(DestroyRef).onDestroy(() => {
+      observer?.disconnect();
+      view?.removeEventListener("resize", measure);
       this.document.removeEventListener("focusin", onChange);
       this.document.removeEventListener("focusout", onChange);
       view?.visualViewport?.removeEventListener("resize", onChange);

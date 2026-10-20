@@ -1,5 +1,5 @@
 import { computed, Injectable, inject, type Signal, signal } from "@angular/core";
-import { DEFAULT_CODE, TOAST } from "@app/CONSTANTS";
+import { DEFAULT_CODE } from "@app/CONSTANTS";
 import {
   EnumLogLevel,
   type InterfaceFileItem,
@@ -855,7 +855,7 @@ export class MachineService {
   private async toastMessage(key_title: string = "TOAST.LOGIN_FALSE", key_message: string = "TOAST.ACCESS_DENIED"): Promise<void> {
     const message = await firstValueFrom(this.translate.get(key_message));
     const title = await firstValueFrom(this.translate.get(key_title));
-    this.toast.info(message, title, TOAST.info);
+    this.toast.info(message, title);
   }
 
   /** Where it stopped: the line (and the stage, if it is not IF), or the address read or written */
@@ -871,24 +871,24 @@ export class MachineService {
               address: `0x${hit.address.toString(16).toUpperCase().padStart(8, "0")}`,
             }),
           );
-    this.toast.info(message, title, TOAST.info);
+    this.toast.info(message, title);
   }
 
   // The errors are marked on their lines in the editor
   private async toastAssemblyErrors(): Promise<void> {
     const title = await firstValueFrom(this.translate.get("TOAST.TITLE_ASSEMBLY_ERRORS"));
     const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_ASSEMBLY_ERRORS"));
-    this.toast.warning(message, title, TOAST.warning);
+    this.toast.warning(message, title);
   }
 
   private async toastProgramError(message: string): Promise<void> {
     const title = await firstValueFrom(this.translate.get("TOAST.TITLE_PROGRAM_ERROR"));
-    this.toast.error(message, title, TOAST.error);
+    this.toast.error(message, title);
   }
 
   private async toastSimulatorError(): Promise<void> {
     const title = await firstValueFrom(this.translate.get("TOAST.TITLE_SIMULATOR_ERROR"));
     const message = await firstValueFrom(this.translate.get("TOAST.MESSAGE_SIMULATOR_ERROR"));
-    this.toast.warning(message, title, TOAST.warning);
+    this.toast.warning(message, title);
   }
 }

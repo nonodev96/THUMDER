@@ -2,7 +2,7 @@ import { DatePipe, DecimalPipe } from "@angular/common";
 import { ChangeDetectorRef, Component, type ElementRef, inject, type OnDestroy, type OnInit, ViewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { type NavigationExtras, Router } from "@angular/router";
-import { DEFAULT_CONFIG_TOAST } from "@app/CONSTANTS";
+
 import { AuthService } from "@core/auth/auth.service";
 import { ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
@@ -142,7 +142,7 @@ export class FileManagerView implements OnInit, OnDestroy {
         : error instanceof ReadOnlyError
           ? this.message("READ_ONLY_ERROR")
           : String(error);
-    this.toast.error(text, this.message("ERROR"), DEFAULT_CONFIG_TOAST);
+    this.toast.error(text, this.message("ERROR"));
   }
 
   // ── Selection and navigation ─────────────────────────────────────────────────────────────────────────────────
@@ -280,7 +280,7 @@ export class FileManagerView implements OnInit, OnDestroy {
   public async copyToMine(item: THUMDER_FileItem): Promise<void> {
     try {
       const folder = await this.fileSystemService.copyToMine(item);
-      this.toast.success(this.message("COPIED", { path: folder }), this.message("COPY_TO_MINE"), DEFAULT_CONFIG_TOAST);
+      this.toast.success(this.message("COPIED", { path: folder }), this.message("COPY_TO_MINE"));
     } catch (error) {
       this.fail(error);
     }
@@ -302,8 +302,8 @@ export class FileManagerView implements OnInit, OnDestroy {
     if (files.length === 0) return;
     try {
       const count = await this.fileSystemService.importFiles(files, this.currentPath);
-      if (count === 0) this.toast.warning(this.message("IMPORT_NOTHING"), this.message("IMPORT"), DEFAULT_CONFIG_TOAST);
-      else this.toast.success(this.message("IMPORT_DONE", { count }), this.message("IMPORT"), DEFAULT_CONFIG_TOAST);
+      if (count === 0) this.toast.warning(this.message("IMPORT_NOTHING"), this.message("IMPORT"));
+      else this.toast.success(this.message("IMPORT_DONE", { count }), this.message("IMPORT"));
     } catch (error) {
       this.fail(error);
     }

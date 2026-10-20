@@ -34,7 +34,7 @@
 }
 
 .maximized-card .logger-viewer {
-  height: calc(100vh - 14rem);
+  height: calc(100vh - 11rem - var(--thumder-footer-height));
 }
 
 .logger-line {

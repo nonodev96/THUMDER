@@ -18,7 +18,6 @@ import type {
   TypeRegisterToEdit,
   TypeSimulationStep,
 } from "@app/Types";
-import type { ToastOptions } from "@core/services/toast/toast.service";
 import npm from "../../package.json";
 import { AppConfig } from "../environments/_environment";
 
@@ -237,20 +236,6 @@ export const DEFAULT_TABLE_CODE: TypeInstructionsData_Table = {
   row: 0,
   stage: "",
   // binary: "00000000000000000000000000000000"
-};
-
-export const DEFAULT_CONFIG_TOAST: ToastOptions = { timeOut: 5000 };
-
-/**
- * The toasts of THUMDER (UI-10, ToastService), all in one place: long enough to be read (about 20 words in 5 s), longer
- * for the warnings and the errors; they always have a button to close them and wait while the pointer is over them. The
- * state of the simulation goes in the status bar
- */
-export const TOAST: Record<"info" | "success" | "warning" | "error", ToastOptions> = {
-  info: { ...DEFAULT_CONFIG_TOAST, timeOut: 5000 },
-  success: { ...DEFAULT_CONFIG_TOAST, timeOut: 3000 },
-  warning: { ...DEFAULT_CONFIG_TOAST, timeOut: 8000 },
-  error: { ...DEFAULT_CONFIG_TOAST, timeOut: 12000 },
 };
 
 export const MAX_VALUE_TYPE_DATA: Record<TypeData, number> = {

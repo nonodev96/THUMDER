@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, type ElementRef, effect, inject, signal, untracked, ViewChild } from "@angular/core";
-import { TOAST } from "@app/CONSTANTS";
+
 import { LOG_LIMIT, type LogEntry, MachineService } from "@core/machine/machine.service";
 import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -73,9 +73,9 @@ export class LoggerView {
   public async copy(): Promise<void> {
     try {
       await navigator.clipboard.writeText(this.asText(this.matching()));
-      this.toast.success(this.translate.instant("LOGGER.COPIED", { count: this.matching().length }), "", TOAST.success);
+      this.toast.success(this.translate.instant("LOGGER.COPIED", { count: this.matching().length }), "");
     } catch {
-      this.toast.error(this.translate.instant("LOGGER.COPY_FAILED"), "", TOAST.error);
+      this.toast.error(this.translate.instant("LOGGER.COPY_FAILED"), "");
     }
   }
 

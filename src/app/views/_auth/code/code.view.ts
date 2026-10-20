@@ -32,7 +32,12 @@ export class CodeView {
       ? ["Address", "Instruction", "Stage", "Description", "Text", "Hexadecimal", "Binary"]
       : ["Address", "Text", "Binary", "Hexadecimal", "Stage", "Instruction", "Description"],
   );
-  public maxHeightCard: string = "75vh";
+  /**
+   * The height of the table in its card: what is left of the screen under what goes above it and over its footer and
+   * the footer of the page (so its last rows are not under it), at least 16rem; filling the screen, all of it
+   */
+  public readonly tableHeight = "max(16rem, calc(100vh - 21rem - var(--thumder-footer-height)))";
+  public maxHeightCard: string = this.tableHeight;
 
   /** Where each instruction is in this cycle (one Map for the whole table, instead of a search for each row) */
   public readonly stages = this.machine.state.stages;

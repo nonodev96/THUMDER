@@ -14,7 +14,8 @@
   @media (min-width: 992px) {
     position: sticky;
     top: 4.5rem;
-    max-height: calc(100vh - 6rem);
+    // The screen under the navbar, without the footer (its end would be under it)
+    max-height: calc(100vh - 6rem - var(--thumder-footer-height));
     overflow-y: auto;
   }
 }

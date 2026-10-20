@@ -338,7 +338,7 @@ $mono: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New"
     display: grid;
     grid-template-columns: minmax(15rem, 20rem) minmax(0, 1fr);
     gap: 1rem;
-    height: clamp(24rem, calc(100vh - 19rem), 52rem);
+    height: clamp(24rem, calc(100vh - 16rem - var(--thumder-footer-height)), 52rem);
   }
 
   .itable-list,

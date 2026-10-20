@@ -198,3 +198,39 @@ test("cada vista dice en su cabecera para qué sirve, y la pestaña del navegado
   await expect.poll(() => page.locator(".home-tile").count()).toBeGreaterThanOrEqual(14);
   await expect(page.locator(".home-tile", { hasText: "Ruta de datos" })).toContainText("adelantamientos");
 });
+
+test.describe("Notificaciones", () => {
+  const above = async (page: import("@playwright/test").Page) => {
+    const toast = (await page.locator(".thumder-toast").first().boundingBox()) as { y: number; height: number };
+    const bar = (await page.locator(".thumder-dock, .main-footer").first().boundingBox()) as { y: number };
+    return toast.y + toast.height <= bar.y;
+  };
+
+  test("salen sobre el pie, sin taparlo, y se cierran con su botón", async ({ page }) => {
+    await go(page, "/auth/code");
+    await page.locator("#simulationClear").click();
+    const toast = page.locator(".thumder-toast", { hasText: "Máquina reiniciada" });
+    await expect(toast).toBeVisible();
+    await expect.poll(() => above(page)).toBe(true);
+    await toast.getByRole("button", { name: "Cerrar" }).click();
+    await expect(toast).toHaveCount(0);
+  });
+
+  test("@movil salen sobre la barra de abajo y se descartan deslizándolas con el dedo", async ({ page, context }) => {
+    await go(page, "/auth/code");
+    await page.locator("#navbarMore").tap();
+    await page.locator("#moreClear").tap();
+    const toast = page.locator(".thumder-toast", { hasText: "Máquina reiniciada" });
+    await expect(toast).toBeVisible();
+    await expect.poll(() => above(page)).toBe(true);
+    const box = (await toast.boundingBox()) as { x: number; y: number; width: number; height: number };
+    const cdp = await context.newCDPSession(page);
+    const touch = (type: string, points: { x: number; y: number }[]) =>
+      cdp.send("Input.dispatchTouchEvent", { type, touchPoints: points.map((point, id) => ({ ...point, id })) });
+    const [x, y] = [box.x + 40, box.y + box.height / 2];
+    await touch("touchStart", [{ x, y }]);
+    for (let i = 1; i <= 8; i++) await touch("touchMove", [{ x: x + i * 20, y }]);
+    await touch("touchEnd", []);
+    await expect(toast).toHaveCount(0);
+  });
+});

@@ -1,8 +1,8 @@
-// Floating over the views, above the fixed footer of the layout
+// Floating over the views, above the footer (or the bar of a phone) as tall as it is (--thumder-footer-height)
 .thumder-dlx-io {
   position: fixed;
   right: 1rem;
-  bottom: 3.5rem;
+  bottom: calc(var(--thumder-footer-height, 3.6rem) + 0.75rem);
   z-index: 1040;
   width: min(32rem, calc(100vw - 2rem));
   margin: 0;

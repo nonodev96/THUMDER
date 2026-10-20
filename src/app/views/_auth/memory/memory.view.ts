@@ -130,7 +130,12 @@ export class MemoryView {
     { key: "Address-0-1-2-3", label: "MACHINE.TYPE_BYTES_BY_ADDRESS" },
     { key: "HalfWord-0-1", label: "MACHINE.TYPE_HALF_WORDS_BY_ADDRESS" },
   ];
-  public maxHeightCard: string = "75vh";
+  /**
+   * The height of the table in its card: what is left of the screen under what goes above it and over its footer and
+   * the footer of the page (so its last rows are not under it), at least 16rem; filling the screen, all of it
+   */
+  public readonly tableHeight = "max(16rem, calc(100vh - 22rem - var(--thumder-footer-height)))";
+  public maxHeightCard: string = this.tableHeight;
 
   constructor() {
     // The rows (an index per word): again when a program is loaded, since the configuration can change the size

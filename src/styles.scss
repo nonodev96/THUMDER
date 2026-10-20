@@ -47,8 +47,8 @@ body.layout-fixed .main-sidebar .sidebar {
 
 // As tall as the screen allows (minus the header of the layout), between 320 and 800 px
 .monaco-editor {
-  height: clamp(320px, calc(100vh - 220px), 800px) !important;
-  height: clamp(320px, calc(100dvh - 220px), 800px) !important;
+  height: clamp(320px, calc(100vh - 180px - var(--thumder-footer-height)), 800px) !important;
+  height: clamp(320px, calc(100dvh - 180px - var(--thumder-footer-height)), 800px) !important;
   width: 100%;
   position: relative !important;
 }
@@ -898,38 +898,37 @@ body .main-header .nav-link {
   font-size: 0.72rem;
 }
 
-// ─── The bar at the bottom of a phone (FooterComponent) ──────────────────────────────────────────────────────────────
-// The content, the console of the program and the notifications leave it room
+// ─── What the footer takes (FooterComponent) ─────────────────────────────────────────────────────────────────────────
+// The footer (or the bar of a phone) measures itself in --thumder-footer-height: the content, the panels that stay on the
+// screen, the cards that fill it, the console of the program and the notices leave it room. The navbar is
+// --thumder-navbar-height
 
 :root {
-  --thumder-dock-height: 4.9rem;
+  --thumder-navbar-height: calc(3.5rem + 1px);
+  // Until the footer measures itself: its height in one line
+  --thumder-footer-height: calc(3.5rem + 1px);
 }
 
+// With body, over the padding of AdminLTE for its footer of one line
+body.layout-footer-fixed .wrapper .content-wrapper {
+  padding-bottom: calc(var(--thumder-footer-height) + 0.75rem);
+}
+
+// A phone: the bar of the simulation stays under a card that fills the screen, so it can run while it is looked at
 body.thumder-has-dock {
   .wrapper .content-wrapper {
-    min-height: calc(100vh - (3.5rem + 1px));
-    padding-bottom: calc(var(--thumder-dock-height) + env(safe-area-inset-bottom) + 0.5rem);
+    min-height: calc(100vh - var(--thumder-navbar-height));
   }
 
-  .thumder-dlx-io {
-    bottom: calc(var(--thumder-dock-height) + env(safe-area-inset-bottom) + 0.5rem);
+  .card.maximized-card {
+    height: calc(100% - var(--thumder-footer-height)) !important;
   }
-
-}
-
-// With :root, over the place of the notifications in theme.scss
-:root body.thumder-has-dock .thumder-toasts {
-  bottom: calc(var(--thumder-dock-height) + env(safe-area-inset-bottom) + 0.5rem);
 }
 
 // Phones sideways (little height): the footer scrolls with the page instead of taking a line of the screen all the time
 @media (max-height: 500px) {
   body.layout-footer-fixed .wrapper .main-footer {
     position: static;
-  }
-
-  body.layout-footer-fixed .wrapper .content-wrapper {
-    padding-bottom: 0;
   }
 }
 

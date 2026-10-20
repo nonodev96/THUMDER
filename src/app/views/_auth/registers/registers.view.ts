@@ -95,7 +95,12 @@ export class RegistersView {
   public readonly tabs = TABS;
   public tab: RegisterTab = RegistersView.savedTab();
 
-  public maxHeightCard: string = "60vh";
+  /**
+   * The height of the table in its card: what is left of the screen under what goes above it and over its footer and
+   * the footer of the page (so its last rows are not under it), at least 16rem; filling the screen, all of it
+   */
+  public readonly tableHeight = "max(16rem, calc(100vh - 24rem - var(--thumder-footer-height)))";
+  public maxHeightCard: string = this.tableHeight;
   public typeDataSelected: TypeData = "Byte";
   public typeDataSelectedFloat: TypeDataRepresentation = "Binary";
   public typeDataSelectedDouble: TypeDataRepresentation = "Binary";
