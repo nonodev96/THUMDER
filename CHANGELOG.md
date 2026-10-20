@@ -1,3 +1,11 @@
+## 1.11.2 (2026-10-20)
+
+### Nuevas funciones
+
+* notifications of our own design, and a footer that never covers the content ([942df46](https://github.com/nonodev96/THUMDER/commit/942df46))
+
+
+
 ## 1.11.1 (2026-10-19)
 
 ### Nuevas funciones
