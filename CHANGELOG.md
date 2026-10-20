@@ -1,3 +1,11 @@
+## 1.11.4 (2026-10-20)
+
+### Nuevas funciones
+
+* the console of the program as the character device of the processor, resizable console and debug windows, and footers that hide ([5a0b635](https://github.com/nonodev96/THUMDER/commit/5a0b635))
+
+
+
 ## 1.11.3 (2026-10-20)
 
 ### Nuevas funciones
