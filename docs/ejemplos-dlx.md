@@ -27,7 +27,7 @@ En THUMDER están siempre en la carpeta `ejemplos` del gestor de ficheros, de so
 | 19 | `19-riesgos.s` | Un catálogo de riesgos: RAW con y sin adelantamiento, carga, salto, control, MEM, estructural, WAW y trap | nada: se mira el diagrama de ciclos |
 | 20 | `20-media-entrada.s` | Dos módulos (`.global`), leer de la consola (trap 3), pasar de entero a doble, `divd` | la media de los números que se escriben |
 
-Los ejemplos 17 y 18 se miran juntos: hacen lo mismo y la diferencia está en las estadísticas. El 19 se ejecuta paso a paso (F10), buscando en el diagrama de ciclos las etiquetas de cada bloque.
+Los ejemplos 17 y 18 se miran juntos: hacen lo mismo y la diferencia está en las estadísticas. El 19 se ejecuta paso a paso (F8), buscando en el diagrama de ciclos las etiquetas de cada bloque.
 
 ## Cómo se comprueban
 

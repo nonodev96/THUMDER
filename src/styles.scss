@@ -537,23 +537,15 @@ span.underline-text:after {
   }
 }
 
+// The debug window (DebugComponent): over everything, where it can be dragged; on a phone, the width of the screen
 #card-debug {
   position: fixed;
-  width: 50%;
-  top: 4em;
-  left: 4em;
+  top: calc(var(--thumder-navbar-height) + 0.75rem);
+  left: max(1rem, calc(50vw - 24rem));
   z-index: 2000;
-
-  .card-body {
-    overflow-y: scroll;
-    height: 20em;
-  }
-
-  .card-font-console {
-    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    white-space: pre;
-    font-size: 0.75em;
-  }
+  width: min(48rem, calc(100vw - 2rem));
+  margin: 0;
+  box-shadow: var(--thumder-shadow-lg);
 }
 
 markdown img {

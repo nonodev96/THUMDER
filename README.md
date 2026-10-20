@@ -46,7 +46,7 @@ pantalla de inicio.
 **Simular**
 
 - Ensamblado a código máquina DLX real y simulación del pipeline de WinDLX: IF, ID, EX, MEM y WB, adelantamiento, detenciones y unidades de coma flotante configurables.
-- Ejecución continua, ciclo a ciclo, hasta el final sin dibujar y **paso atrás**. Los atajos son los de un depurador: <kbd>Mayús</kbd>+<kbd>F5</kbd> carga, <kbd>F5</kbd> ejecuta o pausa, <kbd>F10</kbd> avanza un ciclo, <kbd>Mayús</kbd>+<kbd>F10</kbd> retrocede y <kbd>F8</kbd> va al final.
+- Ejecución continua, ciclo a ciclo, hasta el final sin dibujar y **paso atrás**. Los atajos son los de un depurador y no chocan con los del navegador: <kbd>Ctrl</kbd>+<kbd>F9</kbd> carga, <kbd>F9</kbd> ejecuta o pausa, <kbd>F8</kbd> avanza un ciclo, <kbd>Mayús</kbd>+<kbd>F8</kbd> retrocede y <kbd>Mayús</kbd>+<kbd>F9</kbd> va al final.
 - Consola de entrada y salida para los traps del programa, y sonido opcional: cada ciclo es un arpegio sobre una progresión de acordes, las instrucciones que terminan llevan la melodía y las detenciones y los saltos tomados se oyen.
 
 **Entender lo que pasa**
@@ -83,7 +83,7 @@ pantalla de inicio.
 
 1. Abre <https://thumder.netlify.app>. En el móvil, el menú del navegador ofrece «Añadir a la pantalla de inicio».
 2. En **Gestor de ficheros → ejemplos**, abre por ejemplo `19-riesgos.s`.
-3. Pulsa **Cargar** (<kbd>Mayús</kbd>+<kbd>F5</kbd>) y avanza con **Paso** (<kbd>F10</kbd>), mirando el **Pipeline** y el **Diagrama de ciclos**.
+3. Pulsa **Cargar** (<kbd>Ctrl</kbd>+<kbd>F9</kbd>) y avanza con **Paso** (<kbd>F8</kbd>), mirando el **Pipeline** y el **Diagrama de ciclos**.
 
 La aplicación de escritorio está en las [versiones](https://github.com/nonodev96/THUMDER/releases): AppImage para Linux,
 instalador y portable para Windows, y `.dmg` y `.zip` para macOS. No está firmada.

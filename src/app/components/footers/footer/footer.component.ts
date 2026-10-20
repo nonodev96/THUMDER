@@ -4,6 +4,7 @@ import { RouterLink } from "@angular/router";
 import { NPM_VERSION } from "@app/CONSTANTS";
 import { SimulationControlsComponent } from "@components/simulation-controls/simulation-controls.component";
 import { MachineService } from "@core/machine/machine.service";
+import { STATUS_BADGES, simulationStatus } from "@core/machine/simulation-status";
 import { ElectronService } from "@core/services";
 import { ConsentService } from "@core/services/consent/consent.service";
 import { Globals } from "@core/services/globals/globals.service";
@@ -92,35 +93,11 @@ export class FooterComponent {
   }
 
   /** What the simulator is doing */
-  public readonly status = computed(() => {
-    const state = this.machine.state;
-    // Nothing loaded: before the first load, or after the button of the navbar that resets the machine
-    if (state.loads() === 0 || (state.code().length === 0 && state.errors().length === 0 && !state.canSimulate())) return "IDLE";
-    if (state.quiet()) return "QUIET";
-    if (state.running()) return "RUNNING";
-    if (state.complete()) return "COMPLETE";
-    if (state.waitingForInput()) return "INPUT";
-    if (state.breakpoint()) return "BREAKPOINT";
-    if (!state.canSimulate()) return "ERRORS";
-    return state.cycles() === 0 ? "LOADED" : "PAUSED";
-  });
+  public readonly status = computed(() => simulationStatus(this.machine.state));
 
   public readonly statusText = computed(() => `STATUS.${this.status()}`);
 
-  public readonly statusClass = computed(
-    () =>
-      ({
-        IDLE: "badge-secondary",
-        QUIET: "badge-info",
-        RUNNING: "badge-success",
-        COMPLETE: "badge-primary",
-        INPUT: "badge-warning",
-        BREAKPOINT: "badge-warning",
-        ERRORS: "badge-danger",
-        LOADED: "badge-secondary",
-        PAUSED: "badge-secondary",
-      })[this.status()],
-  );
+  public readonly statusClass = computed(() => STATUS_BADGES[this.status()]);
 
   /** The instruction fetched in the last cycle (the operands separated by one space) */
   public readonly fetched = computed(() => (this.machine.state.pipeline()?.IF.text ?? "").replace(/\s+/g, " ").trim());

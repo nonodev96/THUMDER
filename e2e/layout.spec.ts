@@ -159,7 +159,7 @@ test.describe("Móvil como una app", () => {
     // The controls are only at the bottom (where the thumb reaches), with their names
     const dock = page.locator(".thumder-dock");
     await expect(dock).toBeVisible();
-    await expect(page.locator(".main-header button[title$='(F10)']")).toHaveCount(0);
+    await expect(page.locator(".main-header #simulationStep")).toHaveCount(0);
     await expect(dock.locator("#simulationStatus")).toContainText("Sin cargar");
     await loadAndStep(page, 3);
     await expect(dock.locator("#simulationStatus")).toContainText("Ciclo");

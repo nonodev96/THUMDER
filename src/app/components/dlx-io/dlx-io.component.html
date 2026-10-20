@@ -1,26 +1,44 @@
 @if (open()) {
-  <section class="card card-outline card-primary thumder-dlx-io" [attr.aria-label]="'IO.TITLE' | translate">
-    <div class="card-header d-flex align-items-center">
-      <h2 class="card-title h6 mb-0 mr-auto">{{ 'IO.TITLE' | translate }}</h2>
-      <button type="button" class="btn btn-tool" (click)="clear()" [title]="'IO.CLEAR' | translate"
-        [attr.aria-label]="'IO.CLEAR' | translate">
-        <i class="fas fa-eraser" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn btn-tool" (click)="open.set(false)" [title]="'IO.CLOSE' | translate"
-        [attr.aria-label]="'IO.CLOSE' | translate">
-        <i class="fas fa-times" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="card-body p-0">
-      <pre #output class="thumder-dlx-io-output mb-0" role="log" aria-live="polite">{{ machine.state.output() }}</pre>
-    </div>
-    @if (machine.state.waitingForInput()) {
-      <form class="card-footer d-flex" (ngSubmit)="send()">
-        <label class="sr-only" for="thumderDlxIoLine">{{ 'IO.INPUT' | translate }}</label>
-        <input #lineInput id="thumderDlxIoLine" name="line" class="form-control form-control-sm mr-2 text-monospace" autocomplete="off"
-          [(ngModel)]="line" [placeholder]="'IO.WAITING' | translate">
-        <button type="submit" class="btn btn-sm btn-primary">{{ 'IO.SEND' | translate }}</button>
-      </form>
+  <section class="thumder-dlx-io terminal" [class.terminal--folded]="folded()" [attr.aria-label]="'IO.TITLE' | translate">
+    <!-- The title bar: what the program is doing, and the buttons of the window -->
+    <header class="terminal-bar">
+      <span class="terminal-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      <h2 class="terminal-title">
+        <i class="fas fa-terminal" aria-hidden="true"></i> {{ 'IO.TITLE' | translate }}
+        <span class="terminal-program">— {{ program() }}</span>
+      </h2>
+      <span [class]="'terminal-state terminal-state--' + state()">{{ ('IO.STATE_' + state().toUpperCase()) | translate }}</span>
+      <div class="terminal-tools">
+        <button type="button" class="terminal-tool" (click)="copy()" [title]="'IO.COPY' | translate" [attr.aria-label]="'IO.COPY' | translate">
+          <i class="far fa-copy" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="terminal-tool" (click)="clear()" [title]="'IO.CLEAR' | translate" [attr.aria-label]="'IO.CLEAR' | translate">
+          <i class="fas fa-eraser" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="terminal-tool" (click)="folded.set(!folded())" [attr.aria-expanded]="!folded()"
+          [title]="(folded() ? 'IO.UNFOLD' : 'IO.FOLD') | translate" [attr.aria-label]="(folded() ? 'IO.UNFOLD' : 'IO.FOLD') | translate">
+          <i class="fas" [class.fa-window-minimize]="!folded()" [class.fa-window-maximize]="folded()" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="terminal-tool" (click)="open.set(false)" [title]="'IO.CLOSE' | translate" [attr.aria-label]="'IO.CLOSE' | translate">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    @if (!folded()) {
+      <!-- The screen: the command, what the program wrote, the lines typed for it and, when it waits, the cursor -->
+      <div class="terminal-screen" #screenBox (click)="focusLine()">
+        <p class="terminal-command" aria-hidden="true"><span class="terminal-user">thumder@dlx</span>:<span class="terminal-path">~</span>$ ./{{ program() }}</p>
+        <div class="thumder-dlx-io-output terminal-text" role="log" aria-live="polite">@for (piece of screen(); track $index) {@if (piece.kind === 'in') {<span class="terminal-in">@if (piece.prompt) {<span class="terminal-prompt" aria-hidden="true">&gt; </span>}{{ piece.text }}
+</span>} @else {<span class="terminal-out">{{ piece.text }}</span>}}@if (machine.state.waitingForInput()) {@if (inputAtLineStart()) {<span class="terminal-prompt" aria-hidden="true">&gt; </span>}<form class="terminal-line" (ngSubmit)="send()"><label class="sr-only" for="thumderDlxIoLine">{{ 'IO.INPUT' | translate }}</label><input #lineInput id="thumderDlxIoLine" name="line" class="terminal-input" autocomplete="off" spellcheck="false"
+            [(ngModel)]="line" [style.width.ch]="line.length + 1" (keydown)="onKeydown($event)"></form>}</div>
+        @if (machine.state.waitingForInput()) {
+          <p class="terminal-hint"><i class="fas fa-keyboard" aria-hidden="true"></i> {{ 'IO.WAITING' | translate }}</p>
+        } @else if (state() === 'done') {
+          <p class="terminal-end">[{{ 'IO.ENDED' | translate: { cycle: machine.state.step(), cycles: machine.state.step() + 1 } }}]</p>
+        }
+      </div>
+      <footer class="terminal-footer">{{ 'IO.TRAPS' | translate }}</footer>
     }
   </section>
 }

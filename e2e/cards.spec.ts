@@ -1,4 +1,4 @@
-import { expect, go, test } from "./fixtures";
+import { controls, expect, go, loadAndStep, test } from "./fixtures";
 
 // The cards: fold, unfold and fill the screen (thumderCard), and the tables that measure themselves again
 
@@ -91,11 +91,29 @@ test("la vista múltiple empieza con todas las ventanas plegadas, también la ru
   await expect(cards.first().locator(".card-body")).toBeVisible();
 });
 
-test("la ventana de depuración se abre desde el pie, se pliega y se cierra", async ({ page }) => {
+test("la ventana de depuración se abre desde el pie, explica el estado y los mensajes, se pliega y se cierra", async ({ page }) => {
   await go(page, "/auth/code");
+  await loadAndStep(page, 3);
   await page.locator(".main-footer button", { hasText: "Depuración" }).click();
   const debug = page.locator("#card-debug");
   await expect(debug).toBeVisible();
+  // The state: each value with its name and what it means
+  await expect(debug.locator(".debug-section-title", { hasText: "Simulación" })).toBeVisible();
+  const fact = (name: string) => debug.locator(".debug-fact", { has: page.locator("dt", { hasText: new RegExp(`^${name}$`) }) });
+  await expect(fact("PC").locator(".debug-value")).toHaveText(/^0x[0-9A-F]{8}$/);
+  await expect(fact("IF").locator(".debug-help")).not.toBeEmpty();
+  // The messages: each with its cycle, its event and what it means in words
+  await debug.locator("#debugTab-messages").click();
+  await expect(debug.locator("#debugTab-messages")).toHaveAttribute("aria-selected", "true");
+  const steps = debug.locator(".debug-message", { has: page.locator(".debug-event", { hasText: "SimulationNextStep" }) });
+  await expect(steps).toHaveCount(3);
+  await expect(steps.first().locator(".debug-cycle")).toHaveText("ciclo 0");
+  await expect(steps.first().locator(".debug-meaning")).toContainText("Ciclo 0 simulado");
+  // Following the new ones: the last message is in sight
+  await expect(debug.locator(".debug-message").last()).toBeInViewport();
+  await debug.locator("#debugFilter").fill("SimulationInit");
+  await expect(debug.locator(".debug-message")).toHaveCount(1);
+  await expect(debug.locator(".debug-meaning")).toContainText("ensambla el programa");
   await debug.locator(".card-tools button:has(.fa-minus)").click();
   await expect(debug).toHaveClass(/collapsed-card/);
   await debug.locator(".card-tools button:has(.fa-times)").click();

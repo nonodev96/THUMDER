@@ -98,7 +98,7 @@ test("el diagrama de ciclos se mueve con el teclado solo cuando tiene el foco, y
   expect(await cycleScroll(page)).toMatchObject({ x: 0, y: 0 });
   // Back at the start, a new cycle does not move it
   await canvas.blur();
-  await page.locator("button[title$='(F10)']").click();
+  await page.locator("#simulationStep").click();
   expect((await cycleScroll(page)).x).toBe(0);
   await canvas.focus();
   await page.keyboard.press("End");
@@ -106,7 +106,7 @@ test("el diagrama de ciclos se mueve con el teclado solo cuando tiene el foco, y
   expect(last.x).toBe(last.maxX);
   // At the end again, it follows the new cycles
   await canvas.blur();
-  await page.locator("button[title$='(F10)']").click();
+  await page.locator("#simulationStep").click();
   await expect.poll(async () => (await cycleScroll(page)).x).toBeGreaterThan(last.x);
 });
 

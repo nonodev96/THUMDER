@@ -105,9 +105,9 @@ export const sidebarToggle = (page: Page) => page.locator("nav.main-header butto
 
 /** The simulation controls of the navbar */
 export const controls = (page: Page) => ({
-  load: page.locator("button[title*='Shift+F5']"),
-  run: page.locator("button[title*='(F5)']"),
-  step: page.locator("button[title$='(F10)']"),
+  load: page.locator("#simulationLoad"),
+  run: page.locator("#simulationRun"),
+  step: page.locator("#simulationStep"),
 });
 
 /** How many cycles the diagram has: one more with each cycle (the first one is the cycle 0) */

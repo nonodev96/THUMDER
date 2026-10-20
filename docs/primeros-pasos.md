@@ -13,7 +13,7 @@ Haz doble clic en uno (por ejemplo `ejemplos/02-suma-vector.s`) y se abre en el 
 
 ## 2. Carga el código
 
-Pulsa el botón de cargar de la barra superior (las dos flechas) o **Mayúsculas+F5**. THUMDER ensambla el programa, pone el código y los datos en la memoria y deja la máquina en el ciclo 0. Si hay errores, se marcan en su línea del editor y en el panel de **Problemas**.
+Pulsa el botón de cargar de la barra superior (las dos flechas) o **Ctrl+F9**. THUMDER ensambla el programa, pone el código y los datos en la memoria y deja la máquina en el ciclo 0. Si hay errores, se marcan en su línea del editor y en el panel de **Problemas**.
 
 > La simulación usa la versión **guardada** del fichero. Si el editor avisa de que hay cambios sin guardar, guarda (**Ctrl+S**) antes de cargar.
 
@@ -21,10 +21,10 @@ Pulsa el botón de cargar de la barra superior (las dos flechas) o **Mayúsculas
 
 | Acción | Botón | Teclado |
 | :-- | :-- | :-- |
-| Un ciclo | Flecha a la derecha | F10 |
-| Un ciclo atrás | Flecha a la izquierda | Mayúsculas+F10 |
-| Ejecutar o pausar | Triángulo | F5 |
-| Hasta el final, sin dibujar cada ciclo | Doble flecha | F8 |
+| Un ciclo | Flecha a la derecha | F8 |
+| Un ciclo atrás | Flecha a la izquierda | Mayúsculas+F8 |
+| Ejecutar o pausar | Triángulo | F9 |
+| Hasta el final, sin dibujar cada ciclo | Doble flecha | Mayúsculas+F9 |
 | Velocidad | Indicador de velocidad | |
 | Reiniciar la máquina (memoria, código y registros) | Papelera de la barra | |
 

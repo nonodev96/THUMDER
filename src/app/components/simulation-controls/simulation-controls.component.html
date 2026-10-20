@@ -1,8 +1,8 @@
 @let running = machine.state.running();
 @let canSimulate = machine.state.canSimulate();
 <div class="sim-controls" role="group" [attr.aria-label]="'SIMULATION.CONTROLS' | translate" [title]="variant === 'bar' ? ('SIMULATION.SHORTCUTS' | translate) : ''">
-  <button type="button" class="btn btn-sim sim-control" (click)="controls.load()" [attr.aria-label]="label('SIMULATION.SHORT_LOAD', 'SIMULATION.LOAD')"
-    [title]="('SIMULATION.LOAD' | translate) + ' (Shift+F5)'">
+  <button type="button" class="btn btn-sim sim-control" id="simulationLoad" (click)="controls.load()" [attr.aria-label]="label('SIMULATION.SHORT_LOAD', 'SIMULATION.LOAD')"
+    [title]="('SIMULATION.LOAD' | translate) + ' (' + ('SIMULATION.KEY_LOAD' | translate) + ')'">
     <i class="fas fa-exchange-alt" aria-hidden="true"></i>
     @if (variant === 'dock') { <span class="sim-label" aria-hidden="true">{{ 'SIMULATION.SHORT_LOAD' | translate }}</span> }
   </button>
@@ -14,24 +14,24 @@
     <span class="sim-separator" aria-hidden="true"></span>
   }
   <button type="button" class="btn btn-sim sim-control" (click)="controls.stepBack()" id="simulationStepBack"
-    [attr.aria-label]="label('SIMULATION.SHORT_BACK', 'SIMULATION.STEP_BACK')" [title]="('SIMULATION.STEP_BACK' | translate) + ' (Shift+F10)'"
+    [attr.aria-label]="label('SIMULATION.SHORT_BACK', 'SIMULATION.STEP_BACK')" [title]="('SIMULATION.STEP_BACK' | translate) + ' (' + ('SIMULATION.KEY_STEP_BACK' | translate) + ')'"
     [disabled]="machine.state.cycles() === 0 || running">
     <i class="fas fa-step-backward" aria-hidden="true"></i>
     @if (variant === 'dock') { <span class="sim-label" aria-hidden="true">{{ 'SIMULATION.SHORT_BACK' | translate }}</span> }
   </button>
-  <button type="button" class="btn btn-sim sim-control sim-play" [class.sim-play--running]="running" (click)="controls.togglePlayPause()"
+  <button type="button" class="btn btn-sim sim-control sim-play" id="simulationRun" [class.sim-play--running]="running" (click)="controls.togglePlayPause()"
     [attr.aria-label]="running ? label('SIMULATION.SHORT_PAUSE', 'SIMULATION.PAUSE') : label('SIMULATION.SHORT_RUN', 'SIMULATION.RUN')"
-    [title]="((running ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate) + ' (F5)'" [disabled]="!canSimulate">
+    [title]="((running ? 'SIMULATION.PAUSE' : 'SIMULATION.RUN') | translate) + ' (' + ('SIMULATION.KEY_RUN' | translate) + ')'" [disabled]="!canSimulate">
     <i class="fas" [class.fa-pause]="running" [class.fa-play]="!running" aria-hidden="true"></i>
     @if (variant === 'dock') { <span class="sim-label" aria-hidden="true">{{ (running ? 'SIMULATION.SHORT_PAUSE' : 'SIMULATION.SHORT_RUN') | translate }}</span> }
   </button>
-  <button type="button" class="btn btn-sim sim-control" (click)="controls.step()" [attr.aria-label]="label('SIMULATION.SHORT_STEP', 'SIMULATION.STEP')"
-    [title]="('SIMULATION.STEP' | translate) + ' (F10)'" [disabled]="!canSimulate || running">
+  <button type="button" class="btn btn-sim sim-control" id="simulationStep" (click)="controls.step()" [attr.aria-label]="label('SIMULATION.SHORT_STEP', 'SIMULATION.STEP')"
+    [title]="('SIMULATION.STEP' | translate) + ' (' + ('SIMULATION.KEY_STEP' | translate) + ')'" [disabled]="!canSimulate || running">
     <i class="fas fa-step-forward" aria-hidden="true"></i>
     @if (variant === 'dock') { <span class="sim-label" aria-hidden="true">{{ 'SIMULATION.SHORT_STEP' | translate }}</span> }
   </button>
   <button type="button" class="btn btn-sim sim-control" (click)="controls.runToEnd()" id="simulationRunToEnd"
-    [attr.aria-label]="label('SIMULATION.SHORT_END', 'SIMULATION.RUN_TO_END')" [title]="('SIMULATION.RUN_TO_END' | translate) + ' (F8)'"
+    [attr.aria-label]="label('SIMULATION.SHORT_END', 'SIMULATION.RUN_TO_END')" [title]="('SIMULATION.RUN_TO_END' | translate) + ' (' + ('SIMULATION.KEY_RUN_TO_END' | translate) + ')'"
     [disabled]="!canSimulate || running">
     <i class="fas fa-fast-forward" aria-hidden="true"></i>
     @if (variant === 'dock') { <span class="sim-label" aria-hidden="true">{{ 'SIMULATION.SHORT_END' | translate }}</span> }

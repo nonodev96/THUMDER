@@ -39,8 +39,8 @@ test.describe("simulación", () => {
     await page.locator("#simulationStepBack").click();
     await expect.poll(async () => (await machineState(page)).step).toBe(before.step);
     expect(await machineState(page)).toEqual(before);
-    // Mayúsculas+F10 también
-    await page.keyboard.press("Shift+F10");
+    // Mayúsculas+F8 también
+    await page.keyboard.press("Shift+F8");
     await expect.poll(async () => (await machineState(page)).step).toBe(before.step - 1);
   });
 });
@@ -188,7 +188,7 @@ test.describe("ejercicios", () => {
     await expect(page).toHaveURL(/\/auth\/editor$/);
     await expect(page.locator("#editorExercise")).toContainText("sin adelantamiento");
     await expect(controls(page).step).toBeEnabled();
-    await page.keyboard.press("F8");
+    await page.keyboard.press("Shift+F9");
     await expect.poll(async () => (await machineState(page)).complete, { timeout: 20_000 }).toBe(true);
     const cycles = (await machineState(page)).step + 1;
 

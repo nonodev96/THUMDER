@@ -52,6 +52,57 @@ test.describe("con entrada por la consola", () => {
     await line.press("Enter");
     await expect(output).toContainText("gcM=12");
   });
+
+  test("la consola es un terminal: lo que escribe el programa, las líneas tecleadas y el final; todo con el teclado", async ({ page }) => {
+    await go(page, "/auth/editor");
+    // With the editor focused: the keys of the simulation are THUMDER's, not the editor's nor the browser's
+    await page.locator(".monaco-editor .view-lines").first().click();
+    await page.keyboard.press("Control+F9");
+    await expect(controls(page).run).toBeEnabled();
+    await page.keyboard.press("F9");
+    const terminal = page.locator(".thumder-dlx-io");
+    await expect(terminal.locator(".terminal-command")).toContainText("$ ./gcm.s");
+    await expect(terminal.locator(".terminal-state")).toHaveText("esperando entrada");
+    await expect(terminal.locator(".terminal-out").first()).toContainText("First Number:");
+    const line = page.getByLabel("Línea para el programa");
+    await expect(line).toBeFocused();
+    await page.keyboard.type("84");
+    await page.keyboard.press("Enter");
+    await expect(terminal.locator(".terminal-in").first()).toHaveText("84");
+    await expect(terminal.locator(".terminal-out", { hasText: "Second Number:" })).toBeVisible();
+    // The arrows bring back the lines typed before, as in a shell
+    await line.press("ArrowUp");
+    await expect(line).toHaveValue("84");
+    await line.fill("36");
+    await line.press("Enter");
+    await expect(terminal.locator(".terminal-in")).toHaveText(["84", "36"]);
+    await expect(terminal.locator(".terminal-state")).toHaveText("terminado");
+    await expect(terminal.locator(".terminal-end")).toContainText("El programa ha terminado en el ciclo");
+    await expect(page.locator(".thumder-dlx-io-output")).toContainText("gcM=12");
+  });
+});
+
+test("F5 sigue recargando la página: las teclas de la simulación son F9, F8 y sus variantes", async ({ page }) => {
+  await go(page, "/auth/code");
+  const prevented = (key: string, shiftKey = false, ctrlKey = false) =>
+    page.evaluate(
+      ({ key, shiftKey, ctrlKey }) => {
+        const event = new KeyboardEvent("keydown", { key, shiftKey, ctrlKey, bubbles: true, cancelable: true });
+        document.body.dispatchEvent(event);
+        return event.defaultPrevented;
+      },
+      { key, shiftKey, ctrlKey },
+    );
+  expect(await prevented("F5")).toBe(false);
+  expect(await prevented("F5", true)).toBe(false);
+  expect(await prevented("F10")).toBe(false);
+  // Nothing loaded yet: they do nothing, but they are still THUMDER's
+  for (const [key, shift] of [["F9", false], ["F8", false], ["F8", true], ["F9", true]] as const) expect(await prevented(key, shift)).toBe(true);
+  expect(await prevented("F9", false, true)).toBe(true);
+  await expect(controls(page).run).toBeEnabled();
+  // Each button says its key
+  await expect(controls(page).load).toHaveAttribute("title", /\(Ctrl\+F9\)/);
+  await expect(controls(page).step).toHaveAttribute("title", /\(F8\)/);
 });
 
 test.describe("ejemplos", () => {

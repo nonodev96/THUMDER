@@ -309,6 +309,35 @@ describe("MachineService, stepping back and running without drawing", () => {
     expect(machine.state.waitingForInput()).toBe(false);
   });
 
+  it("goes back without showing the replay: the views keep the state until the cycle before is ready (no flicker)", async () => {
+    const machine = await start("gcm.s", ["input.s"]);
+    await machine.resume();
+    await machine.provideInput("84");
+    for (let i = 0; i < 5; i++) await machine.nextStep();
+    const state = machine.state;
+    const visible = () => ({
+      cycles: state.cycles(),
+      canSimulate: state.canSimulate(),
+      quiet: state.quiet(),
+      loads: state.loads(),
+      output: state.output(),
+      code: state.code().length,
+    });
+    const before = visible();
+    // What the views see each time the replay asks the simulator for something
+    const simulator = (machine as unknown as { simulator: { request: (...args: unknown[]) => Promise<unknown> } }).simulator;
+    const request = simulator.request.bind(simulator);
+    const seen: ReturnType<typeof visible>[] = [];
+    vi.spyOn(simulator, "request").mockImplementation(async (...args: unknown[]) => {
+      seen.push(visible());
+      return request(...args);
+    });
+    await machine.stepBack();
+    expect(seen.length).toBeGreaterThan(1);
+    for (const moment of seen) expect(moment).toEqual(before);
+    expect(visible()).toEqual({ ...before, cycles: before.cycles - 1 });
+  });
+
   it("runs to the end without drawing each cycle, and draws where it stopped (UI-04)", async () => {
     const machine = await start("prim.s");
     const versions: number[] = [];

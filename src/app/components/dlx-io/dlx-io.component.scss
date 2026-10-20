@@ -1,21 +1,259 @@
-// Floating over the views, above the footer (or the bar of a phone) as tall as it is (--thumder-footer-height)
-.thumder-dlx-io {
+// The console of the program as the terminal of an operating system: a dark window over the views, above the footer (or
+// the bar of a phone) as tall as it is (--thumder-footer-height), in the same colours in both themes
+
+$mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace;
+
+.terminal {
+  --terminal-bg: var(--thumder-console-bg);
+  --terminal-bar: #1e293b;
+  --terminal-text: #e2e8f0;
+  --terminal-muted: #94a3b8;
+  --terminal-prompt: #4ade80;
+  --terminal-in: #7dd3fc;
+  --terminal-path: #93c5fd;
+
   position: fixed;
   right: 1rem;
   bottom: calc(var(--thumder-footer-height, 3.6rem) + 0.75rem);
   z-index: 1040;
-  width: min(32rem, calc(100vw - 2rem));
-  margin: 0;
-  box-shadow: var(--thumder-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  width: min(36rem, calc(100vw - 2rem));
+  overflow: hidden;
+  border: 1px solid #334155;
+  border-radius: 0.65rem;
+  color: var(--terminal-text);
+  background-color: var(--terminal-bg);
+  box-shadow: 0 18px 40px -10px rgba(2, 6, 23, 0.55), 0 0 0 1px rgba(15, 23, 42, 0.2);
+  animation: terminal-in 0.18s ease-out;
 }
 
-.thumder-dlx-io-output {
-  max-height: 40vh;
-  min-height: 4rem;
+// ─── The title bar ───────────────────────────────────────────────────────────────────────────────────────────────────
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.4rem 0.35rem 0.75rem;
+  background-color: var(--terminal-bar);
+  border-bottom: 1px solid #334155;
+}
+
+.terminal-lights {
+  display: inline-flex;
+  gap: 0.35rem;
+
+  i {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background-color: #f87171;
+
+    &:nth-child(2) {
+      background-color: #fbbf24;
+    }
+
+    &:nth-child(3) {
+      background-color: #4ade80;
+    }
+  }
+}
+
+.terminal-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--terminal-text);
+}
+
+.terminal-program {
+  font-family: $mono;
+  font-weight: 400;
+  color: var(--terminal-muted);
+}
+
+// What the program is doing
+.terminal-state {
+  flex: 0 0 auto;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0f172a;
+  background-color: #cbd5e1;
+
+  &::before {
+    content: "● ";
+  }
+
+  &--input {
+    background-color: #fbbf24;
+    animation: terminal-blink 1.2s ease-in-out infinite;
+  }
+
+  &--running {
+    background-color: #4ade80;
+  }
+}
+
+.terminal-tools {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.terminal-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.4rem;
+  color: var(--terminal-muted);
+  background: none;
+
+  &:hover {
+    color: var(--terminal-text);
+    background-color: rgba(148, 163, 184, 0.18);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--terminal-in);
+    outline-offset: -2px;
+  }
+}
+
+// ─── The screen ──────────────────────────────────────────────────────────────────────────────────────────────────────
+
+.terminal-screen {
+  max-height: 42vh;
+  min-height: 7rem;
   overflow: auto;
-  padding: 0.5rem 0.75rem;
+  padding: 0.65rem 0.85rem 0.75rem;
+  font-family: $mono;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  cursor: text;
+  scrollbar-width: thin;
+  scrollbar-color: #475569 transparent;
+
+  p {
+    margin: 0;
+  }
+}
+
+// The command that started the program
+.terminal-command {
+  color: var(--terminal-muted);
+}
+
+.terminal-user {
+  font-weight: 700;
+  color: var(--terminal-prompt);
+}
+
+.terminal-path {
+  font-weight: 700;
+  color: var(--terminal-path);
+}
+
+.terminal-text {
   white-space: pre-wrap;
   word-break: break-word;
-  color: var(--thumder-console-text);
-  background-color: var(--thumder-console-bg);
+}
+
+.terminal-out {
+  color: var(--terminal-text);
+}
+
+// What was typed for the program
+.terminal-in {
+  font-weight: 700;
+  color: var(--terminal-in);
+}
+
+.terminal-prompt {
+  font-weight: 700;
+  color: var(--terminal-prompt);
+}
+
+// The line being typed: where the cursor is, as wide as what is written
+.terminal-line {
+  display: inline;
+}
+
+.terminal-input {
+  min-width: 1ch;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--terminal-in);
+  background: transparent;
+  caret-color: var(--terminal-prompt);
+}
+
+.terminal-hint {
+  margin-top: 0.5rem !important;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.78rem;
+  color: #fbbf24;
+}
+
+.terminal-end {
+  margin-top: 0.35rem !important;
+  color: var(--terminal-prompt);
+}
+
+.terminal-footer {
+  padding: 0.3rem 0.85rem;
+  border-top: 1px solid #1e293b;
+  font-size: 0.72rem;
+  color: var(--terminal-muted);
+  background-color: rgba(30, 41, 59, 0.5);
+}
+
+@keyframes terminal-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}
+
+@keyframes terminal-blink {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+// Phones: the width of the screen, over the bar of the simulation
+@media (max-width: 575.98px) {
+  .terminal {
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+  }
+
+  .terminal-screen {
+    max-height: 35vh;
+  }
+
+  .terminal-lights {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal,
+  .terminal-state--input {
+    animation: none;
+  }
 }

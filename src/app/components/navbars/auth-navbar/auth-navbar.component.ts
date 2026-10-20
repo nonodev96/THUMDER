@@ -1,4 +1,4 @@
-import { Component, computed, HostListener, inject } from "@angular/core";
+import { Component, computed, DestroyRef, inject } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AppComponent } from "@app/app.component";
 import { AUTH_ROUTES, NPM_VERSION } from "@app/CONSTANTS";
@@ -23,7 +23,7 @@ type Route = PublicRoutesList[string];
  * The navbar. On the left, where to go: home, every view by sections and the places of the work (editor, files,
  * multiview). On the right, the simulation (its controls and its speed) and the preferences (theme, language,
  * configuration). On a phone it shows the name of the view, and the rest is in «More» (the controls of the simulation
- * are in the bar at the bottom). It also has the shortcuts of the simulation, as a debugger.
+ * are in the bar at the bottom). It also has the shortcuts of the simulation (F9, F8...), as a debugger.
  */
 @Component({
   selector: "THUMDER-auth-navbar",
@@ -90,27 +90,37 @@ export class AuthNavbarComponent {
   /** The places of the work, always at hand on a wide screen */
   public readonly quickLinks: Route[] = [AUTH_ROUTES.EDITOR, AUTH_ROUTES.FILE_MANAGER, AUTH_ROUTES.MULTIVIEW];
 
-  // F5 runs or pauses, F10 runs one cycle, Shift+F10 goes back one, F8 runs to the end without drawing and Shift+F5 loads
-  // the code (like a debugger)
-  @HostListener("document:keydown", ["$event"])
-  public async onKeydown(event: KeyboardEvent): Promise<void> {
-    if (event.ctrlKey || event.altKey || event.metaKey) return;
-    if (event.key === "F5" && event.shiftKey) {
-      event.preventDefault();
-      await this.controls.load();
-    } else if (event.key === "F5" && this.machine.canSimulate) {
-      event.preventDefault();
-      await this.controls.togglePlayPause();
-    } else if (event.key === "F10" && event.shiftKey) {
-      event.preventDefault();
-      await this.controls.stepBack();
-    } else if (event.key === "F10" && this.machine.canSimulate) {
-      event.preventDefault();
-      await this.controls.step();
-    } else if (event.key === "F8" && this.machine.canSimulate) {
-      event.preventDefault();
-      await this.controls.runToEnd();
-    }
+  /**
+   * The shortcuts of the simulation, as in the debuggers of Delphi and Lazarus, with keys the browsers do not use (F5
+   * and Shift+F5 reload the page, F10 opens the menu of Firefox): F9 runs or pauses, F8 runs one cycle, Shift+F8 goes
+   * back one, Shift+F9 runs to the end without drawing and Ctrl+F9 loads the code. They are caught before the editor
+   * (Monaco uses F8 for its problems) and always, also when nothing can be simulated yet
+   */
+  private readonly onKeydown = (event: KeyboardEvent): void => {
+    if (event.altKey || event.metaKey || (event.key !== "F8" && event.key !== "F9")) return;
+    const action =
+      event.key === "F9"
+        ? event.ctrlKey
+          ? () => this.controls.load()
+          : event.shiftKey
+            ? () => this.controls.runToEnd()
+            : () => this.controls.togglePlayPause()
+        : event.ctrlKey
+          ? null
+          : event.shiftKey
+            ? () => this.controls.stepBack()
+            : () => this.controls.step();
+    if (action === null) return;
+    event.preventDefault();
+    event.stopPropagation();
+    // Load and step back always; the rest, with a program that can be simulated
+    const always = event.ctrlKey || (event.key === "F8" && event.shiftKey);
+    if (always || this.machine.canSimulate) void action();
+  };
+
+  constructor() {
+    document.addEventListener("keydown", this.onKeydown, true);
+    inject(DestroyRef).onDestroy(() => document.removeEventListener("keydown", this.onKeydown, true));
   }
 
   /** The sounds of the simulation on or off (the rest of their configuration stays) */

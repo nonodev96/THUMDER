@@ -1,4 +1,4 @@
-import { computed, Injectable, inject, type Signal, signal } from "@angular/core";
+import { computed, Injectable, inject, type Signal, signal, untracked } from "@angular/core";
 import { DEFAULT_CODE } from "@app/CONSTANTS";
 import {
   EnumLogLevel,
@@ -75,6 +75,20 @@ export type CycleChanges = {
   reads: readonly { address: number; bytes: number }[];
 };
 
+/** A piece of the console of the program: what it wrote (traps 4 and 5) or a line typed for it (trap 3) */
+export type ConsoleChunk = { kind: "out" | "in"; text: string };
+
+/** The console with more pieces: what the program writes follows what it wrote before */
+function addChunks(console: readonly ConsoleChunk[], chunks: readonly ConsoleChunk[]): ConsoleChunk[] {
+  const result = [...console];
+  for (const chunk of chunks) {
+    const last = result[result.length - 1];
+    if (chunk.kind === "out" && last?.kind === "out") result[result.length - 1] = { kind: "out", text: last.text + chunk.text };
+    else result.push(chunk);
+  }
+  return result;
+}
+
 /** The modules chosen for each program, by the key of its file (storage: "program_modules"); without one, automatic */
 export type ProgramModules = Record<string, string[]>;
 
@@ -102,8 +116,10 @@ export type MachineState = {
   canSimulate: Signal<boolean>;
   /** The program waits for a line of the console (trap 3) */
   waitingForInput: Signal<boolean>;
-  /** Everything the program has written in the console (DLX-I/O) */
+  /** Everything the program has written in the console (DLX-I/O), with the lines typed for it */
   output: Signal<string>;
+  /** The same, piece by piece: what the program wrote and what was typed for it */
+  console: Signal<readonly ConsoleChunk[]>;
   /** The errors of the assembler, with their line */
   errors: Signal<TypeErrorInCode[]>;
   /** The instructions of the program loaded */
@@ -175,7 +191,12 @@ export class MachineService {
   private readonly breakpointSignal = signal(false);
   private readonly canSimulateSignal = signal(false);
   private readonly waitingForInputSignal = signal(false);
-  private readonly outputSignal = signal("");
+  private readonly consoleSignal = signal<readonly ConsoleChunk[]>([]);
+  private readonly outputSignal = computed(() =>
+    this.consoleSignal()
+      .map((chunk) => (chunk.kind === "in" ? `${chunk.text}\n` : chunk.text))
+      .join(""),
+  );
   private readonly errorsSignal = signal<TypeErrorInCode[]>([]);
   private readonly codeSignal = signal<TypeInstructionsData[]>([]);
   private readonly stagesSignal = signal<StagesByAddress>(new Map());
@@ -193,31 +214,48 @@ export class MachineService {
   private readonly modulesSignal = signal<string[]>([]);
   private readonly fileKeySignal = signal("");
 
+  /**
+   * Stepping back: the program is loaded again and run, without drawing, to the cycle before. Meanwhile the views keep
+   * what they show (the empty machine, «running», the buttons off... would blink), and see the cycle before at once
+   */
+  private readonly rewinding = signal(false);
+
+  /** A signal of the state as the views see it: while stepping back, the value it had before */
+  private held<T>(source: Signal<T>): Signal<T> {
+    let last = untracked(source);
+    return computed(() => {
+      if (this.rewinding()) return last;
+      last = source();
+      return last;
+    });
+  }
+
   public readonly state: MachineState = {
-    step: this.stepSignal.asReadonly(),
-    line: this.lineSignal.asReadonly(),
-    running: this.runningSignal.asReadonly(),
-    complete: this.completeSignal.asReadonly(),
-    breakpoint: this.breakpointSignal.asReadonly(),
-    canSimulate: this.canSimulateSignal.asReadonly(),
-    waitingForInput: this.waitingForInputSignal.asReadonly(),
-    output: this.outputSignal.asReadonly(),
-    errors: this.errorsSignal.asReadonly(),
-    code: this.codeSignal.asReadonly(),
-    stages: this.stagesSignal.asReadonly(),
-    pipeline: this.pipelineSignal.asReadonly(),
-    cycle: this.cycleSignal.asReadonly(),
-    units: this.unitsSignal.asReadonly(),
-    statistics: this.statisticsSignal.asReadonly(),
-    values: this.valuesSignal.asReadonly(),
-    diagram: this.diagramSignal.asReadonly(),
-    loads: this.loadsSignal.asReadonly(),
-    cycles: this.cyclesSignal.asReadonly(),
-    quiet: this.quietSignal.asReadonly(),
-    hit: this.hitSignal.asReadonly(),
-    symbols: this.symbolsSignal.asReadonly(),
-    modules: this.modulesSignal.asReadonly(),
-    fileKey: this.fileKeySignal.asReadonly(),
+    step: this.held(this.stepSignal),
+    line: this.held(this.lineSignal),
+    running: this.held(this.runningSignal),
+    complete: this.held(this.completeSignal),
+    breakpoint: this.held(this.breakpointSignal),
+    canSimulate: this.held(this.canSimulateSignal),
+    waitingForInput: this.held(this.waitingForInputSignal),
+    output: this.held(this.outputSignal),
+    console: this.held(this.consoleSignal),
+    errors: this.held(this.errorsSignal),
+    code: this.held(this.codeSignal),
+    stages: this.held(this.stagesSignal),
+    pipeline: this.held(this.pipelineSignal),
+    cycle: this.held(this.cycleSignal),
+    units: this.held(this.unitsSignal),
+    statistics: this.held(this.statisticsSignal),
+    values: this.held(this.valuesSignal),
+    diagram: this.held(this.diagramSignal),
+    loads: this.held(this.loadsSignal),
+    cycles: this.held(this.cyclesSignal),
+    quiet: this.held(this.quietSignal),
+    hit: this.held(this.hitSignal),
+    symbols: this.held(this.symbolsSignal),
+    modules: this.held(this.modulesSignal),
+    fileKey: this.held(this.fileKeySignal),
   };
 
   /**
@@ -256,7 +294,8 @@ export class MachineService {
   private quiet = false;
   /** Repeating the run to step back: no stops, toasts or new journal entries */
   private replaying = false;
-  private pendingOutput = "";
+  /** What the console gets while the simulation runs without drawing (the views get it when it stops) */
+  private pendingConsole: ConsoleChunk[] = [];
   private lastStep: Step | null = null;
 
   constructor() {
@@ -330,7 +369,8 @@ export class MachineService {
       await this.sendConfiguration();
       // The answer fills the code, the memory and the registers that have just been cleared
       await this.SimulationInit(options.again === true);
-      this.loadsSignal.update((loads) => loads + 1);
+      // The same program again (stepping back) is not a new one: the views do not start again
+      if (!options.again) this.loadsSignal.update((loads) => loads + 1);
 
       // The program loaded is in the status bar; only the errors get a toast (UI-10)
       if (!options.again) this.sound.event(this.canSimulate ? "load" : "errors");
@@ -357,7 +397,7 @@ export class MachineService {
     this.breakpointSignal.set(false);
     this.canSimulateSignal.set(false);
     this.waitingForInputSignal.set(false);
-    this.outputSignal.set("");
+    this.consoleSignal.set([]);
     this.errorsSignal.set([]);
     this.codeSignal.set([]);
     this.stagesSignal.set(new Map());
@@ -367,7 +407,7 @@ export class MachineService {
     this.statisticsSignal.set(this.dataStatistics.getData());
     this.cyclesSignal.set(0);
     this.hitSignal.set(null);
-    this.pendingOutput = "";
+    this.pendingConsole = [];
     this.lastStep = null;
     if (!options.keepJournal) this.journal = [];
     this.touchValues();
@@ -493,6 +533,7 @@ export class MachineService {
     const journal = this.journal.filter((entry) => entry.at <= target);
     this.sound.event("back");
     this.replaying = true;
+    this.rewinding.set(true);
     this.setQuiet(true);
     try {
       if (!(await this.resetMachineStatus({ again: true }))) return;
@@ -507,6 +548,7 @@ export class MachineService {
     } finally {
       this.replaying = false;
       this.setQuiet(false);
+      this.rewinding.set(false);
     }
   }
 
@@ -518,8 +560,8 @@ export class MachineService {
 
   /** After running without drawing: the views get the state where it stopped */
   private publish(): void {
-    if (this.pendingOutput) this.outputSignal.update((output) => output + this.pendingOutput);
-    this.pendingOutput = "";
+    if (this.pendingConsole.length > 0) this.consoleSignal.update((console) => addChunks(console, this.pendingConsole));
+    this.pendingConsole = [];
     const step = this.lastStep;
     if (step !== null) {
       this.stepSignal.set(step.step);
@@ -629,8 +671,9 @@ export class MachineService {
     this.lastStep = step;
     this.cyclesSignal.set(step.step + 1);
     if (step.output) {
-      if (this.quiet) this.pendingOutput += step.output;
-      else this.outputSignal.update((output) => output + step.output);
+      const chunk: ConsoleChunk = { kind: "out", text: step.output };
+      if (this.quiet) this.pendingConsole.push(chunk);
+      else this.consoleSignal.update((console) => addChunks(console, [chunk]));
     }
     if (this.replaying) {
       // The changes the user made at this point of the original run
@@ -759,10 +802,10 @@ export class MachineService {
   public async provideInput(text: string): Promise<void> {
     const payload = JSON.stringify({ text });
     await this.simulator.request("SimulationInputRequest", payload);
-    this.outputSignal.update((output) => `${output}${text}\n`);
+    this.consoleSignal.update((console) => addChunks(console, [{ kind: "in", text }]));
     this.waitingForInputSignal.set(false);
     this.record("SimulationInputRequest", payload, () => {
-      this.pendingOutput += `${text}\n`;
+      this.pendingConsole.push({ kind: "in", text });
     });
   }
 
@@ -773,7 +816,7 @@ export class MachineService {
 
   /** Clears the console of the program */
   public clearOutput(): void {
-    this.outputSignal.set("");
+    this.consoleSignal.set([]);
   }
 
   /** Sends the registers to the simulator and applies the values it has stored. Returns whether all were accepted */

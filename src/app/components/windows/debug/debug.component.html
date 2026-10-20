@@ -1,14 +1,16 @@
-<div thumderCard class="card" id="card-debug" cdkDrag>
+<div thumderCard class="card debug" id="card-debug" cdkDrag>
   <div class="card-header">
-    <h3 class="card-title">
+    <h3 class="card-title debug-title">
       <button type="button" class="btn btn-tool" cdkDragHandle [title]="'FORMS.DRAG' | translate" [attr.aria-label]="'FORMS.DRAG' | translate">
         <i class="fas fa-arrows-alt" aria-hidden="true"></i>
       </button>
-      {{ "DEBUG" | translate }}
+      <i class="fas fa-bug" aria-hidden="true"></i>
+      <span thumderCardWidget="collapse">{{ 'DEBUG_PANEL.TITLE' | translate }}</span>
+      <span [class]="'badge ' + statusClass()">{{ 'STATUS.' + status() | translate }}</span>
     </h3>
 
     <div class="card-tools">
-      <button type="button" class="btn btn-tool" thumderCardWidget="collapse">
+      <button type="button" class="btn btn-tool" thumderCardWidget="collapse" [title]="'FORMS.COLLAPSE' | translate" [attr.aria-label]="'FORMS.COLLAPSE' | translate">
         <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
       <button type="button" class="btn btn-tool" (click)="globals.showDebug=!globals.showDebug" [title]="'FORMS.CLOSE' | translate" [attr.aria-label]="'FORMS.CLOSE' | translate">
@@ -16,10 +18,83 @@
       </button>
     </div>
   </div>
-  <div class="card-body card-font-console">@for (line of private_logger; track line) {
-    {{line}}<br>
-  }</div>
-  <div class="card-footer">
-    {{"URL: " + router.url}}
+
+  <div class="card-body debug-body">
+    <p class="debug-intro">{{ 'DEBUG_PANEL.INTRO' | translate }}</p>
+
+    <div class="debug-tabs" role="tablist" [attr.aria-label]="'DEBUG_PANEL.TITLE' | translate">
+      <button type="button" role="tab" id="debugTab-state" class="debug-tab" [class.debug-tab--active]="tab() === 'state'" [attr.aria-selected]="tab() === 'state'"
+        aria-controls="debugPanel" (click)="tab.set('state')">
+        <i class="fas fa-clipboard-list" aria-hidden="true"></i> {{ 'DEBUG_PANEL.TAB_STATE' | translate }}
+      </button>
+      <button type="button" role="tab" id="debugTab-messages" class="debug-tab" [class.debug-tab--active]="tab() === 'messages'"
+        [attr.aria-selected]="tab() === 'messages'" aria-controls="debugPanel" (click)="tab.set('messages')">
+        <i class="fas fa-stream" aria-hidden="true"></i> {{ 'DEBUG_PANEL.TAB_MESSAGES' | translate }}
+        <span class="debug-count">{{ messages().total }}</span>
+      </button>
+    </div>
+
+    <div class="debug-panel" id="debugPanel" role="tabpanel" [attr.aria-labelledby]="'debugTab-' + tab()">
+      @if (tab() === 'state') {
+        @for (section of sections(); track section.title) {
+          <section class="debug-section">
+            <h4 class="debug-section-title"><i class="fas fa-fw {{ section.icon }}" aria-hidden="true"></i> {{ section.title | translate }}</h4>
+            <dl class="debug-facts">
+              @for (fact of section.facts; track fact.label) {
+                <div class="debug-fact">
+                  <dt>{{ fact.label | translate }}</dt>
+                  <dd>
+                    <span class="debug-value" [class.debug-value--mono]="fact.mono">{{ fact.translate ? (fact.value | translate: fact.params) : fact.value }}</span>
+                    @if (fact.help) { <small class="debug-help">{{ fact.help | translate }}</small> }
+                  </dd>
+                </div>
+              }
+            </dl>
+          </section>
+        }
+      } @else {
+        <div class="debug-toolbar">
+          <label class="sr-only" for="debugFilter">{{ 'DEBUG_PANEL.FILTER' | translate }}</label>
+          <input type="search" id="debugFilter" class="form-control form-control-sm" [placeholder]="'DEBUG_PANEL.FILTER' | translate" [value]="filter()"
+            (input)="filter.set($any($event.target).value)">
+          <label class="debug-follow">
+            <input type="checkbox" [checked]="follow()" (change)="follow.set($any($event.target).checked)"> {{ 'DEBUG_PANEL.FOLLOW' | translate }}
+          </label>
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copy()" [title]="'LOGGER.COPY' | translate" [attr.aria-label]="'LOGGER.COPY' | translate">
+            <i class="far fa-copy" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="clear()" [title]="'LOGGER.CLEAR' | translate" [attr.aria-label]="'LOGGER.CLEAR' | translate">
+            <i class="fas fa-trash-alt" aria-hidden="true"></i>
+          </button>
+        </div>
+        @if (messages().list.length === 0) {
+          <p class="debug-empty">{{ (messages().total === 0 ? 'DEBUG_PANEL.NO_MESSAGES' : 'LOGGER.NO_MATCHES') | translate }}</p>
+        } @else {
+          <ol class="debug-log" aria-live="off">
+            @for (entry of messages().list; track entry.id) {
+              <li class="debug-message">
+                <div class="debug-message-head">
+                  <time class="debug-time">{{ entry.time }}</time>
+                  @if (entry.shownCycle !== null) {
+                    <span class="debug-cycle">{{ 'DEBUG_PANEL.AT_CYCLE' | translate: { cycle: entry.shownCycle } }}</span>
+                  }
+                  <span [class]="'debug-level debug-level--' + entry.level.toLowerCase()">{{ entry.level }}</span>
+                  <code class="debug-event">{{ entry.event }}</code>
+                </div>
+                <p class="debug-meaning">{{ entry.key | translate: entry.params }}</p>
+                @if (entry.key !== 'DEBUG_PANEL.LOG.OTHER') {
+                  <p class="debug-raw" [title]="entry.text">{{ entry.text }}</p>
+                }
+              </li>
+            }
+          </ol>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="card-footer debug-footer">
+    <span><i class="fas fa-link" aria-hidden="true"></i> {{ url() }}</span>
+    <span>THUMDER {{ version }}</span>
   </div>
 </div>
