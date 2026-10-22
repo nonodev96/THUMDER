@@ -378,7 +378,39 @@
     "CONFIRM_ACCEPT": "Save and restart",
     "DIAGRAM_HISTORY": "History of the cycle clock diagram (cycles)",
     "HELP_DIAGRAM_HISTORY": "How many cycles the diagram keeps, from 100 to 100,000; the oldest ones go. A long history makes long programs use more memory.",
-    "LOCKED_BY_EXERCISE": "This program is a shared exercise: some options are locked and those of the exercise are used."
+    "LOCKED_BY_EXERCISE": "This program is a shared exercise: some options are locked and those of the exercise are used.",
+    "HELP_ARCHITECTURE": "The machine THUMDER simulates. It can also be chosen in the header. Programs end the same in both: only the cycles change.",
+    "SUPERDLX": {
+      "TITLE": "SuperDLX",
+      "HELP": "The parameters of the MACHINE file of WinSuperDLX: how many instructions go through per cycle, the size of each structure and the functional units.",
+      "PROFILES": "Ready-made machines",
+      "PROFILE_DEFAULT": "WinSuperDLX (default)",
+      "PROFILE_SCALAR": "Scalar (1 per cycle)",
+      "PROFILE_WIDE": "Very wide (8 per cycle)",
+      "WIDTHS": "Instructions per cycle",
+      "HELP_WIDTHS": "How many instructions are fetched, decoded (sent to their window and to the ROB) and committed each cycle, from 1 to 16.",
+      "FETCH": "Fetch",
+      "DECODE": "Decode",
+      "COMMIT": "Commit",
+      "STRUCTURES": "Queues and buffers",
+      "HELP_STRUCTURES": "The entries of each structure: when one is full, the stage that fills it stops.",
+      "QUEUE": "Instruction queue",
+      "ROB_INT": "Integer ROB",
+      "ROB_FP": "Floating point ROB",
+      "WINDOW_INT": "Integer window",
+      "WINDOW_FP": "Floating point window",
+      "LOAD_BUFFER": "Load buffer",
+      "STORE_BUFFER": "Store buffer",
+      "BTB": "BTB entries",
+      "PREDICTION": "Branch prediction (BTB with 2-bit counters)",
+      "HELP_PREDICTION": "Without it, fetch stops at each branch until it is resolved.",
+      "MEMORY": "Data memory",
+      "MEMORY_LATENCY": "Cycles of an access",
+      "MEMORY_ACCESSES": "Accesses per cycle",
+      "INT_UNITS": "Integer functional units",
+      "FP_UNITS": "Floating point functional units",
+      "LATENCY": "Latency"
+    }
   },
   "TOAST": {
     "ACCESS_DENIED": "Access denied",
@@ -661,7 +693,8 @@
     "OPEN_TITLE": "Shared exercise",
     "OPEN": "Open in the editor",
     "INVALID": "The link is not a valid exercise: it may be incomplete.",
-    "LOADING": "Reading the exercise"
+    "LOADING": "Reading the exercise",
+    "LOCK_ARCHITECTURE": "Architecture (and its configuration)"
   },
   "EDITOR": {
     "TOOLS": "Tools of the program",
@@ -695,7 +728,8 @@
     "TOPIC_STRUCTURAL": "Structural hazards",
     "TOPIC_FLOATING": "Floating point",
     "TOPIC_LOOPS": "Loops and subroutines",
-    "TOPIC_MEMORY": "Memory"
+    "TOPIC_MEMORY": "Memory",
+    "TOPIC_SUPERSCALAR": "Superscalar (SuperDLX)"
   },
   "DATAPATH": {
     "TITLE": "The datapath of the pipeline of THUMDER, with what each stage does in this cycle",
@@ -730,7 +764,9 @@
     "INSTRUCTION_MEMORY_1": "Instruction",
     "INSTRUCTION_MEMORY_2": "memory",
     "DATA_MEMORY_1": "Data",
-    "DATA_MEMORY_2": "memory"
+    "DATA_MEMORY_2": "memory",
+    "SUPERSCALAR": "The datapath is the one of the pipeline of DLX. The machine of SuperDLX is in the pipeline view: the queue, the windows, the units, the ROBs and the buffers.",
+    "SUPERSCALAR_GO": "See the SuperDLX machine"
   },
   "THEME": {
     "TITLE": "Theme",
@@ -823,7 +859,8 @@
       "INSTRUCTION_TABLE": "The instruction table",
       "README": "The project (README)",
       "CONTRIBUTING": "How to contribute",
-      "SIMULATOR": "The simulator inside"
+      "SIMULATOR": "The simulator inside",
+      "SUPERDLX": "SuperDLX: the superscalar DLX"
     },
     "ITABLE": {
       "INTRO": "The {{count}} instructions that THUMDER assembles and simulates, taken from the definitions of its engine. Search for one or filter by type, and tap one to see its syntax, what it does, the fields of its 32-bit word and what happens in each stage of the pipeline.",
@@ -1211,5 +1248,308 @@
     "EDITOR": "Tools and problems of the program",
     "LOGGER": "About the log",
     "DEBUG": "Route and version"
+  },
+  "ARCH": {
+    "TITLE": "Architecture",
+    "DLX_SUMMARY": "The five-stage pipeline of WinDLX: one instruction per cycle, in order.",
+    "SUPERDLX_SUMMARY": "Superscalar with out of order execution, as WinSuperDLX: several instructions per cycle, windows, ROB and branch prediction.",
+    "CHANGED": "{{name}} is simulated now: the program has been loaded again.",
+    "LOCKED": "The exercise open locks the architecture.",
+    "RELOADS": "Changing it loads the program again in the other machine."
+  },
+  "SUPERSCALAR": {
+    "TITLE": "Superscalar machine",
+    "EMPTY": "Load a program without errors to see the SuperDLX machine.",
+    "EMPTY_READY": "Run one cycle (F8) to see the SuperDLX machine.",
+    "MACHINE_SUMMARY": "It fetches {{fetch}}, decodes {{decode}} and commits {{commit}} instructions per cycle, with ROBs of {{robInt}} and {{robFp}} entries and windows of {{windowInt}} and {{windowFp}}.",
+    "WITH_PREDICTION": "With branch prediction.",
+    "WITHOUT_PREDICTION": "Without branch prediction.",
+    "CYCLE": "Cycle",
+    "COMMITTED": "Committed",
+    "FETCH_STOP": {
+      "queueFull": "Fetch stopped: the queue is full",
+      "branch": "Fetch stopped: waits for a branch (no prediction)",
+      "jreg": "Fetch stopped: waits for the register of a jr or jalr",
+      "halt": "Fetch stopped: trap 0, the program ends",
+      "fault": "Fetch stopped: address out of memory",
+      "recovery": "Fetch stopped: recovering from a misprediction"
+    },
+    "QUEUE": "Instruction queue",
+    "NONE": "Empty",
+    "WINDOW_INT": "Integer window",
+    "WINDOW_FP": "Floating point window",
+    "INSTRUCTION": "Instruction",
+    "UNIT": "Unit",
+    "OPERANDS": "Operands",
+    "WAITS": "Waits for",
+    "WAITING": {
+      "operands": "Operands",
+      "unit": "A free unit",
+      "ready": "Ready"
+    },
+    "UNITS": "Functional units",
+    "SIDE_INT": "Integer",
+    "SIDE_FP": "Floating point",
+    "POOL_INFO": "{{busy}} of {{count}} busy, latency {{latency}}",
+    "LEFT": "{{cycles}} left",
+    "ROB_INT": "Integer ROB",
+    "ROB_FP": "Floating point ROB",
+    "ENTRY": "Entry",
+    "DESTINATION": "Destination",
+    "STATE_TITLE": "State",
+    "VALUE": "Value",
+    "HEAD": "head",
+    "STATE": {
+      "fetched": "Fetched",
+      "queue": "In the queue",
+      "window": "In the window",
+      "executing": "In its unit",
+      "address": "Waits for memory",
+      "memory": "Reads memory",
+      "done": "Done",
+      "committed": "Committed",
+      "squashed": "Squashed"
+    },
+    "PREDICTED_TAKEN": "predicted taken",
+    "PREDICTED_NOT": "predicted not taken",
+    "ERROR": "Error",
+    "LOAD_BUFFER": "Load buffer",
+    "STORE_BUFFER": "Store buffer",
+    "ADDRESS": "Address",
+    "BUFFER_STATE": {
+      "address": "Computes the address",
+      "waiting": "Ready to read",
+      "blocked": "Waits for a store",
+      "memory": "Reading",
+      "ready": "Waits to commit",
+      "released": "Committed: it will be written"
+    },
+    "NO_DATA": "no data",
+    "RENAME": "Renamed registers",
+    "RENAME_HELP": "Which instruction of the ROB will write each register: the ones that read it wait for that instruction, not for the register.",
+    "BTB": {
+      "TITLE": "BTB and prediction",
+      "OFF": "Branch prediction is off.",
+      "EMPTY": "No branch yet.",
+      "BRANCH": "Branch",
+      "TARGET": "Target",
+      "COUNTER": "Counter",
+      "STRONG_NOT": "not taken (strong)",
+      "WEAK_NOT": "not taken (weak)",
+      "WEAK_TAKEN": "taken (weak)",
+      "STRONG_TAKEN": "taken (strong)"
+    },
+    "POOLS": {
+      "NONE": "None",
+      "INT_ALU": "ALU",
+      "INT_SHIFT": "Shift",
+      "INT_COMP": "Compare",
+      "INT_ADDRESS": "Address",
+      "INT_BRANCH": "Branch",
+      "FP_ADD": "FP add",
+      "FP_MULT": "Multiply",
+      "FP_DIV": "Divide",
+      "FP_CONV": "Convert",
+      "FP_COMP": "FP compare",
+      "FP_ADDRESS": "FP address",
+      "FP_BRANCH": "FP branch"
+    },
+    "CELL": {
+      "F": "Fetched",
+      "q": "In the instruction queue",
+      "D": "Decoded: goes to its window and to the ROB",
+      "w": "Waits in the window for its operands or a unit",
+      "E": "In its functional unit",
+      "M": "Memory access",
+      "W": "Has its result (in the ROB)",
+      "r": "Waits in the ROB to commit",
+      "C": "Committed: writes the registers",
+      "X": "Squashed by a misprediction"
+    },
+    "DIAGRAM": {
+      "VIEW": "View",
+      "DIAGRAM": "Diagram",
+      "EVENTS": "Table of events",
+      "MOVE": "Cycles",
+      "BACK": "Previous cycles",
+      "FORWARD": "Next cycles",
+      "NOW": "Now",
+      "WIDTH": "Cycles",
+      "EMPTY": "Run the simulation to see the cycles.",
+      "CAPTION": "Cycles {{first}} to {{last}}",
+      "CUT": "The last instructions are shown: {{count}} more do not fit.",
+      "MISPREDICTED": "Mispredicted branch: what was fetched after it was squashed",
+      "RETIRED": "NOP or J: it is resolved in fetch and only waits to commit.",
+      "SPAN_QUEUE": "{{cycles}} cycle(s) in the queue",
+      "SPAN_WINDOW": "{{cycles}} cycle(s) in the window",
+      "SPAN_UNIT": "{{cycles}} cycle(s) in its unit and in memory",
+      "SPAN_ROB": "{{cycles}} cycle(s) waiting in the ROB",
+      "SPAN_SQUASHED": "Squashed in cycle {{cycle}}",
+      "SPAN_TOTAL": "{{cycles}} cycles from fetch to commit",
+      "IN_FLIGHT": "It is still in the machine.",
+      "CHOOSE": "Choose an instruction to see how long it waited in each place.",
+      "LEGEND": "Legend",
+      "HELP_1": "Each row is an instruction, in the order it was fetched (#n); each column, a cycle.",
+      "HELP_2": "An instruction goes through the queue (q), its window (w), its unit (E), the memory (M) and the ROB (r) until it commits (C).",
+      "HELP_3": "Instructions start out of order, as soon as they have their operands and a unit, but they commit in order.",
+      "HELP_4": "A mispredicted branch squashes (X) everything fetched after it; the table of events gives the cycle of each step of every instruction."
+    }
+  },
+  "SST": {
+    "TABS": {
+      "BRANCHES": "Branches",
+      "UNITS": "Units",
+      "COMPARE": "DLX and SuperDLX"
+    },
+    "KPI": {
+      "COMMITTED": "Instructions committed",
+      "SQUASHED": "Squashed",
+      "HELP": "IPC: instructions committed per cycle, at most {{peak}} of each half (integer and floating point). The squashed ones are those fetched after a mispredicted branch."
+    },
+    "COMMITS": {
+      "TITLE": "Cycles by the instructions they commit",
+      "HELP": "How many cycles committed 0, 1, 2... instructions. The cycles with 0 are the ones to reduce.",
+      "N": "{{n}} committed"
+    },
+    "HARDWARE": {
+      "WIDTHS": "Fetch, decode and commit",
+      "QUEUE": "Instruction queue",
+      "ROB": "Integer and floating point ROB",
+      "WINDOWS": "Integer and floating point windows",
+      "BUFFERS": "Load and store buffers",
+      "MEMORY": "Memory",
+      "MEMORY_VALUE": "{{latency}} cycle(s), {{accesses}} access(es) per cycle",
+      "PREDICTION": "Prediction",
+      "BTB": "BTB of {{size}} entries"
+    },
+    "STALLS": {
+      "INTRO": "The cycles in which a stage did nothing, and why. A stage that stops leaves the next ones without work.",
+      "FETCH": "Cycles without fetch",
+      "DISPATCH": "Cycles without decode",
+      "COMMIT": "Cycles without commit"
+    },
+    "FETCH": {
+      "queueFull": {
+        "NAME": "Queue full",
+        "HELP": "Decode cannot keep up: the windows, the ROBs or the buffers are full."
+      },
+      "branch": {
+        "NAME": "Waits for a branch",
+        "HELP": "Without prediction, fetch waits until each branch is resolved."
+      },
+      "jreg": {
+        "NAME": "Waits for jr or jalr",
+        "HELP": "A jump to a register: fetch waits until the register is known."
+      },
+      "recovery": {
+        "NAME": "Recovery",
+        "HELP": "The cycle lost after a misprediction, while what was fetched after the branch is squashed."
+      },
+      "halt": {
+        "NAME": "End of the program",
+        "HELP": "After trap 0 is fetched nothing else is."
+      },
+      "fault": {
+        "NAME": "Out of memory",
+        "HELP": "The fetch address is not in memory."
+      }
+    },
+    "DISPATCH": {
+      "queueEmpty": {
+        "NAME": "Queue empty",
+        "HELP": "Fetch brings no instructions: branches, mispredictions or the end of the program."
+      },
+      "robInt": {
+        "NAME": "Integer ROB full",
+        "HELP": "Integer instructions do not commit in time: a slow one at the head holds all the ones behind it."
+      },
+      "robFp": {
+        "NAME": "Floating point ROB full",
+        "HELP": "Floating point instructions do not commit in time: a division or a multiplication at the head holds the others."
+      },
+      "windowInt": {
+        "NAME": "Integer window full",
+        "HELP": "Too many integer instructions wait for their operands or for a unit."
+      },
+      "windowFp": {
+        "NAME": "Floating point window full",
+        "HELP": "Too many floating point instructions wait for their operands or for a unit."
+      },
+      "loadBuffer": {
+        "NAME": "Load buffer full",
+        "HELP": "Many loads wait for the memory or for older stores."
+      },
+      "storeBuffer": {
+        "NAME": "Store buffer full",
+        "HELP": "Stores are written after they commit: they wait long in the buffer."
+      }
+    },
+    "COMMIT": {
+      "notDone": {
+        "NAME": "The head has not finished",
+        "HELP": "The oldest instruction waits for its operands, its unit or the memory: the ones behind it wait with it (commit in order)."
+      },
+      "order": {
+        "NAME": "Waits for the other half",
+        "HELP": "There is an older unresolved branch, trap or error in the other ROB."
+      },
+      "storeData": {
+        "NAME": "Store without data",
+        "HELP": "A store reaches the head without the data it writes."
+      },
+      "trap": {
+        "NAME": "Trap",
+        "HELP": "A trap runs when it is the oldest instruction and the older stores are in memory."
+      },
+      "input": {
+        "NAME": "Waits for input",
+        "HELP": "Trap 3 waits for a line in the console."
+      }
+    },
+    "WAITS": {
+      "TITLE": "Waits in the windows",
+      "HELP": "Each cycle an instruction spent in its window without starting: for its operands (data dependences) or because there was no free unit (structural hazard).",
+      "OPERANDS": "Operands (data dependences)",
+      "UNIT": "Busy unit (structural)",
+      "LOADS": "{{blocked}} of {{loads}} loads waited for an older store that could write the same bytes."
+    },
+    "BRANCHES": {
+      "OFF": "Prediction is off: fetch stops at each branch and nothing is squashed.",
+      "COUNT": "Conditional branches",
+      "TAKEN": "Taken",
+      "MISPREDICTED": "Mispredicted",
+      "ACCURACY": "Predictor accuracy",
+      "HELP": "The BTB predicts in fetch with a 2-bit counter per branch; a branch that is not in it is predicted taken. Branches are resolved when they start in their unit.",
+      "SQUASHED": "Instructions squashed",
+      "PER_MISS": "Squashed per miss",
+      "BTB_MISSES": "Branches not in the BTB",
+      "COLLISIONS": "BTB collisions",
+      "JUMPS": "Unconditional jumps (j, jal, jr, jalr)",
+      "ALL_RIGHT": "The predictor got every branch right.",
+      "COST": "The {{mispredicted}} mispredictions squashed {{squashed}} instructions fetched on the wrong path."
+    },
+    "UNITS": {
+      "HELP": "Each unit is busy with an instruction for its whole latency (they are not pipelined). A high use with waits for a unit asks for more units of that kind.",
+      "LATENCY": "Latency",
+      "INSTRUCTIONS": "Instructions",
+      "USE": "Use"
+    },
+    "OCCUPANCY": {
+      "TITLE": "Mean occupation",
+      "HELP": "How many entries each structure had busy on average. The one that is always full is the one that limits.",
+      "QUEUE": "Instruction queue",
+      "WINDOW_INT": "Integer window",
+      "WINDOW_FP": "Floating point window",
+      "ROB_INT": "Integer ROB",
+      "ROB_FP": "Floating point ROB",
+      "LOAD_BUFFER": "Load buffer",
+      "STORE_BUFFER": "Store buffer"
+    },
+    "COMPARE": {
+      "HELP": "The same program to the end in DLX (with the configuration of its pipeline) and in SuperDLX (with its own).",
+      "BUTTON": "Compare DLX and SuperDLX",
+      "IPC": "Instructions per cycle (IPC)",
+      "SPEEDUP": "SuperDLX is {{times}} times faster: {{superdlx}} cycles against {{dlx}} of DLX."
+    }
   }
 }

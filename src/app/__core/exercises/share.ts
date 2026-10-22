@@ -1,11 +1,13 @@
 import type { TypeFloatingPointStageConfiguration } from "@app/Types";
 import { validateConfig } from "@core/config/config";
+import type { ArchitectureId } from "@core/engine/architectures";
+import type { SuperscalarParameters } from "@core/engine/superscalar-config";
 
 // An exercise shared by a link (EDU-07): a program, the configuration of the machine and the options the teacher locks.
 // It goes in the link itself, compressed (deflate) and in base64url: there is no server.
 
-/** The options of the machine an exercise can lock */
-export const LOCKABLE = ["forwarding", "floatingPoint", "memorySize"] as const;
+/** The options of the machine an exercise can lock (the architecture, with the parameters of SuperDLX) */
+export const LOCKABLE = ["architecture", "forwarding", "floatingPoint", "memorySize"] as const;
 export type Lockable = (typeof LOCKABLE)[number];
 
 export type SharedExercise = {
@@ -14,6 +16,9 @@ export type SharedExercise = {
   content: string;
   /** What the person sees before opening it */
   statement: string;
+  /** The architecture (the links made before SuperDLX are of DLX) and the parameters of SuperDLX */
+  architecture: ArchitectureId;
+  superdlx: SuperscalarParameters;
   forwarding: boolean;
   floatingPoint: TypeFloatingPointStageConfiguration;
   memorySize: number;
@@ -50,7 +55,13 @@ export async function decodeExercise(text: string): Promise<SharedExercise> {
   const json = new TextDecoder().decode(await transform(fromBase64Url(text), new DecompressionStream("deflate-raw")));
   const raw = JSON.parse(json) as Partial<SharedExercise>;
   if (typeof raw.content !== "string" || raw.content.length > MAX_CONTENT) throw new Error("The exercise has no program");
-  const machine = validateConfig({ forwarding: raw.forwarding, floatingPoint: raw.floatingPoint, memorySize: raw.memorySize });
+  const machine = validateConfig({
+    architecture: raw.architecture,
+    superdlx: raw.superdlx,
+    forwarding: raw.forwarding,
+    floatingPoint: raw.floatingPoint,
+    memorySize: raw.memorySize,
+  });
   // A name of 100 characters at most, with its .s (firestore.rules)
   const stem = typeof raw.name === "string" && raw.name.trim() ? raw.name.trim().replace(/\.s$/i, "") : "ejercicio";
   return {
@@ -58,6 +69,8 @@ export async function decodeExercise(text: string): Promise<SharedExercise> {
     name: `${stem.slice(0, 98).trimEnd()}.s`,
     content: raw.content,
     statement: typeof raw.statement === "string" ? raw.statement.slice(0, 2000) : "",
+    architecture: machine.architecture,
+    superdlx: machine.superdlx,
     forwarding: machine.forwarding,
     floatingPoint: machine.floatingPoint,
     memorySize: machine.memorySize,

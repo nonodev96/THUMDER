@@ -7,10 +7,16 @@ import {
   DEFAULT_TIME_SIMULATION_CONFIGURATION,
 } from "@app/CONSTANTS";
 import type { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration, TypeWindowGeometry } from "@app/Types";
+import { type ArchitectureId, DEFAULT_ARCHITECTURE, isArchitecture } from "@core/engine/architectures";
+import { defaultSuperscalar, type SuperscalarParameters, validateSuperscalar } from "@core/engine/superscalar-config";
 
 /** The configuration of THUMDER, saved under one key with its version (CONFIG_KEY) */
 export type ThumderConfig = {
   version: typeof CONFIG_VERSION;
+  /** The architecture simulated: the pipeline of DLX or the superscalar SuperDLX */
+  architecture: ArchitectureId;
+  /** The machine of SuperDLX: widths, buffers and functional units (the MACHINE file of WinSuperDLX) */
+  superdlx: SuperscalarParameters;
   /** Forwarding of results between the stages of the pipeline */
   forwarding: boolean;
   /** The floating point units: how many of each kind and their cycles */
@@ -58,7 +64,13 @@ export const LIMITS = {
 export const DEFAULT_DIAGRAM_HISTORY = 2000;
 
 /** The parts of the configuration the simulator uses: changing them loads the program again */
-export const MACHINE_KEYS = ["forwarding", "floatingPoint", "memorySize"] as const satisfies readonly (keyof ThumderConfig)[];
+export const MACHINE_KEYS = [
+  "architecture",
+  "superdlx",
+  "forwarding",
+  "floatingPoint",
+  "memorySize",
+] as const satisfies readonly (keyof ThumderConfig)[];
 
 /** The keys of each part before version 1 (one key of localStorage each) */
 const OLD_KEYS = {
@@ -75,6 +87,8 @@ export const UNITS = ["addition", "multiplication", "division"] as const;
 export function defaultConfig(): ThumderConfig {
   return {
     version: CONFIG_VERSION,
+    architecture: DEFAULT_ARCHITECTURE,
+    superdlx: defaultSuperscalar(),
     forwarding: DEFAULT_ENABLED_FORWARDING_CONFIGURATION,
     floatingPoint: structuredClone(DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION),
     memorySize: DEFAULT_MEMORY_SIZE_CONFIGURATION,
@@ -153,6 +167,8 @@ export function validateConfig(value: unknown): ThumderConfig {
   const multiview = validateMultiview(raw.multiview);
   return {
     version: CONFIG_VERSION,
+    architecture: isArchitecture(raw.architecture) ? raw.architecture : defaults.architecture,
+    superdlx: validateSuperscalar(raw.superdlx),
     forwarding: typeof raw.forwarding === "boolean" ? raw.forwarding : defaults.forwarding,
     floatingPoint,
     memorySize: Math.floor(clamp(raw.memorySize, LIMITS.memorySize, defaults.memorySize) / 8) * 8,

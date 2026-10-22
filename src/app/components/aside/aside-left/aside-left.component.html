@@ -69,12 +69,14 @@
                 </a>
               </li>
               <!-- IDE -->
+              @if (architecture() === 'dlx') {
               <li class="nav-item">
                 <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" [routerLink]="'/auth/datapath'">
                   <i class="nav-icon fas fa-project-diagram" aria-hidden="true"></i>
                   <p>{{ 'NAVIGATION.DATAPATH' | translate }}</p>
                 </a>
               </li>
+              }
               <li class="nav-item">
                 <a class="nav-link" routerLinkActive="active" ariaCurrentWhenActive="page" [routerLink]="'/auth/exercises'">
                   <i class="nav-icon fas fa-graduation-cap" aria-hidden="true"></i>

@@ -60,3 +60,40 @@ for (const theme of ["light", "dark"] as const) {
     expect(results.violations.map((violation) => `${violation.id}: ${violation.nodes.length}`)).toEqual([]);
   });
 }
+
+// SuperDLX: its machine, its diagram and its statistics, with a program running, in both themes
+for (const theme of ["light", "dark"] as const) {
+  test(`axe sin infracciones (tema ${theme === "light" ? "claro" : "oscuro"}): las vistas de SuperDLX`, async ({ page }) => {
+    await page.addInitScript((theme) => localStorage.setItem("theme", theme), theme);
+    await go(page, "/auth/pipeline");
+    await page.locator("#architectureSelector").click();
+    await page.locator("#architecture-superdlx").click();
+    await page.locator("#simulationLoad").click();
+    await expect(page.locator("#simulationStep")).toBeEnabled();
+    for (let i = 0; i < 6; i++) await page.locator("#simulationStep").click();
+    await expect(page.locator("#superscalarStatus")).toContainText("5");
+    const check = async () => {
+      const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).disableRules(PENDING).analyze();
+      expect(results.violations.map((violation) => `${violation.id} (${violation.impact}): ${violation.nodes.length}`)).toEqual([]);
+    };
+    await check();
+    await page.locator(".main-sidebar a", { hasText: "Ciclos de reloj" }).first().click();
+    await expect(page.locator("#superscalarDiagram")).toBeVisible();
+    await page.locator("#superscalarDiagram .ssd-instruction").first().click();
+    await check();
+    await page.locator("#superscalarEventsTab").click();
+    await check();
+    await page.locator(".main-sidebar a", { hasText: "Estadísticas" }).first().click();
+    await expect(page.locator("#superscalarCycles")).toBeVisible();
+    for (const tab of ["summary", "stalls", "branches", "units"]) {
+      await page.locator(`#superscalarStatisticsTab-${tab}`).click();
+      await check();
+    }
+    await page.locator(".main-sidebar a", { hasText: "Configuración" }).first().click();
+    await expect(page.locator("#superdlxSettings")).toBeVisible();
+    await check();
+    await page.locator("#architectureSelector").click();
+    await expect(page.locator("#architecture-dlx")).toBeVisible();
+    await check();
+  });
+}

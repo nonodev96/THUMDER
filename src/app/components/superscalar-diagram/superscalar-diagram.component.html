@@ -1,0 +1,117 @@
+<div class="ssd-toolbar">
+  <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'SUPERSCALAR.DIAGRAM.VIEW' | translate">
+    <button type="button" class="btn btn-outline-secondary" id="superscalarDiagramTab" [class.active]="tab() === 'diagram'"
+      [attr.aria-pressed]="tab() === 'diagram'" (click)="tab.set('diagram')">
+      <i class="fas fa-th" aria-hidden="true"></i> {{ 'SUPERSCALAR.DIAGRAM.DIAGRAM' | translate }}
+    </button>
+    <button type="button" class="btn btn-outline-secondary" id="superscalarEventsTab" [class.active]="tab() === 'events'"
+      [attr.aria-pressed]="tab() === 'events'" (click)="tab.set('events')">
+      <i class="fas fa-list-ol" aria-hidden="true"></i> {{ 'SUPERSCALAR.DIAGRAM.EVENTS' | translate }}
+    </button>
+  </div>
+  @if (tab() === 'diagram') {
+    <div class="btn-group btn-group-sm" role="group" [attr.aria-label]="'SUPERSCALAR.DIAGRAM.MOVE' | translate">
+      <button type="button" class="btn btn-outline-secondary" id="superscalarDiagramBack" (click)="move(-1)" [disabled]="window().first === 0"
+        [title]="'SUPERSCALAR.DIAGRAM.BACK' | translate" [attr.aria-label]="'SUPERSCALAR.DIAGRAM.BACK' | translate">
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="follow()" [class.active]="isFollowing()" [attr.aria-pressed]="isFollowing()">
+        {{ 'SUPERSCALAR.DIAGRAM.NOW' | translate }}
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="move(1)" [disabled]="isFollowing()"
+        [title]="'SUPERSCALAR.DIAGRAM.FORWARD' | translate" [attr.aria-label]="'SUPERSCALAR.DIAGRAM.FORWARD' | translate">
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+    <label class="ssd-width">
+      <span>{{ 'SUPERSCALAR.DIAGRAM.WIDTH' | translate }}</span>
+      <select class="custom-select custom-select-sm" [value]="width()" (change)="width.set(+$any($event.target).value)">
+        @for (option of widths; track option) { <option [value]="option" [selected]="option === width()">{{ option }}</option> }
+      </select>
+    </label>
+  }
+  <button type="button" class="btn btn-sm btn-outline-secondary ml-auto" id="superscalarDiagramCsv" (click)="exportCsv()" [disabled]="cycles() === 0">
+    <i class="fas fa-file-csv" aria-hidden="true"></i> CSV
+  </button>
+</div>
+
+@if (cycles() === 0) {
+  <p class="ssd-empty" id="superscalarDiagramEmpty">{{ 'SUPERSCALAR.DIAGRAM.EMPTY' | translate }}</p>
+} @else if (tab() === 'diagram') {
+  @let d = diagram();
+  @let w = window();
+  <div class="ssd-scroll">
+    <table class="ssd-table" id="superscalarDiagram">
+      <caption class="sr-only">{{ 'SUPERSCALAR.DIAGRAM.CAPTION' | translate: { first: w.first, last: w.last } }}</caption>
+      <thead>
+        <tr>
+          <th scope="col" class="ssd-name">{{ 'SUPERSCALAR.INSTRUCTION' | translate }}</th>
+          @for (cycle of w.cycles; track cycle) { <th scope="col" class="ssd-cycle" [class.ssd-now]="cycle === cycles() - 1">{{ cycle }}</th> }
+        </tr>
+      </thead>
+      <tbody>
+        @for (line of d.rows; track line.row.row) {
+          <tr [class.ssd-squashed]="line.row.squash !== undefined" [class.ssd-selected]="selected() === line.row.row">
+            <th scope="row" class="ssd-name">
+              <button type="button" class="ssd-instruction" (click)="select(line.row.row)" [attr.aria-pressed]="selected() === line.row.row">
+                <span class="ssd-row">#{{ line.row.row }}</span> <code>{{ text(line.row.pc) }}</code>
+                @if (line.row.mispredicted) { <i class="fas fa-random ssd-wrong" [title]="'SUPERSCALAR.DIAGRAM.MISPREDICTED' | translate" aria-hidden="true"></i> }
+              </button>
+            </th>
+            @for (cell of line.cells; track $index) {
+              <td [class]="cell === null ? 'ssd-cell' : 'ssd-cell ssd-cell--' + cell" [attr.title]="cell ? (cellLabel(cell) | translate) : null">{{ cell ?? '' }}</td>
+            }
+          </tr>
+        } @empty {
+          <tr><td [attr.colspan]="w.cycles.length + 1" class="ssd-empty">{{ 'SUPERSCALAR.NONE' | translate }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (d.cut > 0) {
+    <p class="small text-muted mt-1 mb-0">{{ 'SUPERSCALAR.DIAGRAM.CUT' | translate: { count: d.cut } }}</p>
+  }
+} @else {
+  <thumder-virtual-table [rows]="rows()" [columns]="eventColumns" height="55vh" [itemSize]="30" minWidth="70ch"
+    [label]="'SUPERSCALAR.DIAGRAM.EVENTS' | translate" [trackBy]="trackByRow" [rowClass]="rowClass" [stickyFirst]="true">
+    <ng-template thumderColumn="Instruction" [header]="'SUPERSCALAR.INSTRUCTION' | translate" width="minmax(22ch, 2fr)" let-row>
+      <button type="button" class="ssd-instruction" (click)="select(row.row)">#{{ row.row }} {{ text(row.pc) }}</button>
+    </ng-template>
+    <ng-template thumderColumn="Unit" [header]="'SUPERSCALAR.UNIT' | translate" width="minmax(10ch, 1fr)" let-row>{{ poolLabel(row.pool) | translate }}</ng-template>
+    <ng-template thumderColumn="F" header="F" width="6ch" let-row>{{ row.fetch }}</ng-template>
+    <ng-template thumderColumn="D" header="D" width="6ch" let-row>{{ row.dispatch ?? '' }}</ng-template>
+    <ng-template thumderColumn="I" header="I" width="6ch" let-row>{{ row.issue ?? '' }}</ng-template>
+    <ng-template thumderColumn="M" header="M" width="6ch" let-row>{{ row.memory ?? '' }}</ng-template>
+    <ng-template thumderColumn="W" header="W" width="6ch" let-row>{{ row.complete ?? '' }}</ng-template>
+    <ng-template thumderColumn="C" header="C" width="8ch" let-row>{{ row.squash !== undefined ? 'X ' + row.squash : (row.commit ?? '') }}</ng-template>
+  </thumder-virtual-table>
+}
+
+<!-- The instruction chosen: how long it was in each place -->
+<section class="ssd-detail" aria-live="polite" id="superscalarDiagramDetail">
+  @if (detail(); as info) {
+    <p class="mb-1"><strong>#{{ info.row.row }} <code>{{ text(info.row.pc) }}</code></strong> ({{ poolLabel(info.row.pool) | translate }})</p>
+    <ul class="ssd-spans">
+      @if (info.row.retired) {
+        <li>{{ 'SUPERSCALAR.DIAGRAM.RETIRED' | translate }}</li>
+      }
+      @if (info.queue !== null) { <li>{{ 'SUPERSCALAR.DIAGRAM.SPAN_QUEUE' | translate: { cycles: info.queue } }}</li> }
+      @if (info.window !== null) { <li>{{ 'SUPERSCALAR.DIAGRAM.SPAN_WINDOW' | translate: { cycles: info.window } }}</li> }
+      @if (info.unit !== null) { <li>{{ 'SUPERSCALAR.DIAGRAM.SPAN_UNIT' | translate: { cycles: info.unit } }}</li> }
+      @if (info.rob !== null) { <li>{{ 'SUPERSCALAR.DIAGRAM.SPAN_ROB' | translate: { cycles: info.rob } }}</li> }
+      @if (info.row.squash !== undefined) { <li class="text-danger">{{ 'SUPERSCALAR.DIAGRAM.SPAN_SQUASHED' | translate: { cycle: info.row.squash } }}</li> }
+      @if (info.row.mispredicted) { <li class="text-danger">{{ 'SUPERSCALAR.DIAGRAM.MISPREDICTED' | translate }}</li> }
+      @if (info.total !== null) { <li><strong>{{ 'SUPERSCALAR.DIAGRAM.SPAN_TOTAL' | translate: { cycles: info.total } }}</strong></li> }
+      @if (inFlight(info.row)) { <li class="text-muted">{{ 'SUPERSCALAR.DIAGRAM.IN_FLIGHT' | translate }}</li> }
+    </ul>
+  } @else {
+    <p class="text-muted small mb-0">{{ 'SUPERSCALAR.DIAGRAM.CHOOSE' | translate }}</p>
+  }
+</section>
+
+<!-- What each letter means -->
+<ul class="ssd-legend" [attr.aria-label]="'SUPERSCALAR.DIAGRAM.LEGEND' | translate">
+  @for (cell of cells; track cell) {
+    <li><span [class]="'ssd-cell ssd-cell--' + cell" aria-hidden="true">{{ cell }}</span> {{ cellLabel(cell) | translate }}</li>
+  }
+</ul>

@@ -4,9 +4,10 @@
       <!-- Drag button -->
       <ng-content></ng-content>
 
-      <span thumderCardWidget="collapse">{{'MACHINE.PIPELINE' | translate}}</span>
+      <span thumderCardWidget="collapse">{{ (superscalar() ? 'SUPERSCALAR.TITLE' : 'MACHINE.PIPELINE') | translate }}</span>
     </h3>
     <div class="card-tools">
+      @if (!superscalar()) {
       <button type="button" class="btn btn-tool" [title]="'MACHINE.ZOOM_OUT' | translate" [attr.aria-label]="'MACHINE.ZOOM_OUT' | translate"
         (click)="pixi_PipelineComponent.zoomBy(1 / 1.25)">
         <i class="fas fa-search-minus" aria-hidden="true"></i>
@@ -19,6 +20,7 @@
         (click)="pixi_PipelineComponent.zoomBy(1.25)">
         <i class="fas fa-search-plus" aria-hidden="true"></i>
       </button>
+      }
 
       <button type="button" class="btn btn-tool" thumderCardWidget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
@@ -28,6 +30,12 @@
       </button>
     </div>
   </div>
+  @if (superscalar()) {
+    <!-- SuperDLX: the queue, the windows, the units, the ROBs, the buffers and the predictor -->
+    <div class="card-body">
+      <thumder-superscalar-machine></thumder-superscalar-machine>
+    </div>
+  } @else {
   <div class="card-body">
     <THUMDER-pixi-pipeline></THUMDER-pixi-pipeline>
   </div>
@@ -38,4 +46,5 @@
       <thumder-pipeline-stages></thumder-pipeline-stages>
   </div>
   </details>
+  }
 </div>

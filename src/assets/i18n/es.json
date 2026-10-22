@@ -378,7 +378,39 @@
     "CONFIRM_ACCEPT": "Guardar y reiniciar",
     "DIAGRAM_HISTORY": "Historial del diagrama de ciclos (ciclos)",
     "HELP_DIAGRAM_HISTORY": "Cuántos ciclos guarda el diagrama, de 100 a 100.000; los más antiguos se descartan. Con un historial largo, los programas largos usan más memoria.",
-    "LOCKED_BY_EXERCISE": "Este programa es un ejercicio compartido: algunas opciones están bloqueadas y se usan las del ejercicio."
+    "LOCKED_BY_EXERCISE": "Este programa es un ejercicio compartido: algunas opciones están bloqueadas y se usan las del ejercicio.",
+    "HELP_ARCHITECTURE": "La máquina que simula THUMDER. También se elige en la cabecera. Los programas acaban igual en las dos: solo cambian los ciclos.",
+    "SUPERDLX": {
+      "TITLE": "SuperDLX",
+      "HELP": "Los parámetros del fichero MACHINE de WinSuperDLX: cuántas instrucciones pasan por ciclo, el tamaño de cada estructura y las unidades funcionales.",
+      "PROFILES": "Máquinas predefinidas",
+      "PROFILE_DEFAULT": "WinSuperDLX (por defecto)",
+      "PROFILE_SCALAR": "Escalar (1 por ciclo)",
+      "PROFILE_WIDE": "Muy ancha (8 por ciclo)",
+      "WIDTHS": "Instrucciones por ciclo",
+      "HELP_WIDTHS": "Cuántas instrucciones se captan, se decodifican (pasan a su ventana y al ROB) y se confirman en cada ciclo, de 1 a 16.",
+      "FETCH": "Captación",
+      "DECODE": "Decodificación",
+      "COMMIT": "Confirmación",
+      "STRUCTURES": "Colas y buffers",
+      "HELP_STRUCTURES": "Las entradas de cada estructura: cuando una se llena, la etapa que la alimenta se detiene.",
+      "QUEUE": "Cola de instrucciones",
+      "ROB_INT": "ROB entero",
+      "ROB_FP": "ROB de coma flotante",
+      "WINDOW_INT": "Ventana entera",
+      "WINDOW_FP": "Ventana de coma flotante",
+      "LOAD_BUFFER": "Buffer de cargas",
+      "STORE_BUFFER": "Buffer de almacenamientos",
+      "BTB": "Entradas de la BTB",
+      "PREDICTION": "Predicción de saltos (BTB con contadores de 2 bits)",
+      "HELP_PREDICTION": "Sin ella, la captación se detiene en cada salto hasta que se resuelve.",
+      "MEMORY": "Memoria de datos",
+      "MEMORY_LATENCY": "Ciclos de un acceso",
+      "MEMORY_ACCESSES": "Accesos por ciclo",
+      "INT_UNITS": "Unidades funcionales enteras",
+      "FP_UNITS": "Unidades funcionales de coma flotante",
+      "LATENCY": "Latencia"
+    }
   },
   "TOAST": {
     "ACCESS_DENIED": "Acceso denegado",
@@ -661,7 +693,8 @@
     "OPEN_TITLE": "Ejercicio compartido",
     "OPEN": "Abrir en el editor",
     "INVALID": "El enlace no es un ejercicio válido: puede estar incompleto.",
-    "LOADING": "Leyendo el ejercicio"
+    "LOADING": "Leyendo el ejercicio",
+    "LOCK_ARCHITECTURE": "Arquitectura (y su configuración)"
   },
   "EDITOR": {
     "TOOLS": "Herramientas del programa",
@@ -695,7 +728,8 @@
     "TOPIC_STRUCTURAL": "Riesgos estructurales",
     "TOPIC_FLOATING": "Coma flotante",
     "TOPIC_LOOPS": "Bucles y subrutinas",
-    "TOPIC_MEMORY": "Memoria"
+    "TOPIC_MEMORY": "Memoria",
+    "TOPIC_SUPERSCALAR": "Superescalar (SuperDLX)"
   },
   "DATAPATH": {
     "TITLE": "La ruta de datos del pipeline de THUMDER, con lo que hace cada etapa en este ciclo",
@@ -730,7 +764,9 @@
     "INSTRUCTION_MEMORY_1": "Memoria de",
     "INSTRUCTION_MEMORY_2": "instrucciones",
     "DATA_MEMORY_1": "Memoria de",
-    "DATA_MEMORY_2": "datos"
+    "DATA_MEMORY_2": "datos",
+    "SUPERSCALAR": "La ruta de datos es la del pipeline de DLX. La máquina de SuperDLX está en la vista del pipeline: la cola, las ventanas, las unidades, los ROB y los buffers.",
+    "SUPERSCALAR_GO": "Ver la máquina SuperDLX"
   },
   "THEME": {
     "TITLE": "Tema",
@@ -823,7 +859,8 @@
       "INSTRUCTION_TABLE": "La tabla de instrucciones",
       "README": "El proyecto (README)",
       "CONTRIBUTING": "Cómo contribuir",
-      "SIMULATOR": "El simulador por dentro"
+      "SIMULATOR": "El simulador por dentro",
+      "SUPERDLX": "SuperDLX: el DLX superescalar"
     },
     "ITABLE": {
       "INTRO": "Las {{count}} instrucciones que THUMDER ensambla y simula, sacadas de las definiciones de su motor. Busca una o filtra por tipo, y pulsa una para ver su sintaxis, qué hace, los campos de su palabra de 32 bits y lo que pasa en cada etapa del pipeline.",
@@ -1211,5 +1248,308 @@
     "EDITOR": "Herramientas y problemas del programa",
     "LOGGER": "Sobre el historial",
     "DEBUG": "Ruta y versión"
+  },
+  "ARCH": {
+    "TITLE": "Arquitectura",
+    "DLX_SUMMARY": "El pipeline de cinco etapas de WinDLX: una instrucción por ciclo, en orden.",
+    "SUPERDLX_SUMMARY": "Superescalar con ejecución fuera de orden, como WinSuperDLX: varias instrucciones por ciclo, ventanas, ROB y predicción de saltos.",
+    "CHANGED": "Ahora se simula {{name}}: el programa se ha cargado de nuevo.",
+    "LOCKED": "El ejercicio abierto fija la arquitectura.",
+    "RELOADS": "Al cambiarla, el programa se carga de nuevo en la otra máquina."
+  },
+  "SUPERSCALAR": {
+    "TITLE": "Máquina superescalar",
+    "EMPTY": "Carga un programa sin errores para ver la máquina SuperDLX.",
+    "EMPTY_READY": "Avanza un ciclo (F8) para ver la máquina SuperDLX.",
+    "MACHINE_SUMMARY": "Capta {{fetch}}, decodifica {{decode}} y confirma {{commit}} instrucciones por ciclo, con ROB de {{robInt}} y {{robFp}} entradas y ventanas de {{windowInt}} y {{windowFp}}.",
+    "WITH_PREDICTION": "Con predicción de saltos.",
+    "WITHOUT_PREDICTION": "Sin predicción de saltos.",
+    "CYCLE": "Ciclo",
+    "COMMITTED": "Confirmadas",
+    "FETCH_STOP": {
+      "queueFull": "Captación parada: la cola está llena",
+      "branch": "Captación parada: espera a un salto (sin predicción)",
+      "jreg": "Captación parada: espera el registro de un jr o jalr",
+      "halt": "Captación parada: trap 0, el programa termina",
+      "fault": "Captación parada: dirección fuera de la memoria",
+      "recovery": "Captación parada: se recupera de un fallo de predicción"
+    },
+    "QUEUE": "Cola de instrucciones",
+    "NONE": "Vacío",
+    "WINDOW_INT": "Ventana entera",
+    "WINDOW_FP": "Ventana de coma flotante",
+    "INSTRUCTION": "Instrucción",
+    "UNIT": "Unidad",
+    "OPERANDS": "Operandos",
+    "WAITS": "Espera",
+    "WAITING": {
+      "operands": "Operandos",
+      "unit": "Unidad libre",
+      "ready": "Lista"
+    },
+    "UNITS": "Unidades funcionales",
+    "SIDE_INT": "Enteras",
+    "SIDE_FP": "Coma flotante",
+    "POOL_INFO": "{{busy}} de {{count}} ocupadas, latencia {{latency}}",
+    "LEFT": "faltan {{cycles}}",
+    "ROB_INT": "ROB entero",
+    "ROB_FP": "ROB de coma flotante",
+    "ENTRY": "Entrada",
+    "DESTINATION": "Destino",
+    "STATE_TITLE": "Estado",
+    "VALUE": "Valor",
+    "HEAD": "cabeza",
+    "STATE": {
+      "fetched": "Captada",
+      "queue": "En la cola",
+      "window": "En la ventana",
+      "executing": "En su unidad",
+      "address": "Espera la memoria",
+      "memory": "Lee la memoria",
+      "done": "Terminada",
+      "committed": "Confirmada",
+      "squashed": "Anulada"
+    },
+    "PREDICTED_TAKEN": "predicho tomado",
+    "PREDICTED_NOT": "predicho no tomado",
+    "ERROR": "Error",
+    "LOAD_BUFFER": "Buffer de cargas",
+    "STORE_BUFFER": "Buffer de almacenamientos",
+    "ADDRESS": "Dirección",
+    "BUFFER_STATE": {
+      "address": "Calcula la dirección",
+      "waiting": "Lista para leer",
+      "blocked": "Espera a un almacenamiento",
+      "memory": "Leyendo",
+      "ready": "Espera a confirmarse",
+      "released": "Confirmado: se escribirá"
+    },
+    "NO_DATA": "sin dato",
+    "RENAME": "Registros renombrados",
+    "RENAME_HELP": "Qué instrucción del ROB escribirá cada registro: las que lo leen esperan a esa instrucción, no al registro.",
+    "BTB": {
+      "TITLE": "BTB y predicción",
+      "OFF": "La predicción de saltos está desactivada.",
+      "EMPTY": "Ningún salto todavía.",
+      "BRANCH": "Salto",
+      "TARGET": "Destino",
+      "COUNTER": "Contador",
+      "STRONG_NOT": "no tomado (fuerte)",
+      "WEAK_NOT": "no tomado (débil)",
+      "WEAK_TAKEN": "tomado (débil)",
+      "STRONG_TAKEN": "tomado (fuerte)"
+    },
+    "POOLS": {
+      "NONE": "Ninguna",
+      "INT_ALU": "ALU",
+      "INT_SHIFT": "Desplazamiento",
+      "INT_COMP": "Comparación",
+      "INT_ADDRESS": "Direcciones",
+      "INT_BRANCH": "Saltos",
+      "FP_ADD": "Suma CF",
+      "FP_MULT": "Multiplicación",
+      "FP_DIV": "División",
+      "FP_CONV": "Conversión",
+      "FP_COMP": "Comparación CF",
+      "FP_ADDRESS": "Direcciones CF",
+      "FP_BRANCH": "Saltos CF"
+    },
+    "CELL": {
+      "F": "Captada",
+      "q": "En la cola de instrucciones",
+      "D": "Decodificada: pasa a su ventana y al ROB",
+      "w": "Espera en la ventana a sus operandos o a una unidad",
+      "E": "En su unidad funcional",
+      "M": "Acceso a la memoria",
+      "W": "Tiene su resultado (en el ROB)",
+      "r": "Espera en el ROB a confirmarse",
+      "C": "Confirmada: escribe los registros",
+      "X": "Anulada por un fallo de predicción"
+    },
+    "DIAGRAM": {
+      "VIEW": "Vista",
+      "DIAGRAM": "Diagrama",
+      "EVENTS": "Tabla de sucesos",
+      "MOVE": "Ciclos",
+      "BACK": "Ciclos anteriores",
+      "FORWARD": "Ciclos siguientes",
+      "NOW": "Ahora",
+      "WIDTH": "Ciclos",
+      "EMPTY": "Avanza la simulación para ver los ciclos.",
+      "CAPTION": "Ciclos {{first}} a {{last}}",
+      "CUT": "Se muestran las últimas instrucciones: {{count}} más no caben.",
+      "MISPREDICTED": "Salto mal predicho: lo captado detrás se anuló",
+      "RETIRED": "NOP o J: se resuelve en la captación y solo espera a confirmarse.",
+      "SPAN_QUEUE": "{{cycles}} ciclo(s) en la cola",
+      "SPAN_WINDOW": "{{cycles}} ciclo(s) en la ventana",
+      "SPAN_UNIT": "{{cycles}} ciclo(s) en su unidad y en la memoria",
+      "SPAN_ROB": "{{cycles}} ciclo(s) esperando en el ROB",
+      "SPAN_SQUASHED": "Anulada en el ciclo {{cycle}}",
+      "SPAN_TOTAL": "{{cycles}} ciclos de la captación a la confirmación",
+      "IN_FLIGHT": "Todavía está en la máquina.",
+      "CHOOSE": "Elige una instrucción para ver cuánto esperó en cada sitio.",
+      "LEGEND": "Leyenda",
+      "HELP_1": "Cada fila es una instrucción, en el orden en que se captó (#n); cada columna, un ciclo.",
+      "HELP_2": "Una instrucción pasa por la cola (q), su ventana (w), su unidad (E), la memoria (M) y el ROB (r) hasta confirmarse (C).",
+      "HELP_3": "Las instrucciones empiezan fuera de orden, en cuanto tienen sus operandos y una unidad, pero se confirman en orden.",
+      "HELP_4": "Un salto mal predicho anula (X) todo lo captado detrás de él; la tabla de sucesos da el ciclo de cada paso de todas las instrucciones."
+    }
+  },
+  "SST": {
+    "TABS": {
+      "BRANCHES": "Saltos",
+      "UNITS": "Unidades",
+      "COMPARE": "DLX y SuperDLX"
+    },
+    "KPI": {
+      "COMMITTED": "Instrucciones confirmadas",
+      "SQUASHED": "Anuladas",
+      "HELP": "IPC: instrucciones confirmadas por ciclo, como mucho {{peak}} de cada mitad (entera y de coma flotante). Las anuladas son las captadas detrás de un salto mal predicho."
+    },
+    "COMMITS": {
+      "TITLE": "Ciclos según las instrucciones que confirman",
+      "HELP": "Cuántos ciclos confirmaron 0, 1, 2... instrucciones. Los ciclos con 0 son los que hay que reducir.",
+      "N": "{{n}} confirmadas"
+    },
+    "HARDWARE": {
+      "WIDTHS": "Captación, decodificación y confirmación",
+      "QUEUE": "Cola de instrucciones",
+      "ROB": "ROB entero y de coma flotante",
+      "WINDOWS": "Ventanas entera y de coma flotante",
+      "BUFFERS": "Buffers de cargas y de almacenamientos",
+      "MEMORY": "Memoria",
+      "MEMORY_VALUE": "{{latency}} ciclo(s), {{accesses}} acceso(s) por ciclo",
+      "PREDICTION": "Predicción",
+      "BTB": "BTB de {{size}} entradas"
+    },
+    "STALLS": {
+      "INTRO": "Los ciclos en los que una etapa no hizo nada, y por qué. Una etapa parada deja sin trabajo a las siguientes.",
+      "FETCH": "Ciclos sin captar",
+      "DISPATCH": "Ciclos sin decodificar",
+      "COMMIT": "Ciclos sin confirmar"
+    },
+    "FETCH": {
+      "queueFull": {
+        "NAME": "Cola llena",
+        "HELP": "La decodificación no da abasto: las ventanas, los ROB o los buffers están llenos."
+      },
+      "branch": {
+        "NAME": "Espera a un salto",
+        "HELP": "Sin predicción, la captación espera a que cada salto se resuelva."
+      },
+      "jreg": {
+        "NAME": "Espera a jr o jalr",
+        "HELP": "Un salto a un registro: la captación espera a conocer el registro."
+      },
+      "recovery": {
+        "NAME": "Recuperación",
+        "HELP": "El ciclo que se pierde tras un fallo de predicción, mientras se anula lo captado detrás del salto."
+      },
+      "halt": {
+        "NAME": "Fin del programa",
+        "HELP": "Tras captar trap 0 no se capta nada más."
+      },
+      "fault": {
+        "NAME": "Fuera de la memoria",
+        "HELP": "La dirección de captación no está en la memoria."
+      }
+    },
+    "DISPATCH": {
+      "queueEmpty": {
+        "NAME": "Cola vacía",
+        "HELP": "La captación no trae instrucciones: saltos, fallos de predicción o el final del programa."
+      },
+      "robInt": {
+        "NAME": "ROB entero lleno",
+        "HELP": "Las instrucciones enteras no se confirman a tiempo: una lenta en la cabeza retiene a todas las de detrás."
+      },
+      "robFp": {
+        "NAME": "ROB de coma flotante lleno",
+        "HELP": "Las de coma flotante no se confirman a tiempo: una división o una multiplicación en la cabeza retiene a las demás."
+      },
+      "windowInt": {
+        "NAME": "Ventana entera llena",
+        "HELP": "Demasiadas instrucciones enteras esperan a sus operandos o a una unidad."
+      },
+      "windowFp": {
+        "NAME": "Ventana de coma flotante llena",
+        "HELP": "Demasiadas instrucciones de coma flotante esperan a sus operandos o a una unidad."
+      },
+      "loadBuffer": {
+        "NAME": "Buffer de cargas lleno",
+        "HELP": "Muchas cargas esperan a la memoria o a almacenamientos anteriores."
+      },
+      "storeBuffer": {
+        "NAME": "Buffer de almacenamientos lleno",
+        "HELP": "Los almacenamientos se escriben después de confirmarse: esperan mucho en el buffer."
+      }
+    },
+    "COMMIT": {
+      "notDone": {
+        "NAME": "La cabeza no ha terminado",
+        "HELP": "La instrucción más antigua espera a sus operandos, a su unidad o a la memoria: las de detrás esperan con ella (confirmación en orden)."
+      },
+      "order": {
+        "NAME": "Espera a la otra mitad",
+        "HELP": "Hay un salto sin resolver, un trap o un error más antiguos en el otro ROB."
+      },
+      "storeData": {
+        "NAME": "Almacenamiento sin dato",
+        "HELP": "Un almacenamiento llega a la cabeza sin el dato que escribe."
+      },
+      "trap": {
+        "NAME": "Trap",
+        "HELP": "Un trap se ejecuta cuando es la instrucción más antigua y los almacenamientos anteriores están en la memoria."
+      },
+      "input": {
+        "NAME": "Espera la entrada",
+        "HELP": "El trap 3 espera una línea en la consola."
+      }
+    },
+    "WAITS": {
+      "TITLE": "Esperas en las ventanas",
+      "HELP": "Cada ciclo que una instrucción pasó en su ventana sin empezar: por sus operandos (dependencias de datos) o porque no había una unidad libre (riesgo estructural).",
+      "OPERANDS": "Operandos (dependencias de datos)",
+      "UNIT": "Unidad ocupada (estructural)",
+      "LOADS": "{{blocked}} de {{loads}} cargas esperaron a un almacenamiento anterior que podía escribir los mismos bytes."
+    },
+    "BRANCHES": {
+      "OFF": "La predicción está desactivada: la captación se detiene en cada salto y no se anula nada.",
+      "COUNT": "Saltos condicionales",
+      "TAKEN": "Tomados",
+      "MISPREDICTED": "Mal predichos",
+      "ACCURACY": "Aciertos del predictor",
+      "HELP": "La BTB predice en la captación con un contador de 2 bits por salto; un salto que no está en ella se predice tomado. Los saltos se resuelven al empezar en su unidad.",
+      "SQUASHED": "Instrucciones anuladas",
+      "PER_MISS": "Anuladas por fallo",
+      "BTB_MISSES": "Saltos que no estaban en la BTB",
+      "COLLISIONS": "Colisiones en la BTB",
+      "JUMPS": "Saltos incondicionales (j, jal, jr, jalr)",
+      "ALL_RIGHT": "El predictor acertó todos los saltos.",
+      "COST": "Los {{mispredicted}} fallos de predicción anularon {{squashed}} instrucciones captadas por el camino equivocado."
+    },
+    "UNITS": {
+      "HELP": "Cada unidad está ocupada con una instrucción durante toda su latencia (no están segmentadas). Un uso alto con esperas por unidad pide más unidades de ese tipo.",
+      "LATENCY": "Latencia",
+      "INSTRUCTIONS": "Instrucciones",
+      "USE": "Uso"
+    },
+    "OCCUPANCY": {
+      "TITLE": "Ocupación media",
+      "HELP": "Cuántas entradas tuvo ocupadas cada estructura de media. La que está siempre llena es la que limita.",
+      "QUEUE": "Cola de instrucciones",
+      "WINDOW_INT": "Ventana entera",
+      "WINDOW_FP": "Ventana de coma flotante",
+      "ROB_INT": "ROB entero",
+      "ROB_FP": "ROB de coma flotante",
+      "LOAD_BUFFER": "Buffer de cargas",
+      "STORE_BUFFER": "Buffer de almacenamientos"
+    },
+    "COMPARE": {
+      "HELP": "El mismo programa hasta el final en DLX (con la configuración de su pipeline) y en SuperDLX (con la suya).",
+      "BUTTON": "Comparar DLX y SuperDLX",
+      "IPC": "Instrucciones por ciclo (IPC)",
+      "SPEEDUP": "SuperDLX es {{times}} veces más rápido: {{superdlx}} ciclos frente a {{dlx}} de DLX."
+    }
   }
 }

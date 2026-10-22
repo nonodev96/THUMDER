@@ -6,8 +6,8 @@ THUMDER es un simulador del procesador **DLX**: escribes un programa en ensambla
 
 En el **Gestor de ficheros** tienes siempre dos carpetas de solo lectura:
 
-- **ejemplos**: 20 programas clásicos comentados, de «Hola, mundo» a un bucle DAXPY desenrollado.
-- **ejercicios**: los programas de los ejercicios guiados.
+- **ejemplos**: 20 programas clásicos comentados, de «Hola, mundo» a un bucle DAXPY desenrollado, y en `ejemplos/superdlx` cinco para el procesador superescalar SuperDLX.
+- **ejercicios**: los programas de los ejercicios guiados (también los de SuperDLX).
 
 Haz doble clic en uno (por ejemplo `ejemplos/02-suma-vector.s`) y se abre en el **Editor**. Si lo cambias, al guardar se crea una copia en tus ficheros (`mis ejemplos`), porque los originales no se pueden modificar. Para escribir tu propio programa: **Nuevo → Programa DLX (.s)**.
 

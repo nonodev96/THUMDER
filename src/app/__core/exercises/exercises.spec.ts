@@ -1,11 +1,13 @@
 import { defaultConfig, validateConfig } from "@core/config/config";
-import { CLASSICS as EXAMPLES } from "@core/engine/examples.spec-helper";
+import { CLASSICS, SUPERDLX_EXAMPLES } from "@core/engine/examples.spec-helper";
 import { DLXSimulator, type LocalSimulationStep } from "@core/engine/simulator";
+import { superscalarProfile } from "@core/engine/superscalar-config";
 import { describe, expect, it } from "vitest";
 import catalogue from "../../../assets/exercises/exercises.json";
 import { answerOf, type Exercise, isRight } from "./exercises";
 
 const exercises = catalogue as Exercise[];
+const EXAMPLES = { ...CLASSICS, ...SUPERDLX_EXAMPLES };
 
 /** Runs an exercise in the simulator with its configuration, and returns the answers to its questions */
 function solve(exercise: Exercise): Record<string, number | undefined> {
@@ -17,6 +19,8 @@ function solve(exercise: Exercise): Record<string, number | undefined> {
     addition: config.floatingPoint.addition,
     multiplication: config.floatingPoint.multiplication,
     division: config.floatingPoint.division,
+    architecture: config.architecture,
+    superscalar: config.superdlx,
   });
   const name = exercise.file.split("/").pop() as string;
   const init = simulator.init({ id: "t", filename: name, date: "", content: EXAMPLES[name], registers: [], memory: [], breakpoints: [] });
@@ -29,7 +33,11 @@ function solve(exercise: Exercise): Record<string, number | undefined> {
     for (const change of last.registers) registers.set(String(change.register), Number.parseInt(change.hexadecimalValue, 16) | 0);
   }
   expect(last?.isComplete, exercise.id).toBe(true);
-  const sources = { statistics: last?.statistics, register: (register: string) => registers.get(register) };
+  const sources = {
+    statistics: last?.statistics,
+    register: (register: string) => registers.get(register),
+    superscalar: simulator.superscalarStats ?? undefined,
+  };
   return Object.fromEntries(exercise.questions.map((question) => [question.id, answerOf(question.answer, sources)]));
 }
 
@@ -55,6 +63,37 @@ describe("the guided exercises (EDU-04)", () => {
     expect(byId("riesgo-estructural").structural).toBeGreaterThan(0);
     expect(byId("riesgos-de-control").taken).toBeGreaterThan(0);
     expect(byId("recursividad").result).toBe(5040);
+  });
+
+  it("of SuperDLX ask what they say: being superscalar, the prediction and the size of the ROB", () => {
+    const byId = (id: string) => solve(exercises.find((exercise) => exercise.id === id) as Exercise);
+    const superscalar = exercises.filter((exercise) => exercise.config.architecture === "superdlx");
+    expect(superscalar.length).toBeGreaterThanOrEqual(8);
+    expect(superscalar.every((exercise) => exercise.topic === "superscalar")).toBe(true);
+    // The scalar machine of the exercise is the one of the configuration
+    const scalar = exercises.find((exercise) => exercise.id === "superdlx-escalar") as Exercise;
+    expect(validateConfig({ superdlx: scalar.config.superdlx }).superdlx).toEqual(superscalarProfile("scalar"));
+
+    const wide = byId("superdlx-paralelismo");
+    const narrow = byId("superdlx-escalar");
+    expect(narrow.cycles).toBeGreaterThan(2 * (wide.cycles as number));
+    const predicted = byId("superdlx-prediccion");
+    const waiting = byId("superdlx-sin-prediccion");
+    expect(predicted.mispredicted).toBeGreaterThan(0);
+    expect(predicted.squashed).toBeGreaterThan(predicted.mispredicted as number);
+    expect(waiting.squashed).toBe(0);
+    expect(waiting.waits).toBeGreaterThan(0);
+    expect(waiting.cycles).toBeGreaterThan(predicted.cycles as number);
+    expect(byId("superdlx-renombrado").sumB).toBe(360);
+    expect(byId("superdlx-memoria").blocked).toBeGreaterThan(0);
+    const small = byId("superdlx-rob-pequeno");
+    const large = byId("superdlx-rob-grande");
+    expect(small.cycles).toBeGreaterThan(large.cycles as number);
+    expect(small.robFull).toBeGreaterThan(large.robFull as number);
+    // The same program and instructions as the exercise of DLX, in fewer cycles
+    const dlx = byId("coma-flotante");
+    const superdlx = byId("superdlx-frente-a-dlx");
+    expect(superdlx.cycles).toBeLessThan(dlx.cycles as number);
   });
 
   it("check the answers written as numbers", () => {

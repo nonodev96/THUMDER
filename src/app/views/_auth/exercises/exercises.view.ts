@@ -11,7 +11,7 @@ import { StorageService } from "@core/storage/storage.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { firstValueFrom } from "rxjs";
 
-const TOPICS: Topic[] = ["data", "control", "structural", "floating", "loops", "memory"];
+const TOPICS: Topic[] = ["data", "control", "structural", "floating", "loops", "memory", "superscalar"];
 
 /**
  * The guided exercises (EDU-04): a gallery by topic and, for the exercise open in the editor, its questions, checked
@@ -103,6 +103,7 @@ export class ExercisesView implements OnInit {
     if (!found) return undefined;
     return answerOf(found.answer, {
       statistics: this.machine.state.statistics(),
+      superscalar: this.machine.state.superscalarStats(),
       register: (name) => {
         const number = Number(name.replace(/\D/g, ""));
         const register = this.machine.registers.R[number];

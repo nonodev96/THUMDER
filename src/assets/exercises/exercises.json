@@ -121,5 +121,145 @@
       { "id": "result", "text": { "es": "¿Qué valor queda en R2 (el resultado) al terminar?", "en": "What value is left in R2 (the result) at the end?" }, "answer": { "kind": "register", "name": "R2" } },
       { "id": "instructions", "text": { "es": "¿Cuántas instrucciones se ejecutan?", "en": "How many instructions are executed?" }, "answer": { "kind": "statistic", "path": "TOTAL.ID_EXECUTED.instructions" } }
     ]
+  },
+  {
+    "id": "superdlx-paralelismo",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/01-paralelismo.s",
+    "title": { "es": "Paralelismo entre instrucciones", "en": "Instruction level parallelism" },
+    "statement": {
+      "es": "Ejecuta el programa en SuperDLX con la máquina de WinSuperDLX: capta 6, decodifica 4 y confirma 4 instrucciones por ciclo. En el diagrama de ciclos, compara cuántas sumas empiezan a la vez en «Uno» (una cadena de dependencias) y en «Cuatro» (cuatro acumuladores). Las instrucciones por ciclo (IPC) son las confirmadas entre los ciclos.",
+      "en": "Run the program in SuperDLX with the machine of WinSuperDLX: it fetches 6, decodes 4 and commits 4 instructions per cycle. In the cycle clock diagram, compare how many additions start at the same time in «Uno» (a chain of dependences) and in «Cuatro» (four accumulators). The instructions per cycle (IPC) are the committed ones divided by the cycles."
+    },
+    "config": { "architecture": "superdlx" },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "instructions", "text": { "es": "¿Cuántas instrucciones se confirman?", "en": "How many instructions are committed?" }, "answer": { "kind": "statistic", "path": "TOTAL.ID_EXECUTED.instructions" } },
+      { "id": "idle", "text": { "es": "¿En cuántos ciclos no se confirma ninguna instrucción?", "en": "In how many cycles is no instruction committed?" }, "answer": { "kind": "superscalar", "path": "commitHistogram.0" } }
+    ]
+  },
+  {
+    "id": "superdlx-escalar",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/01-paralelismo.s",
+    "title": { "es": "Una instrucción por ciclo", "en": "One instruction per cycle" },
+    "statement": {
+      "es": "El mismo programa en una máquina escalar: capta, decodifica y confirma una instrucción por ciclo, con una unidad de cada tipo. Compara los ciclos con los del ejercicio «Paralelismo entre instrucciones»: lo que va de unos a otros es lo que aporta ser superescalar.",
+      "en": "The same program in a scalar machine: it fetches, decodes and commits one instruction per cycle, with one unit of each kind. Compare the cycles with the ones of the exercise «Instruction level parallelism»: the difference is what being superscalar brings."
+    },
+    "config": { "architecture": "superdlx", "superdlx": { "fetch": 1, "decode": 1, "commit": 1, "queue": 4, "rob": { "int": 8, "fp": 8 }, "window": { "int": 4, "fp": 4 }, "loadBuffer": 2, "storeBuffer": 2, "btb": 111, "prediction": true, "memory": { "latency": 1, "accesses": 1 }, "units": { "int": { "alu": { "count": 1, "latency": 1 }, "shift": { "count": 1, "latency": 1 }, "comp": { "count": 1, "latency": 1 }, "address": { "count": 1, "latency": 1 }, "branch": { "count": 1, "latency": 1 } }, "fp": { "add": { "count": 1, "latency": 2 }, "mult": { "count": 1, "latency": 5 }, "div": { "count": 1, "latency": 10 }, "conv": { "count": 1, "latency": 2 }, "comp": { "count": 1, "latency": 1 }, "address": { "count": 1, "latency": 1 }, "branch": { "count": 1, "latency": 1 } } } } },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "idle", "text": { "es": "¿En cuántos ciclos no se confirma ninguna instrucción?", "en": "In how many cycles is no instruction committed?" }, "answer": { "kind": "superscalar", "path": "commitHistogram.0" } }
+    ]
+  },
+  {
+    "id": "superdlx-renombrado",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/02-renombrado.s",
+    "title": { "es": "Renombrado de registros", "en": "Register renaming" },
+    "statement": {
+      "es": "Todas las cargas del bucle escriben R4, y aun así van en paralelo. Avanza ciclo a ciclo (F8) y mira en el pipeline los «Registros renombrados» (qué instrucción escribirá R4) y, en la ventana entera, a qué carga espera cada suma.",
+      "en": "Every load of the loop writes R4, and still they go in parallel. Run it cycle by cycle (F8) and look in the pipeline at the «Renamed registers» (which instruction will write R4) and, in the integer window, at the load each addition waits for."
+    },
+    "config": { "architecture": "superdlx" },
+    "questions": [
+      { "id": "sumB", "text": { "es": "¿Qué valor queda en R6 (la suma de B)?", "en": "What value is left in R6 (the sum of B)?" }, "answer": { "kind": "register", "name": "R6" } },
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } }
+    ]
+  },
+  {
+    "id": "superdlx-prediccion",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/03-prediccion-de-saltos.s",
+    "title": { "es": "Predicción de saltos con contadores de 2 bits", "en": "Branch prediction with 2-bit counters" },
+    "statement": {
+      "es": "La subrutina Cuenta recorre los mismos 16 números dos veces: alternos (impar, par, impar...) y agrupados. Mira en la BTB cómo cambia el contador del «beqz» y, en el diagrama de ciclos, las instrucciones anuladas (X) detrás de cada fallo.",
+      "en": "The subroutine Cuenta goes through the same 16 numbers twice: alternate (odd, even, odd...) and grouped. Look in the BTB at how the counter of the «beqz» changes and, in the cycle clock diagram, at the instructions squashed (X) after each miss."
+    },
+    "config": { "architecture": "superdlx" },
+    "questions": [
+      { "id": "branches", "text": { "es": "¿Cuántos saltos condicionales se ejecutan?", "en": "How many conditional branches are executed?" }, "answer": { "kind": "statistic", "path": "CONDITIONAL.TOTAL.num" } },
+      { "id": "mispredicted", "text": { "es": "¿Cuántos se predicen mal?", "en": "How many are mispredicted?" }, "answer": { "kind": "superscalar", "path": "mispredicted" } },
+      { "id": "squashed", "text": { "es": "¿Cuántas instrucciones se anulan?", "en": "How many instructions are squashed?" }, "answer": { "kind": "superscalar", "path": "squashed" } },
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } }
+    ]
+  },
+  {
+    "id": "superdlx-sin-prediccion",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/03-prediccion-de-saltos.s",
+    "title": { "es": "Sin predicción de saltos", "en": "Without branch prediction" },
+    "statement": {
+      "es": "El mismo programa sin predicción: la captación espera a que cada salto se resuelva. No se anula nada, pero compara los ciclos con los del ejercicio anterior.",
+      "en": "The same program without prediction: fetch waits until each branch is resolved. Nothing is squashed, but compare the cycles with the ones of the previous exercise."
+    },
+    "config": { "architecture": "superdlx", "superdlx": { "prediction": false } },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "waits", "text": { "es": "¿En cuántos ciclos espera la captación a un salto?", "en": "In how many cycles does fetch wait for a branch?" }, "answer": { "kind": "superscalar", "path": "fetchStalls.branch" } },
+      { "id": "squashed", "text": { "es": "¿Cuántas instrucciones se anulan?", "en": "How many instructions are squashed?" }, "answer": { "kind": "superscalar", "path": "squashed" } }
+    ]
+  },
+  {
+    "id": "superdlx-memoria",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/04-dependencias-en-memoria.s",
+    "title": { "es": "Dependencias a través de la memoria", "en": "Dependences through memory" },
+    "statement": {
+      "es": "En el primer bucle la suma vive en memoria: cada carga de Total espera al almacenamiento de la vuelta anterior, que no se escribe hasta confirmarse. Míralo en el buffer de cargas.",
+      "en": "In the first loop the sum lives in memory: each load of Total waits for the store of the previous iteration, which is not written until it commits. Look at it in the load buffer."
+    },
+    "config": { "architecture": "superdlx" },
+    "questions": [
+      { "id": "loads", "text": { "es": "¿Cuántas cargas se ejecutan?", "en": "How many loads are executed?" }, "answer": { "kind": "statistic", "path": "LOAD_STORE.LOADS.num" } },
+      { "id": "blocked", "text": { "es": "¿Cuántas esperaron a un almacenamiento anterior?", "en": "How many waited for an older store?" }, "answer": { "kind": "superscalar", "path": "blockedLoads" } },
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } }
+    ]
+  },
+  {
+    "id": "superdlx-rob-pequeno",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/05-rob-y-coma-flotante.s",
+    "title": { "es": "Un ROB pequeño", "en": "A small ROB" },
+    "statement": {
+      "es": "Con solo 4 entradas en el ROB de coma flotante, la división de la cabeza retiene a las demás y la decodificación se para. Cuenta esos ciclos.",
+      "en": "With only 4 entries in the floating point ROB, the division at the head holds the others and decode stops. Count those cycles."
+    },
+    "config": { "architecture": "superdlx", "superdlx": { "rob": { "int": 20, "fp": 4 } } },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "robFull", "text": { "es": "¿En cuántos ciclos se para la decodificación porque el ROB de coma flotante está lleno?", "en": "In how many cycles does decode stop because the floating point ROB is full?" }, "answer": { "kind": "superscalar", "path": "dispatchStalls.robFp" } }
+    ]
+  },
+  {
+    "id": "superdlx-rob-grande",
+    "topic": "superscalar",
+    "file": "ejemplos/superdlx/05-rob-y-coma-flotante.s",
+    "title": { "es": "Un ROB de 20 entradas", "en": "A ROB of 20 entries" },
+    "statement": {
+      "es": "El mismo programa con el ROB de WinSuperDLX, de 20 entradas: caben las divisiones de varias vueltas a la vez y las dos unidades de división trabajan juntas. Compara con el ejercicio «Un ROB pequeño».",
+      "en": "The same program with the ROB of WinSuperDLX, of 20 entries: the divisions of several iterations fit at the same time and the two divide units work together. Compare with the exercise «A small ROB»."
+    },
+    "config": { "architecture": "superdlx" },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "robFull", "text": { "es": "¿En cuántos ciclos se para la decodificación porque el ROB de coma flotante está lleno?", "en": "In how many cycles does decode stop because the floating point ROB is full?" }, "answer": { "kind": "superscalar", "path": "dispatchStalls.robFp" } }
+    ]
+  },
+  {
+    "id": "superdlx-frente-a-dlx",
+    "topic": "superscalar",
+    "file": "ejemplos/16-producto-escalar.s",
+    "title": { "es": "DLX frente a SuperDLX", "en": "DLX against SuperDLX" },
+    "statement": {
+      "es": "El producto escalar del ejercicio «Coma flotante», ahora en SuperDLX. Compara sus ciclos con los de DLX (en Estadísticas, pestaña «DLX y SuperDLX»): las instrucciones son las mismas.",
+      "en": "The dot product of the exercise «Floating point», now in SuperDLX. Compare its cycles with the ones of DLX (in Statistics, tab «DLX and SuperDLX»): the instructions are the same."
+    },
+    "config": { "architecture": "superdlx" },
+    "questions": [
+      { "id": "cycles", "text": { "es": "¿Cuántos ciclos tarda el programa?", "en": "How many cycles does the program take?" }, "answer": { "kind": "statistic", "path": "TOTAL.CYCLES_EXECUTED.cycles" } },
+      { "id": "instructions", "text": { "es": "¿Cuántas instrucciones se confirman?", "en": "How many instructions are committed?" }, "answer": { "kind": "statistic", "path": "TOTAL.ID_EXECUTED.instructions" } }
+    ]
   }
 ]

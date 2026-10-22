@@ -8,7 +8,9 @@ THUMDER ensambla y simula los programas por sí mismo, sin servidor. El código 
 | `assembler.ts` | El ensamblador: de código fuente a memoria |
 | `cpu.ts` | La memoria, los registros y lo que hace cada instrucción |
 | `traps.ts` | Los traps de entrada y salida (`printf`, lectura de líneas…) |
-| `pipeline.ts` | El pipeline, ciclo a ciclo |
+| `architectures.ts` | Las arquitecturas que simula THUMDER (DLX y SuperDLX) y sus vistas |
+| `pipeline.ts` | El pipeline de DLX, ciclo a ciclo |
+| `superscalar.ts` y `superscalar-config.ts` | SuperDLX, el DLX superescalar, y sus parámetros ([superdlx.md](superdlx.md)) |
 | `reference.ts` | Un ejecutor sin pipeline, instrucción a instrucción, con el que se comprueba el pipeline |
 | `simulator.ts` | Atiende las peticiones del protocolo (`SimulationInitRequest`, `SimulationNextStepRequest`…) |
 | `runner.ts` | Las peticiones y el bucle de ejecución: ciclos al ritmo elegido, puntos de ruptura, espera de entrada y pausa |
@@ -42,13 +44,14 @@ La página (`LocalSimulatorService`) y el Worker (`runner.ts`) se mandan objetos
 
 | Petición | Datos | Respuesta |
 | :-- | :-- | :-- |
-| `UpdateConfigurationMachineRequest` | `TypeConfigurationMachine`: adelantamiento, unidades de coma flotante (cantidad y retardo) y tamaño de memoria | La configuración. Se manda antes de cargar, porque el programa se ensambla para ese tamaño de memoria |
+| `UpdateConfigurationMachineRequest` | `TypeConfigurationMachine`: adelantamiento, unidades de coma flotante (cantidad y retardo), tamaño de memoria y la arquitectura (`architecture`: `dlx` o `superdlx`, con los parámetros de SuperDLX en `superscalar`) | La configuración. Se manda antes de cargar, porque el programa se ensambla para ese tamaño de memoria |
 | `SimulationInitRequest` | `LocalSimulationInitRequest`: el fichero (`filename`, `content`), los ficheros de su carpeta (`files`) y, si se eligieron a mano, los módulos que se ensamblan con él (`modules`) | `LocalSimulationInitResponse`: si se puede simular, los errores con su línea, las instrucciones, los datos en memoria, los símbolos (`symbols`) y los módulos cargados (`modules`) |
 | `SimulationNextStepRequest` | Nada | Un ciclo (`LocalSimulationStep`): las etapas, las flechas del diagrama, los registros y la memoria que cambian, las estadísticas y lo que escribe el programa |
 | `UpdateRegisterRequest` | `TypeRegisterToUpdate[]` (registro por nombre o número, valor en hexadecimal) | Los valores guardados y si se aceptaron todos |
 | `UpdateMemoryRequest` | `TypeMemoryToUpdate[]` | Lo mismo para la memoria |
 | `SimulationInputRequest` | `{ text }`: la línea escrita en la consola | `{ allOK: true }`; el programa sigue en el siguiente `run` o paso |
-| `CompareForwardingRequest` | `{ init, configuration, maxCycles? }` | `CompareResponse`: el programa ejecutado hasta el final con y sin adelantamiento (ciclos, instrucciones, CPI y atascos de cada tipo) |
+| `CompareForwardingRequest` | `{ init, configuration, maxCycles? }` | `CompareResponse`: el programa ejecutado hasta el final en DLX con y sin adelantamiento (ciclos, instrucciones, CPI, IPC y atascos de cada tipo) |
+| `CompareArchitecturesRequest` | `{ init, configuration, maxCycles? }` | `CompareArchitecturesResponse`: el programa ejecutado hasta el final en DLX y en SuperDLX, cada uno con su configuración |
 
 `MachineService` es quien usa este protocolo. Al cargar, manda `UpdateConfigurationMachineRequest` y después `SimulationInitRequest`. El paso de un ciclo (F8) es una `SimulationNextStepRequest`. Ejecutar (F9) es un `run`, del que va dibujando los ciclos según llegan. Pausar es un `pause`. Hasta el final sin dibujar (Mayúsculas+F9) es un `run` sin retardo en el que la página solo actualiza las vistas al parar. El paso atrás (Mayúsculas+F8) carga de nuevo el mismo programa y hace un `run` con `until` igual a los ciclos menos uno y el diario de lo que hizo la persona (líneas de la consola, registros y memoria cambiados a mano), así que el estado es exactamente el del ciclo anterior.
 
@@ -138,7 +141,8 @@ Una dirección fuera de la memoria, un acceso sin alinear, una división entera 
 ## 7. Cómo se comprueba
 
 - **Ensamblador** (`assembler.spec.ts`): codificaciones de WinDLX, directivas, errores con su línea y todos los ejemplos de `src/assets/examples-dlx`.
-- **Ejemplos clásicos** (`classics.spec.ts`): los 20 programas de [ejemplos-dlx.md](ejemplos-dlx.md) imprimen lo que dicen sus cabeceras y terminan igual en el pipeline que en el ejecutor de referencia, con las cuatro configuraciones.
+- **Ejemplos clásicos** (`classics.spec.ts`): los 20 programas de [ejemplos-dlx.md](ejemplos-dlx.md) imprimen lo que dicen sus cabeceras y terminan igual en el pipeline que en el ejecutor de referencia, con las cuatro configuraciones. Los 5 de SuperDLX, en `superdlx-examples.spec.ts`.
+- **SuperDLX** (`superscalar.spec.ts`): todos los ejemplos terminan igual que en el ejecutor de referencia con cinco máquinas, con invariantes en cada ciclo ([superdlx.md](superdlx.md)).
 - **Semántica** (`reference.spec.ts`): `prim.s` deja los 10 primeros primos en `Table`, `gcm.s` con `input.s` imprime `gcM=6` para 12 y 18, `fact.s` calcula 5! = 120 con `double` y `base.s` cuenta los días por encima de 14 grados.
 - **Pipeline** (`pipeline.spec.ts`):
   - las líneas temporales de las reglas de arriba;

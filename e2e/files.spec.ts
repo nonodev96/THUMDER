@@ -127,7 +127,8 @@ test.describe("carpetas de THUMDER", () => {
     // They are not files of the person
     const stored = await storedFiles(page);
     expect(stored.some((file) => file.key.startsWith("thumder:"))).toBe(false);
-    expect(stored.filter((file) => file.path === "mis ejemplos")).toHaveLength(21);
+    expect(stored.filter((file) => file.path === "mis ejemplos")).toHaveLength(22);
+    expect(stored.filter((file) => file.path === "mis ejemplos/superdlx")).toHaveLength(5);
   });
 
   test("las opciones de la última fila se ven enteras sobre la lista y se pueden usar", async ({ page }) => {

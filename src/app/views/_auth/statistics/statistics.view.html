@@ -20,6 +20,9 @@
   </div>
 
   <div class="card-body statistics-body">
+    @if (superscalar()) {
+    <thumder-superscalar-statistics></thumder-superscalar-statistics>
+    } @else {
     <ul class="nav nav-tabs thumder-tabs statistics-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.STATISTICS' | translate">
       @for (item of tabs; track item.id; let index = $index) {
         <li class="nav-item" role="presentation">
@@ -263,5 +266,6 @@
         }
       }
     </div>
+    }
   </div>
 </div>

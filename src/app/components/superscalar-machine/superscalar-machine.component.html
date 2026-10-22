@@ -1,0 +1,280 @@
+@let s = snapshot();
+@let p = parameters();
+@if (s === null) {
+  <!-- Before the first cycle: what the machine is -->
+  <div class="ss-empty" id="superscalarEmpty">
+    <p class="mb-2"><i class="fas fa-layer-group mr-1" aria-hidden="true"></i> {{ (canSimulate() ? 'SUPERSCALAR.EMPTY_READY' : 'SUPERSCALAR.EMPTY') | translate }}</p>
+    <p class="small text-muted mb-0">
+      {{ 'SUPERSCALAR.MACHINE_SUMMARY' | translate: { fetch: p.fetch, decode: p.decode, commit: p.commit, robInt: p.rob.int, robFp: p.rob.fp, windowInt: p.window.int, windowFp: p.window.fp } }}
+      {{ (p.prediction ? 'SUPERSCALAR.WITH_PREDICTION' : 'SUPERSCALAR.WITHOUT_PREDICTION') | translate }}
+    </p>
+  </div>
+} @else {
+  <!-- The cycle: the fetch address, why fetch stopped and the instructions per cycle -->
+  <div class="ss-status" id="superscalarStatus">
+    <span class="ss-chip"><strong>{{ 'SUPERSCALAR.CYCLE' | translate }}</strong> {{ s.cycle }}</span>
+    <span class="ss-chip"><strong>PC</strong> <code>{{ address(s.pc) }}</code></span>
+    @if (s.fetchStop) {
+      <span class="ss-chip ss-chip--warning" id="superscalarFetchStop"><i class="fas fa-pause mr-1" aria-hidden="true"></i>{{ ('SUPERSCALAR.FETCH_STOP.' + s.fetchStop) | translate }}</span>
+    }
+    @if (stats(); as st) {
+      <span class="ss-chip"><strong>{{ 'SUPERSCALAR.COMMITTED' | translate }}</strong> {{ st.instructions }}</span>
+      <span class="ss-chip"><strong>IPC</strong> {{ ipc().toFixed(2) }}</span>
+    }
+  </div>
+
+  <div class="ss-grid">
+    <!-- Fetch: the instruction queue -->
+    <section class="ss-panel ss-panel--queue" aria-labelledby="ssQueueTitle">
+      <header class="ss-panel-head">
+        <h4 class="ss-panel-title" id="ssQueueTitle"><span class="ss-dot ss-dot--queue" aria-hidden="true"></span>{{ 'SUPERSCALAR.QUEUE' | translate }}</h4>
+        <span class="ss-count">{{ s.queue.length }} / {{ s.sizes.queue }}</span>
+      </header>
+      <div class="ss-meter" aria-hidden="true"><span [style.width.%]="occupancy(s.queue.length, s.sizes.queue)"></span></div>
+      <ol class="ss-list" id="superscalarQueue">
+        @for (op of s.queue; track op.row) {
+          <li><span class="ss-row">#{{ op.row }}</span> <code>{{ text(op.pc) }}</code></li>
+        } @empty {
+          <li class="ss-none">{{ 'SUPERSCALAR.NONE' | translate }}</li>
+        }
+      </ol>
+    </section>
+
+    <!-- The instruction windows: what each instruction waits for -->
+    @for (side of sides; track side) {
+      @let window = s.windows[side];
+      <section class="ss-panel ss-panel--window" [attr.aria-labelledby]="'ssWindowTitle-' + side">
+        <header class="ss-panel-head">
+          <h4 class="ss-panel-title" [id]="'ssWindowTitle-' + side"><span class="ss-dot ss-dot--window" aria-hidden="true"></span>{{ ('SUPERSCALAR.WINDOW_' + side.toUpperCase()) | translate }}</h4>
+          <span class="ss-count">{{ window.length }} / {{ s.sizes.window[side] }}</span>
+        </header>
+        <div class="ss-meter" aria-hidden="true"><span [style.width.%]="occupancy(window.length, s.sizes.window[side])"></span></div>
+        <div class="ss-table-wrap">
+          <table class="ss-table" [id]="'superscalarWindow-' + side">
+            <caption class="sr-only">{{ ('SUPERSCALAR.WINDOW_' + side.toUpperCase()) | translate }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'SUPERSCALAR.INSTRUCTION' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.OPERANDS' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.WAITS' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of window; track entry.row) {
+                <tr>
+                  <th scope="row">
+                    <span class="ss-row">#{{ entry.row }}</span> <code>{{ text(entry.pc) }}</code>
+                    <span class="ss-unit">{{ poolLabel(entry.pool) | translate }}</span>
+                  </th>
+                  <td>
+                    @for (source of entry.sources; track $index) {
+                      <span class="ss-operand" [class.ss-operand--ready]="source.ready" [title]="sourceTitle(source)">
+                        {{ source.name }}
+                        @if (source.ready) { <i class="fas fa-check" aria-hidden="true"></i> } @else { <span>&larr; #{{ source.row }}</span> }
+                      </span>
+                    } @empty {
+                      <span class="text-muted">-</span>
+                    }
+                  </td>
+                  <td class="ss-nowrap">
+                    @if (entry.waiting) {
+                      <span class="ss-state ss-state--wait">{{ ('SUPERSCALAR.WAITING.' + entry.waiting) | translate }}</span>
+                    } @else {
+                      <span class="ss-state ss-state--ready">{{ 'SUPERSCALAR.WAITING.ready' | translate }}</span>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="3" class="ss-none">{{ 'SUPERSCALAR.NONE' | translate }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+
+    <!-- The functional units: each one busy with an instruction for its latency -->
+    <section class="ss-panel ss-panel--units" aria-labelledby="ssUnitsTitle">
+      <header class="ss-panel-head">
+        <h4 class="ss-panel-title" id="ssUnitsTitle"><span class="ss-dot ss-dot--unit" aria-hidden="true"></span>{{ 'SUPERSCALAR.UNITS' | translate }}</h4>
+      </header>
+      <div class="ss-units" id="superscalarUnits">
+        @for (side of sides; track side) {
+          <div class="ss-units-side">
+            <h5 class="ss-units-title">{{ ('SUPERSCALAR.SIDE_' + side.toUpperCase()) | translate }}</h5>
+            @for (unit of units()[side]; track unit.pool) {
+              <div class="ss-pool">
+                <div class="ss-pool-name">
+                  {{ poolLabel(unit.pool) | translate }}
+                  <span class="text-muted small">{{ 'SUPERSCALAR.POOL_INFO' | translate: { busy: busy(unit), count: unit.slots.length, latency: unit.latency } }}</span>
+                </div>
+                <div class="ss-slots">
+                  @for (slot of unit.slots; track $index) {
+                    @if (slot) {
+                      <span class="ss-slot ss-slot--busy" [class.ss-slot--fp]="side === 'fp'" [title]="'#' + slot.row + ' ' + text(slot.pc)">
+                        <span class="ss-row">#{{ slot.row }}</span>
+                        <code>{{ text(slot.pc) }}</code>
+                        <span class="ss-left">{{ 'SUPERSCALAR.LEFT' | translate: { cycles: slot.left } }}</span>
+                      </span>
+                    } @else {
+                      <span class="ss-slot" aria-hidden="true"></span>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- The reorder buffers: in order, from the head (the oldest) -->
+    @for (side of sides; track side) {
+      @let rob = robOf(s, side);
+      <section class="ss-panel" [attr.aria-labelledby]="'ssRobTitle-' + side">
+        <header class="ss-panel-head">
+          <h4 class="ss-panel-title" [id]="'ssRobTitle-' + side"><span class="ss-dot ss-dot--rob" aria-hidden="true"></span>{{ ('SUPERSCALAR.ROB_' + side.toUpperCase()) | translate }}</h4>
+          <span class="ss-count">{{ rob.entries.length }} / {{ s.sizes.rob[side] }}</span>
+        </header>
+        <div class="ss-meter" aria-hidden="true"><span [style.width.%]="occupancy(rob.entries.length, s.sizes.rob[side])"></span></div>
+        <div class="ss-table-wrap">
+          <table class="ss-table" [id]="'superscalarRob-' + side">
+            <caption class="sr-only">{{ ('SUPERSCALAR.ROB_' + side.toUpperCase()) | translate }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'SUPERSCALAR.ENTRY' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.INSTRUCTION' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.DESTINATION' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.STATE_TITLE' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.VALUE' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of rob.entries; track entry.row; let first = $first) {
+                <tr [class.ss-head]="first">
+                  <td class="ss-nowrap">{{ entry.slot }} @if (first) { <span class="ss-badge">{{ 'SUPERSCALAR.HEAD' | translate }}</span> }</td>
+                  <th scope="row"><span class="ss-row">#{{ entry.row }}</span> <code>{{ text(entry.pc) }}</code></th>
+                  <td><code>{{ entry.dest }}</code></td>
+                  <td class="ss-nowrap">
+                    <span class="ss-state" [class]="'ss-state ss-state--' + entry.state">{{ ('SUPERSCALAR.STATE.' + entry.state) | translate }}</span>
+                    @if (entry.predicted !== undefined) {
+                      <span class="ss-predict" [class.ss-predict--wrong]="entry.mispredicted">
+                        {{ (entry.predicted ? 'SUPERSCALAR.PREDICTED_TAKEN' : 'SUPERSCALAR.PREDICTED_NOT') | translate }}
+                        @if (entry.mispredicted) { <i class="fas fa-times" aria-hidden="true"></i> }
+                      </span>
+                    }
+                  </td>
+                  <td>
+                    @if (entry.error) {
+                      <span class="ss-error" [title]="entry.error">{{ 'SUPERSCALAR.ERROR' | translate }}</span>
+                    } @else {
+                      <code class="ss-value">{{ entry.value ?? '' }}</code>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="ss-none">{{ 'SUPERSCALAR.NONE' | translate }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+
+    <!-- The load and store buffers -->
+    @for (buffer of [{ key: 'LOAD', entries: s.loadBuffer, size: s.sizes.loadBuffer }, { key: 'STORE', entries: s.storeBuffer, size: s.sizes.storeBuffer }]; track buffer.key) {
+      <section class="ss-panel" [attr.aria-labelledby]="'ssBufferTitle-' + buffer.key">
+        <header class="ss-panel-head">
+          <h4 class="ss-panel-title" [id]="'ssBufferTitle-' + buffer.key"><span class="ss-dot ss-dot--memory" aria-hidden="true"></span>{{ ('SUPERSCALAR.' + buffer.key + '_BUFFER') | translate }}</h4>
+          <span class="ss-count">{{ buffer.entries.length }} / {{ buffer.size }}</span>
+        </header>
+        <div class="ss-table-wrap">
+          <table class="ss-table" [id]="'superscalarBuffer-' + buffer.key">
+            <caption class="sr-only">{{ ('SUPERSCALAR.' + buffer.key + '_BUFFER') | translate }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'SUPERSCALAR.INSTRUCTION' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.ADDRESS' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.STATE_TITLE' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of buffer.entries; track entry.row) {
+                <tr>
+                  <th scope="row"><span class="ss-row">#{{ entry.row }}</span> <code>{{ text(entry.pc) }}</code></th>
+                  <td><code>{{ address(entry.address) }}</code></td>
+                  <td class="ss-nowrap">
+                    <span [class]="'ss-state ss-state--buffer-' + entry.state">{{ ('SUPERSCALAR.BUFFER_STATE.' + entry.state) | translate }}</span>
+                    @if (entry.data === false) { <span class="ss-state ss-state--wait">{{ 'SUPERSCALAR.NO_DATA' | translate }}</span> }
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="3" class="ss-none">{{ 'SUPERSCALAR.NONE' | translate }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+    }
+
+    <!-- The registers renamed: which instruction will write each one -->
+    <section class="ss-panel" aria-labelledby="ssRenameTitle">
+      <header class="ss-panel-head">
+        <h4 class="ss-panel-title" id="ssRenameTitle"><span class="ss-dot ss-dot--rename" aria-hidden="true"></span>{{ 'SUPERSCALAR.RENAME' | translate }}</h4>
+        <span class="ss-count">{{ s.rename.length }}</span>
+      </header>
+      <p class="ss-help">{{ 'SUPERSCALAR.RENAME_HELP' | translate }}</p>
+      <ul class="ss-rename" id="superscalarRename">
+        @for (entry of s.rename; track entry.register) {
+          <li [class.ss-rename--ready]="entry.ready">
+            <code>{{ entry.register }}</code> &larr; #{{ entry.row }}
+            <span class="ss-rename-rob">(ROB {{ entry.side === 'fp' ? 'FP' : 'INT' }} {{ entry.slot }})</span>
+            @if (entry.ready) { <i class="fas fa-check" aria-hidden="true"></i> }
+          </li>
+        } @empty {
+          <li class="ss-none">{{ 'SUPERSCALAR.NONE' | translate }}</li>
+        }
+      </ul>
+    </section>
+
+    <!-- The branch target buffer and its 2-bit counters -->
+    <section class="ss-panel" aria-labelledby="ssBtbTitle">
+      <header class="ss-panel-head">
+        <h4 class="ss-panel-title" id="ssBtbTitle"><span class="ss-dot ss-dot--btb" aria-hidden="true"></span>{{ 'SUPERSCALAR.BTB.TITLE' | translate }}</h4>
+        <span class="ss-count">{{ s.btb.length }} / {{ s.sizes.btb }}</span>
+      </header>
+      @if (!p.prediction) {
+        <p class="ss-help">{{ 'SUPERSCALAR.BTB.OFF' | translate }}</p>
+      } @else {
+        <div class="ss-table-wrap">
+          <table class="ss-table" id="superscalarBtb">
+            <caption class="sr-only">{{ 'SUPERSCALAR.BTB.TITLE' | translate }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'SUPERSCALAR.ENTRY' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.BTB.BRANCH' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.BTB.TARGET' | translate }}</th>
+                <th scope="col">{{ 'SUPERSCALAR.BTB.COUNTER' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (entry of s.btb; track entry.index) {
+                <tr>
+                  <td>{{ entry.index }}</td>
+                  <th scope="row"><code>{{ text(entry.pc) }}</code></th>
+                  <td><code>{{ address(entry.target) }}</code></td>
+                  <td class="ss-nowrap">
+                    <span class="ss-counter" [class.ss-counter--taken]="entry.state >= 2">{{ entry.state >= 2 ? 1 : 0 }}{{ entry.state % 2 }}</span>
+                    {{ counter(entry.state) | translate }}
+                  </td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4" class="ss-none">{{ 'SUPERSCALAR.BTB.EMPTY' | translate }}</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+  </div>
+}

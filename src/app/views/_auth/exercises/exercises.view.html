@@ -55,7 +55,10 @@
             <div class="col-md-6 col-xl-4 d-flex">
               <article class="card card-outline flex-fill" [class.card-success]="progress()[exercise.id]?.checked && score(exercise) === exercise.questions.length">
                 <div class="card-body">
-                  <h3 class="h6">{{ text(exercise.title) }}</h3>
+                  <h3 class="h6">
+                    {{ text(exercise.title) }}
+                    @if (exercise.config.architecture === 'superdlx') { <span class="badge badge-primary ml-1">SuperDLX</span> }
+                  </h3>
                   <p class="small mb-2">{{ text(exercise.statement) }}</p>
                   <p class="small text-muted mb-2">{{ 'EXERCISES.QUESTIONS' | translate: { count: exercise.questions.length, file: exercise.file.split('/').pop() } }}</p>
                   <button type="button" class="btn btn-sm btn-outline-primary" [attr.data-exercise]="exercise.id" (click)="start(exercise)">

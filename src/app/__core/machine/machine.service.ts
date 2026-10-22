@@ -30,20 +30,25 @@ import { ManagerBreakpoints } from "@core/DLX/ManagerBreakpoints";
 import { ManagerMemory } from "@core/DLX/ManagerMemory";
 import { ManagerRegisters } from "@core/DLX/ManagerRegisters";
 import { ManagerStatistics } from "@core/DLX/ManagerStatistics";
+import { type ArchitectureId, DEFAULT_ARCHITECTURE } from "@core/engine/architectures";
 import type { JournalEntry, StageBreakpoint, Watchpoint } from "@core/engine/runner";
 import type {
   BreakpointHit,
   BreakpointStage,
+  CompareArchitecturesResponse,
   CompareResponse,
   LocalSimulationInitRequest,
   LocalSimulationInitResponse,
   SimulationStepExtra,
   SymbolInfo,
 } from "@core/engine/simulator";
+import type { SuperscalarSnapshot, SuperscalarStats } from "@core/engine/superscalar";
+import { defaultSuperscalar, type SuperscalarParameters } from "@core/engine/superscalar-config";
 import type { TrapIO } from "@core/engine/traps";
 import { ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
 import { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
+import { SuperscalarTimeline } from "@core/machine/superscalar-timeline";
 import { FileSystemService } from "@core/services/file-system/file-system.service";
 import { LocalSimulatorService } from "@core/services/simulator/local-simulator.service";
 import { SoundService } from "@core/services/sound/sound.service";
@@ -156,6 +161,13 @@ export type MachineState = {
   modules: Signal<string[]>;
   /** The key of the file loaded (the file manager) */
   fileKey: Signal<string>;
+  /** The architecture of the machine: the one of the configuration (or the one the exercise of the file locks) */
+  architecture: Signal<ArchitectureId>;
+  /** SuperDLX: the whole machine in this cycle (null before the first one, and with DLX) */
+  superscalar: Signal<SuperscalarSnapshot | null>;
+  superscalarStats: Signal<SuperscalarStats | null>;
+  /** Changes when the history of SuperDLX (`MachineService.timeline`) changes */
+  timeline: Signal<number>;
 };
 
 /** A message of the log of the simulation */
@@ -188,6 +200,11 @@ export class MachineService {
   public readonly breakpointManager = new ManagerBreakpoints();
   /** The cycle clock diagram, from the start of the simulation (drawn by its view) */
   public readonly diagram = new CycleDiagramModel();
+  /** SuperDLX: what each instruction did, cycle by cycle (its diagram) */
+  public readonly timeline = new SuperscalarTimeline();
+  /** The architecture and the parameters of SuperDLX of the program loaded */
+  public architecture: ArchitectureId = DEFAULT_ARCHITECTURE;
+  public superscalarParameters: SuperscalarParameters = defaultSuperscalar();
   // address --> instruction
   public code: THUMDER_Map<TypeAddress, TypeInstructionsData> = new THUMDER_Map();
 
@@ -221,6 +238,10 @@ export class MachineService {
   private readonly symbolsSignal = signal<SymbolInfo[]>([]);
   private readonly modulesSignal = signal<string[]>([]);
   private readonly fileKeySignal = signal("");
+  private readonly architectureSignal = signal<ArchitectureId>(DEFAULT_ARCHITECTURE);
+  private readonly superscalarSignal = signal<SuperscalarSnapshot | null>(null);
+  private readonly superscalarStatsSignal = signal<SuperscalarStats | null>(null);
+  private readonly timelineSignal = signal(0);
 
   /**
    * Stepping back: the program is loaded again and run, without drawing, to the cycle before. Meanwhile the views keep
@@ -265,6 +286,10 @@ export class MachineService {
     symbols: this.held(this.symbolsSignal),
     modules: this.held(this.modulesSignal),
     fileKey: this.held(this.fileKeySignal),
+    architecture: this.held(this.architectureSignal),
+    superscalar: this.held(this.superscalarSignal),
+    superscalarStats: this.held(this.superscalarStatsSignal),
+    timeline: this.held(this.timelineSignal),
   };
 
   /**
@@ -307,6 +332,8 @@ export class MachineService {
   private pendingConsole: ConsoleChunk[] = [];
   private pendingTraps: TrapRecord[] = [];
   private lastStep: Step | null = null;
+  /** SuperDLX: the machine of the last cycle that brought it, while the views are not drawn */
+  private pendingSnapshot: Pick<NonNullable<Step["superscalar"]>, "snapshot" | "stats"> | null = null;
 
   constructor() {
     const config = this.config.value();
@@ -315,6 +342,9 @@ export class MachineService {
     this.unitsSignal.set(MachineService.unitsOf(this.floatingPointStageConfiguration));
     this.memorySize = config.memorySize;
     this.memory = new ManagerMemory(this.memorySize);
+    this.architecture = config.architecture;
+    this.superscalarParameters = config.superdlx;
+    this.architectureSignal.set(config.architecture);
   }
 
   // The names the rest of THUMDER used before the signals
@@ -370,7 +400,11 @@ export class MachineService {
       this.memory.setSize(this.memorySize);
       this.floatingPointStageConfiguration = config.floatingPoint;
       this.enabledForwarding = config.forwarding;
+      this.architecture = config.architecture;
+      this.superscalarParameters = config.superdlx;
+      this.architectureSignal.set(config.architecture);
       this.diagram.limit = config.diagramHistory;
+      this.timeline.limit = config.diagramHistory;
       this.emptyState({ keepJournal: options.again === true });
       this.sound.resetPipeline();
 
@@ -398,6 +432,11 @@ export class MachineService {
     this.registers.reset();
     this.dataStatistics.reset();
     this.diagram.reset();
+    this.timeline.reset();
+    this.superscalarSignal.set(null);
+    this.superscalarStatsSignal.set(null);
+    this.pendingSnapshot = null;
+    this.timelineSignal.update((version) => version + 1);
     this.code = new THUMDER_Map();
     this.code.setDefaultValue(DEFAULT_CODE);
 
@@ -586,8 +625,18 @@ export class MachineService {
       this.waitingForInputSignal.set(step.waitingForInput === true && !answered);
     }
     this.statisticsSignal.set(this.dataStatistics.getData());
+    this.publishSuperscalar();
     this.touchValues();
     this.diagramSignal.update((version) => version + 1);
+  }
+
+  /** The same program in DLX and in SuperDLX, to the end, each one with its configuration */
+  public async compareArchitectures(): Promise<CompareArchitecturesResponse> {
+    const init = this.lastInit ?? (await this.initRequest());
+    return this.simulator.request<CompareArchitecturesResponse>("CompareArchitecturesRequest", {
+      init,
+      configuration: this.configuration(),
+    });
   }
 
   /** The same program with and without forwarding, to the end, with the rest of the configuration (EDU-02) */
@@ -657,6 +706,8 @@ export class MachineService {
       addition: { ...this.floatingPointStageConfiguration.addition },
       division: { ...this.floatingPointStageConfiguration.division },
       multiplication: { ...this.floatingPointStageConfiguration.multiplication },
+      architecture: this.architecture,
+      superscalar: structuredClone(this.superscalarParameters),
     };
   }
 
@@ -768,6 +819,10 @@ export class MachineService {
 
   // The pipeline and the cycle clock diagram live here (not in their views), so they are complete when a view opens
   private updatePipeline(step: Step): void {
+    if (step.superscalar) {
+      this.updateSuperscalar(step);
+      return;
+    }
     const { pipeline } = step;
     if (step.isNewInstruction === true) {
       this.diagram.addInstruction(this.code.getOrDefaultValue(pipeline.IF.address)?.instruction ?? "");
@@ -790,8 +845,57 @@ export class MachineService {
     this.diagramSignal.update((version) => version + 1);
   }
 
+  /** SuperDLX: the history of the instructions and, in the cycles that bring it, the whole machine */
+  private updateSuperscalar(step: Step): void {
+    const superscalar = step.superscalar as NonNullable<Step["superscalar"]>;
+    this.timeline.add(step.step, superscalar.events);
+    if (superscalar.snapshot) this.pendingSnapshot = { snapshot: superscalar.snapshot, stats: superscalar.stats };
+    if (this.quiet) return;
+    this.publishPipeline(step);
+    this.timelineSignal.update((version) => version + 1);
+  }
+
+  /** SuperDLX: the machine for its views, and where each instruction of the code is */
+  private publishSuperscalar(): void {
+    const pending = this.pendingSnapshot;
+    if (pending === null || pending.snapshot === undefined) return;
+    this.pendingSnapshot = null;
+    const snapshot = pending.snapshot;
+    this.superscalarSignal.set(snapshot);
+    if (pending.stats) this.superscalarStatsSignal.set(pending.stats);
+    this.timelineSignal.update((version) => version + 1);
+    // The stage of each instruction, as DLX names them: the queue is IF, the windows ID, the units EX, then MEM and WB
+    const stages = new Map<TypeAddress, TypeStage>();
+    const at = (pc: number) => `0x${(pc >>> 0).toString(16).toUpperCase().padStart(8, "0")}` as TypeAddress;
+    const unitStage = (pool: string | null): TypeStage =>
+      pool === "fp.add" ? "faddEX" : pool === "fp.mult" ? "fmultEX" : pool === "fp.div" ? "fdivEX" : "intEX";
+    for (const side of ["int", "fp"] as const) {
+      for (const entry of snapshot.rob[side].entries) {
+        const stage: TypeStage =
+          entry.state === "window"
+            ? "ID"
+            : entry.state === "executing"
+              ? "intEX"
+              : entry.state === "address" || entry.state === "memory"
+                ? "MEM"
+                : "WB";
+        stages.set(at(entry.pc), stage);
+      }
+    }
+    for (const unit of snapshot.units) {
+      for (const slot of unit.slots) if (slot) stages.set(at(slot.pc), unitStage(unit.pool));
+    }
+    for (const op of snapshot.queue) stages.set(at(op.pc), "IF");
+    this.stagesSignal.set(stages);
+  }
+
   /** The pipeline of a cycle and where each instruction is, for the views */
   private publishPipeline(step: Step): void {
+    if (step.superscalar) {
+      this.cycleSignal.set({ step: step.step, registers: step.registers ?? [], memory: step.memory ?? [], reads: step.reads ?? [] });
+      this.publishSuperscalar();
+      return;
+    }
     const { pipeline } = step;
     this.cycleSignal.set({ step: step.step, registers: step.registers ?? [], memory: step.memory ?? [], reads: step.reads ?? [] });
     const unit = (cell: TypeCycleCell & { unit?: number }) => ({ unit: cell.unit ?? 0, ...this.instructionInCell(cell) });

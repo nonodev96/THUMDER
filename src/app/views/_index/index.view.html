@@ -31,7 +31,7 @@
 </section>
 
 <!-- Every view, by sections: what each one is for -->
-@for (section of sections; track section.title) {
+@for (section of sections(); track section.title) {
   <section class="home-section" [attr.aria-labelledby]="'homeSection-' + $index">
     <h2 class="home-section-title" [id]="'homeSection-' + $index">{{ section.title | translate }}</h2>
     <ul class="home-tiles">

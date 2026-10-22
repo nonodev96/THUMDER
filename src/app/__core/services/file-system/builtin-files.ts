@@ -1,10 +1,10 @@
-import { DLX_EXAMPLES, DLX_EXAMPLES_FOLDER, DLX_EXAMPLES_MODULES } from "@app/CONSTANTS";
+import { DLX_EXAMPLES, DLX_EXAMPLES_FOLDER, DLX_EXAMPLES_MODULES, SUPERDLX_EXAMPLES, SUPERDLX_EXAMPLES_FOLDER } from "@app/CONSTANTS";
 import type { InterfaceFileItem } from "@app/Types";
 import type { Exercise } from "@core/exercises/exercises";
 import { normalizeFile } from "./file-store";
 
-// The folders of THUMDER: the classic DLX examples and the programs of the guided exercises, at the root of the file
-// manager for everyone (with or without an account). They come with the application (src/assets), so they are read
+// The folders of THUMDER: the classic DLX examples (with the ones of SuperDLX in a folder inside) and the programs of the
+// guided exercises, at the root of the file manager for everyone (with or without an account). They come with the application (src/assets), so they are read
 // only and are never saved, neither in the browser nor in the account. A program of them that is changed is saved as
 // a copy in the files of the person ("mis ejemplos", "mis ejercicios").
 
@@ -16,6 +16,8 @@ export const BUILTIN_OWNER = "thumder";
 
 export const EXAMPLES_FOLDER = DLX_EXAMPLES_FOLDER;
 export const EXERCISES_FOLDER = "ejercicios";
+/** The folder of the examples of SuperDLX: "ejemplos/superdlx" */
+export const SUPERDLX_FOLDER = `${DLX_EXAMPLES_FOLDER}/${SUPERDLX_EXAMPLES_FOLDER}`;
 export const BUILTIN_FOLDERS = [EXAMPLES_FOLDER, EXERCISES_FOLDER];
 
 /** What a file of the guided exercises keeps in `dataItem`: the id of its exercise */
@@ -68,11 +70,14 @@ export async function loadBuiltinFiles(fetchText: (path: string) => Promise<stri
   };
   const examples = await Promise.all(DLX_EXAMPLES.map((name) => text(`${EXAMPLES_FOLDER}/${name}`)));
   const modules = await Promise.all(DLX_EXAMPLES_MODULES.map((name) => text(name)));
+  const superdlx = await Promise.all(SUPERDLX_EXAMPLES.map((name) => text(`${SUPERDLX_FOLDER}/${name}`)));
   const programs = await Promise.all(exercises.map((exercise) => text(exercise.file)));
   return [
     builtinItem("", EXAMPLES_FOLDER, true),
     ...DLX_EXAMPLES.map((name, index) => builtinItem(EXAMPLES_FOLDER, name, false, examples[index])),
     ...DLX_EXAMPLES_MODULES.map((name, index) => builtinItem(EXAMPLES_FOLDER, name, false, modules[index])),
+    builtinItem(EXAMPLES_FOLDER, SUPERDLX_EXAMPLES_FOLDER, true),
+    ...SUPERDLX_EXAMPLES.map((name, index) => builtinItem(SUPERDLX_FOLDER, name, false, superdlx[index])),
     builtinItem("", EXERCISES_FOLDER, true),
     ...exercises.map((exercise, index) =>
       builtinItem(EXERCISES_FOLDER, `${exercise.id}.s`, false, programs[index], { exercise: exercise.id }),

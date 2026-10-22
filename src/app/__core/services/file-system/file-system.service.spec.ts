@@ -165,8 +165,12 @@ describe("FileSystemService", () => {
 
     it("are at the root for everyone, with the examples, their module and the exercises, and are never saved", () => {
       expect(service.namesIn("")).toEqual(expect.arrayContaining(["ejemplos", "ejercicios", "practica", "otro.s"]));
-      expect(service.namesIn("ejemplos")).toHaveLength(21);
+      // The 20 classics, their module and the folder of SuperDLX, with its 5 examples
+      expect(service.namesIn("ejemplos")).toHaveLength(22);
       expect(builtin("ejemplos", "input.s").content).toBe("; input.s");
+      expect(builtin("ejemplos", "superdlx").isDirectory).toBe(true);
+      expect(service.namesIn("ejemplos/superdlx")).toHaveLength(5);
+      expect(builtin("ejemplos/superdlx", "01-paralelismo.s").content).toBe("; ejemplos/superdlx/01-paralelismo.s");
       expect(builtin("ejercicios", "riesgos.s")).toMatchObject({ key: exerciseKey("riesgos"), content: "; ejemplos/02-suma-vector.s" });
       expect(stored().some((value) => value.key.startsWith("thumder:"))).toBe(false);
     });
@@ -208,7 +212,8 @@ describe("FileSystemService", () => {
 
     it("a folder is copied to the files of the person, and only their files are downloaded as everything", async () => {
       expect(await service.copyToMine(builtin("", "ejemplos") as FileSystemItem)).toBe("mis ejemplos");
-      expect(service.namesIn("mis ejemplos")).toHaveLength(21);
+      expect(service.namesIn("mis ejemplos")).toHaveLength(22);
+      expect(service.namesIn("mis ejemplos/superdlx")).toHaveLength(5);
       expect(await service.copyToMine(builtin("", "ejemplos") as FileSystemItem)).toBe("mis ejemplos (2)");
       const all = await readZip(await service.exportItems([]).blob.arrayBuffer());
       expect(all.every((entry) => !entry.path.startsWith("ejemplos/") && !entry.path.startsWith("ejercicios/"))).toBe(true);

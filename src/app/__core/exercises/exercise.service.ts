@@ -8,8 +8,26 @@ import { StorageService } from "@core/storage/storage.service";
 import type { Exercise } from "./exercises";
 import type { Lockable, SharedExercise } from "./share";
 
-/** What an exercise locks in a file: the options and their values (storage: "exercise_locks", by the key of the file) */
-export type ExerciseLock = { locked: Lockable[]; values: Pick<ThumderConfig, Lockable>; statement: string };
+/**
+ * What an exercise locks in a file: the options and their values (storage: "exercise_locks", by the key of the file).
+ * Locking the architecture locks the parameters of SuperDLX too (`superdlx`, missing in the locks made before it)
+ */
+export type ExerciseLock = {
+  locked: Lockable[];
+  values: Pick<ThumderConfig, Exclude<Lockable, "architecture">> & Partial<Pick<ThumderConfig, "architecture" | "superdlx">>;
+  statement: string;
+};
+
+/** The values an exercise locks, from a configuration */
+function lockValues(config: ThumderConfig): ExerciseLock["values"] {
+  return {
+    architecture: config.architecture,
+    superdlx: structuredClone(config.superdlx),
+    forwarding: config.forwarding,
+    floatingPoint: config.floatingPoint,
+    memorySize: config.memorySize,
+  };
+}
 
 /** The folder of the shared exercises in the file manager */
 export const SHARED_FOLDER = "compartidos";
@@ -42,7 +60,10 @@ export class ExerciseService {
   public configFor(fileKey: string | undefined, config: ThumderConfig = this.config.value()): ThumderConfig {
     const lock = fileKey ? this.lockOf(fileKey) : null;
     if (lock === null) return config;
-    const locked = Object.fromEntries(lock.locked.map((key) => [key, lock.values[key]]));
+    const locked: Partial<ThumderConfig> = Object.fromEntries(
+      lock.locked.filter((key) => lock.values[key] !== undefined).map((key) => [key, lock.values[key]]),
+    );
+    if (lock.locked.includes("architecture") && lock.values.superdlx) locked.superdlx = lock.values.superdlx;
     return { ...config, ...locked };
   }
 
@@ -77,11 +98,17 @@ export class ExerciseService {
       this.saveProgress(exercise.id, { fileKey: file.key, answers: {}, checked: false });
     }
     const config = validateConfig({ ...defaultConfig(), ...exercise.config });
-    const locked = (Object.keys(exercise.config) as Lockable[]).filter((key) =>
-      ["forwarding", "floatingPoint", "memorySize"].includes(key),
-    );
-    const values = { forwarding: config.forwarding, floatingPoint: config.floatingPoint, memorySize: config.memorySize };
-    this.config.update(Object.fromEntries(locked.map((key) => [key, values[key]])));
+    // Its questions are about one architecture (DLX if it does not say): it is always locked
+    const locked: Lockable[] = [
+      "architecture",
+      ...(Object.keys(exercise.config) as Lockable[]).filter((key) => ["forwarding", "floatingPoint", "memorySize"].includes(key)),
+    ];
+    const values = lockValues(config);
+    // With SuperDLX, its machine too: the one of the exercise, or the one of WinSuperDLX
+    this.config.update({
+      ...Object.fromEntries(locked.map((key) => [key, values[key]])),
+      ...(config.architecture === "superdlx" ? { superdlx: config.superdlx } : {}),
+    });
     this.storage.setItem("exercise_locks", { ...this.locks, [file.key]: { locked, values, statement } });
     this.storage.setItem("interfaceFileItem", file);
     return file;
@@ -113,9 +140,16 @@ export class ExerciseService {
     const folder = await this.folder(SHARED_FOLDER);
     const created = await this.fileSystem.createFile(folder, ".s", exercise.name.replace(/\.s$/i, ""));
     const file = await this.fileSystem.editFileItem({ ...created, content: exercise.content, description: exercise.statement });
-    this.config.update({ forwarding: exercise.forwarding, floatingPoint: exercise.floatingPoint, memorySize: exercise.memorySize });
+    const machine = {
+      architecture: exercise.architecture,
+      superdlx: exercise.superdlx,
+      forwarding: exercise.forwarding,
+      floatingPoint: exercise.floatingPoint,
+      memorySize: exercise.memorySize,
+    };
+    this.config.update(machine);
     if (exercise.locked.length > 0 || exercise.statement) {
-      const values = { forwarding: exercise.forwarding, floatingPoint: exercise.floatingPoint, memorySize: exercise.memorySize };
+      const values = lockValues({ ...this.config.value(), ...machine });
       this.storage.setItem("exercise_locks", {
         ...this.locks,
         [file.key]: { locked: exercise.locked, values, statement: exercise.statement },

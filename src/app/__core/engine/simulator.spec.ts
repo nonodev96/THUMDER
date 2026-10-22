@@ -190,3 +190,68 @@ describe("DLXSimulator, for the teaching tools", () => {
     expect(answer.withForwarding.cpi).toBeCloseTo(answer.withForwarding.cycles / answer.withForwarding.instructions, 2);
   });
 });
+
+describe("DLXSimulator with SuperDLX", () => {
+  const SUPERDLX: TypeConfigurationMachine = { ...CONFIG, architecture: "superdlx" };
+
+  it("runs the program in the superscalar machine: the same memory, fewer cycles, events and no pipeline of DLX", () => {
+    const dlx = new DLXSimulator();
+    dlx.configure(CONFIG);
+    dlx.init(request("prim.s", EXAMPLES["prim.s"]));
+    const dlxSteps = runToEnd(dlx);
+    const superdlx = new DLXSimulator();
+    superdlx.configure(SUPERDLX);
+    superdlx.init(request("prim.s", EXAMPLES["prim.s"]));
+    const steps = runToEnd(superdlx);
+    expect(superdlx.architectureId).toBe("superdlx");
+    expect(steps.at(-1)?.isComplete).toBe(true);
+    expect(steps.length).toBeLessThan(dlxSteps.length);
+    const written = (all: LocalSimulationStep[]) => all.flatMap((step) => step.memory).map((change) => `${change.address}=${change.value}`);
+    expect(new Set(written(steps))).toEqual(new Set(written(dlxSteps)));
+    expect(steps[0].superscalar?.events.some((event) => event.kind === "F")).toBe(true);
+    expect(steps.every((step) => step.pipeline.IF.draw === false)).toBe(true);
+    // The statistics of DLX have what SuperDLX can say
+    expect(steps.at(-1)?.statistics.TOTAL?.ID_EXECUTED.instructions).toBe(dlx.pipelineStats?.instructions);
+  });
+
+  it("gives the whole machine only when it is asked (the last cycle of each message)", () => {
+    const simulator = new DLXSimulator();
+    simulator.configure(SUPERDLX);
+    simulator.init(request("prim.s", EXAMPLES["prim.s"]));
+    const step = simulator.step();
+    expect(step.superscalar?.snapshot).toBeUndefined();
+    simulator.attachSnapshot(step);
+    expect(step.superscalar?.snapshot?.cycle).toBe(0);
+    expect(step.superscalar?.snapshot?.queue.length).toBeGreaterThan(0);
+    expect(step.superscalar?.stats?.cycles).toBe(1);
+  });
+
+  it("uses the parameters of SuperDLX it is given, validated", () => {
+    const simulator = new DLXSimulator();
+    simulator.configure({ ...SUPERDLX, superscalar: { fetch: 1, decode: 1, commit: 1 } as never });
+    simulator.init(request("prim.s", EXAMPLES["prim.s"]));
+    const steps = runToEnd(simulator);
+    for (const step of steps) expect(step.superscalar?.events.filter((event) => event.kind === "F").length ?? 0).toBeLessThanOrEqual(1);
+  });
+
+  it("compares the program in DLX and in SuperDLX", () => {
+    const simulator = new DLXSimulator();
+    const result = JSON.parse(
+      simulator.handle("CompareArchitecturesRequest", JSON.stringify({ init: request("prim.s", EXAMPLES["prim.s"]), configuration: CONFIG })),
+    );
+    expect(result.dlx).toMatchObject({ architecture: "dlx", stoppedBy: "complete" });
+    expect(result.superdlx).toMatchObject({ architecture: "superdlx", stoppedBy: "complete" });
+    expect(result.superdlx.instructions).toBe(result.dlx.instructions);
+    expect(result.superdlx.cycles).toBeLessThan(result.dlx.cycles);
+    expect(result.superdlx.ipc).toBeGreaterThan(result.dlx.ipc);
+  });
+
+  it("compares forwarding always in DLX", () => {
+    const simulator = new DLXSimulator();
+    const result = JSON.parse(
+      simulator.handle("CompareForwardingRequest", JSON.stringify({ init: request("prim.s", EXAMPLES["prim.s"]), configuration: SUPERDLX })),
+    );
+    expect(result.withForwarding.architecture).toBe("dlx");
+    expect(result.withoutForwarding.cycles).toBeGreaterThan(result.withForwarding.cycles);
+  });
+});

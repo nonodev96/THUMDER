@@ -21,6 +21,11 @@ import e17Daxpy from "../../../assets/examples-dlx/ejemplos/17-daxpy.s";
 import e18DaxpyDesenrollado from "../../../assets/examples-dlx/ejemplos/18-daxpy-desenrollado.s";
 import e19Riesgos from "../../../assets/examples-dlx/ejemplos/19-riesgos.s";
 import e20MediaEntrada from "../../../assets/examples-dlx/ejemplos/20-media-entrada.s";
+import s01Paralelismo from "../../../assets/examples-dlx/ejemplos/superdlx/01-paralelismo.s";
+import s02Renombrado from "../../../assets/examples-dlx/ejemplos/superdlx/02-renombrado.s";
+import s03PrediccionDeSaltos from "../../../assets/examples-dlx/ejemplos/superdlx/03-prediccion-de-saltos.s";
+import s04DependenciasEnMemoria from "../../../assets/examples-dlx/ejemplos/superdlx/04-dependencias-en-memoria.s";
+import s05RobYComaFlotante from "../../../assets/examples-dlx/ejemplos/superdlx/05-rob-y-coma-flotante.s";
 import fact from "../../../assets/examples-dlx/fact.s";
 import gcm from "../../../assets/examples-dlx/gcm.s";
 import input from "../../../assets/examples-dlx/input.s";
@@ -58,6 +63,15 @@ export const CLASSICS: Record<string, string> = {
   "18-daxpy-desenrollado.s": e18DaxpyDesenrollado,
   "19-riesgos.s": e19Riesgos,
   "20-media-entrada.s": e20MediaEntrada,
+};
+
+/** The examples of SuperDLX (src/assets/examples-dlx/ejemplos/superdlx), by file name */
+export const SUPERDLX_EXAMPLES: Record<string, string> = {
+  "01-paralelismo.s": s01Paralelismo,
+  "02-renombrado.s": s02Renombrado,
+  "03-prediccion-de-saltos.s": s03PrediccionDeSaltos,
+  "04-dependencias-en-memoria.s": s04DependenciasEnMemoria,
+  "05-rob-y-coma-flotante.s": s05RobYComaFlotante,
 };
 
 /** A console with the lines to type and what the program writes */

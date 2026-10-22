@@ -1,0 +1,469 @@
+// The machine of SuperDLX: one panel for each structure, in the order an instruction goes through them. The colours are
+// the ones of the stages of DLX (theme.scss): the queue is IF, the windows ID, the units EX, the memory MEM, the ROB WB
+
+:host {
+  display: block;
+}
+
+.ss-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--thumder-muted);
+}
+
+.ss-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.ss-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background-color: var(--thumder-surface-2);
+  color: var(--thumder-text);
+  font-variant-numeric: tabular-nums;
+
+  code {
+    color: inherit;
+  }
+}
+
+.ss-chip--warning {
+  border-color: var(--thumder-warning-bg);
+  background-color: var(--thumder-warning-soft);
+  color: var(--thumder-warning-text);
+}
+
+// Six columns on a wide screen: the queue and the two windows, the units, the two ROBs, and the buffers, the renaming and
+// the BTB two by two; two columns on a tablet and one on a phone
+.ss-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  > .ss-panel {
+    grid-column: span 3;
+  }
+
+  > .ss-panel--queue,
+  > .ss-panel--window {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 1399.98px) {
+  .ss-grid > .ss-panel--queue {
+    grid-column: 1 / -1;
+  }
+
+  .ss-grid > .ss-panel--window {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .ss-grid > .ss-panel,
+  .ss-grid > .ss-panel--window {
+    grid-column: 1 / -1;
+  }
+}
+
+.ss-panel {
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--thumder-border);
+  border-radius: var(--thumder-radius);
+  background-color: var(--thumder-surface);
+}
+
+.ss-grid > .ss-panel--units {
+  grid-column: 1 / -1;
+}
+
+.ss-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ss-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.ss-count {
+  font-size: 0.8rem;
+  color: var(--thumder-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ss-dot {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 3px;
+}
+
+.ss-dot--queue {
+  background-color: var(--thumder-stage-if);
+}
+
+.ss-dot--window {
+  background-color: var(--thumder-stage-id);
+}
+
+.ss-dot--unit {
+  background-color: var(--thumder-stage-ex);
+}
+
+.ss-dot--memory {
+  background-color: var(--thumder-stage-mem);
+}
+
+.ss-dot--rob {
+  background-color: var(--thumder-stage-wb);
+}
+
+.ss-dot--rename {
+  background-color: var(--thumder-chart-2);
+}
+
+.ss-dot--btb {
+  background-color: var(--thumder-chart-5);
+}
+
+// How full a structure is
+.ss-meter {
+  height: 0.3rem;
+  margin: 0.35rem 0 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--thumder-surface-hover);
+
+  > span {
+    display: block;
+    height: 100%;
+    background-color: var(--thumder-primary);
+    transition: width 0.15s;
+  }
+}
+
+.ss-help {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--thumder-muted);
+}
+
+.ss-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+
+  li {
+    padding: 0.15rem 0;
+    border-bottom: 1px solid var(--thumder-border);
+  }
+}
+
+.ss-list code {
+  color: var(--thumder-text);
+}
+
+.ss-unit {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--thumder-muted);
+}
+
+.ss-row {
+  color: var(--thumder-muted);
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ss-none {
+  color: var(--thumder-muted);
+  font-style: italic;
+}
+
+.ss-table-wrap {
+  overflow-x: auto;
+}
+
+.ss-table {
+  width: 100%;
+  font-size: 0.82rem;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.2rem 0.35rem;
+    border-bottom: 1px solid var(--thumder-border);
+    vertical-align: top;
+  }
+
+  thead th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--thumder-muted);
+    white-space: nowrap;
+  }
+
+  tbody th {
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  code {
+    color: var(--thumder-text);
+  }
+}
+
+.ss-nowrap {
+  white-space: nowrap;
+}
+
+.ss-head {
+  background-color: var(--thumder-primary-soft);
+
+  // The muted texts of the head, readable over its colour
+  .ss-row,
+  .ss-predict:not(.ss-predict--wrong) {
+    color: var(--thumder-text-2);
+  }
+}
+
+.ss-badge {
+  margin-left: 0.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: var(--thumder-on-primary);
+  background-color: var(--thumder-primary);
+}
+
+// An operand: ready, or the instruction it waits for
+.ss-operand {
+  display: inline-flex;
+  white-space: nowrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0 0.25rem 0.15rem 0;
+  padding: 0 0.35rem;
+  border: 1px solid var(--thumder-warning-bg);
+  border-radius: 4px;
+  font-family: var(--bs-font-monospace, monospace);
+  font-size: 0.78rem;
+  background-color: var(--thumder-warning-soft);
+  color: var(--thumder-warning-text);
+}
+
+.ss-operand--ready {
+  border-color: var(--thumder-success-bg);
+  background-color: var(--thumder-success-soft);
+  color: var(--thumder-success-text);
+}
+
+.ss-state {
+  display: inline-block;
+  padding: 0 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--thumder-on-stage);
+  background-color: var(--thumder-stage-aborted);
+}
+
+.ss-state--wait {
+  background-color: var(--thumder-stall-r);
+}
+
+.ss-state--ready,
+.ss-state--done {
+  background-color: var(--thumder-stage-wb);
+}
+
+.ss-state--window {
+  background-color: var(--thumder-stage-id);
+}
+
+.ss-state--executing {
+  background-color: var(--thumder-stage-ex);
+}
+
+.ss-state--address,
+.ss-state--memory,
+.ss-state--buffer-memory,
+.ss-state--buffer-released {
+  background-color: var(--thumder-stage-mem);
+}
+
+.ss-state--buffer-address {
+  background-color: var(--thumder-stage-id);
+}
+
+.ss-state--buffer-blocked {
+  background-color: var(--thumder-stall-r);
+}
+
+.ss-state--buffer-waiting,
+.ss-state--buffer-ready {
+  background-color: var(--thumder-stage-wb);
+}
+
+.ss-predict {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--thumder-muted);
+}
+
+.ss-predict--wrong {
+  color: var(--thumder-danger-text);
+  font-weight: 600;
+}
+
+.ss-error {
+  color: var(--thumder-danger-text);
+  font-weight: 600;
+}
+
+.ss-value {
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+// The functional units: a box for each unit, busy or free
+.ss-units {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 0.5rem 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.ss-units-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--thumder-muted);
+}
+
+.ss-pool {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--thumder-border);
+}
+
+.ss-pool-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ss-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+}
+
+.ss-slot {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 1.6rem;
+  min-height: 1.4rem;
+  max-width: 100%;
+  padding: 0 0.35rem;
+  border: 1px dashed var(--thumder-border-strong);
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.ss-slot--busy {
+  border: 1px solid transparent;
+  color: var(--thumder-on-stage);
+  background-color: var(--thumder-stage-ex);
+
+  code {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: inherit;
+  }
+
+  .ss-row {
+    color: inherit;
+  }
+}
+
+.ss-slot--fp {
+  background-color: var(--thumder-stage-fadd);
+}
+
+.ss-left {
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+.ss-rename {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+
+  li {
+    padding: 0.1rem 0.45rem;
+    border: 1px solid var(--thumder-warning-bg);
+    border-radius: 4px;
+    background-color: var(--thumder-warning-soft);
+  }
+
+  .ss-rename--ready {
+    border-color: var(--thumder-success-bg);
+    background-color: var(--thumder-success-soft);
+  }
+
+  .ss-rename-rob {
+    font-size: 0.75rem;
+    color: var(--thumder-text-2);
+  }
+
+  .ss-none {
+    border: 0;
+    background: none;
+  }
+}
+
+.ss-counter {
+  display: inline-block;
+  min-width: 1.8rem;
+  padding: 0 0.3rem;
+  border-radius: 4px;
+  font-family: var(--bs-font-monospace, monospace);
+  text-align: center;
+  color: var(--thumder-on-stage);
+  background-color: var(--thumder-stage-aborted);
+}
+
+.ss-counter--taken {
+  background-color: var(--thumder-stage-mem);
+}

@@ -56,6 +56,7 @@ export const DOC_SECTIONS: DocSection[] = [
     pages: [
       page("execution", "wiki/00.TheExecutionOfInstructions.md"),
       page("examples", "docs/ejemplos-dlx.md"),
+      page("superdlx", "docs/superdlx.md"),
       page("windlx", "docs/manual-simulador-dlx.md"),
       page("instruction-set", "src/assets/docs.md", "en"),
       page("opcodes", "src/assets/dlxmap.md", "en"),

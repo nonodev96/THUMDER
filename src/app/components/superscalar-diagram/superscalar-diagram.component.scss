@@ -1,0 +1,230 @@
+// The cycles of SuperDLX: a table of instructions and cycles, with the colours of the stages of theme.scss
+
+:host {
+  display: block;
+}
+
+.ssd-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.ssd-width {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--thumder-muted);
+
+  select {
+    width: auto;
+  }
+}
+
+.ssd-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--thumder-muted);
+}
+
+.ssd-scroll {
+  max-height: 60vh;
+  overflow: auto;
+  border: 1px solid var(--thumder-border);
+  border-radius: 0.25rem;
+}
+
+.ssd-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: var(--thumder-diagram-head);
+    color: var(--thumder-diagram-text);
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid var(--thumder-diagram-grid);
+  }
+}
+
+// The first column stays in its place when the diagram scrolls sideways
+.ssd-name {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 14rem;
+  max-width: 20rem;
+  padding: 0.1rem 0.4rem;
+  text-align: left;
+  background-color: var(--thumder-diagram-bg);
+  border-right: 1px solid var(--thumder-diagram-border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+thead .ssd-name {
+  z-index: 3;
+  background-color: var(--thumder-diagram-head);
+}
+
+.ssd-cycle {
+  min-width: 1.7rem;
+  padding: 0.1rem 0.15rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.ssd-now {
+  color: var(--thumder-on-primary);
+  background-color: var(--thumder-diagram-now) !important;
+}
+
+.ssd-instruction {
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--thumder-primary);
+  }
+
+  code {
+    color: var(--thumder-diagram-text);
+  }
+}
+
+.ssd-row {
+  color: var(--thumder-diagram-muted);
+}
+
+.ssd-wrong {
+  margin-left: 0.25rem;
+  color: var(--thumder-danger-text);
+}
+
+.ssd-selected .ssd-name {
+  background-color: var(--thumder-diagram-hover);
+
+  .ssd-row {
+    color: var(--thumder-text-2);
+  }
+}
+
+.ssd-squashed .ssd-instruction code {
+  text-decoration: line-through;
+  color: var(--thumder-diagram-muted);
+}
+
+// A cell: the letter of what the instruction does, coloured as the stage of DLX that is closest
+.ssd-cell {
+  display: table-cell;
+  min-width: 1.7rem;
+  height: 1.45rem;
+  padding: 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--thumder-on-stage);
+}
+
+li > .ssd-cell {
+  display: inline-block;
+  width: 1.5rem;
+  line-height: 1.3rem;
+  border-radius: 3px;
+}
+
+.ssd-cell--F {
+  background-color: var(--thumder-stage-if);
+}
+
+.ssd-cell--D {
+  background-color: var(--thumder-stage-id);
+}
+
+.ssd-cell--E {
+  background-color: var(--thumder-stage-ex);
+}
+
+.ssd-cell--M {
+  background-color: var(--thumder-stage-mem);
+}
+
+.ssd-cell--W {
+  background-color: var(--thumder-stage-fadd);
+}
+
+.ssd-cell--C {
+  background-color: var(--thumder-stage-wb);
+}
+
+.ssd-cell--q,
+.ssd-cell--w,
+.ssd-cell--r {
+  font-weight: 400;
+  color: var(--thumder-diagram-muted);
+  background-color: var(--thumder-diagram-stripe);
+}
+
+.ssd-cell--w {
+  background-color: var(--thumder-stall-s);
+  color: var(--thumder-on-stage);
+}
+
+.ssd-cell--X {
+  background-color: var(--thumder-stage-aborted);
+  text-decoration: line-through;
+}
+
+.ssd-detail {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-left: 4px solid var(--thumder-primary);
+  border-radius: 0 var(--thumder-radius) var(--thumder-radius) 0;
+  background-color: var(--thumder-primary-soft);
+  font-size: 0.875rem;
+}
+
+.ssd-spans {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.ssd-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+  color: var(--thumder-text-2);
+}
+
+:host ::ng-deep .ss-squashed {
+  color: var(--thumder-muted);
+  text-decoration: line-through;
+}
+
+:host ::ng-deep .ss-mispredicted {
+  color: var(--thumder-danger-text);
+}

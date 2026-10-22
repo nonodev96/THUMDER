@@ -3,9 +3,11 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 import { AppComponent } from "@app/app.component";
 import { AUTH_ROUTES, NPM_VERSION } from "@app/CONSTANTS";
 import type { PublicRoutesList } from "@app/Types";
+import { ArchitectureSelectorComponent } from "@components/architecture-selector/architecture-selector.component";
 import { SimulationControlsComponent } from "@components/simulation-controls/simulation-controls.component";
 import { AuthService } from "@core/auth/auth.service";
 import { ConfigService } from "@core/config/config.service";
+import { showsView } from "@core/engine/architectures";
 import { MachineService } from "@core/machine/machine.service";
 import { ConsentService } from "@core/services/consent/consent.service";
 import { PageService } from "@core/services/layout/page.service";
@@ -19,6 +21,25 @@ import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdo
 
 type Route = PublicRoutesList[string];
 
+/** The views by sections, as in the home page */
+const GROUPS: { title: string; routes: Route[] }[] = [
+  {
+    title: "PAGES.INDEX.MACHINE",
+    routes: [
+      AUTH_ROUTES.PIPELINE,
+      AUTH_ROUTES.CYCLE_CLOCK_DIAGRAM,
+      AUTH_ROUTES.DATAPATH,
+      AUTH_ROUTES.REGISTERS,
+      AUTH_ROUTES.MEMORY,
+      AUTH_ROUTES.CODE,
+      AUTH_ROUTES.STATISTICS,
+    ],
+  },
+  { title: "PAGES.INDEX.IDE", routes: [AUTH_ROUTES.EDITOR, AUTH_ROUTES.FILE_MANAGER, AUTH_ROUTES.MULTIVIEW, AUTH_ROUTES.EXERCISES] },
+  { title: "PAGES.INDEX.UTILS", routes: [AUTH_ROUTES.CALCULATOR, AUTH_ROUTES.DOCUMENTATION, AUTH_ROUTES.CONFIG] },
+  { title: "PAGES.INDEX.DEBUG", routes: [AUTH_ROUTES.LOGGER, AUTH_ROUTES.PROFILE] },
+];
+
 /**
  * The navbar. On the left, where to go: home, every view by sections and the places of the work (editor, files,
  * multiview). On the right, the simulation (its controls and its speed) and the preferences (theme, language,
@@ -28,7 +49,7 @@ type Route = PublicRoutesList[string];
 @Component({
   selector: "THUMDER-auth-navbar",
   templateUrl: "./auth-navbar.component.html",
-  imports: [RouterLink, RouterLinkActive, DropdownDirective, TranslatePipe, SimulationControlsComponent],
+  imports: [RouterLink, RouterLinkActive, DropdownDirective, TranslatePipe, SimulationControlsComponent, ArchitectureSelectorComponent],
 })
 export class AuthNavbarComponent {
   app = inject<AppComponent>(AppComponent);
@@ -66,26 +87,14 @@ export class AuthNavbarComponent {
     return this.speeds.reduce((best, speed) => (Math.abs(speed.delay - delay) < Math.abs(best.delay - delay) ? speed : best)).label;
   });
 
-  /** The views by sections, as in the home page */
-  public readonly groups: { title: string; routes: Route[] }[] = [
-    {
-      title: "PAGES.INDEX.MACHINE",
-      routes: [
-        AUTH_ROUTES.PIPELINE,
-        AUTH_ROUTES.CYCLE_CLOCK_DIAGRAM,
-        AUTH_ROUTES.DATAPATH,
-        AUTH_ROUTES.REGISTERS,
-        AUTH_ROUTES.MEMORY,
-        AUTH_ROUTES.CODE,
-        AUTH_ROUTES.STATISTICS,
-      ],
-    },
-    { title: "PAGES.INDEX.IDE", routes: [AUTH_ROUTES.EDITOR, AUTH_ROUTES.FILE_MANAGER, AUTH_ROUTES.MULTIVIEW, AUTH_ROUTES.EXERCISES] },
-    { title: "PAGES.INDEX.UTILS", routes: [AUTH_ROUTES.CALCULATOR, AUTH_ROUTES.DOCUMENTATION, AUTH_ROUTES.CONFIG] },
-    { title: "PAGES.INDEX.DEBUG", routes: [AUTH_ROUTES.LOGGER, AUTH_ROUTES.PROFILE] },
-  ]
-    .map((group) => ({ ...group, routes: group.routes.filter((route) => route.show) }))
-    .filter((group) => group.routes.length > 0);
+  /** The views by sections, as in the home page: the ones of the architecture chosen (SuperDLX has no datapath) */
+  public readonly groups = computed(() => {
+    const architecture = this.machine.state.architecture();
+    return GROUPS.map((group) => ({
+      ...group,
+      routes: group.routes.filter((route) => route.show && showsView(architecture, route.path.replace(/-/g, "_"))),
+    })).filter((group) => group.routes.length > 0);
+  });
 
   /** The places of the work, always at hand on a wide screen */
   public readonly quickLinks: Route[] = [AUTH_ROUTES.EDITOR, AUTH_ROUTES.FILE_MANAGER, AUTH_ROUTES.MULTIVIEW];

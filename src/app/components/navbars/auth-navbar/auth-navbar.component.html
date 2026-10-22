@@ -28,7 +28,7 @@
       <button type="button" id="dropdownSubMenuNavigation" aria-haspopup="true" aria-expanded="false"
         class="nav-link btn btn-link dropdown-toggle">{{ 'NAVIGATION.PAGES' | translate }}</button>
       <div aria-labelledby="dropdownSubMenuNavigation" class="dropdown-menu border-0 shadow navbar-pages">
-        @for (group of groups; track group.title) {
+        @for (group of groups(); track group.title) {
           <div class="navbar-pages-group">
             <p class="dropdown-header">{{ group.title | translate }}</p>
             @for (menu of group.routes; track menu.path) {
@@ -41,9 +41,10 @@
       </div>
     </li>
 
-    <!-- The places of the work, at hand -->
+    <!-- The places of the work, at hand (from 1200 px: below, they are in the sidebar and in «Pages», and the room is for
+         the architecture and the simulation) -->
     @for (link of quickLinks; track link.path) {
-      <li class="nav-item d-none d-lg-block">
+      <li class="nav-item d-none d-xl-block">
         <a [routerLink]="link.routerLink" class="nav-link" routerLinkActive="active" [title]="'NAVIGATION.' + link.lang | translate">
           <i class="fa-fw {{ link.icon }}" aria-hidden="true"></i><span class="navbar-label">{{ 'NAVIGATION.' + link.lang | translate }}</span>
         </a>
@@ -54,6 +55,10 @@
   <!-- Right: the simulation (on phones it is in the bar at the bottom) and the preferences -->
   <ul class="navbar-nav ml-auto align-items-center">
     @if (!phone()) {
+      <!-- The architecture simulated: DLX or SuperDLX -->
+      <li class="nav-item d-flex align-items-center mr-2">
+        <thumder-architecture-selector variant="bar"></thumder-architecture-selector>
+      </li>
       <li class="nav-item d-flex flex-nowrap align-items-center">
         <thumder-simulation-controls variant="bar"></thumder-simulation-controls>
         <div class="dropdown d-inline-block ml-1" thumderDropdown>
@@ -93,6 +98,8 @@
         <i class="fas fa-ellipsis-v" aria-hidden="true"></i>
       </button>
       <div aria-labelledby="navbarMore" class="dropdown-menu dropdown-menu-right border-0 shadow navbar-more-menu">
+        <thumder-architecture-selector variant="menu"></thumder-architecture-selector>
+        <div class="dropdown-divider" role="separator"></div>
         <p class="dropdown-header" aria-hidden="true">{{ 'SIMULATION.SPEED' | translate }}</p>
         <div class="navbar-more-speeds">
           @for (speed of speeds; track speed.delay) {

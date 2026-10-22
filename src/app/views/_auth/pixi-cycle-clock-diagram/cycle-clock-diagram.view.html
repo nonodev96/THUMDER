@@ -5,10 +5,15 @@
       <ng-content></ng-content>
 
       <span thumderCardWidget="collapse">{{'MACHINE.CYCLE_CLOCK_DIAGRAM' | translate}}</span>
+      @if (!superscalar()) {
       <!-- The hand says that the mouse drags it: not on a phone (the finger does) -->
       <span class="d-none d-md-inline" aria-hidden="true"> | <i class="far {{ (inCanvas) ? 'fa-hand-rock': 'fa-hand-paper' }}"></i></span>
+      } @else {
+      <span class="text-muted small ml-1">SuperDLX</span>
+      }
     </h3>
     <div class="card-tools">
+      @if (!superscalar()) {
       <!-- The arrows: on a phone the diagram moves with the finger (and with the arrow keys when it has the focus) -->
       <button type="button" class="btn btn-tool d-none d-sm-inline-block" [title]="'MACHINE.MOVE_UP' | translate" [attr.aria-label]="'MACHINE.MOVE_UP' | translate" (click)="pixi_CycleClockDiagramComponent.moveBottom()">
         <i class="fas fa-arrow-up" aria-hidden="true"></i>
@@ -47,6 +52,7 @@
           <button type="button" class="dropdown-item" (click)="exportCsv()">{{ 'MACHINE.EXPORT_CSV' | translate }}</button>
         </div>
       </div>
+      }
 
       <button type="button" class="btn btn-tool" [title]="'FORMS.MAXIMIZE' | translate" [attr.aria-label]="'FORMS.MAXIMIZE' | translate" thumderCardWidget="maximize">
         <i class="fas fa-expand" aria-hidden="true"></i>
@@ -56,6 +62,19 @@
       </button>
     </div>
   </div>
+  @if (superscalar()) {
+  <div class="card-body">
+    <thumder-superscalar-diagram></thumder-superscalar-diagram>
+  </div>
+  <details class="card-footer" thumderDetails="superscalarDiagram">
+    <summary>{{ 'MACHINE.DIAGRAM_HELP_TITLE' | translate }}</summary>
+    <ul class="diagram-help">
+      @for (n of [1, 2, 3, 4]; track n) {
+        <li>{{ 'SUPERSCALAR.DIAGRAM.HELP_' + n | translate }}</li>
+      }
+    </ul>
+  </details>
+  } @else {
   <div class="card-body">
     <THUMDER-pixi-cycle-clock-diagram
       (inCanvasEventEmitter)="handleInCanvas($event)" (cellSelected)="selected.set($event)"></THUMDER-pixi-cycle-clock-diagram>
@@ -121,4 +140,5 @@
       }
     </ul>
   </details>
+  }
 </div>

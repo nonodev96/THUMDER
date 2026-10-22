@@ -1,4 +1,6 @@
 import type { InterfaceRegisters } from "@core/DLX/interfaces";
+import type { ArchitectureId } from "@core/engine/architectures";
+import type { SuperscalarParameters } from "@core/engine/superscalar-config";
 
 declare global {
   interface Window {
@@ -648,6 +650,9 @@ export type TypeConfigurationMachine = {
   };
   memorySize: number;
   enabledForwarding: TypeEnabledForwardingConfiguration;
+  /** The architecture simulated (DLX without it) and, for SuperDLX, its parameters */
+  architecture?: ArchitectureId;
+  superscalar?: SuperscalarParameters;
 };
 
 // DEBUG

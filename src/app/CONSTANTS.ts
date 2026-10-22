@@ -76,6 +76,15 @@ export const DLX_EXAMPLES: string[] = [
   "20-media-entrada.s",
 ];
 export const DLX_EXAMPLES_MODULES: string[] = ["input.s"];
+/** The examples of SuperDLX, in their own folder inside the one of the examples */
+export const SUPERDLX_EXAMPLES_FOLDER = "superdlx";
+export const SUPERDLX_EXAMPLES: string[] = [
+  "01-paralelismo.s",
+  "02-renombrado.s",
+  "03-prediccion-de-saltos.s",
+  "04-dependencias-en-memoria.s",
+  "05-rob-y-coma-flotante.s",
+];
 
 export const DEFAULT_BREAKPOINTS: [] = [];
 export const DEFAULT_TIME_SIMULATION_CONFIGURATION: number = 250;

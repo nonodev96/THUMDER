@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal, ViewChild } from "@angular/core";
 import { PixiCycleClockDiagramComponent } from "@components/pixi-cycle-clock-diagram/pixi-cycle-clock-diagram.component";
+import { SuperscalarDiagramComponent } from "@components/superscalar-diagram/superscalar-diagram.component";
 import { diagramToCsv, diagramToSvg } from "@core/machine/diagram-export";
 import { MachineService } from "@core/machine/machine.service";
 import { explainCell, stallCells } from "@core/machine/stall-explanation";
@@ -15,10 +16,21 @@ const TABLE_CYCLES = 30;
 @Component({
   selector: "view-cycle-clock-diagram",
   templateUrl: "./cycle-clock-diagram.view.html",
-  imports: [CardDirective, CardWidgetDirective, DetailsDirective, PixiCycleClockDiagramComponent, TranslatePipe, DropdownDirective],
+  imports: [
+    CardDirective,
+    CardWidgetDirective,
+    DetailsDirective,
+    PixiCycleClockDiagramComponent,
+    SuperscalarDiagramComponent,
+    TranslatePipe,
+    DropdownDirective,
+  ],
 })
 export class CycleClockDiagramView {
   private machine = inject(MachineService);
+
+  /** SuperDLX has its own diagram: the events of each instruction (fetch, decode, issue, result, commit) */
+  public readonly superscalar = computed(() => this.machine.state.architecture() === "superdlx");
 
   @ViewChild(PixiCycleClockDiagramComponent)
   public pixi_CycleClockDiagramComponent!: PixiCycleClockDiagramComponent;

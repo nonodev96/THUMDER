@@ -17,9 +17,33 @@ import type {
   TypeSimulationInitResponse,
   TypeSimulationStep,
 } from "@app/Types";
+import { type ArchitectureId, DEFAULT_ARCHITECTURE, isArchitecture } from "@core/engine/architectures";
 import { type AssemblyResult, assemble, globalNames, type SourceFile } from "@core/engine/assembler";
 import { DEFAULT_MACHINE_CONFIG, type MachineConfig, SimulationError } from "@core/engine/cpu";
-import { type Cell, type CycleReport, type FloatingUnit, Pipeline, type StallLabel, type Statistics } from "@core/engine/pipeline";
+import {
+  type Cell,
+  type CycleReport,
+  type FloatingUnit,
+  type MemoryChange,
+  Pipeline,
+  type RegisterChange,
+  type StallLabel,
+  type Statistics,
+} from "@core/engine/pipeline";
+import {
+  type OpEventKind,
+  Superscalar,
+  type SuperscalarReport,
+  type SuperscalarSnapshot,
+  type SuperscalarStats,
+} from "@core/engine/superscalar";
+import {
+  defaultSuperscalar,
+  type PoolKey,
+  type Side,
+  type SuperscalarParameters,
+  validateSuperscalar,
+} from "@core/engine/superscalar-config";
 import type { ProgramIO, TrapIO } from "@core/engine/traps";
 
 /** Why an instruction (the row of the diagram) is stalled in a cycle: pipeline.ts, StallReason */
@@ -40,6 +64,27 @@ export type BreakpointHit = { kind: "line"; line: number; stage: BreakpointStage
 /** The stages a breakpoint of a line can wait for (WinDLX): IF is when the instruction is fetched */
 export type BreakpointStage = "IF" | "ID" | "EX" | "MEM" | "WB";
 
+/**
+ * What an instruction of SuperDLX did in a cycle (superscalar.ts): fetched (with its half and its unit), decoded, issued
+ * to its unit, its memory access, its result, committed or squashed. `row` numbers the instructions in fetch order
+ */
+export type SuperscalarEvent = {
+  row: number;
+  pc: number;
+  kind: OpEventKind;
+  side?: Side;
+  pool?: PoolKey | null;
+  /** NOP and J: done in fetch */
+  retired?: boolean;
+  mispredicted?: boolean;
+};
+
+/** A cycle of SuperDLX: its events and, in the last cycle of each message of the runner, the whole machine */
+export type SuperscalarStep = { events: SuperscalarEvent[]; snapshot?: SuperscalarSnapshot; stats?: SuperscalarStats };
+
+/** The stage of a breakpoint each event of SuperDLX is: fetch, decode, issue, memory and commit (the registers) */
+export const SUPERSCALAR_STAGES: Partial<Record<OpEventKind, BreakpointStage>> = { F: "IF", D: "ID", I: "EX", M: "MEM", C: "WB" };
+
 /** Extra fields of a step of the local simulator: the console of the program and the errors */
 export type SimulationStepExtra = {
   /** What the program wrote in this cycle */
@@ -56,6 +101,8 @@ export type SimulationStepExtra = {
   reads?: { address: number; bytes: number }[];
   /** The breakpoint it stopped at (the runner) */
   hit?: BreakpointHit;
+  /** SuperDLX: what each instruction did and the machine (its `pipeline` has nothing) */
+  superscalar?: SuperscalarStep;
 };
 
 export type LocalSimulationStep = TypeSimulationStep & SimulationStepExtra;
@@ -73,20 +120,31 @@ export type LocalSimulationInitResponse = TypeSimulationInitResponse & { symbols
 
 /** The end of a run with a configuration (EDU-02) */
 export type RunSummary = {
+  architecture: ArchitectureId;
   stoppedBy: "complete" | "input" | "error" | "limit";
   error?: string;
   cycles: number;
   instructions: number;
   cpi: number;
+  /** Instructions per cycle */
+  ipc: number;
   rawStalls: number;
   wawStalls: number;
   structuralStalls: number;
   controlStalls: number;
   totalStalls: number;
+  /** SuperDLX: branches mispredicted and instructions squashed after them */
+  mispredicted?: number;
+  squashed?: number;
 };
 
 export type CompareRequest = { init: LocalSimulationInitRequest; configuration: TypeConfigurationMachine; maxCycles?: number };
 export type CompareResponse = { withForwarding: RunSummary; withoutForwarding: RunSummary };
+/** The same program in DLX (with the configuration of DLX) and in SuperDLX (with its own) */
+export type CompareArchitecturesResponse = { dlx: RunSummary; superdlx: RunSummary };
+
+/** A machine that runs a program cycle by cycle: the pipeline of DLX or SuperDLX */
+type Engine = Pipeline | Superscalar;
 
 // The severities of the editor (EnumSeverity of @app/Types): only types are imported here, so this code runs in a Web
 // Worker without the rest of the application
@@ -102,13 +160,15 @@ const STALL_COLOR = 0xdc2626;
 
 export class DLXSimulator {
   private config: MachineConfig = { ...DEFAULT_MACHINE_CONFIG };
+  private architecture: ArchitectureId = DEFAULT_ARCHITECTURE;
+  private superscalarParameters: SuperscalarParameters = defaultSuperscalar();
   /** The files of the program: the main one and the modules it needs */
   private files: SourceFile[] = [];
   /** The files that can be modules of the program (the others of its folder) */
   private candidates: SourceFile[] = [];
   private main = "";
   private program: AssemblyResult | null = null;
-  private pipeline: Pipeline | null = null;
+  private engine: Engine | null = null;
   private lines = new Map<number, number>();
   private input: string[] = [];
   private finished = false;
@@ -137,6 +197,8 @@ export class DLXSimulator {
         return JSON.stringify({ allOK: true });
       case "CompareForwardingRequest":
         return JSON.stringify(compareForwarding(data as CompareRequest));
+      case "CompareArchitecturesRequest":
+        return JSON.stringify(compareArchitectures(data as CompareRequest));
       default:
         throw new Error(`Unknown request ${event}`);
     }
@@ -221,13 +283,20 @@ export class DLXSimulator {
       fmul: { count: clamp(configuration.multiplication.count, 1, 8), delay: clamp(configuration.multiplication.delay, 1, 50) },
       fdiv: { count: clamp(configuration.division.count, 1, 8), delay: clamp(configuration.division.delay, 1, 50) },
     };
+    this.architecture = isArchitecture(configuration.architecture) ? configuration.architecture : DEFAULT_ARCHITECTURE;
+    this.superscalarParameters = validateSuperscalar(configuration.superscalar);
     if (this.files.length > 0) this.load();
     return configuration;
   }
 
   /** How many cycles have run since the program was loaded */
   public get cycles(): number {
-    return this.pipeline ? this.pipeline.cycle + 1 : 0;
+    return this.engine ? this.engine.cycle + 1 : 0;
+  }
+
+  /** The architecture of the machine */
+  public get architectureId(): ArchitectureId {
+    return this.architecture;
   }
 
   /** The line of the main file of the instruction at an address (0 if it is not there) */
@@ -236,7 +305,19 @@ export class DLXSimulator {
   }
 
   public get pipelineStats(): Statistics | null {
-    return this.pipeline?.stats ?? null;
+    return this.engine instanceof Pipeline ? this.engine.stats : null;
+  }
+
+  public get superscalarStats(): SuperscalarStats | null {
+    return this.engine instanceof Superscalar ? this.engine.stats : null;
+  }
+
+  /** SuperDLX: the whole machine (and its statistics) goes in the step that the views will draw */
+  public attachSnapshot(step: LocalSimulationStep): void {
+    if (step.superscalar && this.engine instanceof Superscalar) {
+      step.superscalar.snapshot = this.engine.snapshot();
+      step.superscalar.stats = structuredClone(this.engine.stats);
+    }
   }
 
   public provideInput(text: string): void {
@@ -244,17 +325,22 @@ export class DLXSimulator {
   }
 
   public step(): LocalSimulationStep {
-    const pipeline = this.pipeline;
-    if (pipeline === null || this.finished) {
-      return { ...this.emptyStep(pipeline?.cycle ?? 0), isComplete: true };
+    const engine = this.engine;
+    if (engine === null || this.finished) {
+      return { ...this.emptyStep(engine?.cycle ?? 0), isComplete: true };
     }
-    const report = pipeline.tick();
+    if (engine instanceof Superscalar) {
+      const report = engine.tick();
+      if (report.halted || report.error) this.finished = true;
+      return this.toSuperscalarStep(report, engine);
+    }
+    const report = engine.tick();
     if (report.halted || report.error) this.finished = true;
-    return this.toStep(report, pipeline);
+    return this.toStep(report, engine);
   }
 
   public updateRegisters(registers: TypeRegisterToUpdate[]): TypeRegisterToUpdateResponse {
-    const pipeline = this.pipeline;
+    const pipeline = this.engine;
     const response: TypeRegisterToUpdateResponse = { allOK: pipeline !== null, registerToUpdates: [] };
     if (pipeline === null) return response;
     for (const { typeRegister, register, hexadecimalValue } of registers) {
@@ -290,7 +376,7 @@ export class DLXSimulator {
   }
 
   public updateMemory(changes: TypeMemoryToUpdate[]): TypeMemoryToUpdateResponse {
-    const pipeline = this.pipeline;
+    const pipeline = this.engine;
     const response: TypeMemoryToUpdateResponse = { allOK: pipeline !== null, memoryToUpdates: [] };
     if (pipeline === null) return response;
     for (const change of changes) {
@@ -334,8 +420,17 @@ export class DLXSimulator {
     this.lines = new Map(program.instructions.filter((i) => i.file === this.main).map((i) => [i.address, i.line]));
     this.input = [];
     this.finished = !program.ok;
-    this.pipeline = program.ok ? new Pipeline(this.config, program.memory, program.entry, this.io) : null;
+    this.engine = program.ok ? this.createEngine(program) : null;
     return program;
+  }
+
+  /** The machine of the architecture chosen, with the program in its memory */
+  private createEngine(program: AssemblyResult): Engine {
+    if (this.architecture === "superdlx") {
+      const config = { ...this.superscalarParameters, memorySize: this.config.memorySize };
+      return new Superscalar(config, program.memory, program.entry, this.io);
+    }
+    return new Pipeline(this.config, program.memory, program.entry, this.io);
   }
 
   private emptyPipeline(): TypeSimulationStep["pipeline"] {
@@ -371,16 +466,8 @@ export class DLXSimulator {
       toStep: arrow.toCycle,
       color: arrow.kind === "forwarding" ? FORWARDING_COLOR : STALL_COLOR,
     }));
-    const registers: TypeRegisterToUpdate[] = report.registers.map((change) => ({
-      typeRegister: change.kind === "control" ? "Control" : change.kind === "int" ? "Integer" : "Float",
-      register: change.name,
-      hexadecimalValue: hex(change.value),
-    }));
-    const memory: TypeMemoryToUpdate[] = report.memory.map((change) => {
-      const types: Record<number, TypeData> = { 1: "Byte", 2: "HalfWord", 4: change.floating ? "Float" : "Word", 8: "Double" };
-      const value = change.bytes === 8 ? hex(change.words[0]) + hex(change.words[1]).slice(2) : hex(change.words[0], change.bytes * 2);
-      return { typeData: types[change.bytes], address: address(change.address), value };
-    });
+    const registers = registerChanges(report.registers);
+    const memory = memoryChanges(report.memory);
     // The line in the editor: the instruction just fetched (or the newest one in the pipeline)
     const newest = [report.IF, report.ID, report.intEX, report.MEM, report.WB].find((value) => value !== null)?.instance;
     const shown = report.fetched ?? newest;
@@ -417,6 +504,96 @@ export class DLXSimulator {
         forwardingHelps: stall.forwardingHelps,
       })),
       reads: report.reads.length > 0 ? report.reads : undefined,
+    };
+  }
+
+  /** A cycle of SuperDLX: what changed, the events of the instructions and the statistics */
+  private toSuperscalarStep(report: SuperscalarReport, engine: Superscalar): LocalSimulationStep {
+    // The line in the editor: the last instruction fetched in the cycle
+    const shown = report.fetched[report.fetched.length - 1];
+    return {
+      step: report.cycle,
+      line: shown ? (this.lines.get(shown.pc) ?? 0) : 0,
+      isNewInstruction: report.fetched.length > 0,
+      isComplete: report.halted || report.error !== undefined,
+      pipeline: this.emptyPipeline(),
+      registers: registerChanges(report.registers),
+      memory: memoryChanges(report.memory),
+      statistics: this.superscalarStatistics(engine),
+      output: report.output || undefined,
+      io: report.io.length > 0 ? report.io : undefined,
+      waitingForInput: report.waitingForInput || undefined,
+      error: report.error,
+      reads: report.reads.length > 0 ? report.reads : undefined,
+      superscalar: {
+        events: report.events.map(({ op, kind }) => {
+          const event: SuperscalarEvent = { row: op.row, pc: op.pc, kind };
+          if (kind === "F") {
+            event.side = op.info.side;
+            event.pool = op.pool;
+            if (op.info.kind === "nop" || (op.info.kind === "jump" && op.decoded?.def.mnemonic === "J")) event.retired = true;
+          }
+          if (kind === "I" && op.mispredicted) event.mispredicted = true;
+          return event;
+        }),
+      },
+    };
+  }
+
+  /** The statistics of SuperDLX that have a place in the ones of DLX (the views of SuperDLX read SuperscalarStats) */
+  private superscalarStatistics(engine: Superscalar): TypeDataStatistics {
+    const stats = engine.stats;
+    const parameters = this.superscalarParameters;
+    const percent = (part: number, total: number) => (total === 0 ? 0 : Math.round((part / total) * 10000) / 100);
+    const of = (part: number, total: number) => ({ num: part, per: percent(part, total) });
+    const none = { num: 0, per: 0 };
+    const fadd = stats.byPool["fp.add"];
+    const fmul = stats.byPool["fp.mult"];
+    const fdiv = stats.byPool["fp.div"];
+    const floating = fadd + fmul + fdiv;
+    const loadStore = stats.loads + stats.stores;
+    return {
+      TOTAL: {
+        CYCLES_EXECUTED: { cycles: stats.cycles },
+        ID_EXECUTED: { instructions: stats.instructions },
+        INSTRUCTIONS_IN_PIPELINE: { instructions_in_pipeline: engine.inFlight },
+      },
+      HARDWARE: {
+        MEMORY_SIZE: { size: this.config.memorySize },
+        FADD_EX_STAGES: { num: parameters.units.fp.add.count, cycles: parameters.units.fp.add.latency },
+        FMULT_EX_STAGES: { num: parameters.units.fp.mult.count, cycles: parameters.units.fp.mult.latency },
+        FDIV_EX_STAGES: { num: parameters.units.fp.div.count, cycles: parameters.units.fp.div.latency },
+        // The results go from the ROB to the instructions that wait for them
+        FORWARDING: { enabled: true },
+      },
+      STALLS: {
+        RAW_STALLS: none,
+        LD_STALLS: none,
+        BRANCH_STALLS: none,
+        FLOATING_POINT_STALLS: none,
+        WAW_STALLS: none,
+        STRUCTURAL_STALLS: none,
+        CONTROL_STALLS: none,
+        TRAP_STALLS: none,
+        TOTAL: none,
+      },
+      CONDITIONAL: {
+        TOTAL: of(stats.branches, stats.instructions),
+        TAKEN: of(stats.taken, stats.branches),
+        NOT_TAKEN: of(stats.branches - stats.taken, stats.branches),
+      },
+      LOAD_STORE: {
+        TOTAL: of(loadStore, stats.instructions),
+        LOADS: of(stats.loads, loadStore),
+        STORES: of(stats.stores, loadStore),
+      },
+      FLOATING: {
+        TOTAL: of(floating, stats.instructions),
+        ADDITIONS: of(fadd, floating),
+        MULTIPLICATIONS: of(fmul, floating),
+        DIVISIONS: of(fdiv, floating),
+      },
+      TRAPS: { TOTAL: of(stats.traps, stats.instructions) },
     };
   }
 
@@ -500,25 +677,63 @@ export function runToEnd(init: LocalSimulationInitRequest, configuration: TypeCo
     }
   }
   const stats = simulator.pipelineStats;
+  const superscalar = simulator.superscalarStats;
+  const cycles = stats?.cycles ?? superscalar?.cycles ?? 0;
+  const instructions = stats?.instructions ?? superscalar?.instructions ?? 0;
   const totalStalls = stats ? stats.rawStalls + stats.wawStalls + stats.structuralStalls + stats.controlStalls + stats.trapStalls : 0;
-  return {
+  const ratio = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) / 100 : 0);
+  const summary: RunSummary = {
+    architecture: simulator.architectureId,
     stoppedBy,
     error,
-    cycles: stats?.cycles ?? 0,
-    instructions: stats?.instructions ?? 0,
-    cpi: stats && stats.instructions > 0 ? Math.round((stats.cycles / stats.instructions) * 100) / 100 : 0,
+    cycles,
+    instructions,
+    cpi: ratio(cycles, instructions),
+    ipc: ratio(instructions, cycles),
     rawStalls: stats?.rawStalls ?? 0,
     wawStalls: stats?.wawStalls ?? 0,
     structuralStalls: stats?.structuralStalls ?? 0,
     controlStalls: stats?.controlStalls ?? 0,
     totalStalls,
   };
+  if (superscalar) {
+    summary.mispredicted = superscalar.mispredicted;
+    summary.squashed = superscalar.squashed;
+  }
+  return summary;
 }
 
-/** The same program with and without forwarding (EDU-02) */
+/** The same program with and without forwarding (EDU-02), in DLX */
 export function compareForwarding({ init, configuration, maxCycles }: CompareRequest): CompareResponse {
+  const dlx = { ...configuration, architecture: "dlx" as const };
   return {
-    withForwarding: runToEnd(init, { ...configuration, enabledForwarding: true }, maxCycles),
-    withoutForwarding: runToEnd(init, { ...configuration, enabledForwarding: false }, maxCycles),
+    withForwarding: runToEnd(init, { ...dlx, enabledForwarding: true }, maxCycles),
+    withoutForwarding: runToEnd(init, { ...dlx, enabledForwarding: false }, maxCycles),
   };
+}
+
+/** The same program in DLX and in SuperDLX, each one with its configuration */
+export function compareArchitectures({ init, configuration, maxCycles }: CompareRequest): CompareArchitecturesResponse {
+  return {
+    dlx: runToEnd(init, { ...configuration, architecture: "dlx" }, maxCycles),
+    superdlx: runToEnd(init, { ...configuration, architecture: "superdlx" }, maxCycles),
+  };
+}
+
+/** The registers changed in a cycle, as the views take them */
+function registerChanges(changes: RegisterChange[]): TypeRegisterToUpdate[] {
+  return changes.map((change) => ({
+    typeRegister: change.kind === "control" ? "Control" : change.kind === "int" ? "Integer" : "Float",
+    register: change.name,
+    hexadecimalValue: hex(change.value),
+  }));
+}
+
+/** The memory written in a cycle, as the views take it */
+function memoryChanges(changes: MemoryChange[]): TypeMemoryToUpdate[] {
+  return changes.map((change) => {
+    const types: Record<number, TypeData> = { 1: "Byte", 2: "HalfWord", 4: change.floating ? "Float" : "Word", 8: "Double" };
+    const value = change.bytes === 8 ? hex(change.words[0]) + hex(change.words[1]).slice(2) : hex(change.words[0], change.bytes * 2);
+    return { typeData: types[change.bytes], address: address(change.address), value };
+  });
 }

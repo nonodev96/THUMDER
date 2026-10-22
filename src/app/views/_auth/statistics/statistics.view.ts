@@ -16,6 +16,7 @@ import {
   stallShares,
   summarize,
 } from "./statistics.model";
+import { SuperscalarStatisticsComponent, superscalarStatsToCsv } from "./superscalar-statistics.component";
 
 /** The statistics as a table: section, item, field and value (EDU-06) */
 export function statisticsToCsv(data: TypeDataStatistics): string {
@@ -65,11 +66,14 @@ const TAB_KEY = "statistics_tab";
   templateUrl: "./statistics.view.html",
   styleUrls: ["./statistics.view.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardDirective, CardWidgetDirective, TranslatePipe],
+  imports: [CardDirective, CardWidgetDirective, TranslatePipe, SuperscalarStatisticsComponent],
 })
 export class StatisticsView {
   private machine = inject(MachineService);
   private translate = inject(TranslateService);
+
+  /** SuperDLX has statistics of its own: instructions per cycle, the prediction, the units and the buffers */
+  public readonly superscalar = computed(() => this.machine.state.architecture() === "superdlx");
 
   /** The statistics of the simulation */
   public readonly data = this.machine.state.statistics;
@@ -185,6 +189,8 @@ export class StatisticsView {
   }
 
   public exportCsv(): void {
-    download("estadisticas.csv", statisticsToCsv(this.data()), "text/csv");
+    const superscalar = this.machine.state.superscalarStats();
+    if (this.superscalar() && superscalar) download("estadisticas-superdlx.csv", superscalarStatsToCsv(superscalar), "text/csv");
+    else download("estadisticas.csv", statisticsToCsv(this.data()), "text/csv");
   }
 }

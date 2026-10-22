@@ -16,6 +16,8 @@ import { AUTH_ROUTES, DEFAULT_MULTIVIEW_CONFIGURATION } from "@app/CONSTANTS";
 import type { TypeMultiviewConfiguration, TypeWindowGeometry } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { ConfigService } from "@core/config/config.service";
+import { showsView } from "@core/engine/architectures";
+import { MachineService } from "@core/machine/machine.service";
 import { Globals } from "@core/services/globals/globals.service";
 import { TranslatePipe } from "@ngx-translate/core";
 import { CardRegistry } from "@shared/directives/card/card.directive";
@@ -87,6 +89,8 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy
   globals = inject(Globals);
   private config = inject(ConfigService);
   private cards = inject(CardRegistry);
+  /** The views of the architecture chosen: SuperDLX has no datapath */
+  private readonly architecture = inject(MachineService).state.architecture;
 
   @ViewChild("desk", { static: true }) private desk!: ElementRef<HTMLElement>;
 
@@ -177,7 +181,7 @@ export class MultiplesViewsComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   public isEnabled(name: string): boolean {
-    return this.multiviewConfiguration[name] === true;
+    return this.multiviewConfiguration[name] === true && showsView(this.architecture(), name);
   }
 
   public isFloating(name: string): boolean {

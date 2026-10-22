@@ -2,7 +2,13 @@
 // protocol (assemble, configure, one cycle, registers, memory, input) and the execution loop, which goes on by itself at
 // the chosen pace and stops at the end, at a breakpoint, at an error or when the program waits for input. The page only
 // draws the cycles it receives.
-import { type BreakpointHit, type BreakpointStage, DLXSimulator, type LocalSimulationStep } from "@core/engine/simulator";
+import {
+  type BreakpointHit,
+  type BreakpointStage,
+  DLXSimulator,
+  type LocalSimulationStep,
+  SUPERSCALAR_STAGES,
+} from "@core/engine/simulator";
 
 /** A breakpoint of a line that waits for its instruction to reach a stage other than IF (NUC-11) */
 export type StageBreakpoint = { line: number; stage: BreakpointStage };
@@ -101,6 +107,7 @@ export class SimulationRunner {
     // One cycle by hand: the stages are followed too, so a run that starts afterwards knows where each instruction was
     const step = this.simulator.step();
     this.hitOf(step);
+    this.simulator.attachSnapshot(step);
     return JSON.stringify(step);
   }
 
@@ -134,6 +141,7 @@ export class SimulationRunner {
   }
 
   private hitOf(step: LocalSimulationStep): BreakpointHit | null {
+    if (step.superscalar) return this.superscalarHit(step) ?? this.watchpointHit(step);
     // A line: when its instruction is fetched (IF), or when it arrives at the stage of its breakpoint
     if (step.isNewInstruction && this.breakpoints.has(step.line) && (this.stages.get(step.line) ?? "IF") === "IF") {
       return { kind: "line", line: step.line, stage: "IF" };
@@ -155,7 +163,26 @@ export class SimulationRunner {
       this.previous.set(stage, rows);
     }
     if (hit !== null) return hit;
-    // A watched address: written by a store, or read by a load
+    return this.watchpointHit(step);
+  }
+
+  /**
+   * SuperDLX: a line, when one of its instructions is fetched, decoded, issued, accesses the memory or commits (IF, ID,
+   * EX, MEM and WB, the stages of DLX the breakpoints name). Several instructions do it in the same cycle
+   */
+  private superscalarHit(step: LocalSimulationStep): BreakpointHit | null {
+    if (this.breakpoints.size === 0) return null;
+    for (const event of step.superscalar?.events ?? []) {
+      const stage = SUPERSCALAR_STAGES[event.kind];
+      if (stage === undefined) continue;
+      const line = this.simulator.lineOf(event.pc);
+      if (this.breakpoints.has(line) && (this.stages.get(line) ?? "IF") === stage) return { kind: "line", line, stage };
+    }
+    return null;
+  }
+
+  /** A watched address: written by a store, or read by a load */
+  private watchpointHit(step: LocalSimulationStep): BreakpointHit | null {
     const overlaps = (address: number, bytes: number, watch: Watchpoint) =>
       address < watch.address + watch.bytes && watch.address < address + bytes;
     for (const watch of this.watchpoints) {
@@ -197,7 +224,11 @@ export class SimulationRunner {
         if (reason === "input" && this.applyJournal()) reason = this.simulator.cycles >= this.until ? "paused" : null;
         if (this.delay > 0 || steps.length >= MAX_STEPS_PER_MESSAGE || Date.now() - started >= FRAME_MS) break;
       }
-      if (steps.length > 0) this.emit({ kind: "steps", steps });
+      // The page draws the last cycle of the message: it takes the whole machine (SuperDLX)
+      if (steps.length > 0) {
+        this.simulator.attachSnapshot(steps[steps.length - 1]);
+        this.emit({ kind: "steps", steps });
+      }
       // Repeating a run up to a cycle: the changes made at that point are part of it
       if (reason === "paused" && this.simulator.cycles >= this.until) this.applyJournal();
       if (reason !== null) {

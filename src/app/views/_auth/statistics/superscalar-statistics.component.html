@@ -1,0 +1,237 @@
+<ul class="nav nav-tabs thumder-tabs statistics-tabs" role="tablist" [attr.aria-label]="'NAVIGATION.STATISTICS' | translate">
+  @for (item of tabs; track item.id; let index = $index) {
+    <li class="nav-item" role="presentation">
+      <button type="button" class="nav-link" role="tab" [id]="'superscalarStatisticsTab-' + item.id" [class.active]="tab() === item.id"
+        [attr.aria-selected]="tab() === item.id" [attr.aria-controls]="tab() === item.id ? 'superscalarStatisticsPanel-' + item.id : null"
+        [tabIndex]="tab() === item.id ? 0 : -1" (click)="select(item.id)" (keydown)="onTabKeydown($event, index)">
+        {{ item.label | translate }}
+      </button>
+    </li>
+  }
+</ul>
+
+<div class="statistics-panel" role="tabpanel" [id]="'superscalarStatisticsPanel-' + tab()" [attr.aria-labelledby]="'superscalarStatisticsTab-' + tab()">
+  @if (!hasData() && tab() !== 'compare') {
+    <p class="statistics-empty" id="superscalarStatisticsEmpty">
+      <i class="fas fa-chart-bar mr-2" aria-hidden="true"></i>{{ 'ST.EMPTY' | translate }}
+    </p>
+  } @else {
+    @let p = parameters();
+    @switch (tab()) {
+      @case ('summary') {
+        @if (summary(); as s) {
+          <dl class="statistics-kpis">
+            <div class="statistics-kpi"><dt>{{ 'ST.KPI.CYCLES' | translate }}</dt><dd id="superscalarCycles">{{ format(s.cycles) }}</dd></div>
+            <div class="statistics-kpi"><dt>{{ 'SST.KPI.COMMITTED' | translate }}</dt><dd id="superscalarInstructions">{{ format(s.instructions) }}</dd></div>
+            <div class="statistics-kpi"><dt>IPC</dt><dd id="superscalarIpc">{{ format(s.ipc, 2) }} <small>/ {{ s.peak }}</small></dd></div>
+            <div class="statistics-kpi"><dt>{{ 'ST.KPI.CPI' | translate }}</dt><dd>{{ format(s.cpi, 2) }}</dd></div>
+            <div class="statistics-kpi"><dt>{{ 'SST.KPI.SQUASHED' | translate }}</dt><dd>{{ format(s.squashed) }} <small>({{ format(s.squashedPer, 1) }} %)</small></dd></div>
+          </dl>
+          <p class="statistics-help">{{ 'SST.KPI.HELP' | translate: { peak: s.peak } }}</p>
+
+          <h4 class="statistics-heading">{{ 'SST.COMMITS.TITLE' | translate }}</h4>
+          <p class="statistics-help">{{ 'SST.COMMITS.HELP' | translate }}</p>
+          <ul class="statistics-bars" id="superscalarCommits">
+            @for (share of commits(); track share.key) {
+              <li class="statistics-bar-item">
+                <div class="statistics-bar-label">
+                  <strong>{{ 'SST.COMMITS.N' | translate: { n: share.key } }}</strong>
+                  <span class="statistics-bar-value">{{ format(share.value) }} ({{ format(share.per, 1) }} % {{ 'ST.OF_CYCLES' | translate }})</span>
+                </div>
+                <div class="statistics-bar" aria-hidden="true"><span [class]="share.key === '0' ? 'chart-4' : 'chart-FREE'" [style.width.%]="bar(share, max(commits()))"></span></div>
+              </li>
+            }
+          </ul>
+
+          <h4 class="statistics-heading">{{ 'ST.HARDWARE.TITLE' | translate }}</h4>
+          <dl class="statistics-hardware">
+            <div><dt>{{ 'SST.HARDWARE.WIDTHS' | translate }}</dt><dd>{{ p.fetch }} / {{ p.decode }} / {{ p.commit }}</dd></div>
+            <div><dt>{{ 'SST.HARDWARE.QUEUE' | translate }}</dt><dd>{{ p.queue }}</dd></div>
+            <div><dt>{{ 'SST.HARDWARE.ROB' | translate }}</dt><dd>{{ p.rob.int }} / {{ p.rob.fp }}</dd></div>
+            <div><dt>{{ 'SST.HARDWARE.WINDOWS' | translate }}</dt><dd>{{ p.window.int }} / {{ p.window.fp }}</dd></div>
+            <div><dt>{{ 'SST.HARDWARE.BUFFERS' | translate }}</dt><dd>{{ p.loadBuffer }} / {{ p.storeBuffer }}</dd></div>
+            <div><dt>{{ 'SST.HARDWARE.MEMORY' | translate }}</dt><dd>{{ 'SST.HARDWARE.MEMORY_VALUE' | translate: { latency: p.memory.latency, accesses: p.memory.accesses } }}</dd></div>
+            <div><dt>{{ 'SST.HARDWARE.PREDICTION' | translate }}</dt><dd>{{ (p.prediction ? 'SST.HARDWARE.BTB' : 'ST.HARDWARE.OFF') | translate: { size: p.btb } }}</dd></div>
+          </dl>
+        }
+      }
+
+      @case ('stalls') {
+        <p class="statistics-help">{{ 'SST.STALLS.INTRO' | translate }}</p>
+        @for (group of [{ key: 'FETCH', bars: fetchStalls() }, { key: 'DISPATCH', bars: dispatchStalls() }, { key: 'COMMIT', bars: commitStalls() }]; track group.key) {
+          <h4 class="statistics-heading">{{ ('SST.STALLS.' + group.key) | translate }}</h4>
+          <ul class="statistics-bars" [id]="'superscalarStalls-' + group.key">
+            @for (share of group.bars; track share.key; let index = $index) {
+              <li class="statistics-bar-item">
+                <div class="statistics-bar-label">
+                  <span class="statistics-swatch" [class]="'chart-' + ((index % 6) + 1)" aria-hidden="true"></span>
+                  <strong>{{ ('SST.' + group.key + '.' + share.key + '.NAME') | translate }}</strong>
+                  <span class="statistics-bar-value">{{ format(share.value) }} ({{ format(share.per, 1) }} % {{ 'ST.OF_CYCLES' | translate }})</span>
+                </div>
+                <div class="statistics-bar" aria-hidden="true"><span [class]="'chart-' + ((index % 6) + 1)" [style.width.%]="bar(share, max(group.bars))"></span></div>
+                <p class="statistics-bar-help">{{ ('SST.' + group.key + '.' + share.key + '.HELP') | translate }}</p>
+              </li>
+            }
+          </ul>
+        }
+        <h4 class="statistics-heading">{{ 'SST.WAITS.TITLE' | translate }}</h4>
+        <p class="statistics-help">{{ 'SST.WAITS.HELP' | translate }}</p>
+        <ul class="statistics-bars" id="superscalarWaits">
+          @for (share of waits(); track share.key) {
+            <li class="statistics-bar-item">
+              <div class="statistics-bar-label">
+                <strong>{{ ('SST.WAITS.' + share.key) | translate }}</strong>
+                <span class="statistics-bar-value">{{ format(share.value) }} ({{ format(share.per, 1) }} %)</span>
+              </div>
+              <div class="statistics-bar" aria-hidden="true"><span [class]="share.key === 'UNIT' ? 'chart-STRUCTURAL' : 'chart-RAW'" [style.width.%]="bar(share, max(waits()))"></span></div>
+            </li>
+          }
+        </ul>
+        @if (stats(); as st) {
+          <p class="statistics-bar-help">{{ 'SST.WAITS.LOADS' | translate: { blocked: format(st.blockedLoads), loads: format(st.loads) } }}</p>
+        }
+      }
+
+      @case ('branches') {
+        @if (branches(); as b) {
+          @if (!p.prediction) {
+            <p class="statistics-conclusion">{{ 'SST.BRANCHES.OFF' | translate }}</p>
+          }
+          <dl class="statistics-kpis">
+            <div class="statistics-kpi"><dt>{{ 'SST.BRANCHES.COUNT' | translate }}</dt><dd id="superscalarBranches">{{ format(b.branches) }}</dd></div>
+            <div class="statistics-kpi"><dt>{{ 'SST.BRANCHES.TAKEN' | translate }}</dt><dd>{{ format(b.taken) }} <small>({{ format(b.takenPer, 1) }} %)</small></dd></div>
+            <div class="statistics-kpi"><dt>{{ 'SST.BRANCHES.MISPREDICTED' | translate }}</dt><dd id="superscalarMispredicted">{{ format(b.mispredicted) }}</dd></div>
+            <div class="statistics-kpi"><dt>{{ 'SST.BRANCHES.ACCURACY' | translate }}</dt><dd id="superscalarAccuracy">{{ format(b.accuracy, 1) }} <small>%</small></dd></div>
+          </dl>
+          <p class="statistics-help">{{ 'SST.BRANCHES.HELP' | translate }}</p>
+          <dl class="statistics-hardware">
+            <div><dt>{{ 'SST.BRANCHES.SQUASHED' | translate }}</dt><dd>{{ format(b.squashed) }}</dd></div>
+            <div><dt>{{ 'SST.BRANCHES.PER_MISS' | translate }}</dt><dd>{{ format(b.perMiss, 1) }}</dd></div>
+            <div><dt>{{ 'SST.BRANCHES.BTB_MISSES' | translate }}</dt><dd>{{ format(b.btbMisses) }}</dd></div>
+            <div><dt>{{ 'SST.BRANCHES.COLLISIONS' | translate }}</dt><dd>{{ format(b.btbCollisions) }}</dd></div>
+            <div><dt>{{ 'SST.BRANCHES.JUMPS' | translate }}</dt><dd>{{ format(b.jumps) }}</dd></div>
+          </dl>
+          <p class="statistics-conclusion">
+            <i class="fas fa-lightbulb mr-1" aria-hidden="true"></i>
+            @if (b.branches === 0) {
+              {{ 'ST.BRANCHES.NONE' | translate }}
+            } @else if (b.mispredicted === 0) {
+              {{ 'SST.BRANCHES.ALL_RIGHT' | translate }}
+            } @else {
+              {{ 'SST.BRANCHES.COST' | translate: { squashed: format(b.squashed), mispredicted: format(b.mispredicted) } }}
+            }
+          </p>
+        }
+      }
+
+      @case ('units') {
+        <p class="statistics-help">{{ 'SST.UNITS.HELP' | translate }}</p>
+        <div class="table-responsive">
+          <table class="table table-sm mb-3" id="superscalarUnitsTable">
+            <caption class="sr-only">{{ 'SST.TABS.UNITS' | translate }}</caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'SUPERSCALAR.UNIT' | translate }}</th>
+                <th scope="col" class="text-right">{{ 'CONFIG.COUNT' | translate }}</th>
+                <th scope="col" class="text-right">{{ 'SST.UNITS.LATENCY' | translate }}</th>
+                <th scope="col" class="text-right">{{ 'SST.UNITS.INSTRUCTIONS' | translate }}</th>
+                <th scope="col">{{ 'SST.UNITS.USE' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (unit of units(); track unit.pool) {
+                <tr>
+                  <th scope="row">{{ poolLabel(unit.pool) | translate }}</th>
+                  <td class="text-right">{{ unit.count }}</td>
+                  <td class="text-right">{{ unit.latency }}</td>
+                  <td class="text-right">{{ format(unit.instructions) }}</td>
+                  <td>
+                    <div class="statistics-compare-row mt-0">
+                      <div class="statistics-bar" aria-hidden="true"><span class="chart-2" [style.width.%]="unit.use"></span></div>
+                      <span class="statistics-bar-value">{{ format(unit.use, 1) }} %</span>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <h4 class="statistics-heading">{{ 'SST.OCCUPANCY.TITLE' | translate }}</h4>
+        <p class="statistics-help">{{ 'SST.OCCUPANCY.HELP' | translate }}</p>
+        <ul class="statistics-bars" id="superscalarOccupancy">
+          @for (row of occupancy(); track row.key) {
+            <li class="statistics-bar-item">
+              <div class="statistics-bar-label">
+                <strong>{{ ('SST.OCCUPANCY.' + row.key) | translate }}</strong>
+                <span class="statistics-bar-value">{{ format(row.mean, 1) }} / {{ row.size }} ({{ format(row.per, 1) }} %)</span>
+              </div>
+              <div class="statistics-bar" aria-hidden="true"><span class="chart-1" [style.width.%]="row.per"></span></div>
+            </li>
+          }
+        </ul>
+      }
+
+      @case ('compare') {
+        <p class="statistics-help">{{ 'SST.COMPARE.HELP' | translate }}</p>
+        <button type="button" class="btn btn-sm btn-primary mb-3" id="superscalarCompare" (click)="compare()" [disabled]="comparing()">
+          @if (comparing()) { <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> }
+          {{ 'SST.COMPARE.BUTTON' | translate }}
+        </button>
+        @if (comparisonFailed()) {
+          <p class="text-danger small" role="alert">{{ 'ST.COMPARE.FAILED' | translate }}</p>
+        }
+        @if (comparison(); as result) {
+          <p class="statistics-conclusion" id="superscalarSpeedup">
+            <i class="fas fa-lightbulb mr-1" aria-hidden="true"></i>
+            {{ 'SST.COMPARE.SPEEDUP' | translate: { times: format(speedup(), 2), dlx: format(result.dlx.cycles), superdlx: format(result.superdlx.cycles) } }}
+          </p>
+          <ul class="statistics-bars">
+            @for (row of compared; track row.key) {
+              @if (row.key !== 'instructions') {
+                <li class="statistics-bar-item">
+                  <div class="statistics-bar-label"><strong>{{ row.label | translate }}</strong></div>
+                  <div class="statistics-compare-row">
+                    <span class="statistics-compare-name">DLX</span>
+                    <div class="statistics-bar" aria-hidden="true"><span class="chart-CONTROL" [style.width.%]="comparedBar(row.key, 'dlx')"></span></div>
+                    <span class="statistics-bar-value">{{ format(comparedValue(row.key, 'dlx'), row.digits) }}</span>
+                  </div>
+                  <div class="statistics-compare-row">
+                    <span class="statistics-compare-name">SuperDLX</span>
+                    <div class="statistics-bar" aria-hidden="true"><span class="chart-FREE" [style.width.%]="comparedBar(row.key, 'superdlx')"></span></div>
+                    <span class="statistics-bar-value">{{ format(comparedValue(row.key, 'superdlx'), row.digits) }}</span>
+                  </div>
+                </li>
+              }
+            }
+          </ul>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered mb-1" id="superscalarComparison">
+              <caption class="sr-only">{{ 'SST.COMPARE.BUTTON' | translate }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col" class="text-right">DLX</th>
+                  <th scope="col" class="text-right">SuperDLX</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of compared; track row.key) {
+                  <tr>
+                    <th scope="row">{{ row.label | translate }}</th>
+                    <td class="text-right">{{ format(comparedValue(row.key, 'dlx'), row.digits) }}</td>
+                    <td class="text-right">{{ format(comparedValue(row.key, 'superdlx'), row.digits) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @for (run of [result.dlx, result.superdlx]; track $index) {
+            @if (run.stoppedBy !== 'complete') {
+              <p class="small text-warning mb-0">{{ ('ST.COMPARE.STOPPED_' + run.stoppedBy.toUpperCase()) | translate: { error: run.error ?? '' } }}</p>
+            }
+          }
+        }
+      }
+    }
+  }
+</div>

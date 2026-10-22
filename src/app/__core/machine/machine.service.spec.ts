@@ -262,6 +262,58 @@ describe("MachineService with the simulator of THUMDER", () => {
   });
 });
 
+describe("MachineService with SuperDLX", () => {
+  const start = async (name: string) => {
+    for (const level of ["debug", "error", "warn"] as const) vi.spyOn(console, level).mockImplementation(() => undefined);
+    localStorage.clear();
+    saveConfig(localStorage, { ...defaultConfig(), delay: 0, architecture: "superdlx" });
+    new StorageService().setItem("interfaceFileItem", { name, content: EXAMPLES[name], key: name, path: "" });
+    TestBed.configureTestingModule({ providers: providers(null) });
+    const machine = TestBed.inject(MachineService);
+    expect(await machine.resetMachineStatus()).toBe(true);
+    return machine;
+  };
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+    vi.restoreAllMocks();
+  });
+
+  it("takes the architecture of the configuration and draws its machine and its history cycle by cycle", async () => {
+    const machine = await start("prim.s");
+    expect(machine.state.architecture()).toBe("superdlx");
+    expect(machine.state.superscalar()).toBeNull();
+    for (let i = 0; i < 6; i++) await machine.nextStep();
+    const snapshot = machine.state.superscalar();
+    expect(snapshot?.cycle).toBe(5);
+    expect(machine.timeline.cycles).toBe(6);
+    expect(machine.timeline.rows.length).toBeGreaterThan(6);
+    expect(machine.state.superscalarStats()?.cycles).toBe(6);
+    // The code knows where each instruction is
+    expect(machine.state.stages().size).toBeGreaterThan(0);
+  });
+
+  it("runs to the end without drawing and leaves the same memory as DLX", async () => {
+    const machine = await start("prim.s");
+    await machine.runToEnd();
+    expect(machine.state.complete()).toBe(true);
+    expect(machine.state.superscalar()).not.toBeNull();
+    const stats = machine.state.superscalarStats();
+    expect(stats?.instructions).toBe(machine.state.statistics().TOTAL.ID_EXECUTED.instructions);
+    const table = 0x1004;
+    const primes = Array.from({ length: 10 }, (_, i) => parseInt(machine.memory.getMemoryWordBinaryByIndex(table + 4 * i), 2));
+    expect(primes).toEqual([2, 3, 5, 7, 11, 13, 17, 19, 23, 29]);
+  });
+
+  it("steps back one cycle in SuperDLX too", async () => {
+    const machine = await start("prim.s");
+    for (let i = 0; i < 5; i++) await machine.nextStep();
+    await machine.stepBack();
+    expect(machine.state.superscalar()?.cycle).toBe(3);
+    expect(machine.timeline.cycles).toBe(4);
+  });
+});
+
 describe("MachineService, stepping back and running without drawing", () => {
   const file = (name: string) => ({ name, content: EXAMPLES[name], key: name, path: "" });
   const start = async (name: string, modules: string[] = []) => {

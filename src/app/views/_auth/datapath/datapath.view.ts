@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { PipelineStagesComponent } from "@components/pipeline-stages/pipeline-stages.component";
 import { ConfigService } from "@core/config/config.service";
 import { type CycleActivity, cycleActivity, type Occupant, type StageKey, UNIT_KEYS, type UnitKey } from "@core/machine/cycle-activity";
@@ -135,11 +136,14 @@ const binaryValue = (binary: string) => Number.parseInt(binary || "0", 2) >>> 0;
   templateUrl: "./datapath.view.html",
   styleUrls: ["./datapath.view.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardDirective, CardWidgetDirective, DetailsDirective, PipelineStagesComponent, TranslatePipe],
+  imports: [CardDirective, CardWidgetDirective, DetailsDirective, PipelineStagesComponent, RouterLink, TranslatePipe],
 })
 export class DatapathView {
   private machine = inject(MachineService);
   private config = inject(ConfigService);
+
+  /** The datapath is the one of DLX: with SuperDLX the view says where its machine is */
+  public readonly superscalar = computed(() => this.machine.state.architecture() === "superdlx");
 
   public readonly stages = STAGES;
   public readonly latches = LATCHES;

@@ -29,10 +29,25 @@ En THUMDER están siempre en la carpeta `ejemplos` del gestor de ficheros, de so
 
 Los ejemplos 17 y 18 se miran juntos: hacen lo mismo y la diferencia está en las estadísticas. El 19 se ejecuta paso a paso (F8), buscando en el diagrama de ciclos las etiquetas de cada bloque.
 
+## Ejemplos de SuperDLX
+
+En `ejemplos/superdlx` hay cinco programas para [SuperDLX](superdlx.md), el DLX superescalar (se elige en la cabecera). Funcionan también en DLX, y su cabecera dice qué cambia de una arquitectura a otra.
+
+| Nº | Fichero | Qué enseña | Imprime |
+| :-- | :-- | :-- | :-- |
+| 01 | `01-paralelismo.s` | El paralelismo entre instrucciones: una cadena de sumas frente a cuatro acumuladores, el IPC y la máquina escalar | `Un acumulador: 528` y `Cuatro acumuladores: 528` |
+| 02 | `02-renombrado.s` | Dependencias verdaderas y falsas (WAR y WAW), el renombrado con el ROB y los registros renombrados | `A = 36, B = 360, C = 3600` |
+| 03 | `03-prediccion-de-saltos.s` | La BTB y los contadores de 2 bits, un salto de bucle frente a un «if» que alterna, las instrucciones anuladas | cuántos pares e impares hay, dos veces |
+| 04 | `04-dependencias-en-memoria.s` | Los almacenamientos se escriben al confirmarse; las cargas que esperan a un almacenamiento anterior | `En memoria: 120, en un registro: 120` |
+| 05 | `05-rob-y-coma-flotante.s` | La confirmación en orden, una división en la cabeza del ROB, el tamaño del ROB y las dos mitades de la máquina | `Suma de 1/i para i = 1..8: 2.71786` |
+
+Cada uno tiene ejercicios guiados en el tema «Superescalar (SuperDLX)» de la vista de ejercicios, que fijan la arquitectura y la máquina: el 01 con la máquina de WinSuperDLX y con una escalar, el 03 con y sin predicción, y el 05 con un ROB de coma flotante de 4 y de 20 entradas. Otro compara el producto escalar (ejemplo 16) en DLX y en SuperDLX.
+
 ## Cómo se comprueban
 
 `src/app/__core/engine/classics.spec.ts` ensambla y ejecuta cada ejemplo:
 
 - sin errores ni avisos de ensamblado, y la salida tiene que ser la que dice su cabecera en «Resultado»;
 - en el pipeline, con cuatro configuraciones (con y sin adelantamiento, y unidades de coma flotante rápidas o lentas), con el mismo estado final que el ejecutor de referencia;
+- los de SuperDLX (`superdlx-examples.spec.ts`), igual en DLX y en SuperDLX, y lo que dicen sus comentarios: que en DLX los dos bucles del 01 tardan lo mismo y en SuperDLX el de cuatro acumuladores menos, que en el 02 hay varias versiones de R4 a la vez y cambiar de registro no ahorra ciclos, que el 03 falla más con los números alternos y sin predicción no anula nada, que en el 04 esperan 14 cargas, y que en el 05 un ROB de 4 entradas tarda mucho más y uno de 40 no mejora;
 - lo que dicen los comentarios: que planificar el bucle del 02 ahorra 16 ciclos, que el 18 tarda menos que el 17 y solo él gana con cuatro multiplicadores, que cada bloque del 19 produce su detención (y la de «Adelanta» y «UsaCarga» sube a 2 ciclos sin adelantamiento), que los recursivos dejan la pila como estaba, y los resultados en memoria del 10, el 12 y el 13.

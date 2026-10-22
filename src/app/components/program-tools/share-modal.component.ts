@@ -65,7 +65,7 @@ export class ShareModalComponent {
 
   public readonly id = SHARE_MODAL;
   public readonly lockable = LOCKABLE;
-  public readonly locked = signal<Lockable[]>(["forwarding"]);
+  public readonly locked = signal<Lockable[]>(["architecture", "forwarding"]);
   public readonly link = signal("");
   public readonly copied = signal(false);
   public readonly tooLong = signal(false);
@@ -89,12 +89,14 @@ export class ShareModalComponent {
     this.copied.set(false);
     this.tooLong.set(this.file.content.length > MAX_CONTENT);
     if (this.tooLong()) return;
-    const { forwarding, floatingPoint, memorySize } = this.config.value();
+    const { architecture, superdlx, forwarding, floatingPoint, memorySize } = this.config.value();
     const data = await encodeExercise({
       version: 1,
       name: this.file.name,
       content: this.file.content,
       statement: this.statement,
+      architecture,
+      superdlx,
       forwarding,
       floatingPoint,
       memorySize,

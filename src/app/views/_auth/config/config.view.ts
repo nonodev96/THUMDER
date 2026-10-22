@@ -5,6 +5,15 @@ import { FormsModule } from "@angular/forms";
 import type { TypeFloatingPointStageConfiguration, TypeMultiviewConfiguration } from "@app/Types";
 import { changesMachine, defaultConfig, type SoundConfig, type ThumderConfig, validateConfig } from "@core/config/config";
 import { ConfigService } from "@core/config/config.service";
+import { ARCHITECTURES, type ArchitectureId } from "@core/engine/architectures";
+import {
+  FP_POOLS,
+  INT_POOLS,
+  SUPERSCALAR_LIMITS,
+  type SuperscalarParameters,
+  type SuperscalarProfile,
+  superscalarProfile,
+} from "@core/engine/superscalar-config";
 import { ExerciseService } from "@core/exercises/exercise.service";
 import type { Lockable } from "@core/exercises/share";
 import { MachineService } from "@core/machine/machine.service";
@@ -53,6 +62,19 @@ export class ConfigView {
     return this.lock()?.locked.includes(key) ?? false;
   }
 
+  public readonly architectures = ARCHITECTURES;
+  public readonly limits = SUPERSCALAR_LIMITS;
+  public readonly profiles: { id: SuperscalarProfile; label: string }[] = [
+    { id: "default", label: "CONFIG.SUPERDLX.PROFILE_DEFAULT" },
+    { id: "scalar", label: "CONFIG.SUPERDLX.PROFILE_SCALAR" },
+    { id: "wide", label: "CONFIG.SUPERDLX.PROFILE_WIDE" },
+  ];
+  /** The functional units of SuperDLX, by halves */
+  public readonly pools = [
+    { side: "int" as const, title: "CONFIG.SUPERDLX.INT_UNITS", kinds: INT_POOLS },
+    { side: "fp" as const, title: "CONFIG.SUPERDLX.FP_UNITS", kinds: FP_POOLS },
+  ];
+
   public readonly units: { key: FloatingPointUnit; label: string }[] = [
     { key: "addition", label: "CONFIG.ADDITION" },
     { key: "multiplication", label: "CONFIG.MULTIPLICATION" },
@@ -60,6 +82,8 @@ export class ConfigView {
   ];
 
   // The form: a copy of the configuration (core/config), changed by the inputs until it is saved
+  public architectureConfiguration: ArchitectureId = "dlx";
+  public superdlxConfiguration!: SuperscalarParameters;
   public enabledForwardingConfiguration = true;
   public floatingPointStageConfiguration!: TypeFloatingPointStageConfiguration;
   public memorySizeConfiguration = 0;
@@ -101,6 +125,8 @@ export class ConfigView {
 
   private fill(config: ThumderConfig): void {
     const copy = structuredClone(config);
+    this.architectureConfiguration = copy.architecture;
+    this.superdlxConfiguration = copy.superdlx;
     this.enabledForwardingConfiguration = copy.forwarding;
     this.floatingPointStageConfiguration = copy.floatingPoint;
     this.memorySizeConfiguration = copy.memorySize;
@@ -113,6 +139,8 @@ export class ConfigView {
   /** What the form says, valid */
   private fromForm(): ThumderConfig {
     return validateConfig({
+      architecture: this.architectureConfiguration,
+      superdlx: this.superdlxConfiguration,
       forwarding: this.enabledForwardingConfiguration,
       floatingPoint: this.floatingPointStageConfiguration,
       memorySize: this.memorySizeConfiguration,
@@ -152,9 +180,26 @@ export class ConfigView {
     if (reload) await this.machine.resetMachineStatus();
   }
 
+  /** A ready-made machine of SuperDLX in the form (saved with the rest) */
+  public useProfile(profile: SuperscalarProfile): void {
+    this.superdlxConfiguration = superscalarProfile(profile);
+  }
+
+  /** The name of a kind of unit of SuperDLX: CONFIG.SUPERDLX.POOL_INT_ALU... */
+  public poolLabel(side: "int" | "fp", kind: string): string {
+    return `SUPERSCALAR.POOLS.${side.toUpperCase()}_${kind.toUpperCase()}`;
+  }
+
+  /** The unit of a kind in the form */
+  public unitOf(side: "int" | "fp", kind: string): { count: number; latency: number } {
+    const units = this.superdlxConfiguration.units[side] as Record<string, { count: number; latency: number }>;
+    return units[kind];
+  }
+
   /** The values out of range, to their limits (as they will be saved), when an input loses the focus */
   public clampValues(): void {
     const valid = this.fromForm();
+    this.superdlxConfiguration = valid.superdlx;
     this.floatingPointStageConfiguration = valid.floatingPoint;
     this.memorySizeConfiguration = valid.memorySize;
     this.timeSimulationConfiguration = valid.delay;

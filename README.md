@@ -41,11 +41,12 @@ pantalla de inicio.
 **Programar**
 
 - Un editor de ensamblador DLX (Monaco) con resaltado, errores al momento, puntos de ruptura y símbolos.
-- Un gestor de ficheros con carpetas, importación y descarga de `.s` y `.zip`, y 20 ejemplos clásicos comentados, de «Hola, mundo» a un DAXPY desenrollado.
+- Un gestor de ficheros con carpetas, importación y descarga de `.s` y `.zip`, 20 ejemplos clásicos comentados, de «Hola, mundo» a un DAXPY desenrollado, y 5 para SuperDLX.
 
 **Simular**
 
 - Ensamblado a código máquina DLX real y simulación del pipeline de WinDLX: IF, ID, EX, MEM y WB, adelantamiento, detenciones y unidades de coma flotante configurables.
+- Dos arquitecturas, elegidas en la cabecera: **DLX** y **SuperDLX**, un DLX superescalar con ejecución fuera de orden como el de WinSuperDLX (varias instrucciones por ciclo, ventanas de instrucciones, ROB, buffers de cargas y almacenamientos y predicción de saltos), con todos sus parámetros configurables. El mismo programa acaba igual en las dos: solo cambian los ciclos.
 - Ejecución continua, ciclo a ciclo, hasta el final sin dibujar y **paso atrás**. Los atajos son los de un depurador y no chocan con los del navegador: <kbd>Ctrl</kbd>+<kbd>F9</kbd> carga, <kbd>F9</kbd> ejecuta o pausa, <kbd>F8</kbd> avanza un ciclo, <kbd>Mayús</kbd>+<kbd>F8</kbd> retrocede y <kbd>Mayús</kbd>+<kbd>F9</kbd> va al final.
 - Consola de entrada y salida para los traps del programa, y sonido opcional: cada ciclo es un arpegio sobre una progresión de acordes, las instrucciones que terminan llevan la melodía y las detenciones y los saltos tomados se oyen.
 
@@ -94,8 +95,9 @@ THUMDER ensambla los programas en código máquina DLX real, los carga en memori
 WinDLX: adelantamiento, detenciones, unidades de coma flotante configurables, traps de entrada y salida, y estadísticas.
 
 - Cómo funciona y cómo se comprueba: [docs/simulador.md](docs/simulador.md).
+- SuperDLX, el DLX superescalar: [docs/superdlx.md](docs/superdlx.md).
 - El manual de WinDLX en el que se basa: [docs/manual-simulador-dlx.md](docs/manual-simulador-dlx.md).
-- Los 20 ejemplos, explicados: [docs/ejemplos-dlx.md](docs/ejemplos-dlx.md). Están siempre en la carpeta «ejemplos» del gestor de ficheros, de solo lectura, junto a «ejercicios» con los programas de los ejercicios guiados. Si cambias uno, se guarda una copia en tus ficheros.
+- Los 20 ejemplos de DLX y los 5 de SuperDLX, explicados: [docs/ejemplos-dlx.md](docs/ejemplos-dlx.md). Están siempre en la carpeta «ejemplos» del gestor de ficheros, de solo lectura, junto a «ejercicios» con los programas de los ejercicios guiados. Si cambias uno, se guarda una copia en tus ficheros.
 
 ## Desarrollo
 

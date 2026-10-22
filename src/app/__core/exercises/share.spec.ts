@@ -1,4 +1,5 @@
 import { DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION } from "@app/CONSTANTS";
+import { defaultSuperscalar, superscalarProfile } from "@core/engine/superscalar-config";
 import { describe, expect, it } from "vitest";
 import { decodeExercise, encodeExercise, type SharedExercise } from "./share";
 
@@ -7,6 +8,8 @@ const exercise: SharedExercise = {
   name: "riesgos.s",
   content: "        .text\nmain:   addi r1,r0,5\n        add  r2,r1,r1\n        trap 0\n",
   statement: "¿Cuántos atascos hay sin adelantamiento?",
+  architecture: "dlx",
+  superdlx: defaultSuperscalar(),
   forwarding: false,
   floatingPoint: structuredClone(DEFAULT_FLOATING_POINT_STAGE_CONFIGURATION),
   memorySize: 4096,
@@ -23,6 +26,17 @@ describe("shared exercises (EDU-07)", () => {
   it("are validated: values out of range, unknown locks and names without .s", async () => {
     const text = await encodeExercise({ ...exercise, name: "ej1", memorySize: 3, locked: ["forwarding", "nonsense" as never] });
     expect(await decodeExercise(text)).toMatchObject({ name: "ej1.s", memorySize: 512, locked: ["forwarding"] });
+  });
+
+  it("made before SuperDLX, are of DLX", async () => {
+    const { architecture: _architecture, superdlx: _superdlx, ...old } = exercise;
+    const text = await encodeExercise(old as SharedExercise);
+    expect(await decodeExercise(text)).toMatchObject({ architecture: "dlx", superdlx: defaultSuperscalar() });
+  });
+
+  it("keep the architecture SuperDLX and its machine, and can lock it", async () => {
+    const superdlx = { ...exercise, architecture: "superdlx" as const, superdlx: superscalarProfile("wide"), locked: ["architecture" as const] };
+    expect(await decodeExercise(await encodeExercise(superdlx))).toEqual(superdlx);
   });
 
   it("reject a link that was cut or changed", async () => {

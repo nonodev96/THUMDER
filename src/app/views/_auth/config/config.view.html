@@ -12,6 +12,133 @@
         @for (key of exercise.locked; track key) { <span class="badge badge-secondary mr-1">{{ 'SHARE.LOCK_' + key.toUpperCase() | translate }}</span> }
       </div>
     }
+    <!-- The architecture: DLX or SuperDLX (also in the header) -->
+    <fieldset class="mb-4" id="architectureSettings">
+      <legend class="h5">{{ 'ARCH.TITLE' | translate }}</legend>
+      <small class="form-text text-muted mt-0 mb-2">{{ 'CONFIG.HELP_ARCHITECTURE' | translate }}</small>
+      @for (architecture of architectures; track architecture.id) {
+        <div class="custom-control custom-radio mb-2">
+          <input type="radio" class="custom-control-input" name="architecture" [id]="'configArchitecture-' + architecture.id" [value]="architecture.id"
+            [(ngModel)]="architectureConfiguration" [disabled]="isLocked('architecture')" [attr.aria-describedby]="'configArchitectureHelp-' + architecture.id">
+          <label class="custom-control-label" [for]="'configArchitecture-' + architecture.id"><i class="fa-fw {{ architecture.icon }}" aria-hidden="true"></i> {{ architecture.name }}</label>
+          <small class="form-text text-muted mt-0" [id]="'configArchitectureHelp-' + architecture.id">{{ architecture.summary | translate }}</small>
+        </div>
+      }
+    </fieldset>
+
+    @if (architectureConfiguration === 'superdlx') {
+      @let m = superdlxConfiguration;
+      <fieldset class="mb-4" id="superdlxSettings" [disabled]="isLocked('architecture')">
+        <legend class="h5">{{ 'CONFIG.SUPERDLX.TITLE' | translate }}</legend>
+        <small class="form-text text-muted mt-0 mb-2">{{ 'CONFIG.SUPERDLX.HELP' | translate }}</small>
+        <div class="btn-group btn-group-sm flex-wrap mb-3" role="group" [attr.aria-label]="'CONFIG.SUPERDLX.PROFILES' | translate">
+          @for (profile of profiles; track profile.id) {
+            <button type="button" class="btn btn-outline-primary" [id]="'superdlxProfile-' + profile.id" (click)="useProfile(profile.id)">{{ profile.label | translate }}</button>
+          }
+        </div>
+
+        <p class="mb-1 font-weight-bold">{{ 'CONFIG.SUPERDLX.WIDTHS' | translate }}</p>
+        <small class="form-text text-muted mt-0 mb-2">{{ 'CONFIG.SUPERDLX.HELP_WIDTHS' | translate }}</small>
+        <div class="form-row">
+          @for (field of [{ key: 'fetch', label: 'CONFIG.SUPERDLX.FETCH' }, { key: 'decode', label: 'CONFIG.SUPERDLX.DECODE' }, { key: 'commit', label: 'CONFIG.SUPERDLX.COMMIT' }]; track field.key) {
+            <div class="form-group col-4">
+              <label [for]="'superdlx-' + field.key">{{ field.label | translate }}</label>
+              <input type="number" class="form-control" [id]="'superdlx-' + field.key" [name]="'superdlx-' + field.key" [min]="limits.width.min" [max]="limits.width.max" step="1"
+                [(ngModel)]="$any(m)[field.key]" (change)="clampValues()">
+            </div>
+          }
+        </div>
+
+        <p class="mb-1 font-weight-bold">{{ 'CONFIG.SUPERDLX.STRUCTURES' | translate }}</p>
+        <small class="form-text text-muted mt-0 mb-2">{{ 'CONFIG.SUPERDLX.HELP_STRUCTURES' | translate }}</small>
+        <div class="form-row">
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-queue">{{ 'CONFIG.SUPERDLX.QUEUE' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-queue" name="superdlx-queue" [min]="limits.queue.min" [max]="limits.queue.max" [(ngModel)]="m.queue" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-rob-int">{{ 'CONFIG.SUPERDLX.ROB_INT' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-rob-int" name="superdlx-rob-int" [min]="limits.rob.min" [max]="limits.rob.max" [(ngModel)]="m.rob.int" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-rob-fp">{{ 'CONFIG.SUPERDLX.ROB_FP' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-rob-fp" name="superdlx-rob-fp" [min]="limits.rob.min" [max]="limits.rob.max" [(ngModel)]="m.rob.fp" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-window-int">{{ 'CONFIG.SUPERDLX.WINDOW_INT' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-window-int" name="superdlx-window-int" [min]="limits.window.min" [max]="limits.window.max" [(ngModel)]="m.window.int" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-window-fp">{{ 'CONFIG.SUPERDLX.WINDOW_FP' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-window-fp" name="superdlx-window-fp" [min]="limits.window.min" [max]="limits.window.max" [(ngModel)]="m.window.fp" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-load">{{ 'CONFIG.SUPERDLX.LOAD_BUFFER' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-load" name="superdlx-load" [min]="limits.buffer.min" [max]="limits.buffer.max" [(ngModel)]="m.loadBuffer" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-store">{{ 'CONFIG.SUPERDLX.STORE_BUFFER' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-store" name="superdlx-store" [min]="limits.buffer.min" [max]="limits.buffer.max" [(ngModel)]="m.storeBuffer" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6 col-md-3">
+            <label for="superdlx-btb">{{ 'CONFIG.SUPERDLX.BTB' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-btb" name="superdlx-btb" [min]="limits.btb.min" [max]="limits.btb.max" [(ngModel)]="m.btb" (change)="clampValues()">
+          </div>
+        </div>
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" id="superdlx-prediction" name="superdlx-prediction" [(ngModel)]="m.prediction" aria-describedby="superdlxPredictionHelp">
+          <label class="form-check-label" for="superdlx-prediction">{{ 'CONFIG.SUPERDLX.PREDICTION' | translate }}</label>
+          <small id="superdlxPredictionHelp" class="form-text text-muted">{{ 'CONFIG.SUPERDLX.HELP_PREDICTION' | translate }}</small>
+        </div>
+
+        <p class="mb-1 font-weight-bold">{{ 'CONFIG.SUPERDLX.MEMORY' | translate }}</p>
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="superdlx-memory-latency">{{ 'CONFIG.SUPERDLX.MEMORY_LATENCY' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-memory-latency" name="superdlx-memory-latency" [min]="limits.memoryLatency.min" [max]="limits.memoryLatency.max"
+              [(ngModel)]="m.memory.latency" (change)="clampValues()">
+          </div>
+          <div class="form-group col-6">
+            <label for="superdlx-memory-accesses">{{ 'CONFIG.SUPERDLX.MEMORY_ACCESSES' | translate }}</label>
+            <input type="number" class="form-control" id="superdlx-memory-accesses" name="superdlx-memory-accesses" [min]="limits.accesses.min" [max]="limits.accesses.max"
+              [(ngModel)]="m.memory.accesses" (change)="clampValues()">
+          </div>
+        </div>
+
+        @for (group of pools; track group.side) {
+          <p class="mb-1 font-weight-bold" [id]="'superdlxUnits-' + group.side">{{ group.title | translate }}</p>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm mb-0" [attr.aria-labelledby]="'superdlxUnits-' + group.side">
+              <thead>
+                <tr>
+                  <th scope="col">{{ 'CONFIG.UNIT' | translate }}</th>
+                  <th scope="col">{{ 'CONFIG.COUNT' | translate }} ({{ limits.units.min }}-{{ limits.units.max }})</th>
+                  <th scope="col">{{ 'CONFIG.SUPERDLX.LATENCY' | translate }} ({{ limits.latency.min }}-{{ limits.latency.max }})</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (kind of group.kinds; track kind) {
+                  @let unit = unitOf(group.side, kind);
+                  <tr>
+                    <th scope="row">{{ poolLabel(group.side, kind) | translate }}</th>
+                    <td>
+                      <input type="number" class="form-control" [id]="'superdlx-' + group.side + '-' + kind + '-count'" [name]="'superdlx-' + group.side + '-' + kind + '-count'"
+                        [min]="limits.units.min" [max]="limits.units.max" [(ngModel)]="unit.count" (change)="clampValues()"
+                        [attr.aria-label]="(poolLabel(group.side, kind) | translate) + ': ' + ('CONFIG.COUNT' | translate)">
+                    </td>
+                    <td>
+                      <input type="number" class="form-control" [id]="'superdlx-' + group.side + '-' + kind + '-latency'" [name]="'superdlx-' + group.side + '-' + kind + '-latency'"
+                        [min]="limits.latency.min" [max]="limits.latency.max" [(ngModel)]="unit.latency" (change)="clampValues()"
+                        [attr.aria-label]="(poolLabel(group.side, kind) | translate) + ': ' + ('CONFIG.SUPERDLX.LATENCY' | translate)">
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </fieldset>
+    } @else {
     <fieldset class="mb-4">
       <legend class="h5">{{ 'CONFIG.SECTION_PIPELINE' | translate }}</legend>
 
@@ -53,6 +180,7 @@
         </table>
       </div>
     </fieldset>
+    }
 
     <fieldset class="mb-4">
       <legend class="h5">{{ 'CONFIG.SECTION_MEMORY' | translate }}</legend>

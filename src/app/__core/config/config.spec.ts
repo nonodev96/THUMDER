@@ -27,6 +27,22 @@ describe("validateConfig", () => {
     expect(config.delay).toBe(0);
   });
 
+  it("keeps the architecture when it is one THUMDER simulates, and the parameters of SuperDLX valid", () => {
+    expect(defaultConfig().architecture).toBe("dlx");
+    expect(validateConfig({ architecture: "superdlx" }).architecture).toBe("superdlx");
+    expect(validateConfig({ architecture: "mips" }).architecture).toBe("dlx");
+    const config = validateConfig({ superdlx: { fetch: 99, rob: { fp: 1 }, prediction: "yes" } });
+    expect(config.superdlx.fetch).toBe(16);
+    expect(config.superdlx.rob).toEqual({ int: 20, fp: 2 });
+    expect(config.superdlx.prediction).toBe(true);
+  });
+
+  it("changing the architecture or SuperDLX changes the machine", () => {
+    const config = defaultConfig();
+    expect(changesMachine(config, { ...config, architecture: "superdlx" })).toBe(true);
+    expect(changesMachine(config, { ...config, superdlx: { ...config.superdlx, commit: 2 } })).toBe(true);
+  });
+
   it("keeps the booleans only when they are booleans", () => {
     expect(validateConfig({ forwarding: false, autoSave: false })).toMatchObject({ forwarding: false, autoSave: false });
     expect(validateConfig({ forwarding: "false", autoSave: 0 })).toMatchObject({ forwarding: true, autoSave: true });

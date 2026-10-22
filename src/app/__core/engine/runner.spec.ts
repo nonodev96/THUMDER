@@ -125,3 +125,43 @@ describe("SimulationRunner", () => {
     expect(answers).toEqual([{ kind: "response", id: 7, error: "Unknown request Nonsense" }]);
   });
 });
+
+describe("SimulationRunner with SuperDLX", () => {
+  function superscalar(filename: string, content: string) {
+    const started = start(filename, content);
+    started.runner.handle({
+      kind: "request",
+      id: 9,
+      event: "UpdateConfigurationMachineRequest",
+      payload: JSON.stringify({
+        enabledForwarding: true,
+        memorySize: 0x8000,
+        addition: { count: 1, delay: 2 },
+        multiplication: { count: 1, delay: 5 },
+        division: { count: 1, delay: 19 },
+        architecture: "superdlx",
+      }),
+    });
+    return started;
+  }
+
+  it("sends the whole machine in the last cycle of each message", async () => {
+    const { steps, stops, run } = superscalar("prim.s", EXAMPLES["prim.s"]);
+    await run();
+    expect(stops).toEqual(["complete"]);
+    expect(steps.at(-1)?.superscalar?.snapshot).toBeDefined();
+    expect(steps.filter((step) => step.superscalar?.snapshot).length).toBeLessThan(steps.length);
+  });
+
+  it("stops at a breakpoint when an instruction of its line is fetched, or commits (WB)", async () => {
+    const loop = EXAMPLES["prim.s"].split("\n").findIndex((line) => line.startsWith("Loop:")) + 1;
+    const fetched = superscalar("prim.s", EXAMPLES["prim.s"]);
+    await fetched.run(0, [loop]);
+    expect(fetched.stops).toEqual(["breakpoint"]);
+    expect(fetched.steps.at(-1)?.hit).toEqual({ kind: "line", line: loop, stage: "IF" });
+    const committed = superscalar("prim.s", EXAMPLES["prim.s"]);
+    await committed.run(0, [loop], { stages: [{ line: loop, stage: "WB" }] });
+    expect(committed.steps.at(-1)?.hit).toEqual({ kind: "line", line: loop, stage: "WB" });
+    expect(committed.steps.length).toBeGreaterThan(fetched.steps.length);
+  });
+});
