@@ -1,3 +1,11 @@
+## 1.12.0 (2026-10-22)
+
+### Nuevas funciones
+
+* SuperDLX, a superscalar DLX with out of order execution chosen in the header, with its machine, its cycle diagram, its statistics, its examples and its guided exercises ([8ece722](https://github.com/nonodev96/THUMDER/commit/8ece722))
+
+
+
 ## 1.11.4 (2026-10-20)
 
 ### Nuevas funciones
