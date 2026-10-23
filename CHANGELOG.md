@@ -2,7 +2,7 @@
 
 ### Correcciones
 
-* in the desktop application a maximized card starts under the navbar, so its buttons are not under the ones of the window and the navbar keeps its menus over it; the e2e tests of the desktop use their own data folder ([fb859ce](https://github.com/nonodev96/THUMDER/commit/fb859ce))
+* in the desktop application a maximized card starts under the navbar, so its buttons are not under the ones of the window and the navbar keeps its menus over it; the e2e tests of the desktop use their own data folder ([547b1a4](https://github.com/nonodev96/THUMDER/commit/547b1a4))
 
 
 
@@ -10,7 +10,7 @@
 
 ### Nuevas funciones
 
-* a desktop application that follows the dark theme of the desktop (also Cinnamon and MATE), with its own icon, the navbar as its title bar with the buttons of the window, a menu of its own in Spanish and English, a tray icon and the window remembered ([e328afe](https://github.com/nonodev96/THUMDER/commit/e328afe))
+* a desktop application that follows the dark theme of the desktop (also Cinnamon and MATE), with its own icon, the navbar as its title bar with the buttons of the window, a menu of its own in Spanish and English, a tray icon and the window remembered ([18940b6](https://github.com/nonodev96/THUMDER/commit/18940b6))
 
 
 
@@ -18,7 +18,7 @@
 
 ### Nuevas funciones
 
-* verifiable downloads: SLSA provenance and SBOM attested with Sigstore for every binary and every file of the web, and the actions pinned by their commit ([f6c444d](https://github.com/nonodev96/THUMDER/commit/f6c444d))
+* verifiable downloads: SLSA provenance and SBOM attested with Sigstore for every binary and every file of the web, and the actions pinned by their commit ([c1c114c](https://github.com/nonodev96/THUMDER/commit/c1c114c))
 
 
 
@@ -26,7 +26,7 @@
 
 ### Nuevas funciones
 
-* SuperDLX, a superscalar DLX with out of order execution chosen in the header, with its machine, its cycle diagram, its statistics, its examples and its guided exercises ([8ece722](https://github.com/nonodev96/THUMDER/commit/8ece722))
+* SuperDLX, a superscalar DLX with out of order execution chosen in the header, with its machine, its cycle diagram, its statistics, its examples and its guided exercises ([f8480f2](https://github.com/nonodev96/THUMDER/commit/f8480f2))
 
 
 
@@ -34,7 +34,7 @@
 
 ### Nuevas funciones
 
-* the console of the program as the character device of the processor, resizable console and debug windows, and footers that hide ([5a0b635](https://github.com/nonodev96/THUMDER/commit/5a0b635))
+* the console of the program as the character device of the processor, resizable console and debug windows, and footers that hide ([4b2a681](https://github.com/nonodev96/THUMDER/commit/4b2a681))
 
 
 
@@ -42,7 +42,7 @@
 
 ### Nuevas funciones
 
-* the console of the program as a terminal, a debug window that explains everything, F9/F8 keys that leave F5 to the browser, and stepping back without flicker ([c9eeb8e](https://github.com/nonodev96/THUMDER/commit/c9eeb8e))
+* the console of the program as a terminal, a debug window that explains everything, F9/F8 keys that leave F5 to the browser, and stepping back without flicker ([ea00cca](https://github.com/nonodev96/THUMDER/commit/ea00cca))
 
 
 
@@ -50,7 +50,7 @@
 
 ### Nuevas funciones
 
-* notifications of our own design, and a footer that never covers the content ([942df46](https://github.com/nonodev96/THUMDER/commit/942df46))
+* notifications of our own design, and a footer that never covers the content ([52ded22](https://github.com/nonodev96/THUMDER/commit/52ded22))
 
 
 
@@ -58,7 +58,7 @@
 
 ### Nuevas funciones
 
-* the phone as an app, a navbar and a header that say where you are, melodic sounds and an explorer of the instructions ([917cfbd](https://github.com/nonodev96/THUMDER/commit/917cfbd))
+* the phone as an app, a navbar and a header that say where you are, melodic sounds and an explorer of the instructions ([869cab6](https://github.com/nonodev96/THUMDER/commit/869cab6))
 
 
 
@@ -66,7 +66,7 @@
 
 ### Nuevas funciones
 
-* an animated datapath, a pipeline whose instructions travel from stage to stage, a new cycle clock diagram and new editors of registers and memory ([733e9dd](https://github.com/nonodev96/THUMDER/commit/733e9dd))
+* an animated datapath, a pipeline whose instructions travel from stage to stage, a new cycle clock diagram and new editors of registers and memory ([6e93056](https://github.com/nonodev96/THUMDER/commit/6e93056))
 
 
 
