@@ -90,7 +90,8 @@ Los ficheros de configuración de Firebase no están en git (como `src/environme
 
 1. Crea la clave de subida (guárdala bien: sin ella no se pueden publicar actualizaciones):
    `keytool -genkeypair -v -keystore thumder-upload.jks -keyalg RSA -keysize 4096 -validity 10000 -alias thumder`.
-2. Añade los secretos del repositorio: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 thumder-upload.jks`), `ANDROID_KEYSTORE_PASSWORD`,
+2. Añade los secretos del repositorio: `ANDROID_KEYSTORE_BASE64` (`base64 -w0 thumder-upload.jks; echo`: copia solo el texto, sin
+   el `%` que zsh pone al final si falta el `echo`), `ANDROID_KEYSTORE_PASSWORD`,
    `ANDROID_KEY_ALIAS` (`ANDROID_KEY_PASSWORD` solo si la clave tiene otra contraseña: con PKCS12, el formato de `keytool`, es
    la misma) y, para el inicio de sesión nativo, `GOOGLE_SERVICES_JSON` (el fichero en base64).
 3. Con cada etiqueta `v*`, `create-release.yaml` añade al borrador de la versión `THUMDER-v<versión>-android.aab` (para Google

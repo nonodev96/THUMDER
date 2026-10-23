@@ -245,7 +245,13 @@ jobs:
         if: env.ANDROID_KEYSTORE_BASE64 != ''
         working-directory: src-mobile/android
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/thumder.jks"
+          # The secret as it is copied from a terminal: line breaks, spaces or the "%" that zsh shows at the end of
+          # `base64 -w0` do not count (they are not base64)
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode --ignore-garbage > "$RUNNER_TEMP/thumder.jks"
+          if ! keytool -list -keystore "$RUNNER_TEMP/thumder.jks" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" > /dev/null 2>&1; then
+            echo "::error::The key of ANDROID_KEYSTORE_BASE64 does not open with ANDROID_KEYSTORE_PASSWORD, or has no key called ANDROID_KEY_ALIAS (docs/movil.md)"
+            exit 1
+          fi
           ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/thumder.jks" ./gradlew bundleRelease assembleRelease --console=plain
           mkdir -p ../../release
           cp app/build/outputs/bundle/release/app-release.aab "../../release/THUMDER-v$VERSION-android.aab"
