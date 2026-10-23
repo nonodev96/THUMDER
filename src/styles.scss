@@ -59,6 +59,74 @@ body.layout-fixed .main-sidebar .sidebar {
   box-shadow: inset 4px 0 0 var(--thumder-debug-line-mark);
 }
 
+// ─── The execution in the editor (EditorView, execution-marks.ts) ───────────────────────────────────────────────────
+// Each instruction in flight on its line: a pale tint of the colour of its stage (DLX) or of its state (SuperDLX),
+// which keeps the colours of the code readable, a bar on the left and its name at the end of the line, so the colour
+// is not the only sign. The colours are the ones of the pipeline and the code view
+.exec-IF,
+.exec-queue {
+  --exec-colour: var(--thumder-stage-if);
+}
+
+.exec-ID,
+.exec-window {
+  --exec-colour: var(--thumder-stage-id);
+}
+
+.exec-intEX,
+.exec-executing {
+  --exec-colour: var(--thumder-stage-ex);
+}
+
+.exec-faddEX {
+  --exec-colour: var(--thumder-stage-fadd);
+}
+
+.exec-fmultEX {
+  --exec-colour: var(--thumder-stage-fmult);
+}
+
+.exec-fdivEX {
+  --exec-colour: var(--thumder-stage-fdiv);
+}
+
+.exec-MEM,
+.exec-address,
+.exec-memory {
+  --exec-colour: var(--thumder-stage-mem);
+}
+
+.exec-WB,
+.exec-done {
+  --exec-colour: var(--thumder-stage-wb);
+}
+
+// SuperDLX: what committed in this cycle (how far the program has really gone), and what was squashed
+.exec-committed {
+  --exec-colour: var(--thumder-debug-line-mark);
+}
+
+.exec-squashed {
+  --exec-colour: var(--thumder-stage-aborted);
+}
+
+.monaco-editor .exec-line {
+  background: color-mix(in srgb, var(--exec-colour) 22%, transparent);
+  box-shadow: inset 4px 0 0 var(--exec-colour);
+}
+
+.monaco-editor .exec-label {
+  margin-left: 2ch;
+  padding: 0 0.45em;
+  border-radius: 0.25rem;
+  background: var(--exec-colour);
+  // The colours of the stages are light, in both themes: dark text on them
+  color: #0f172a;
+  font-family: system-ui, sans-serif;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
 .color-red {
   color: var(--thumder-danger-text);
 }
@@ -159,6 +227,15 @@ body.layout-fixed .main-sidebar .sidebar {
 
 .stage-WB {
   background-color: var(--thumder-stage-wb);
+}
+
+// SuperDLX: committed in this cycle, and squashed (the code view, as the editor)
+.stage-committed {
+  background-color: var(--thumder-debug-line-mark);
+}
+
+.stage-squashed {
+  background-color: var(--thumder-stage-aborted);
 }
 
 .stage- {

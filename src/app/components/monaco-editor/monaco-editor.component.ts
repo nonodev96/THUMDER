@@ -41,7 +41,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   public editorFile: THUMDER_FileItem = new THUMDER_FileItem("", false, []);
   private breakpoints: TypeBreakpoints = {};
   private editor!: IStandaloneCodeEditor;
-  private oldDecorationDebugLine: string[] = [];
+  private executionDecorations: string[] = [];
   private oldDecorationDebugTag_targetId: string[] = [];
 
   // Monaco is created in ngAfterViewInit, before the view that holds it subscribes: the last value is kept for it
@@ -216,19 +216,27 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     return tags;
   }
 
-  public clearDecorationAllLines(): void {
-    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, []);
-  }
-
-  public printLine(line: number): void {
-    const newDecoration = {
-      range: new monaco.Range(line, 1, line, 1),
-      options: {
-        isWholeLine: true,
-        className: "debug-line",
-      },
-    };
-    this.oldDecorationDebugLine = this.editor.deltaDecorations(this.oldDecorationDebugLine, [newDecoration]);
+  /**
+   * What the instructions of each line are doing in the cycle shown (EditorView, execution-marks.ts): the line with the
+   * colour of its stage or state and its name at the end (the colour is not the only sign). The editor scrolls to
+   * `focus` when it is out of sight
+   */
+  public showExecution(marks: { line: number; kind: string; label: string }[], focus: number | null): void {
+    const model = this.editor?.getModel();
+    if (!model) return;
+    const count = model.getLineCount();
+    const decorations = marks
+      .filter(({ line }) => line >= 1 && line <= count)
+      .map(({ line, kind, label }) => ({
+        range: new monaco.Range(line, 1, line, model.getLineMaxColumn(line)),
+        options: {
+          isWholeLine: true,
+          className: `exec-line exec-${kind}`,
+          after: { content: label, inlineClassName: `exec-label exec-${kind}` },
+        },
+      }));
+    this.executionDecorations = this.editor.deltaDecorations(this.executionDecorations, decorations);
+    if (focus !== null && focus >= 1 && focus <= count) this.editor.revealLineInCenterIfOutsideViewport(focus);
   }
 
   /** Takes the cursor to a line, in the middle of the editor */

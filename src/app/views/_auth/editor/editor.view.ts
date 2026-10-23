@@ -13,6 +13,7 @@ import {
   ViewChild,
   viewChild,
 } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { DEFAULT_INTERFACE_FILE_ITEM } from "@app/CONSTANTS";
 import { EnumLogLevel, type InterfaceFileItem, type TypeBreakpoints, type TypeExtrasIDE } from "@app/Types";
@@ -25,6 +26,7 @@ import { SymbolsModalComponent } from "@components/program-tools/symbols-modal.c
 import { ConfigService } from "@core/config/config.service";
 import { type ExerciseLock, ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
+import { type ExecutionKind, markLabel, marksByLine, STAGE_LABELS } from "@core/machine/execution-marks";
 import { MachineService } from "@core/machine/machine.service";
 import { EditorStateService } from "@core/services/editor/editor-state.service";
 import { copyFolderOf, isBuiltin } from "@core/services/file-system/builtin-files";
@@ -32,7 +34,7 @@ import { FileSystemService, type THUMDER_FileItem } from "@core/services/file-sy
 import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { ModalOpenDirective } from "@shared/directives/bootstrap/modal.directive";
-import { firstValueFrom, Subscription } from "rxjs";
+import { firstValueFrom, map, Subscription } from "rxjs";
 import * as env from "../../../../environments/_environment";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
@@ -75,6 +77,10 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(ShareModalComponent) public share!: ShareModalComponent;
 
   private exercises = inject(ExerciseService);
+  /** The language of the interface: the names of the states of SuperDLX in the editor follow it */
+  private readonly lang = toSignal(this.translate.onLangChange.pipe(map((event) => event.lang)), {
+    initialValue: this.translate.getCurrentLang(),
+  });
   /** The exercise of the file, if it is a shared one (EDU-07) */
   public readonly lock = signal<ExerciseLock | null>(null);
   /** The file is a program of THUMDER (read only: a change is saved as a copy) */
@@ -108,12 +114,21 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
       const errors = this.machine.state.errors();
       if (this.ready()) this.monacoEditorComponent.printErrorsInEditor(errors);
     });
-    // The line of the instruction just fetched (-1: nothing loaded)
+    // Where each instruction is in the cycle shown (execution-marks.ts): every instruction in flight on its line, with
+    // the stage of DLX or the state of SuperDLX, and the editor follows the one fetched (DLX) or the last one that
+    // committed (SuperDLX). Nothing loaded: nothing marked
     effect(() => {
-      const line = this.machine.state.line();
+      const { marks, focus } = this.machine.execution();
+      const lines = this.machine.lines();
+      this.lang();
       if (!this.ready()) return;
-      if (line === -1) this.monacoEditorComponent.clearDecorationAllLines();
-      else this.monacoEditorComponent.printLine(line);
+      const name = (kind: ExecutionKind) => STAGE_LABELS[kind] ?? this.translate.instant(`SUPERSCALAR.STATE.${kind}`);
+      const byLine = marksByLine(marks, (address) => lines.get(address)).map(({ line, marks }) => ({
+        line,
+        kind: marks[0].kind,
+        label: markLabel(marks, name),
+      }));
+      untracked(() => this.monacoEditorComponent.showExecution(byLine, focus === null ? null : (lines.get(focus) ?? null)));
     });
   }
 

@@ -34,6 +34,30 @@ test("prim.s: el código marca las etapas y los registros siguen a la simulació
   await expect.poll(values).not.toBe(before);
 });
 
+// The program open in the editor is the one loaded (it loaded the one open before, until the editor saved or closed),
+// and the editor says where each instruction of the pipeline is
+test.describe("el editor y la simulación", () => {
+  test.use({ seed: { files: [fileItem("prim.s"), fileItem("gcm.s")], open: "gcm.s", delay: 1, cookiesAnswered: true } });
+
+  test("un fichero abierto desde el gestor es el que se carga, y el editor marca la etapa de cada instrucción", async ({ page }) => {
+    await go(page, "/auth/file-manager");
+    await page.locator(".file-name", { hasText: /^prim\.s$/ }).dblclick();
+    await page.waitForURL(/\/auth\/editor/);
+    await page.locator(".monaco-editor .view-lines").first().waitFor();
+    await loadAndStep(page, 5);
+    // prim.s, not gcm.s (the file open before)
+    const first = await page.evaluate(
+      // biome-ignore lint/suspicious/noExplicitAny: the debugging API of Angular has no types here
+      () => (window as any).ng.getComponent(document.querySelector("thumder-auth-navbar")).machine.state.code().find((row: { line?: number }) => row.line)?.instruction,
+    );
+    expect(first).toMatch(/^addi\s+r1,r0,0/);
+    // The five stages, each one on the line of its instruction, with its name
+    const labels = page.locator(".monaco-editor .exec-label");
+    await expect.poll(() => labels.allTextContents()).toEqual(expect.arrayContaining(["IF", "ID", "EX", "MEM", "WB"]));
+    await expect(page.locator(".monaco-editor .exec-line")).toHaveCount(5);
+  });
+});
+
 test.describe("con entrada por la consola", () => {
   test.use({ seed: { files: [fileItem("gcm.s"), fileItem("input.s")], open: "gcm.s", delay: 1, cookiesAnswered: true } });
 

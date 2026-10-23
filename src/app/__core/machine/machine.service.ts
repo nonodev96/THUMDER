@@ -40,6 +40,7 @@ import type {
   LocalSimulationInitRequest,
   LocalSimulationInitResponse,
   SimulationStepExtra,
+  SuperscalarEvent,
   SymbolInfo,
 } from "@core/engine/simulator";
 import type { SuperscalarSnapshot, SuperscalarStats } from "@core/engine/superscalar";
@@ -48,6 +49,7 @@ import type { TrapIO } from "@core/engine/traps";
 import { ExerciseService } from "@core/exercises/exercise.service";
 import { logger } from "@core/logger/logger";
 import { CycleDiagramModel } from "@core/machine/cycle-diagram.model";
+import { type Execution, pipelineExecution, superscalarExecution } from "@core/machine/execution-marks";
 import { SuperscalarTimeline } from "@core/machine/superscalar-timeline";
 import { FileSystemService } from "@core/services/file-system/file-system.service";
 import { LocalSimulatorService } from "@core/services/simulator/local-simulator.service";
@@ -166,6 +168,8 @@ export type MachineState = {
   /** SuperDLX: the whole machine in this cycle (null before the first one, and with DLX) */
   superscalar: Signal<SuperscalarSnapshot | null>;
   superscalarStats: Signal<SuperscalarStats | null>;
+  /** SuperDLX: what the instructions did in the cycle shown (committed, squashed...) */
+  events: Signal<readonly SuperscalarEvent[]>;
   /** Changes when the history of SuperDLX (`MachineService.timeline`) changes */
   timeline: Signal<number>;
 };
@@ -242,6 +246,7 @@ export class MachineService {
   private readonly superscalarSignal = signal<SuperscalarSnapshot | null>(null);
   private readonly superscalarStatsSignal = signal<SuperscalarStats | null>(null);
   private readonly timelineSignal = signal(0);
+  private readonly eventsSignal = signal<readonly SuperscalarEvent[]>([]);
 
   /**
    * Stepping back: the program is loaded again and run, without drawing, to the cycle before. Meanwhile the views keep
@@ -289,8 +294,22 @@ export class MachineService {
     architecture: this.held(this.architectureSignal),
     superscalar: this.held(this.superscalarSignal),
     superscalarStats: this.held(this.superscalarStatsSignal),
+    events: this.held(this.eventsSignal),
     timeline: this.held(this.timelineSignal),
   };
+
+  /**
+   * Where each instruction is in the cycle shown (execution-marks.ts), for the editor and the code view: the stage of
+   * the pipeline of DLX, or the state in the machine of SuperDLX
+   */
+  public readonly execution = computed<Execution>(() =>
+    this.state.architecture() === "superdlx"
+      ? superscalarExecution(this.state.superscalar(), this.state.events())
+      : pipelineExecution(this.state.pipeline()),
+  );
+
+  /** The line of each instruction of the file loaded (the instructions of the modules have none) */
+  public readonly lines = computed(() => new Map(this.state.code().flatMap((row) => (row.line ? [[row.address, row.line] as const] : []))));
 
   /**
    * Where the program starts, for the buttons that go to it in the code and the memory: its label main or, without it,
@@ -334,6 +353,8 @@ export class MachineService {
   private lastStep: Step | null = null;
   /** SuperDLX: the machine of the last cycle that brought it, while the views are not drawn */
   private pendingSnapshot: Pick<NonNullable<Step["superscalar"]>, "snapshot" | "stats"> | null = null;
+  /** SuperDLX: the events of the last cycle that arrived (they go to the views with the machine of that cycle) */
+  private lastEvents: readonly SuperscalarEvent[] = [];
 
   constructor() {
     const config = this.config.value();
@@ -435,6 +456,8 @@ export class MachineService {
     this.timeline.reset();
     this.superscalarSignal.set(null);
     this.superscalarStatsSignal.set(null);
+    this.eventsSignal.set([]);
+    this.lastEvents = [];
     this.pendingSnapshot = null;
     this.timelineSignal.update((version) => version + 1);
     this.code = new THUMDER_Map();
@@ -847,6 +870,7 @@ export class MachineService {
   private updateSuperscalar(step: Step): void {
     const superscalar = step.superscalar as NonNullable<Step["superscalar"]>;
     this.timeline.add(step.step, superscalar.events);
+    this.lastEvents = superscalar.events;
     if (superscalar.snapshot) this.pendingSnapshot = { snapshot: superscalar.snapshot, stats: superscalar.stats };
     if (this.quiet) return;
     this.publishPipeline(step);
@@ -860,6 +884,7 @@ export class MachineService {
     this.pendingSnapshot = null;
     const snapshot = pending.snapshot;
     this.superscalarSignal.set(snapshot);
+    this.eventsSignal.set(this.lastEvents);
     if (pending.stats) this.superscalarStatsSignal.set(pending.stats);
     this.timelineSignal.update((version) => version + 1);
     // The stage of each instruction, as DLX names them: the queue is IF, the windows ID, the units EX, then MEM and WB

@@ -235,6 +235,7 @@ export class DLXSimulator {
       code: hex(instruction.word),
       text: instruction.labels.join(", "),
       instruction: instruction.source,
+      ...(instruction.file === this.main ? { line: instruction.line } : {}),
     }));
     // The data of the directives, as words
     const view = new DataView(program.memory.buffer);

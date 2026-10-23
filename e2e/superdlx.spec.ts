@@ -73,6 +73,34 @@ test("la cabecera elige la arquitectura: SuperDLX muestra su máquina, su diagra
   await expect(page.locator("#statisticsTab-summary")).toBeVisible();
 });
 
+// In SuperDLX the instruction just fetched can be far ahead of the ones that commit: the editor and the code view say
+// the state of every instruction in the machine, and which ones committed in the cycle
+test("en SuperDLX el editor y el código dicen el estado de cada instrucción y las que se confirman", async ({ page }) => {
+  await go(page, "/auth/editor");
+  await choose(page, "SuperDLX");
+  await page.locator(".monaco-editor .view-lines").first().waitFor();
+  const { load, step } = controls(page);
+  await load.click();
+  await expect(step).toBeEnabled();
+  const labels = page.locator(".monaco-editor .exec-label");
+  for (let i = 1; i <= 12; i++) {
+    await step.click();
+    await expect.poll(() => superscalarCycles(page), { timeout: 5_000 }).toBeGreaterThanOrEqual(i);
+    if ((await labels.allTextContents()).some((text) => text.includes("Confirmada"))) break;
+  }
+  const texts = (await labels.allTextContents()).join(" | ");
+  expect(texts).toContain("Confirmada");
+  expect(texts).not.toMatch(/\b(IF|ID|MEM|WB)\b/);
+  // The code view, with the same states
+  await page.locator(".main-sidebar a", { hasText: /^\s*Código\s*$/ }).first().click();
+  await page.locator("#Code-card cdk-virtual-scroll-viewport").evaluate((element) => {
+    element.scrollTop = 60 * 32;
+  });
+  await expect
+    .poll(() => page.locator("#Code-card .thumder-row[class*='stage-']").allTextContents())
+    .toEqual(expect.arrayContaining([expect.stringMatching(/En la cola|En la ventana|En su unidad|Terminada|Confirmada/)]));
+});
+
 test("las dos arquitecturas acaban el programa con el mismo resultado", async ({ page }) => {
   await go(page, "/auth/registers");
   const f8 = () =>

@@ -3,6 +3,7 @@ import { toSignal } from "@angular/core/rxjs-interop";
 import type { TypeAddress, TypeInstructionsData_Table } from "@app/Types";
 import { Utils } from "@app/Utils";
 import { type DescriptionLang, describeWord, type InstructionDescription } from "@core/engine/describe";
+import { type ExecutionKind, markLabel } from "@core/machine/execution-marks";
 import { MachineService } from "@core/machine/machine.service";
 import { bitsToHex, toAddress } from "@core/numbers";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
@@ -12,6 +13,18 @@ import { mediaSignal, NARROW } from "@shared/utils/media";
 import { map } from "rxjs";
 import { CardDirective, CardWidgetDirective } from "../../../__shared/directives/card/card.directive";
 import { DetailsDirective } from "../../../__shared/directives/details/details.directive";
+
+/** SuperDLX: the colour of a row by the state of its instruction, the ones of the stages of DLX it is closest to */
+const SUPERSCALAR_ROW_CLASS: Partial<Record<ExecutionKind, string>> = {
+  queue: "stage-IF",
+  window: "stage-ID",
+  executing: "stage-intEX",
+  address: "stage-MEM",
+  memory: "stage-MEM",
+  done: "stage-WB",
+  committed: "stage-committed",
+  squashed: "stage-squashed",
+};
 
 @Component({
   selector: "view-code",
@@ -50,6 +63,9 @@ export class CodeView {
 
   /** Where each instruction is in this cycle (one Map for the whole table, instead of a search for each row) */
   public readonly stages = this.machine.state.stages;
+
+  /** SuperDLX: the rows say the state of their instructions in the machine, as the editor (execution-marks.ts) */
+  public readonly superscalar = computed(() => this.machine.state.architecture() === "superdlx");
 
   /** The button of the card reads the memory again (a word written by the user in the memory view, for example) */
   private readonly refreshes = signal(0);
@@ -157,8 +173,20 @@ export class CodeView {
     this.refreshes.update((n) => n + 1);
   }
 
+  /** What the instructions of a row are doing: their stage (DLX) or their state in the machine (SuperDLX) */
+  public stageText(address: TypeAddress): string {
+    if (!this.superscalar()) return this.stages().get(address) ?? "";
+    this.lang();
+    const mark = this.machine.execution().marks.get(address);
+    return mark === undefined ? "" : markLabel(mark, (kind) => this.translate.instant(`SUPERSCALAR.STATE.${kind}`));
+  }
+
   /** The class of a row: the stage of its instruction (the floating point units, as intEX) */
   public stageClass(address: TypeAddress): string {
+    if (this.superscalar()) {
+      const kind = this.machine.execution().marks.get(address)?.[0].kind;
+      return kind === undefined ? "" : (SUPERSCALAR_ROW_CLASS[kind] ?? "");
+    }
     const stage = this.stages().get(address);
     if (stage === undefined || stage === "") return "";
     return ["faddEX", "fmultEX", "fdivEX"].includes(stage) ? "stage-intEX" : `stage-${stage}`;

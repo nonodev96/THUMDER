@@ -32,7 +32,7 @@
       <ng-template thumderColumn="Text" [header]="'MACHINE.TEXT' | translate" width="minmax(8ch, 1fr)" let-row>{{ row.text }}</ng-template>
       <ng-template thumderColumn="Binary" [header]="'MACHINE.BINARY' | translate" width="35ch" let-row>{{ row.code | from_base_to_base: {fillString: "0", maxLength: 32, from_base: 16, to_base: 2} }}</ng-template>
       <ng-template thumderColumn="Hexadecimal" [header]="'MACHINE.HEXADECIMAL' | translate" width="13ch" let-row>{{ row.code }}</ng-template>
-      <ng-template thumderColumn="Stage" [header]="'MACHINE.STAGE' | translate" width="9ch" let-row>{{ stages().get(row.address) ?? '' }}</ng-template>
+      <ng-template thumderColumn="Stage" [header]="'MACHINE.STAGE' | translate" [width]="superscalar() ? '24ch' : '9ch'" let-row>{{ stageText(row.address) }}</ng-template>
       <ng-template thumderColumn="Instruction" [header]="'MACHINE.INSTRUCTION' | translate" width="minmax(20ch, 1fr)" let-row>{{ row.instruction }}</ng-template>
       <ng-template thumderColumn="Description" [header]="'MACHINE.DESCRIPTION' | translate" width="minmax(30ch, 3fr)" let-row>
         @if (describe(row); as description) {

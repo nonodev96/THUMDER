@@ -38,7 +38,14 @@ describe("DLXSimulator", () => {
     const init = JSON.parse(simulator.handle("SimulationInitRequest", JSON.stringify(request("prim.s", EXAMPLES["prim.s"])))) as TypeSimulationInitResponse;
     expect(init.canSimulate).toBe(true);
     expect(init.errors).toEqual([]);
-    expect(init.machineInstructions[0]).toEqual({ address: "0x00000100", code: "0x20010000", text: "main", instruction: "addi    r1,r0,0         ;Index in Table".replace(/\s+;.*/, "") });
+    // With its line in the file, for the editor
+    expect(init.machineInstructions[0]).toEqual({
+      address: "0x00000100",
+      code: "0x20010000",
+      text: "main",
+      instruction: "addi    r1,r0,0         ;Index in Table".replace(/\s+;.*/, ""),
+      line: 24,
+    });
     expect(init.runner[0].memory).toContainEqual({ typeData: "Word", address: "0x00001000", value: "0x0000000A" });
   });
 

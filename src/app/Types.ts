@@ -591,6 +591,8 @@ export type TypeInstructionsData = {
   code: string; // 0x00000000
   text: string;
   instruction: string;
+  /** Its line in the file loaded (the instructions of the modules have none): where the editor shows it */
+  line?: number;
 };
 
 export type TypeInstructionsData_Table = TypeInstructionsData & {
