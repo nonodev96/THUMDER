@@ -53,6 +53,9 @@
       ],
       "@views/*": [
         "./src/app/views/*"
+      ],
+      "@desktop/*": [
+        "./src-electron/shared/*"
       ]
     },
     "experimentalDecorators": true,

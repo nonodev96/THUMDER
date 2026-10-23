@@ -1551,5 +1551,39 @@
       "IPC": "Instrucciones por ciclo (IPC)",
       "SPEEDUP": "SuperDLX es {{times}} veces más rápido: {{superdlx}} ciclos frente a {{dlx}} de DLX."
     }
+  },
+  "DESKTOP": {
+    "MENU": {
+      "EDIT": "Edición",
+      "UNDO": "Deshacer",
+      "REDO": "Rehacer",
+      "CUT": "Cortar",
+      "COPY": "Copiar",
+      "PASTE": "Pegar",
+      "SELECT_ALL": "Seleccionar todo",
+      "VIEW": "Ver",
+      "ZOOM_IN": "Ampliar",
+      "ZOOM_OUT": "Reducir",
+      "RESET_ZOOM": "Tamaño real",
+      "FULL_SCREEN": "Pantalla completa",
+      "RELOAD": "Recargar",
+      "DEV_TOOLS": "Herramientas de desarrollo",
+      "WINDOW": "Ventana",
+      "MINIMIZE": "Minimizar",
+      "CLOSE": "Cerrar",
+      "HELP": "Ayuda",
+      "DOCUMENTATION": "Documentación",
+      "GITHUB": "THUMDER en GitHub",
+      "ISSUES": "Informar de un problema",
+      "ABOUT": "Acerca de THUMDER",
+      "HIDE": "Ocultar THUMDER",
+      "HIDE_OTHERS": "Ocultar otros",
+      "SHOW_ALL": "Mostrar todo",
+      "QUIT": "Salir de THUMDER"
+    },
+    "TRAY": {
+      "SHOW": "Mostrar THUMDER",
+      "ALWAYS_ON_TOP": "Siempre encima"
+    }
   }
 }

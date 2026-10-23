@@ -18,6 +18,7 @@ src/app/
   views/_auth/       las vistas del simulador (cada una se carga al abrirse: auth.routes.ts)
   views/_account/    inicio de sesión (opcional: solo sincroniza los ficheros)
 src/assets/          traducciones (i18n/es.json y en.json), ejemplos DLX, ejercicios, documentación
+src-electron/        la aplicación de escritorio: proceso principal, preload y su contrato (ver el README)
 e2e/                 pruebas de extremo a extremo (Playwright)
 test/                pruebas de las reglas de Firestore (emulador)
 docs/                el simulador y su protocolo, el manual de WinDLX y los ejemplos
@@ -34,7 +35,7 @@ La arquitectura del simulador y el protocolo entre la página y el Web Worker es
 - **Privacidad**: nada sale del navegador sin decirlo en `src/assets/legal/privacy.*.md`. Lo opcional (analíticas, informes de errores) pasa por `ConsentService`; si cambia lo que se pregunta, sube `CONSENT_VERSION` para que el banner vuelva a salir. Los textos legales (privacidad, aviso legal, accesibilidad) están en `src/assets/legal`, en español e inglés.
 - **Textos**: todos los de la interfaz en `src/assets/i18n/es.json` y `en.json`, con las mismas claves (una prueba lo comprueba). Los botones de icono llevan `title` y `aria-label` traducidos.
 - **Accesibilidad**: cada vista pasa axe (WCAG 2.1 A y AA) en los temas claro y oscuro (`e2e/a11y.spec.ts`), sin reglas desactivadas. Contraste de 4,5:1 y nada que se distinga solo por el color.
-- **Seguridad**: la CSP de `src/index.html` no permite `eval` ni scripts en línea. La página de Electron no tiene Node.js: lo que necesita lo expone `preload.ts`.
+- **Seguridad**: la CSP de `src/index.html` no permite `eval` ni scripts en línea. La página de Electron no tiene Node.js: lo que necesita lo expone `src-electron/preload`, con los canales de `src-electron/shared/contract.ts`; el proceso principal valida todo lo que recibe.
 - **Código**: TypeScript estricto, formato y lint con Biome (`pnpm run lint:fix`). Los comentarios del código están en inglés; la documentación, en español.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`...), porque el CHANGELOG se genera a partir de ellos.
 
@@ -43,6 +44,7 @@ La arquitectura del simulador y el protocolo entre la página y el Web Worker es
 | Comando | Qué prueba |
 | :-- | :-- |
 | `pnpm test` | Pruebas unitarias (Vitest): el motor, las conversiones, los servicios, los ficheros, los ejercicios |
+| `pnpm test:electron` | La aplicación de escritorio sin abrir Electron: ajustes, tema, menús, textos, medidas y validación |
 | `pnpm test:rules` | Las reglas de Firestore en el emulador (necesita Java) |
 | `pnpm e2e` | La aplicación web en escritorio, móvil y tableta, con axe |
 | `xvfb-run -a pnpm e2e:electron` | La aplicación de escritorio (en Linux sin pantalla, con `xvfb-run`) |

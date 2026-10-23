@@ -9,8 +9,8 @@
 		"includes": [
 			"src/**/*.ts",
 			"src/**/*.js",
-			"main.ts",
-			"preload.ts",
+			"src-electron/**/*.ts",
+			"vitest.*.config.ts",
 			"e2e/**/*.ts",
 			"playwright*.config.ts",
 			"!!**/node_modules",

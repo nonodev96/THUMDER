@@ -39,7 +39,7 @@ export function markedOptionsFactory(): MarkedOptions {
     if (!href || /^\s*javascript:/i.test(href)) {
       return `<a${safeTitle}>${text}</a>`;
     }
-    // Links to other sites open in a new tab (in Electron, in the browser of the system: see main.ts); the views
+    // Links to other sites open in a new tab (in Electron, in the browser of the system: see src-electron/main/window); the views
     // catch the clicks on the relative ones (DocsView, AboutView)
     const external = /^(https?:|mailto:)/i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : "";
     return `<a href="${escapeAttribute(href)}"${safeTitle}${external}>${text}</a>`;

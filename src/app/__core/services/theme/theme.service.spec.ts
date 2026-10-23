@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import type { ThumderBridge } from "../electron/electron.service";
 import { cssColour, cssColourNumber } from "./palette";
 import { ThemeService } from "./theme.service";
 
@@ -44,15 +45,20 @@ describe("ThemeService in the desktop application", () => {
     localStorage.removeItem("theme");
     listeners = [];
     sent = [];
-    // What preload.ts exposes: the desktop is dark (main.ts reads it, also from the panels of Cinnamon)
+    // What the preload script exposes: the desktop is dark (the main process reads it, also from the panels of Cinnamon)
     (globalThis as Record<string, unknown>)["thumder"] = {
       platform: "linux",
       titleBar: "overlay",
       systemDark: true,
-      onSystemDark: (listener: (dark: boolean) => void) => listeners.push(listener),
-      setPreferences: (preferences: { theme?: string }) => sent.push(preferences),
-      onNavigate: () => undefined,
-    };
+      onSystemDark: (listener) => {
+        listeners.push(listener);
+        return () => undefined;
+      },
+      setPreferences: (preferences) => {
+        sent.push(preferences);
+      },
+      onNavigate: () => () => undefined,
+    } satisfies Partial<ThumderBridge>;
   });
 
   afterEach(() => {
@@ -63,7 +69,7 @@ describe("ThemeService in the desktop application", () => {
     document.body.classList.remove("dark-mode");
   });
 
-  it("follows the desktop as main.ts sees it, not prefers-color-scheme, and changes with it", () => {
+  it("follows the desktop as the main process sees it, not prefers-color-scheme, and changes with it", () => {
     const theme = TestBed.inject(ThemeService);
     expect(theme.choice()).toBe("system");
     expect(theme.dark()).toBe(true);
@@ -73,7 +79,7 @@ describe("ThemeService in the desktop application", () => {
     expect(document.documentElement.dataset["theme"]).toBe("light");
   });
 
-  it("tells main.ts the theme chosen, so the window and its buttons follow it", () => {
+  it("tells the main process the theme chosen, so the window and its buttons follow it", () => {
     const theme = TestBed.inject(ThemeService);
     theme.set("light");
     expect(theme.dark()).toBe(false);

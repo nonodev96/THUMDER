@@ -36,6 +36,11 @@ jobs:
 
       - run: pnpm test
 
+      # The desktop application (src-electron): it compiles, and its tests run without Electron
+      - run: pnpm run electron:tsc
+
+      - run: pnpm test:electron
+
   rules:
     name: Firestore rules (emulator)
     runs-on: ubuntu-latest

@@ -41,6 +41,9 @@
       ],
       "@views/*": [
         "./app/views/*"
+      ],
+      "@desktop/*": [
+        "../src-electron/shared/*"
       ]
     },
     "types": []

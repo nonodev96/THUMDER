@@ -1,0 +1,23 @@
+{
+  "//": "The desktop application (Electron): `pnpm run electron:tsc` compiles it into dist-electron (package.json → main)",
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "lib": ["es2022", "dom"],
+    "types": ["node"],
+    "strict": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "rootDir": ".",
+    "outDir": "../dist-electron",
+    "incremental": true,
+    "tsBuildInfoFile": "../dist-electron/.tsbuildinfo"
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["**/*.spec.ts"]
+}

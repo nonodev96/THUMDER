@@ -1,22 +1,10 @@
 import { DOCUMENT, Injectable, inject, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
+import type { ThumderBridge } from "@desktop/contract";
 
-/** What preload.ts exposes in Electron (the page has no access to Node.js) */
-export type ThumderBridge = {
-  platform: string;
-  arch: string;
-  /** "overlay": the navbar is the title bar, with the buttons of the window over its right (Windows and Linux) */
-  titleBar: "overlay" | "native";
-  /** Whether the desktop is dark (main.ts also reads the theme of the desktop on Linux), when the page starts */
-  systemDark: boolean;
-  onSystemDark(listener: (dark: boolean) => void): void;
-  /** The theme and the language chosen, and the height of the navbar: the window, its buttons and its menu follow them */
-  setPreferences(preferences: { theme?: string; lang?: string; titleBar?: number }): void;
-  /** A route chosen in the menu of the window */
-  onNavigate(listener: (route: string) => void): void;
-  openExternal(url: string): Promise<void>;
-  notify(): void;
-};
+// What the preload script of the desktop application exposes (src-electron/shared/contract.ts): the page has no access
+// to Node.js
+export type { ThumderBridge } from "@desktop/contract";
 
 /** The bridge of the desktop application, or undefined in the web */
 export function desktopBridge(): ThumderBridge | undefined {
@@ -25,8 +13,8 @@ export function desktopBridge(): ThumderBridge | undefined {
 
 /**
  * The desktop application (Electron). In it the html element has the class `thumder-desktop` and, where the navbar is
- * the title bar of the window, `thumder-titlebar` (src/styles.scss leaves room for the buttons of the window); the
- * routes chosen in the menu of the window open here
+ * the title bar of the window, `thumder-titlebar` (src/styles.scss leaves room for the buttons of the window and puts
+ * the cards that fill the window under the navbar); the routes chosen in the menu of the window open here
  */
 @Injectable({
   providedIn: "root",
@@ -45,6 +33,28 @@ export class ElectronService {
     const router = inject(Router);
     const zone = inject(NgZone);
     bridge.onNavigate((route) => zone.run(() => void router.navigateByUrl(route)));
+  }
+
+  /**
+   * Windows and Linux: the navbar is the title bar. The buttons of the window are as high as it, without its bottom
+   * border, and the cards that fill the window start under it (`--thumder-titlebar-height`). It returns what stops
+   * following it
+   */
+  public followTitleBar(navbar: HTMLElement): () => void {
+    const bridge = ElectronService.bridge;
+    if (bridge?.titleBar !== "overlay") return () => undefined;
+    const root = navbar.ownerDocument.documentElement;
+    const observer = new ResizeObserver(() => {
+      const height = navbar.getBoundingClientRect().height;
+      const border = Number.parseFloat(getComputedStyle(navbar).borderBottomWidth) || 0;
+      root.style.setProperty("--thumder-titlebar-height", `${height}px`);
+      bridge.setPreferences({ titleBar: Math.floor(height - border) });
+    });
+    observer.observe(navbar);
+    return () => {
+      observer.disconnect();
+      root.style.removeProperty("--thumder-titlebar-height");
+    };
   }
 
   /** Opens a link in the browser of the system (Electron) or in a new tab (web) */
@@ -89,11 +99,6 @@ export class ElectronService {
 
   public static get isX64(): boolean {
     return ElectronService.bridge?.arch === "x64";
-  }
-
-  /** Messages to the main process of Electron (does nothing in the web) */
-  public send(channel: "thumder-notification"): void {
-    if (channel === "thumder-notification") ElectronService.bridge?.notify();
   }
 
   public static get debug() {

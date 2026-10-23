@@ -12,14 +12,14 @@ const CHOICES: ThemeChoice[] = ["light", "dark", "system"];
  * is `data-theme="dark"` on the html element (the variables of theme.scss) and the `dark-mode` of AdminLTE on the
  * body; Monaco, the canvases and the views of THUMDER follow `dark`.
  *
- * In the desktop application the system is the desktop as main.ts sees it (on Linux, also the theme of its panels,
- * which Chromium does not read), and the choice goes to main.ts: the window, its buttons and its menus follow it.
+ * In the desktop application the system is the desktop as the main process sees it (on Linux, also the theme of its panels,
+ * which Chromium does not read), and the choice goes to the main process (src-electron): the window, its buttons and its menus follow it.
  */
 @Injectable({ providedIn: "root" })
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
   private readonly bridge = desktopBridge();
-  // In the desktop application the system is the one main.ts sees (prefers-color-scheme there follows the choice)
+  // In the desktop application the system is the one the main process sees (prefers-color-scheme there follows the choice)
   private readonly media = this.bridge ? null : (this.document.defaultView?.matchMedia?.("(prefers-color-scheme: dark)") ?? null);
   private readonly systemDark = signal(this.bridge ? this.bridge.systemDark : (this.media?.matches ?? false));
 

@@ -11,8 +11,7 @@
     "buildResources": "build"
   },
   "files": [
-    "main.js",
-    "preload.js",
+    "dist-electron/**/*.js",
     "package.json",
     "dist/browser/**/*",
     "!dist/browser/**/*.map",

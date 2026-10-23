@@ -121,6 +121,7 @@ pnpm run ng:serve:dev   # http://localhost:4200
 | `pnpm run ng:serve:dev` | Arranca la aplicación web en <http://localhost:4200>                                    |
 | `pnpm start`            | La aplicación web y Electron a la vez (Electron carga `localhost:4200`)                 |
 | `pnpm test`             | Pruebas unitarias (Vitest)                                                              |
+| `pnpm test:electron`    | Pruebas unitarias de la aplicación de escritorio (`src-electron`), sin abrir Electron   |
 | `pnpm test:rules`       | Las reglas de Firestore en el emulador (necesita Java)                                  |
 | `pnpm e2e`              | Pruebas e2e (Playwright) en escritorio, móvil y tableta, con axe; arranca `ng serve`    |
 | `pnpm e2e:electron`     | Compila la aplicación de escritorio y la prueba (en Linux sin pantalla: `xvfb-run -a`) |
@@ -133,7 +134,8 @@ Cómo contribuir (estructura, convenciones, pruebas y publicación): [CONTRIBUTI
 Están en `e2e/` y usan Playwright. La primera vez hay que instalar el navegador con `pnpm exec playwright install chromium`.
 
 - `pnpm e2e` hace las comprobaciones en escritorio (1440×900), móvil (Pixel 7) y tableta (820×1180), sin errores en la página. Cubre la interfaz, la simulación, los ejemplos, la configuración, las herramientas para aprender, la interfaz adaptable en 5 tamaños y la accesibilidad de cada vista en los dos temas.
-- `pnpm e2e:electron` prueba la aplicación de escritorio: que carga con `file://` y sin Node.js en la página.
+- `pnpm e2e:electron` prueba la aplicación de escritorio: que carga con `file://` y sin Node.js en la página, la barra de título,
+  el tema, el menú y las tarjetas maximizadas. Cada prueba usa su propia carpeta de datos, así que no toca la de quien la ejecuta.
 
 Las pruebas que dependen de un tamaño llevan la etiqueta `@movil` o `@tableta`. Las capturas y las trazas de las que fallan quedan
 en `test-results/`, y el informe, en `playwright-report/`.
@@ -143,7 +145,7 @@ en `test-results/`, y el informe, en `playwright-report/`.
 | **Comando**                    | **Qué hace**                                                                                       |
 | :----------------------------- | :------------------------------------------------------------------------------------------------- |
 | `pnpm run ng:build:production` | Aplicación web optimizada en `dist/browser` (la que se despliega en Netlify)                       |
-| `pnpm run build:prod`          | Aplicación para Electron (`--base-href ./`) y `main.js`/`preload.js`                               |
+| `pnpm run build:prod`          | Aplicación para Electron (`--base-href ./`) y el proceso principal en `dist-electron/`             |
 | `pnpm run electron:build`      | Ejecutable de escritorio en `release/`: AppImage, instalador y portable de Windows, `.dmg` y `.zip` de macOS |
 
 Una versión se publica con `pnpm version minor` (o `patch`), que escribe su sección en `CHANGELOG.md` a partir de los commits
@@ -214,7 +216,7 @@ Con el secreto opcional `ANGULAR_ENVIROTMENT_PRODUCTION` (el fichero `src/enviro
 web lleva las claves de Firebase; sin él se compila en modo local. Los PR de forks y de Dependabot no tienen acceso a los secretos
 y no se despliegan.
 
-La ventana de escritorio (`main.ts`) es la de una aplicación del sistema:
+La ventana de escritorio (`src-electron/`) es la de una aplicación del sistema:
 
 - En Windows y Linux no hay barra de título ni menú de Electron: la barra de navegación de THUMDER hace de barra de título (mueve
   la ventana y la maximiza con doble clic) y los botones de minimizar, maximizar y cerrar se dibujan sobre su derecha, con los
@@ -224,14 +226,38 @@ La ventana de escritorio (`main.ts`) es la de una aplicación del sistema:
   aplicaciones claras. Los menús, las barras de desplazamiento y los diálogos nativos siguen el tema elegido.
 - El menú tiene el zoom (<kbd>Ctrl</kbd>+<kbd>+</kbd>, <kbd>Ctrl</kbd>+<kbd>-</kbd>, <kbd>Ctrl</kbd>+<kbd>0</kbd>), la pantalla
   completa, copiar y pegar, y la ayuda (<kbd>F1</kbd>), en el idioma de THUMDER.
+- Una tarjeta maximizada empieza debajo de la barra de navegación: sus botones no quedan bajo los de la ventana, y la barra
+  sigue siendo la de título, con los controles de la simulación a mano.
+- El menú y la bandeja usan las traducciones de THUMDER (la sección `DESKTOP` de `src/assets/i18n`), igual que la página.
 - La ventana se abre sin destellos con el color del tema, recuerda su tamaño y su sitio (`desktop.json`, en la carpeta de datos
   de la aplicación), y abrir THUMDER otra vez muestra la que ya está abierta. Tiene un icono en la bandeja del sistema.
 - Los iconos de los instaladores están en `build/` (`icons/` para Linux, `icon.ico` y `icon.icns`).
 
-La aplicación de escritorio no da a la página acceso a Node.js: lo que necesita de Electron (abrir enlaces en el navegador y las
-notificaciones) lo expone `preload.ts` como `window.thumder`. La página tiene una política de seguridad de contenidos (CSP en
-`src/index.html`) sin `eval` ni scripts en línea, y el paquete de escritorio solo lleva `main.js`, `preload.js` y la aplicación
-compilada.
+La aplicación de escritorio no da a la página acceso a Node.js: lo que necesita de Electron (abrir enlaces en el navegador, el
+tema del escritorio, la altura de la barra de título y las rutas del menú) lo expone el *preload* como `window.thumder`, y el
+proceso principal solo atiende a las páginas de THUMDER y comprueba lo que le envían. La página tiene una política de seguridad de
+contenidos (CSP en `src/index.html`) sin `eval` ni scripts en línea, y el paquete de escritorio solo lleva `dist-electron/` y la
+aplicación compilada.
+
+```
+src-electron/
+  shared/contract.ts   el contrato entre las tres partes: los canales, sus datos y window.thumder (solo tipos)
+  preload/             window.thumder (en el sandbox: solo usa tipos del contrato)
+  main/
+    index.ts           el punto de entrada: una sola instancia
+    app.ts             une las piezas: ajustes, tema, ventana, menús, bandeja e IPC
+    environment.ts     dónde se ejecuta: rutas de la aplicación, de sus assets y del preload
+    settings.ts        lo que recuerda (desktop.json)
+    i18n.ts            los textos, de src/assets/i18n
+    ipc.ts             lo que pide la página, validado (validation.ts)
+    links.ts           qué es una página de THUMDER y qué se abre en el navegador
+    menu/              las plantillas del menú y de la bandeja
+    theme/             el tema de la ventana y el del escritorio de Linux (gsettings)
+    window/            la ventana y sus medidas (dónde se abre, la altura de sus botones, el zoom)
+```
+
+Lo que no necesita Electron (los ajustes, el tema, los menús, los textos, las medidas, la validación) recibe lo que usa de Electron
+por parámetro y tiene sus pruebas al lado (`*.spec.ts`, `pnpm test:electron`). La ventana se prueba con `pnpm e2e:electron`.
 
 ## Documentación
 

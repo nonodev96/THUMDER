@@ -10,7 +10,7 @@ import { ConfigService } from "@core/config/config.service";
 import { showsView } from "@core/engine/architectures";
 import { MachineService } from "@core/machine/machine.service";
 import { ConsentService } from "@core/services/consent/consent.service";
-import { desktopBridge } from "@core/services/electron/electron.service";
+import { ElectronService } from "@core/services/electron/electron.service";
 import { PageService } from "@core/services/layout/page.service";
 import { SidebarService } from "@core/services/layout/sidebar.service";
 import { SimulationControlsService } from "@core/services/simulation/simulation-controls.service";
@@ -133,20 +133,12 @@ export class AuthNavbarComponent {
     document.addEventListener("keydown", this.onKeydown, true);
     destroyRef.onDestroy(() => document.removeEventListener("keydown", this.onKeydown, true));
 
-    // The desktop application on Windows and Linux: the navbar is the title bar, and the buttons of the window (drawn
-    // by Electron over its right) are as high as it, without its bottom border
-    const bridge = desktopBridge();
-    if (bridge?.titleBar !== "overlay") return;
+    // The desktop application on Windows and Linux: the navbar is the title bar of the window
+    const electron = inject(ElectronService);
     const host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
     afterNextRender(() => {
       const nav = host.querySelector<HTMLElement>("nav.main-header");
-      if (nav === null) return;
-      const observer = new ResizeObserver(() => {
-        const border = Number.parseFloat(getComputedStyle(nav).borderBottomWidth) || 0;
-        bridge.setPreferences({ titleBar: Math.floor(nav.getBoundingClientRect().height - border) });
-      });
-      observer.observe(nav);
-      destroyRef.onDestroy(() => observer.disconnect());
+      if (nav !== null) destroyRef.onDestroy(electron.followTitleBar(nav));
     });
   }
 
