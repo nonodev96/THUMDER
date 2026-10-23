@@ -1,3 +1,15 @@
+## 1.14.0 (2026-10-23)
+
+### Nuevas funciones
+
+* THUMDER on Android and iOS (Capacitor), edge to edge with the bars of the system, the back button of Android, files shared with the system and native sign-in, the account deleted from the profile with a page that explains it, the tests also on WebKit and the signed APK in every release ([b5ec284](https://github.com/nonodev96/THUMDER/commit/b5ec284))
+
+### Correcciones
+
+* the bar of the phone hides while typing in the editor (Monaco writes with the EditContext API of Chrome, which was not taken as typing) ([ab435a5](https://github.com/nonodev96/THUMDER/commit/ab435a5))
+
+
+
 ## 1.13.1 (2026-10-23)
 
 ### Correcciones
