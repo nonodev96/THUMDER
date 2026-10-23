@@ -181,18 +181,29 @@ gh attestation verify THUMDER-v1.12.1-linux-x86_64.AppImage --repo nonodev96/THU
 ```
 
 La versión tiene además los SBOM (`THUMDER-v<versión>-sbom.cdx.json` y `.spdx.json`) y las atestaciones de cada sistema
-(`THUMDER-v<versión>-<sistema>-provenance.sigstore.json` y `-sbom.sigstore.json`), en el formato de Sigstore: se comprueban sin
-conexión con `gh attestation verify <fichero> --bundle <atestación> --repo nonodev96/THUMDER` o con `cosign verify-blob-attestation`,
-cuya identidad es `https://github.com/nonodev96/THUMDER/.github/workflows/create-release.yaml@refs/tags/v<versión>` con el emisor
-`https://token.actions.githubusercontent.com`.
-
-La web de producción publica sus sumas SHA-256 y su SBOM en `/integrity/` (`sha256sums.txt`, `sbom.cdx.json` y `sbom.spdx.json`),
-y cada fichero tiene su atestación:
+(`THUMDER-v<versión>-<sistema>-provenance.sigstore.json` y `-sbom.sigstore.json`), en el formato de Sigstore. Se comprueban sin
+conexión con `gh attestation verify <fichero> --bundle <atestación> --repo nonodev96/THUMDER`, o con
+[cosign](https://github.com/sigstore/cosign) (`--type cyclonedx` para la del SBOM):
 
 ```sh
-curl -O https://thumder.netlify.app/index.html
-gh attestation verify index.html --repo nonodev96/THUMDER --signer-workflow nonodev96/THUMDER/.github/workflows/deploy-netlify.yaml
+cosign verify-blob-attestation --bundle THUMDER-v1.12.1-linux-provenance.sigstore.json --type slsaprovenance1 \
+  --certificate-identity-regexp '^https://github.com/nonodev96/THUMDER/.github/workflows/create-release.yaml@refs/tags/v' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com THUMDER-v1.12.1-linux-x86_64.AppImage
 ```
+
+La web de producción publica sus sumas SHA-256 y su SBOM en `/integrity/` (`sha256sums.txt`, `sbom.cdx.json` y `sbom.spdx.json`),
+y cada fichero tiene su atestación. Por ejemplo, el código principal de la aplicación:
+
+```sh
+curl -O https://thumder.netlify.app/integrity/sha256sums.txt
+main=$(grep -oE 'main-[A-Z0-9]+\.js$' sha256sums.txt)
+curl -O "https://thumder.netlify.app/$main"
+sha256sum -c --ignore-missing sha256sums.txt
+gh attestation verify "$main" --repo nonodev96/THUMDER --signer-workflow nonodev96/THUMDER/.github/workflows/deploy-netlify.yaml
+```
+
+Las páginas HTML son la excepción: Netlify les añade un comentario al servirlas, así que no coinciden byte a byte con lo
+compilado. Y `_redirects` es la configuración de Netlify: está en las sumas, pero no se sirve.
 
 Para desplegar en Netlify hacen falta dos secretos del repositorio:
 
