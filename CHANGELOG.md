@@ -1,3 +1,16 @@
+## 1.15.0 (2026-10-23)
+
+### Nuevas funciones
+
+* the editor shows the whole cycle: in DLX the stage of every instruction of the pipeline, and in SuperDLX the state of every instruction in the machine and the ones that commit, which the editor follows; the code view of SuperDLX says the same states ([1426c61](https://github.com/nonodev96/THUMDER/commit/1426c61))
+
+### Correcciones
+
+* Load simulates the file open in the editor (it simulated the one open before when a file was opened from the file manager), and a cycle reaches all the views at once before its notices ([2542499](https://github.com/nonodev96/THUMDER/commit/2542499))
+* the key of Android is read from its secret as it is copied from a terminal (line breaks, spaces or the % of zsh), and a key that does not open with its password says so ([7d67d9e](https://github.com/nonodev96/THUMDER/commit/7d67d9e))
+
+
+
 ## 1.14.0 (2026-10-23)
 
 ### Nuevas funciones
