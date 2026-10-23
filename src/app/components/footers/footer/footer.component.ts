@@ -69,6 +69,8 @@ export class FooterComponent {
       const editable =
         element !== null &&
         (element.isContentEditable ||
+          // Monaco writes with the EditContext API of Chrome: a div with an editContext, not a field
+          (element as HTMLElement & { editContext?: unknown }).editContext != null ||
           (element.tagName === "INPUT" &&
             !["button", "checkbox", "radio", "range", "submit"].includes((element as HTMLInputElement).type)) ||
           element.tagName === "TEXTAREA");
