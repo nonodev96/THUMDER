@@ -1,19 +1,50 @@
-import { Injectable } from "@angular/core";
+import { DOCUMENT, Injectable, inject, NgZone } from "@angular/core";
+import { Router } from "@angular/router";
 
 /** What preload.ts exposes in Electron (the page has no access to Node.js) */
 export type ThumderBridge = {
   platform: string;
   arch: string;
+  /** "overlay": the navbar is the title bar, with the buttons of the window over its right (Windows and Linux) */
+  titleBar: "overlay" | "native";
+  /** Whether the desktop is dark (main.ts also reads the theme of the desktop on Linux), when the page starts */
+  systemDark: boolean;
+  onSystemDark(listener: (dark: boolean) => void): void;
+  /** The theme and the language chosen, and the height of the navbar: the window, its buttons and its menu follow them */
+  setPreferences(preferences: { theme?: string; lang?: string; titleBar?: number }): void;
+  /** A route chosen in the menu of the window */
+  onNavigate(listener: (route: string) => void): void;
   openExternal(url: string): Promise<void>;
   notify(): void;
 };
 
+/** The bridge of the desktop application, or undefined in the web */
+export function desktopBridge(): ThumderBridge | undefined {
+  return (globalThis as typeof globalThis & { thumder?: ThumderBridge }).thumder;
+}
+
+/**
+ * The desktop application (Electron). In it the html element has the class `thumder-desktop` and, where the navbar is
+ * the title bar of the window, `thumder-titlebar` (src/styles.scss leaves room for the buttons of the window); the
+ * routes chosen in the menu of the window open here
+ */
 @Injectable({
   providedIn: "root",
 })
 export class ElectronService {
   private static get bridge(): ThumderBridge | undefined {
-    return (window as Window & { thumder?: ThumderBridge }).thumder;
+    return desktopBridge();
+  }
+
+  constructor() {
+    const bridge = ElectronService.bridge;
+    if (bridge === undefined) return;
+    const html = inject(DOCUMENT).documentElement.classList;
+    html.add("thumder-desktop");
+    if (bridge.titleBar === "overlay") html.add("thumder-titlebar");
+    const router = inject(Router);
+    const zone = inject(NgZone);
+    bridge.onNavigate((route) => zone.run(() => void router.navigateByUrl(route)));
   }
 
   /** Opens a link in the browser of the system (Electron) or in a new tab (web) */

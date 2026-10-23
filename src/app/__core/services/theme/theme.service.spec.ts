@@ -36,6 +36,54 @@ describe("ThemeService", () => {
   });
 });
 
+describe("ThemeService in the desktop application", () => {
+  let listeners: ((dark: boolean) => void)[];
+  let sent: { theme?: string }[];
+
+  beforeEach(() => {
+    localStorage.removeItem("theme");
+    listeners = [];
+    sent = [];
+    // What preload.ts exposes: the desktop is dark (main.ts reads it, also from the panels of Cinnamon)
+    (globalThis as Record<string, unknown>)["thumder"] = {
+      platform: "linux",
+      titleBar: "overlay",
+      systemDark: true,
+      onSystemDark: (listener: (dark: boolean) => void) => listeners.push(listener),
+      setPreferences: (preferences: { theme?: string }) => sent.push(preferences),
+      onNavigate: () => undefined,
+    };
+  });
+
+  afterEach(() => {
+    delete (globalThis as Record<string, unknown>)["thumder"];
+    TestBed.resetTestingModule();
+    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.removeAttribute("style");
+    document.body.classList.remove("dark-mode");
+  });
+
+  it("follows the desktop as main.ts sees it, not prefers-color-scheme, and changes with it", () => {
+    const theme = TestBed.inject(ThemeService);
+    expect(theme.choice()).toBe("system");
+    expect(theme.dark()).toBe(true);
+    expect(document.documentElement.dataset["theme"]).toBe("dark");
+    for (const listener of listeners) listener(false);
+    expect(theme.dark()).toBe(false);
+    expect(document.documentElement.dataset["theme"]).toBe("light");
+  });
+
+  it("tells main.ts the theme chosen, so the window and its buttons follow it", () => {
+    const theme = TestBed.inject(ThemeService);
+    theme.set("light");
+    expect(theme.dark()).toBe(false);
+    expect(sent.at(-1)).toEqual({ theme: "light" });
+    theme.set("system");
+    expect(theme.dark()).toBe(true);
+    expect(sent.at(-1)).toEqual({ theme: "system" });
+  });
+});
+
 describe("palette", () => {
   afterEach(() => document.documentElement.removeAttribute("style"));
 

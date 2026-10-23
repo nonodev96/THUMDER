@@ -1,4 +1,5 @@
-import { computed, DOCUMENT, effect, Injectable, inject, signal } from "@angular/core";
+import { computed, DOCUMENT, effect, Injectable, inject, NgZone, signal } from "@angular/core";
+import { desktopBridge } from "@core/services/electron/electron.service";
 import { cssColourNumber } from "./palette";
 
 export type ThemeChoice = "light" | "dark" | "system";
@@ -10,12 +11,17 @@ const CHOICES: ThemeChoice[] = ["light", "dark", "system"];
  * The theme of THUMDER (UI-07): light, dark or the one of the system (prefers-color-scheme, the default). The dark one
  * is `data-theme="dark"` on the html element (the variables of theme.scss) and the `dark-mode` of AdminLTE on the
  * body; Monaco, the canvases and the views of THUMDER follow `dark`.
+ *
+ * In the desktop application the system is the desktop as main.ts sees it (on Linux, also the theme of its panels,
+ * which Chromium does not read), and the choice goes to main.ts: the window, its buttons and its menus follow it.
  */
 @Injectable({ providedIn: "root" })
 export class ThemeService {
   private readonly document = inject(DOCUMENT);
-  private readonly media = this.document.defaultView?.matchMedia?.("(prefers-color-scheme: dark)") ?? null;
-  private readonly systemDark = signal(this.media?.matches ?? false);
+  private readonly bridge = desktopBridge();
+  // In the desktop application the system is the one main.ts sees (prefers-color-scheme there follows the choice)
+  private readonly media = this.bridge ? null : (this.document.defaultView?.matchMedia?.("(prefers-color-scheme: dark)") ?? null);
+  private readonly systemDark = signal(this.bridge ? this.bridge.systemDark : (this.media?.matches ?? false));
 
   public readonly choice = signal<ThemeChoice>(ThemeService.saved());
   public readonly dark = computed(() => this.choice() === "dark" || (this.choice() === "system" && this.systemDark()));
@@ -25,6 +31,13 @@ export class ThemeService {
       this.systemDark.set(event.matches);
       this.apply();
     });
+    const zone = inject(NgZone);
+    this.bridge?.onSystemDark((dark) =>
+      zone.run(() => {
+        this.systemDark.set(dark);
+        this.apply();
+      }),
+    );
     this.apply();
     effect(() => this.apply());
   }
@@ -42,6 +55,8 @@ export class ThemeService {
     // The bar of the system on a phone, with the colour of the navbar
     for (const meta of this.document.querySelectorAll('meta[name="theme-color"]'))
       meta.setAttribute("content", dark ? "#1e293b" : "#ffffff");
+    // The desktop application: the window and its buttons with the colours of the theme
+    this.bridge?.setPreferences({ theme: this.choice() });
   }
 
   /** A colour of theme.scss that changes with the theme (`--thumder-<name>-light` or `-dark`), as a number for PixiJS */

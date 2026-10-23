@@ -7,7 +7,8 @@
   "npmRebuild": false,
   "nodeGypRebuild": false,
   "directories": {
-    "output": "release/"
+    "output": "release/",
+    "buildResources": "build"
   },
   "files": [
     "main.js",
@@ -24,17 +25,36 @@
     "releaseType": "draft"
   },
   "win": {
-    "icon": "dist/browser/assets/icons/favicon.ico",
-    "target": ["nsis", "portable"]
+    "icon": "build/icon.ico",
+    "target": [
+      "nsis",
+      "portable"
+    ]
   },
   "mac": {
-    "icon": "dist/browser/assets/icons/favicon.icns",
+    "icon": "build/icon.icns",
     "category": "public.app-category.education",
-    "target": ["dmg", "zip"]
+    "target": [
+      "dmg",
+      "zip"
+    ],
+    "darkModeSupport": true
   },
   "linux": {
-    "icon": "dist/browser/assets/icons",
+    "icon": "build/icons",
     "category": "Education",
-    "target": ["AppImage"]
+    "target": [
+      "AppImage"
+    ],
+    "synopsis": "Simulador de los procesadores DLX y SuperDLX",
+    "desktop": {
+      "entry": {
+        "Name": "THUMDER",
+        "GenericName": "Simulador DLX",
+        "Keywords": "DLX;SuperDLX;WinDLX;simulador;simulator;pipeline;superescalar;ensamblador;assembler;"
+      }
+    },
+    "syncDesktopName": true,
+    "description": "Simulador de los procesadores DLX y SuperDLX: pipeline, superescalar, ensamblador y ejercicios"
   }
 }

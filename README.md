@@ -214,6 +214,20 @@ Con el secreto opcional `ANGULAR_ENVIROTMENT_PRODUCTION` (el fichero `src/enviro
 web lleva las claves de Firebase; sin él se compila en modo local. Los PR de forks y de Dependabot no tienen acceso a los secretos
 y no se despliegan.
 
+La ventana de escritorio (`main.ts`) es la de una aplicación del sistema:
+
+- En Windows y Linux no hay barra de título ni menú de Electron: la barra de navegación de THUMDER hace de barra de título (mueve
+  la ventana y la maximiza con doble clic) y los botones de minimizar, maximizar y cerrar se dibujan sobre su derecha, con los
+  colores del tema. macOS conserva su barra de título y su barra de menús.
+- El tema «el del sistema» sigue al escritorio y cambia con él. En Linux, además de lo que lee Chromium (la preferencia del
+  portal y el tema GTK), cuenta el tema del propio escritorio (Cinnamon, GNOME, MATE), que puede tener los paneles oscuros y las
+  aplicaciones claras. Los menús, las barras de desplazamiento y los diálogos nativos siguen el tema elegido.
+- El menú tiene el zoom (<kbd>Ctrl</kbd>+<kbd>+</kbd>, <kbd>Ctrl</kbd>+<kbd>-</kbd>, <kbd>Ctrl</kbd>+<kbd>0</kbd>), la pantalla
+  completa, copiar y pegar, y la ayuda (<kbd>F1</kbd>), en el idioma de THUMDER.
+- La ventana se abre sin destellos con el color del tema, recuerda su tamaño y su sitio (`desktop.json`, en la carpeta de datos
+  de la aplicación), y abrir THUMDER otra vez muestra la que ya está abierta. Tiene un icono en la bandeja del sistema.
+- Los iconos de los instaladores están en `build/` (`icons/` para Linux, `icon.ico` y `icon.icns`).
+
 La aplicación de escritorio no da a la página acceso a Node.js: lo que necesita de Electron (abrir enlaces en el navegador y las
 notificaciones) lo expone `preload.ts` como `window.thumder`. La página tiene una política de seguridad de contenidos (CSP en
 `src/index.html`) sin `eval` ni scripts en línea, y el paquete de escritorio solo lleva `main.js`, `preload.js` y la aplicación

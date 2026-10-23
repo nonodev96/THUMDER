@@ -58,3 +58,69 @@ test("la aplicación de escritorio arranca segura y su interfaz funciona", async
   expect(errors).toEqual([]);
   await app.close();
 });
+
+test("la ventana es de escritorio: la barra de navegación es la de título, con el tema y el menú de THUMDER", async () => {
+  const env = { ...process.env } as Record<string, string>;
+  delete env.ELECTRON_RUN_AS_NODE;
+  const app = await electron.launch({ executablePath: electronPath as unknown as string, args: ["."], env });
+  const page = await app.firstWindow();
+  await page.waitForLoadState("load");
+  await page.locator(".main-sidebar").waitFor();
+
+  const main = () =>
+    app.evaluate(({ BrowserWindow, Menu, nativeTheme }) => {
+      const window = BrowserWindow.getAllWindows()[0];
+      return {
+        visible: window.isVisible(),
+        background: window.getBackgroundColor(),
+        themeSource: nativeTheme.themeSource,
+        menu: Menu.getApplicationMenu()?.items.map((item) => item.label) ?? [],
+      };
+    });
+
+  // Windows and Linux: no native title bar; the buttons of the window are over the right of the navbar
+  if (process.platform !== "darwin") {
+    expect(await page.evaluate(() => document.documentElement.classList.contains("thumder-titlebar"))).toBe(true);
+    const overlay = await page.evaluate(() => navigator.windowControlsOverlay?.getTitlebarAreaRect?.());
+    expect(overlay?.width).toBeLessThan(await page.evaluate(() => innerWidth));
+    // The buttons of the window are as high as the navbar, and nothing of the navbar is under them
+    const navbar = await page.evaluate(() => Math.floor(document.querySelector(".main-header")?.getBoundingClientRect().height ?? 0) - 1);
+    await expect.poll(() => page.evaluate(() => navigator.windowControlsOverlay?.getTitlebarAreaRect?.().height)).toBe(navbar);
+    const hidden = await page.evaluate(() => {
+      const limit = navigator.windowControlsOverlay?.getTitlebarAreaRect?.().width ?? innerWidth;
+      return [...document.querySelectorAll<HTMLElement>(".main-header button, .main-header a")]
+        .filter((element) => element.offsetParent !== null && element.getBoundingClientRect().right > limit + 1)
+        .map((element) => element.id || element.textContent?.trim());
+    });
+    expect(hidden).toEqual([]);
+  }
+
+  // The menu of THUMDER, not the one of Electron
+  const menu = (await main()).menu;
+  expect(menu).not.toContain("File");
+  expect(menu.length).toBeGreaterThanOrEqual(4);
+
+  // The theme chosen in THUMDER goes to the window: its colour and its native parts
+  await page.locator("#dropdownTheme").click();
+  await page.locator("#theme-dark").click();
+  await expect.poll(async () => (await main()).themeSource).toBe("dark");
+  expect((await main()).background).toBe("#0F172A");
+  await page.locator("#dropdownTheme").click();
+  await page.locator("#theme-light").click();
+  await expect.poll(async () => (await main()).themeSource).toBe("light");
+  expect((await main()).background).toBe("#F1F5F9");
+  await page.locator("#dropdownTheme").click();
+  await page.locator("#theme-system").click();
+  await expect.poll(async () => (await main()).themeSource).not.toBe("light");
+
+  // The language of THUMDER is the one of the menu
+  await page.locator("#dropdownSubMenuLang").click();
+  await page.locator("#changeLangToSpanish").click();
+  await expect.poll(async () => (await main()).menu).toContain("Ayuda");
+  await page.locator("#dropdownSubMenuLang").click();
+  await page.locator("#changeLangToEnglish").click();
+  await expect.poll(async () => (await main()).menu).toContain("Help");
+
+  expect((await main()).visible).toBe(true);
+  await app.close();
+});

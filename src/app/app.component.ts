@@ -12,6 +12,7 @@ import { logger } from "@core/logger/logger";
 import { MachineService } from "@core/machine/machine.service";
 import { ElectronService } from "@core/services";
 import { ConsentService } from "@core/services/consent/consent.service";
+import { desktopBridge } from "@core/services/electron/electron.service";
 import { SIDEBAR_STATE_CLASSES } from "@core/services/layout/sidebar.service";
 import { ThemeService } from "@core/services/theme/theme.service";
 import { StorageService } from "@core/storage/storage.service";
@@ -124,5 +125,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.document.documentElement.lang = lang;
     this.translate.setFallbackLang(lang);
     this.translate.use(lang);
+    // The menu of the desktop application, in the same language
+    desktopBridge()?.setPreferences({ lang });
   }
 }

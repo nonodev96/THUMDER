@@ -902,6 +902,33 @@ body .main-header .navbar-nav {
   }
 }
 
+// ─── The desktop application ────────────────────────────────────────────────────────────────────────────────────────
+
+// On Windows and Linux the navbar is the title bar of the window (main.ts): it moves the window (and a double click
+// maximises it), what is used with the mouse does not, and its right leaves room for the buttons of the window that
+// Electron draws over it (the Window Controls Overlay gives their place: env(titlebar-area-x) and titlebar-area-width)
+html.thumder-titlebar {
+  body .main-header.navbar {
+    -webkit-app-region: drag;
+    padding-right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw) + 0.5rem);
+  }
+
+  body .main-header :is(a, button, input, select, textarea, label, [role="button"], [tabindex], .dropdown-menu) {
+    -webkit-app-region: no-drag;
+  }
+
+  // The pages without the navbar (the account): a strip at the top moves the window
+  body:not(:has(.main-header))::before {
+    content: "";
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 2000;
+    width: env(titlebar-area-width, 100%);
+    height: env(titlebar-area-height, 2rem);
+    -webkit-app-region: drag;
+  }
+}
+
 // ─── The navbar ──────────────────────────────────────────────────────────────────────────────────────────────────────
 
 // The views, by sections, in columns (with body, over `.dropdown-menu` of Bootstrap, loaded after this file)
