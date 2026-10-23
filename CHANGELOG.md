@@ -1,3 +1,11 @@
+## 1.13.1 (2026-10-23)
+
+### Correcciones
+
+* in the desktop application a maximized card starts under the navbar, so its buttons are not under the ones of the window and the navbar keeps its menus over it; the e2e tests of the desktop use their own data folder ([fb859ce](https://github.com/nonodev96/THUMDER/commit/fb859ce))
+
+
+
 ## 1.13.0 (2026-10-23)
 
 ### Nuevas funciones
