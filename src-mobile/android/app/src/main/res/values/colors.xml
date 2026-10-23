@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The colours of src/theme.scss: the primary one, and the background of the dark theme -->
+    <color name="colorPrimary">#4F46E5</color>
+    <color name="colorPrimaryDark">#0F172A</color>
+    <color name="colorAccent">#6366F1</color>
+    <color name="splashBackground">#0F172A</color>
+</resources>

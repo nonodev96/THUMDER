@@ -20,6 +20,7 @@ console.log(`${body}
 - Windows: \`.exe\` (instalador) o la versión portable.
 - macOS: \`.dmg\` o \`.zip\`.
 - Linux: \`.AppImage\`.
+- Android: \`-android.apk\`, para instalarla a mano (Android pide permitir instalar aplicaciones de ese origen). El \`.aab\` es el paquete para Google Play.
 - Sin instalar nada: la versión web.
 
 Los binarios **no tienen firma de Windows ni de macOS**: SmartScreen y Gatekeeper avisarán la primera vez. En macOS, abre la aplicación con clic derecho → Abrir. Los ficheros \`latest*.yml\` describen cada versión para las actualizaciones automáticas.

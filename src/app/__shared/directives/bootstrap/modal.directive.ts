@@ -32,6 +32,19 @@ export class ModalService {
     return this.opened.has(id);
   }
 
+  /** Whether any modal is open */
+  public get anyOpen(): boolean {
+    return this.opened.size > 0;
+  }
+
+  /** Closes the modal opened last (the back button of Android). Returns whether there was one */
+  public closeLast(): boolean {
+    const last = [...this.opened.keys()].at(-1);
+    if (last === undefined) return false;
+    this.close(last);
+    return true;
+  }
+
   public open(id: string, opener: HTMLElement | null = null): void {
     const element = this.document.getElementById(id);
     if (!element || this.opened.has(id)) return;

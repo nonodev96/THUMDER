@@ -152,6 +152,11 @@ describe("client-errors, as ErrorReporter sends them", () => {
     await assertSucceeds(addDoc(collection(env.authenticatedContext("ana").firestore(), ERRORS_COLLECTION), report()));
   });
 
+  it("from the web, the desktop and the applications of Android and iOS", async () => {
+    const errors = collection(env.unauthenticatedContext().firestore(), ERRORS_COLLECTION);
+    for (const platform of ["web", "electron", "android", "ios"]) await assertSucceeds(addDoc(errors, report({ platform })));
+  });
+
   it("nobody reads, changes or deletes them (they are read in the console of Firebase)", async () => {
     await env.withSecurityRulesDisabled(async (context) => {
       await setDoc(doc(context.firestore(), `${ERRORS_COLLECTION}/e1`), { ...report(), createdAt: new Date() });
@@ -169,7 +174,7 @@ describe("client-errors, as ErrorReporter sends them", () => {
     await assertFails(addDoc(errors, report({ message: "" })));
     await assertFails(addDoc(errors, report({ message: "x".repeat(501) })));
     await assertFails(addDoc(errors, report({ stack: "x".repeat(4001) })));
-    await assertFails(addDoc(errors, report({ platform: "android" })));
+    await assertFails(addDoc(errors, report({ platform: "symbian" })));
     await assertFails(addDoc(errors, report({ createdAt: new Date(0) })));
   });
 });

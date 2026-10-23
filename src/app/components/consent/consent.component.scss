@@ -3,7 +3,7 @@
   position: fixed;
   left: 1rem;
   right: 1rem;
-  bottom: 1rem;
+  bottom: calc(1rem + var(--thumder-safe-bottom, 0px));
   z-index: 1070;
   display: flex;
   flex-wrap: wrap;

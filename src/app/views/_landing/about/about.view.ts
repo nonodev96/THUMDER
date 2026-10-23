@@ -112,10 +112,6 @@ export class AboutView implements OnInit, AfterViewInit {
   }
 
   public async openInExternal(url: string) {
-    if (this.electronService.isElectronApp) {
-      await this.electronService.openInExternal(url);
-    } else {
-      window.open(url, "_blank");
-    }
+    await this.electronService.openInExternal(url);
   }
 }

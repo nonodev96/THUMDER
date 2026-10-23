@@ -14,6 +14,7 @@ import { ElectronService } from "@core/services";
 import { ConsentService } from "@core/services/consent/consent.service";
 import { desktopBridge } from "@core/services/electron/electron.service";
 import { SIDEBAR_STATE_CLASSES } from "@core/services/layout/sidebar.service";
+import { MobileService } from "@core/services/mobile/mobile.service";
 import { ThemeService } from "@core/services/theme/theme.service";
 import { StorageService } from "@core/storage/storage.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -33,6 +34,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private storageService = inject(StorageService);
   private machine = inject(MachineService);
   private electronService = inject(ElectronService);
+  // The applications of Android and iOS: the bars of the system, the back button, the links (nothing in the web)
+  private mobile = inject(MobileService);
   private translate = inject(TranslateService);
   private router = inject(Router);
   // The theme (light, dark or the one of the system) applies from the start

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">THUMDER</string>
+    <string name="title_activity_main">THUMDER</string>
+    <string name="package_name">com.nonodev96.thumder</string>
+    <string name="custom_url_scheme">com.nonodev96.thumder</string>
+</resources>

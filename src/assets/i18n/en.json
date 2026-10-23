@@ -37,7 +37,15 @@
     "SYNC_RETRY": "Synchronise now",
     "PASSWORD": "Password",
     "FULL_NAME": "Full name",
-    "RETYPE_PASSWORD": "Retype the password"
+    "RETYPE_PASSWORD": "Retype the password",
+    "SIGN_IN_USING_APPLE": "Sign in with Apple",
+    "DELETE": "Delete the account",
+    "DELETE_TITLE": "Delete the account?",
+    "DELETE_HELP": "Your account and all its files will be deleted, in the cloud and on this device, and it cannot be undone. If you want to keep a program, export it first from the file manager.",
+    "DELETE_CONFIRM": "Delete the account and its files",
+    "DELETE_SIGN_IN_AGAIN": "For your security, the account can only be deleted for a few minutes after signing in. Sign in again and delete it right after.",
+    "SIGN_IN_AGAIN": "Sign in again",
+    "GUEST_HELP_APP": "You are using THUMDER without an account: your files are kept on this device. With an account they are synchronised between your devices."
   },
   "NAVIGATION": {
     "PAGES": "Pages",
@@ -445,7 +453,9 @@
     "MESSAGE_BREAKPOINT_LINE": "Stopped at line {{line}}.",
     "MESSAGE_BREAKPOINT_STAGE": "Stopped at line {{line}}, when it reached {{stage}}.",
     "MESSAGE_WATCH_READ": "Stopped: {{address}} was read.",
-    "MESSAGE_WATCH_WRITE": "Stopped: {{address}} was written."
+    "MESSAGE_WATCH_WRITE": "Stopped: {{address}} was written.",
+    "MESSAGE_ACCOUNT_DELETED": "Your account and its files have been deleted.",
+    "MESSAGE_ACCOUNT_NOT_DELETED": "Not all the files of your account could be deleted, so the account is still there. Check the connection and try again."
   },
   "TABLE": {
     "DEPENDENCIES": "Dependencies",
@@ -622,7 +632,8 @@
     "READ_ONLY_EDITOR": "A program of THUMDER, read only: if you change it, saving creates a copy in «{{folder}}».",
     "READ_ONLY_ERROR": "The folders of THUMDER are read only",
     "COPY_TO_MINE": "Copy to my files",
-    "COPIED": "Copied to «{{path}}»"
+    "COPIED": "Copied to «{{path}}»",
+    "SYNC_GUEST_APP": "On this device"
   },
   "PROBLEMS": {
     "TITLE": "Problems",
@@ -1019,7 +1030,11 @@
     "NOTICE": "Legal notice",
     "ACCESSIBILITY": "Accessibility",
     "SETTINGS": "Privacy settings",
-    "SETTINGS_HELP": "Choose what you allow: analytics and error reports"
+    "SETTINGS_HELP": "Choose what you allow: analytics and error reports",
+    "DELETE_ACCOUNT": "Delete the account",
+    "SIGN_IN_TO_DELETE": "Sign in to delete it",
+    "GO_TO_DELETE": "Go to my profile to delete it",
+    "MORE_ON_DELETING": "What is deleted and what is not"
   },
   "CONSENT": {
     "TITLE": "Your privacy",

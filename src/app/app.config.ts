@@ -1,13 +1,14 @@
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { type ApplicationConfig, ErrorHandler, inject, provideAppInitializer, SecurityContext } from "@angular/core";
-import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
-import { getAuth, provideAuth } from "@angular/fire/auth";
+import { getApp, initializeApp, provideFirebaseApp } from "@angular/fire/app";
+import { getAuth, indexedDBLocalPersistence, initializeAuth, provideAuth } from "@angular/fire/auth";
 import { getFirestore, provideFirestore } from "@angular/fire/firestore";
 import { getRemoteConfig, provideRemoteConfig } from "@angular/fire/remote-config";
 import { provideRouter } from "@angular/router";
 import { routes } from "@app/app.routes";
 import { FIREBASE_ENABLED } from "@app/CONSTANTS";
 import { ErrorReporter, listenToWindowErrors, ThumderErrorHandler } from "@core/errors/error-reporter.service";
+import { nativePlatform } from "@core/services/mobile/mobile";
 import { UtilityService } from "@core/services/utility/utility.service";
 import { provideTranslateService } from "@ngx-translate/core";
 import { provideTranslateHttpLoader } from "@ngx-translate/http-loader";
@@ -71,7 +72,9 @@ export function markedOptionsFactory(): MarkedOptions {
 const FIREBASE_PROVIDERS = FIREBASE_ENABLED
   ? [
       provideFirebaseApp(() => initializeApp(AppConfig.firebase)),
-      provideAuth(() => getAuth()),
+      // In the applications of Android and iOS the session is kept in IndexedDB, without the pop-ups and redirections
+      // of the web (getAuth waits for them in the WebView of iOS); the sign-in with Google, GitHub and Apple is native
+      provideAuth(() => (nativePlatform() !== null ? initializeAuth(getApp(), { persistence: indexedDBLocalPersistence }) : getAuth())),
       provideFirestore(() => getFirestore()),
       provideRemoteConfig(() => getRemoteConfig()),
     ]

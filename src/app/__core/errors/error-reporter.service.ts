@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { NPM_VERSION } from "@app/CONSTANTS";
 import { logger } from "@core/logger/logger";
 import { ConsentService } from "@core/services/consent/consent.service";
+import { nativePlatform } from "@core/services/mobile/mobile";
 import * as env from "../../../environments/_environment";
 import { ERRORS_COLLECTION, errorKey, errorReport } from "./error-report";
 
@@ -36,6 +37,7 @@ export class ErrorReporter {
       version: NPM_VERSION,
       userAgent: navigator.userAgent,
       lang: document.documentElement.lang || navigator.language,
+      native: nativePlatform(),
     });
     const key = errorKey(report);
     if (this.sent.has(key) || this.sent.size >= MAX_REPORTS) return;

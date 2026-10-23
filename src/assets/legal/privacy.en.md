@@ -1,6 +1,6 @@
 # Privacy and cookies
 
-_Last updated: 17 October 2026_
+_Last updated: 23 October 2026_
 
 THUMDER is an educational simulator of the DLX processor, free and open source (MIT licence). This page explains what data it uses, what for, and how you decide. You can change your choice at any time from **Privacy settings** in the footer.
 
@@ -29,10 +29,14 @@ These are not cookies: they do not travel to any server. They are needed for the
 
 ## With an account (optional)
 
-If you sign in (with email and password, Google or GitHub), Firebase Authentication, by Google, processes your email, your name and your profile photo to identify you, and keeps the session in your browser. Your files are kept in Cloud Firestore, linked to your account, so that you have them on any computer.
+If you sign in (with email and password, Google, GitHub or Apple), Firebase Authentication, by Google, processes your email, your name and your profile photo to identify you, and keeps the session in your browser. Your files are kept in Cloud Firestore, linked to your account, so that you have them on any computer.
 
 - **Legal basis:** providing the service you ask for (article 6.1.b of the GDPR).
-- **Retention:** while you have the account. You can delete your files at any time and ask for your account to be deleted.
+- **Retention:** while you have the account. You can delete your files at any time and delete the account (see below).
+
+## Deleting your account
+
+From THUMDER, on the web or in the desktop, Android and iOS applications: sign in, open your **Profile** and press **Delete the account**. Your account, your profile and all your files are deleted, in the cloud and on that device, and it cannot be undone. For your security, you must have signed in a few minutes before. If you cannot get into THUMDER, ask for the deletion with the contact above, from the email of your account, and it will be done within a month at most. The steps, and what is deleted and what is not, are in the **Delete the account** tab, above.
 
 ## Analytics (only if you accept them)
 
@@ -45,11 +49,11 @@ If you allow it, Google Analytics for Firebase counts, in aggregate, the visits,
 
 ## Error reports (you can turn them off)
 
-When a published version of THUMDER (the web or the desktop application) fails unexpectedly, it sends a technical report to Cloud Firestore:
+When a published version of THUMDER (the web or the desktop, Android and iOS applications) fails unexpectedly, it sends a technical report to Cloud Firestore:
 
 - the message and the stack trace of the error;
 - the view you were in, without parameters;
-- the version of THUMDER, and whether it is the web or the desktop application;
+- the version of THUMDER, and whether it is the web or the desktop, Android or iOS application;
 - the browser (its user agent) and the language.
 
 It does not include your account, your files or the folders of your computer, and it uses no cookies. It is used to find and fix errors.
@@ -61,8 +65,9 @@ It does not include your account, your files or the folders of your computer, an
 
 - The web is served by Netlify, which logs technical data of each request (such as the IP address) to deliver the page and protect it.
 - The animations of the documentation are loaded from GitHub (`raw.githubusercontent.com`).
-- If you sign in with Google or GitHub, their sign-in window opens, with their own privacy policy.
+- If you sign in with Google, GitHub or Apple, their sign-in window opens (on Android and iOS, the one of the system), with their own privacy policy.
 - The desktop application uses no cookies and no analytics.
+- The Android and iOS applications use the same services as the web and keep your data on the device itself. Google Play and the App Store, where they are installed from, process the data of the download under their own policies.
 
 ## Your rights
 

@@ -45,7 +45,9 @@ test("el diagrama de ciclos se amplía con los botones y con + - 0", async ({ pa
   expect(await cycleScale(page)).toBe(initial);
 });
 
-test("@movil el diagrama de ciclos se pellizca y se arrastra con el dedo", async ({ page, context }) => {
+test("@movil el diagrama de ciclos se pellizca y se arrastra con el dedo", async ({ page, context, browserName }) => {
+  // The fingers are simulated with the protocol of Chrome (CDP): WebKit (iphone, ipad) has no equivalent
+  test.skip(browserName !== "chromium", "touch gestures need CDP");
   await go(page, "/auth/cycle-clock-diagram");
   await loadAndStep(page, 30);
   const canvas = page.locator("canvas").first();
@@ -110,7 +112,9 @@ test("el diagrama de ciclos se mueve con el teclado solo cuando tiene el foco, y
   await expect.poll(async () => (await cycleScroll(page)).x).toBeGreaterThan(last.x);
 });
 
-test("@movil el pipeline se desplaza en horizontal con el dedo", async ({ page, context }) => {
+test("@movil el pipeline se desplaza en horizontal con el dedo", async ({ page, context, browserName }) => {
+  // The fingers are simulated with the protocol of Chrome (CDP): WebKit (iphone, ipad) has no equivalent
+  test.skip(browserName !== "chromium", "touch gestures need CDP");
   await go(page, "/auth/pipeline");
   const host = page.locator("thumder-pixi-pipeline");
   await host.scrollIntoViewIfNeeded();

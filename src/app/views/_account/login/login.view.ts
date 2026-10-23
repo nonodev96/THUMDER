@@ -13,7 +13,6 @@ import { Router, RouterLink } from "@angular/router";
 import { AppComponent } from "@app/app.component";
 import { AuthService } from "@core/auth/auth.service";
 import { logger } from "@core/logger/logger";
-import { ElectronService } from "@core/services";
 import { TranslatePipe } from "@ngx-translate/core";
 import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdown.directive";
 
@@ -25,7 +24,6 @@ import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdo
 export class LoginView implements OnInit {
   private destroyRef = inject(DestroyRef);
   private _document = inject<Document>(DOCUMENT);
-  electronService = inject(ElectronService);
   authService = inject(AuthService);
   router = inject(Router);
   app = inject(AppComponent);
@@ -110,5 +108,16 @@ export class LoginView implements OnInit {
       this.showSpinner = false;
     }
     return Promise.resolve();
+  }
+
+  public async AppleAuth(): Promise<void> {
+    this.showSpinner = true;
+    try {
+      await this.authService.AppleAuth();
+    } catch (e) {
+      logger.error(e);
+    } finally {
+      this.showSpinner = false;
+    }
   }
 }

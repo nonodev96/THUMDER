@@ -37,7 +37,15 @@
     "SYNC_RETRY": "Sincronizar ahora",
     "PASSWORD": "Contraseña",
     "FULL_NAME": "Nombre completo",
-    "RETYPE_PASSWORD": "Repite la contraseña"
+    "RETYPE_PASSWORD": "Repite la contraseña",
+    "SIGN_IN_USING_APPLE": "Iniciar sesión con Apple",
+    "DELETE": "Borrar la cuenta",
+    "DELETE_TITLE": "¿Borrar la cuenta?",
+    "DELETE_HELP": "Se borrarán tu cuenta y todos sus ficheros, en la nube y en este dispositivo, y no se puede deshacer. Si quieres conservar algún programa, expórtalo antes desde el gestor de ficheros.",
+    "DELETE_CONFIRM": "Borrar la cuenta y sus ficheros",
+    "DELETE_SIGN_IN_AGAIN": "Por seguridad, solo se puede borrar la cuenta durante unos minutos después de iniciar sesión. Vuelve a iniciar sesión y bórrala justo después.",
+    "SIGN_IN_AGAIN": "Volver a iniciar sesión",
+    "GUEST_HELP_APP": "Usas THUMDER sin cuenta: tus ficheros se guardan en este dispositivo. Con una cuenta se sincronizan entre tus dispositivos."
   },
   "NAVIGATION": {
     "PAGES": "Páginas",
@@ -445,7 +453,9 @@
     "MESSAGE_BREAKPOINT_LINE": "Parada en la línea {{line}}.",
     "MESSAGE_BREAKPOINT_STAGE": "Parada en la línea {{line}}, al llegar a {{stage}}.",
     "MESSAGE_WATCH_READ": "Parada: se ha leído {{address}}.",
-    "MESSAGE_WATCH_WRITE": "Parada: se ha escrito en {{address}}."
+    "MESSAGE_WATCH_WRITE": "Parada: se ha escrito en {{address}}.",
+    "MESSAGE_ACCOUNT_DELETED": "Tu cuenta y sus ficheros se han borrado.",
+    "MESSAGE_ACCOUNT_NOT_DELETED": "No se han podido borrar todos los ficheros de tu cuenta, así que la cuenta sigue ahí. Comprueba la conexión y vuelve a intentarlo."
   },
   "TABLE": {
     "DEPENDENCIES": "Dependencias",
@@ -622,7 +632,8 @@
     "READ_ONLY_EDITOR": "Programa de THUMDER, de solo lectura: si lo cambias, al guardar se crea una copia en «{{folder}}».",
     "READ_ONLY_ERROR": "Las carpetas de THUMDER son de solo lectura",
     "COPY_TO_MINE": "Copiar a mis ficheros",
-    "COPIED": "Copiado en «{{path}}»"
+    "COPIED": "Copiado en «{{path}}»",
+    "SYNC_GUEST_APP": "En este dispositivo"
   },
   "PROBLEMS": {
     "TITLE": "Problemas",
@@ -1019,7 +1030,11 @@
     "NOTICE": "Aviso legal",
     "ACCESSIBILITY": "Accesibilidad",
     "SETTINGS": "Ajustes de privacidad",
-    "SETTINGS_HELP": "Elegir qué permites: analíticas e informes de errores"
+    "SETTINGS_HELP": "Elegir qué permites: analíticas e informes de errores",
+    "DELETE_ACCOUNT": "Borrar la cuenta",
+    "SIGN_IN_TO_DELETE": "Iniciar sesión para borrarla",
+    "GO_TO_DELETE": "Ir a mi perfil para borrarla",
+    "MORE_ON_DELETING": "Qué se borra y qué no"
   },
   "CONSENT": {
     "TITLE": "Tu privacidad",

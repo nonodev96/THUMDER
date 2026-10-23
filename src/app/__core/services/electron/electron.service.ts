@@ -1,5 +1,6 @@
 import { DOCUMENT, Injectable, inject, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
+import { nativePlatform } from "@core/services/mobile/mobile";
 import type { ThumderBridge } from "@desktop/contract";
 
 // What the preload script of the desktop application exposes (src-electron/shared/contract.ts): the page has no access
@@ -57,11 +58,16 @@ export class ElectronService {
     };
   }
 
-  /** Opens a link in the browser of the system (Electron) or in a new tab (web) */
+  /** Opens a link in the browser of the system (Electron, Android and iOS) or in a new tab (web) */
   public async openInExternal(url: string): Promise<void> {
     const bridge = ElectronService.bridge;
     if (bridge) {
       await bridge.openExternal(url);
+      return;
+    }
+    if (nativePlatform() !== null) {
+      const { openInBrowser } = await import("@core/services/mobile/mobile.service");
+      await openInBrowser(url);
       return;
     }
     window.open(url, "_blank", "noopener");

@@ -162,4 +162,21 @@ describe("FileSystemStorageService with an account", () => {
     expect(await names()).toEqual(["b.s"]);
     expect(account.docs.get("b")?.content).toBe("cambiado");
   });
+
+  it("deleting the account deletes its files there and here, and only if they all went from the account", async () => {
+    await storage.save([normalizeFile({ key: "a", name: "a.s", dateModified: 1 }), normalizeFile({ key: "b", name: "b.s", dateModified: 1 })]);
+    await storage.connect("ana");
+    // The files of another person stay
+    account.docs.set("x", normalizeFile({ key: "x", $key: "x", name: "x.s", e1_uid: "eva" }));
+    account.failDeletes = true;
+    expect(await storage.deleteAccountFiles()).toBe(false);
+    expect(await names()).toEqual(["a.s", "b.s"]);
+    expect(storage.syncState()).not.toBe("guest");
+    account.failDeletes = false;
+    expect(await storage.deleteAccountFiles()).toBe(true);
+    expect([...account.docs.keys()]).toEqual(["x"]);
+    expect(await names()).toEqual([]);
+    expect(storage.syncState()).toBe("guest");
+    expect(storage.owner).toBe("local");
+  });
 });

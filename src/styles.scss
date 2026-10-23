@@ -16,13 +16,13 @@ html, body {
 // What the Layout plugin of AdminLTE did with jQuery: the content fills the screen under the navbar (so the footer stays
 // at the bottom of short pages), and the sidebar scrolls when its menu is longer than the screen
 body .wrapper .content-wrapper {
-  min-height: calc(100vh - (3.5rem + 1px));
+  min-height: calc(100vh - var(--thumder-navbar-height));
 }
 
 // Phones sideways (little height): the footer is not fixed (see the end of this file), it goes under the content
 @media (max-height: 500px) {
   body .wrapper .content-wrapper {
-    min-height: calc(100vh - 2 * (3.5rem + 1px));
+    min-height: calc(100vh - var(--thumder-navbar-height) - (3.5rem + 1px));
   }
 }
 
@@ -912,18 +912,11 @@ html.thumder-titlebar {
   // The navbar measures itself (ElectronService.followTitleBar)
   --thumder-maximized-top: var(--thumder-titlebar-height, env(titlebar-area-height, 0px));
 
-  // A card that fills the window starts under the navbar: its buttons are not under the ones of the window, the navbar
-  // is still the title bar and the controls of the simulation stay at hand. Over the sidebar (1038) and under the
-  // navbar, whose menus open over the card
+  // A card that fills the window starts under the navbar (--thumder-maximized-top): its buttons are not under the ones
+  // of the window, the navbar is still the title bar and the controls of the simulation stay at hand. Over the sidebar
+  // (1038) and under the navbar, whose menus open over the card
   body .card.maximized-card {
-    top: var(--thumder-maximized-top);
-    height: calc(100% - var(--thumder-maximized-top)) !important;
-    max-height: calc(100% - var(--thumder-maximized-top)) !important;
     z-index: 1039;
-  }
-
-  body.thumder-has-dock .card.maximized-card {
-    height: calc(100% - var(--thumder-maximized-top) - var(--thumder-footer-height)) !important;
   }
 
   body .thumder-window:has(.maximized-card) {
@@ -1071,11 +1064,56 @@ body .main-header .nav-link {
 // --thumder-navbar-height
 
 :root {
-  --thumder-navbar-height: calc(3.5rem + 1px);
+  // The edges of the screen that the system covers: the notch, the bar of gestures and, in the applications of Android
+  // and iOS (edge to edge: viewport-fit=cover in index.html), the bar of the system. 0 everywhere else. On Android,
+  // Capacitor gives them in --safe-area-inset-* (capacitor.config.ts), which do not depend on the WebView
+  --thumder-safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --thumder-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --thumder-navbar-height: calc(3.5rem + 1px + var(--thumder-safe-top));
   // Until the footer measures itself: its height in one line
   --thumder-footer-height: calc(3.5rem + 1px);
-  // Where a card that fills the screen starts: the top, except in the desktop application (the navbar is its title bar)
-  --thumder-maximized-top: 0px;
+  // Where a card that fills the screen starts: under the bar of the system, and in the desktop application under the
+  // navbar (its title bar)
+  --thumder-maximized-top: var(--thumder-safe-top);
+}
+
+// ─── The edges of the screen ─────────────────────────────────────────────────────────────────────────────────────────
+// What is fixed to the top or to the bottom leaves room for what the system draws over the page (--thumder-safe-*): its
+// background goes under it and its content does not
+
+body .main-header.navbar {
+  padding-top: calc(0.5rem + var(--thumder-safe-top));
+}
+
+body.layout-navbar-fixed .wrapper .content-wrapper {
+  margin-top: var(--thumder-navbar-height);
+}
+
+// The sidebar: its background under the bar of the system, its brand and its menu under it
+body.layout-navbar-fixed .wrapper .brand-link {
+  top: var(--thumder-safe-top);
+}
+
+body.layout-navbar-fixed.layout-fixed .wrapper .sidebar {
+  margin-top: var(--thumder-navbar-height);
+  padding-bottom: var(--thumder-safe-bottom);
+}
+
+@supports not (-webkit-touch-callout: none) {
+  body.layout-fixed .wrapper .sidebar {
+    height: calc(100vh - var(--thumder-navbar-height));
+  }
+}
+
+body.layout-footer-fixed .wrapper .main-footer {
+  padding-bottom: calc(1rem + var(--thumder-safe-bottom));
+}
+
+// A card that fills the screen leaves the top that is not its own
+body .card.maximized-card {
+  top: var(--thumder-maximized-top);
+  height: calc(100% - var(--thumder-maximized-top)) !important;
+  max-height: calc(100% - var(--thumder-maximized-top)) !important;
 }
 
 // With body, over the padding of AdminLTE for its footer of one line
@@ -1090,7 +1128,7 @@ body.thumder-has-dock {
   }
 
   .card.maximized-card {
-    height: calc(100% - var(--thumder-footer-height)) !important;
+    height: calc(100% - var(--thumder-maximized-top) - var(--thumder-footer-height)) !important;
   }
 }
 

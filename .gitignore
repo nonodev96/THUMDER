@@ -4,6 +4,7 @@
 /dist
 /dist-angular
 /dist-electron
+/dist-mobile
 /tmp
 /out-tsc
 /app-builds
@@ -90,3 +91,7 @@ src/assets/licenses.json
 
 # Working notes and plans (local only)
 TODO-*.md
+
+# The keys that sign the application of Android: never in git (docs/movil.md)
+*.jks
+*.keystore

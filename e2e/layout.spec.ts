@@ -135,10 +135,11 @@ test.describe("Privacidad", () => {
     expect(await page.evaluate(() => document.cookie)).not.toContain("cookieconsent_status");
   });
 
-  test("los textos legales: privacidad, aviso legal y accesibilidad, en los dos idiomas", async ({ page }) => {
+  test("los textos legales: privacidad, aviso legal, borrar la cuenta y accesibilidad, en los dos idiomas", async ({ page }) => {
     for (const [route, title] of [
       ["/landing/privacy", "Privacidad y cookies"],
       ["/landing/legal", "Aviso legal"],
+      ["/landing/delete-account", "Borrar tu cuenta de THUMDER"],
       ["/landing/accessibility", "Declaración de accesibilidad"],
     ]) {
       await go(page, route);
@@ -148,6 +149,24 @@ test.describe("Privacidad", () => {
     await page.locator("#dropdownSubMenuLang").click();
     await page.locator("#changeLangToEnglish").click();
     await expect(page.locator("view-legal h1")).toHaveText("Accessibility statement");
+  });
+
+  // What Google Play asks of the page to delete an account: the steps, what is deleted and what is not, and how to ask
+  // for it without getting in
+  test("la página para borrar la cuenta dice cómo, qué se borra y qué no, y cómo pedirlo sin poder entrar", async ({ page }) => {
+    await go(page, "/landing/delete-account");
+    const text = page.locator("view-legal .legal-text");
+    for (const heading of ["Desde THUMDER", "Si no puedes entrar", "Qué se borra", "Qué no se borra"]) {
+      await expect(text.getByRole("heading", { name: heading, exact: true })).toBeVisible();
+    }
+    await expect(text.getByRole("link", { name: "nonodev96@gmail.com" })).toHaveAttribute("href", /^mailto:nonodev96@gmail\.com\?subject=/);
+    // Without accounts (no keys of Firebase) there is no sign-in to delete one
+    await expect(page.locator("#legalSignInToDelete, #legalGoToDelete")).toHaveCount(0);
+    // It is in the legal texts and in the page of THUMDER
+    await expect(page.locator("view-legal [aria-current='page']")).toHaveText("Borrar la cuenta");
+    await go(page, "/landing/about");
+    // In its section of legal texts (folded)
+    await expect(page.locator('#collapseOne_LEGAL a[href="/landing/delete-account"]')).toHaveCount(1);
   });
 });
 
@@ -216,7 +235,9 @@ test.describe("Notificaciones", () => {
     await expect(toast).toHaveCount(0);
   });
 
-  test("@movil salen sobre la barra de abajo y se descartan deslizándolas con el dedo", async ({ page, context }) => {
+  test("@movil salen sobre la barra de abajo y se descartan deslizándolas con el dedo", async ({ page, context, browserName }) => {
+    // The fingers are simulated with the protocol of Chrome (CDP): WebKit (iphone, ipad) has no equivalent
+    test.skip(browserName !== "chromium", "touch gestures need CDP");
     await go(page, "/auth/code");
     await page.locator("#navbarMore").tap();
     await page.locator("#moreClear").tap();

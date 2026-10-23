@@ -15,6 +15,21 @@
         }
         <markdown [src]="src()" (load)="failed.set(false)" (error)="failed.set(true)"></markdown>
 
+        <!-- Deleting the account: from the profile, signed in (only where THUMDER has accounts) -->
+        @if (page() === 'delete-account' && auth.hasAccounts) {
+          <p class="mt-4 mb-0">
+            @if (auth.isGuest()) {
+              <a class="btn btn-primary" routerLink="/account/login" id="legalSignInToDelete">
+                <i class="fas fa-sign-in-alt" aria-hidden="true"></i> {{ 'LEGAL.SIGN_IN_TO_DELETE' | translate }}
+              </a>
+            } @else {
+              <a class="btn btn-outline-danger" routerLink="/auth/profile" id="legalGoToDelete">
+                <i class="fas fa-user-times" aria-hidden="true"></i> {{ 'LEGAL.GO_TO_DELETE' | translate }}
+              </a>
+            }
+          </p>
+        }
+
         @if (page() === 'privacy') {
           <p class="mt-4 mb-0">
             <button type="button" class="btn btn-primary" id="legalConsent" (click)="consent.openSettings()">

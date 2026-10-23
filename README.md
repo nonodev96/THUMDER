@@ -133,7 +133,7 @@ Cómo contribuir (estructura, convenciones, pruebas y publicación): [CONTRIBUTI
 
 Están en `e2e/` y usan Playwright. La primera vez hay que instalar el navegador con `pnpm exec playwright install chromium`.
 
-- `pnpm e2e` hace las comprobaciones en escritorio (1440×900), móvil (Pixel 7) y tableta (820×1180), sin errores en la página. Cubre la interfaz, la simulación, los ejemplos, la configuración, las herramientas para aprender, la interfaz adaptable en 5 tamaños y la accesibilidad de cada vista en los dos temas.
+- `pnpm e2e` hace las comprobaciones en escritorio (1440×900), móvil (Pixel 7) y tableta (820×1180), sin errores en la página, y las de móvil y tableta también con WebKit, el motor de iOS (iPhone 15 e iPad). Cubre la interfaz, la simulación, los ejemplos, la configuración, las herramientas para aprender, la interfaz adaptable en 5 tamaños y la accesibilidad de cada vista en los dos temas.
 - `pnpm e2e:electron` prueba la aplicación de escritorio: que carga con `file://` y sin Node.js en la página, la barra de título,
   el tema, el menú y las tarjetas maximizadas. Cada prueba usa su propia carpeta de datos, así que no toca la de quien la ejecuta.
 
@@ -147,16 +147,17 @@ en `test-results/`, y el informe, en `playwright-report/`.
 | `pnpm run ng:build:production` | Aplicación web optimizada en `dist/browser` (la que se despliega en Netlify)                       |
 | `pnpm run build:prod`          | Aplicación para Electron (`--base-href ./`) y el proceso principal en `dist-electron/`             |
 | `pnpm run electron:build`      | Ejecutable de escritorio en `release/`: AppImage, instalador y portable de Windows, `.dmg` y `.zip` de macOS |
+| `pnpm run mobile:build`        | La web para las aplicaciones de Android e iOS, copiada en sus proyectos (`src-mobile/`): ver [docs/movil.md](docs/movil.md) |
 
 Una versión se publica con `pnpm version minor` (o `patch`), que escribe su sección en `CHANGELOG.md` a partir de los commits
 convencionales y crea la etiqueta, y luego con `git push --follow-tags`. Los flujos de GitHub Actions:
 
 | **Flujo**             | **Cuándo**                                | **Qué hace**                                                                                              |
 | :-------------------- | :---------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
-| `ci.yaml`             | cada push a `dev` y `master` y cada PR    | lint, compilación, pruebas unitarias, reglas de Firestore y e2e (Chromium y la aplicación de escritorio)  |
+| `ci.yaml`             | cada push a `dev` y `master` y cada PR    | lint, compilación, pruebas unitarias, reglas de Firestore, e2e (Chromium, WebKit y la aplicación de escritorio) y la compilación de las aplicaciones de Android e iOS |
 | `deploy-netlify.yaml` | etiqueta `v*` o a mano (*Run workflow*)   | pruebas unitarias, compilación, atestaciones y SBOM de la web, y despliegue en producción en Netlify      |
 |                       | cada PR y cada push a `dev`               | vista previa en `https://pr-<número>--<sitio>.netlify.app` y `https://dev--<sitio>.netlify.app`          |
-| `create-release.yaml` | etiqueta `v*`                             | un borrador de versión con los ejecutables de Linux, Windows y macOS, los `latest*.yml`, las notas del CHANGELOG, el SBOM y las atestaciones de cada ejecutable |
+| `create-release.yaml` | etiqueta `v*`                             | un borrador de versión con los ejecutables de Linux, Windows y macOS (y el AAB y el APK de Android, si está su clave), los `latest*.yml`, las notas del CHANGELOG, el SBOM y las atestaciones de cada ejecutable |
 
 Las acciones de los flujos están fijadas por su commit (una etiqueta se puede mover; un commit, no), y Dependabot propone cada
 semana sus versiones nuevas (`.github/dependabot.yml`).
@@ -258,6 +259,15 @@ src-electron/
 
 Lo que no necesita Electron (los ajustes, el tema, los menús, los textos, las medidas, la validación) recibe lo que usa de Electron
 por parámetro y tiene sus pruebas al lado (`*.spec.ts`, `pnpm test:electron`). La ventana se prueba con `pnpm e2e:electron`.
+
+### Android e iOS
+
+Las aplicaciones de Android e iOS son la misma aplicación Angular dentro de [Capacitor](https://capacitorjs.com)
+(`capacitor.config.ts` y `src-mobile/`): ocupan toda la pantalla con las barras del sistema del color del tema, el botón atrás
+de Android cierra lo que está abierto antes de volver, los enlaces externos se abren en el navegador del sistema, guardar un
+fichero abre el menú de compartir y el inicio de sesión con Google, GitHub y Apple es el del sistema. Se compilan con
+`pnpm run mobile:android` y `pnpm run mobile:ios`; cómo configurarlas, firmarlas y publicarlas está en
+[docs/movil.md](docs/movil.md).
 
 ## Documentación
 

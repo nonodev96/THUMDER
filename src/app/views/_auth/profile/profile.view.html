@@ -13,7 +13,7 @@
             {{ user.displayName || ((authService.isGuest() ? 'ACCOUNT.GUEST' : 'ACCOUNT.ANONYMOUS') | translate) }}
           </h3>
           @if (authService.isGuest()) {
-            <p class="text-muted">{{ 'ACCOUNT.GUEST_HELP' | translate }}</p>
+            <p class="text-muted">{{ (app ? 'ACCOUNT.GUEST_HELP_APP' : 'ACCOUNT.GUEST_HELP') | translate }}</p>
             @if (authService.hasAccounts) {
               <a class="btn btn-primary btn-block" routerLink="/account/login">{{ 'ACCOUNT.SIGN_IN_TO_SYNC' | translate }}</a>
             }
@@ -42,8 +42,48 @@
             <button type="button" class="btn btn-primary btn-block" (click)="authService.SignOut()">
               {{ 'ACCOUNT.SIGN_OUT' | translate }}
             </button>
+            <button type="button" class="btn btn-outline-danger btn-block mt-3" id="profileDeleteAccount" (click)="askDelete($event.currentTarget)">
+              <i class="fas fa-user-times mr-1" aria-hidden="true"></i> {{ 'ACCOUNT.DELETE' | translate }}
+            </button>
           }
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Deleting the account asks first: it goes with all its files, here and in the cloud -->
+<div class="modal fade" id="profileDeleteModal" tabindex="-1" aria-labelledby="profileDeleteTitle" aria-hidden="true" style="display: none">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h5" id="profileDeleteTitle">{{ 'ACCOUNT.DELETE_TITLE' | translate }}</h2>
+        <button type="button" class="close" thumderModalDismiss [attr.aria-label]="'FORMS.CLOSE' | translate">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @if (signInAgain()) {
+          <p class="mb-0" role="alert">{{ 'ACCOUNT.DELETE_SIGN_IN_AGAIN' | translate }}</p>
+        } @else {
+          <p>{{ 'ACCOUNT.DELETE_HELP' | translate }}</p>
+          <p class="mb-0">
+            <a routerLink="/landing/delete-account" id="profileDeleteMore" (click)="closeDelete()">{{ 'LEGAL.MORE_ON_DELETING' | translate }}</a>
+          </p>
+        }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" thumderModalDismiss>{{ 'FORMS.CANCEL' | translate }}</button>
+        @if (signInAgain()) {
+          <button type="button" class="btn btn-primary" (click)="signInAgainToDelete()">{{ 'ACCOUNT.SIGN_IN_AGAIN' | translate }}</button>
+        } @else {
+          <button type="button" class="btn btn-danger" id="profileDeleteConfirm" [disabled]="deleting()" (click)="confirmDelete()">
+            @if (deleting()) {
+              <i class="fas fa-spinner fa-spin mr-1" aria-hidden="true"></i>
+            }
+            {{ 'ACCOUNT.DELETE_CONFIRM' | translate }}
+          </button>
+        }
       </div>
     </div>
   </div>

@@ -18,6 +18,12 @@ describe("the reports of the errors", () => {
     expect(report.platform).toBe("electron");
   });
 
+  it("tells the applications of Android and iOS, whose WebView looks like a browser", () => {
+    expect(errorReport(new Error("boom"), { ...context, native: "android" }).platform).toBe("android");
+    expect(errorReport(new Error("boom"), { ...context, native: "ios" }).platform).toBe("ios");
+    expect(errorReport(new Error("boom"), { ...context, native: null }).platform).toBe("web");
+  });
+
   it("takes what is not an Error, and cuts every field to its limit", () => {
     expect(errorReport("texto", context)).toMatchObject({ message: "texto", name: "string", stack: "" });
     expect(errorReport({ code: 1 }, context).message).toBe('{"code":1}');

@@ -45,6 +45,7 @@ export class FileSystemStorageService {
   /** The account the files are synchronised with, if any */
   private uid: string | null = null;
   private syncing: Promise<void> | null = null;
+  private persistenceAsked = false;
 
   private readonly syncStateSignal = signal<SyncState>("guest");
   public readonly syncState = this.syncStateSignal.asReadonly();
@@ -123,7 +124,21 @@ export class FileSystemStorageService {
       return;
     }
     await this.refresh();
+    this.askPersistence();
     if (this.uid !== null) await this.remote(() => this.putRemote(files));
+  }
+
+  /**
+   * The browser, and iOS in its applications, may delete what a page keeps when the device is short of space: the
+   * first file saved asks to keep it (navigator.storage.persist). The files of a guest are only here
+   */
+  private askPersistence(): void {
+    if (this.persistenceAsked) return;
+    this.persistenceAsked = true;
+    globalThis.navigator?.storage
+      ?.persist?.()
+      .then((kept) => logger.info(`The files are ${kept ? "" : "not "}kept when space is short`))
+      .catch((error: unknown) => logger.warn(error));
   }
 
   /** Deletes files, here and in the account */
@@ -280,6 +295,29 @@ export class FileSystemStorageService {
     // A guest keeps the files: they are only in this browser
     if (this.uid === null) return true;
     if (!(await this.sync())) return false;
+    this.uid = null;
+    this.syncStateSignal.set("guest");
+    await this.local.clear();
+    await this.refresh();
+    return true;
+  }
+
+  /**
+   * Deleting the account: all its files go from the account and from this device (they are the files of the account),
+   * and this device is a guest again. Returns false, and deletes nothing here, if the account did not delete them all
+   * (without a connection, for example)
+   */
+  public async deleteAccountFiles(): Promise<boolean> {
+    const uid = this.uid;
+    if (uid === null) return true;
+    await this.ready;
+    try {
+      const remote = await this.remoteFiles.all(uid);
+      if ((await this.removeRemote(remote)).length < remote.length) return false;
+    } catch (error) {
+      logger.warn(error);
+      return false;
+    }
     this.uid = null;
     this.syncStateSignal.set("guest");
     await this.local.clear();

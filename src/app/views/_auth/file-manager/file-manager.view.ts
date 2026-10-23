@@ -18,6 +18,7 @@ import {
   type THUMDER_FileItem,
 } from "@core/services/file-system/file-system.service";
 import { FileSystemStorageService } from "@core/services/file-system/file-system-storage.service";
+import { nativePlatform } from "@core/services/mobile/mobile";
 import { ToastService } from "@core/services/toast/toast.service";
 import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { DropdownDirective } from "@shared/directives/bootstrap/dropdown.directive";
@@ -51,6 +52,9 @@ export class FileManagerView implements OnInit, OnDestroy {
   private toast = inject(ToastService);
   private exercises = inject(ExerciseService);
   private machine = inject(MachineService);
+
+  /** The application of Android or iOS: the files are on the device, not in a browser */
+  public readonly app = nativePlatform() !== null;
 
   @ViewChild("importInput") private importInput?: ElementRef<HTMLInputElement>;
 

@@ -61,7 +61,7 @@
   bottom: 0;
   left: 0;
   z-index: 1035;
-  padding: 0.2rem 0.5rem calc(0.25rem + env(safe-area-inset-bottom));
+  padding: 0.2rem 0.5rem calc(0.25rem + var(--thumder-safe-bottom, 0px));
   border-top: 1px solid var(--thumder-border);
   background-color: color-mix(in srgb, var(--thumder-surface) 94%, transparent);
   backdrop-filter: blur(8px);

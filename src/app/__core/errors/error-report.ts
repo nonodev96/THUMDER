@@ -14,12 +14,19 @@ export type ErrorReport = {
   /** The view (the route, without what follows ? or #) */
   path: string;
   version: string;
-  platform: "web" | "electron";
+  platform: "web" | "electron" | "android" | "ios";
   userAgent: string;
   lang: string;
 };
 
-export type ErrorContext = { path: string; version: string; userAgent: string; lang: string };
+export type ErrorContext = {
+  path: string;
+  version: string;
+  userAgent: string;
+  lang: string;
+  /** The application of Android or iOS (its WebView does not say it in the user agent) */
+  native?: "android" | "ios" | null;
+};
 
 const cut = (text: string, size: number) => (text.length > size ? `${text.slice(0, size - 1)}…` : text);
 
@@ -35,7 +42,7 @@ export function errorReport(error: unknown, context: ErrorContext): ErrorReport 
     stack: cut(withoutFolders(value?.stack ?? ""), ERROR_LIMITS.stack),
     path: cut(context.path.split(/[?#]/)[0] || "/", ERROR_LIMITS.path),
     version: cut(context.version, ERROR_LIMITS.version),
-    platform: /electron/i.test(context.userAgent) ? "electron" : "web",
+    platform: context.native ?? (/electron/i.test(context.userAgent) ? "electron" : "web"),
     userAgent: cut(context.userAgent, ERROR_LIMITS.userAgent),
     lang: cut(context.lang, ERROR_LIMITS.lang),
   };

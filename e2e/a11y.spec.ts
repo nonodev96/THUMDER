@@ -22,6 +22,7 @@ const ROUTES = [
   "/landing/privacy",
   "/landing/legal",
   "/landing/accessibility",
+  "/landing/delete-account",
   "/auth/logger",
   "/auth/documentation?page=start",
   "/auth/exercises",

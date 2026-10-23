@@ -4,7 +4,7 @@
     <div class="card-tools">
       <span class="file-manager-sync text-muted small" role="status">
         @switch (storage.syncState()) {
-          @case ('guest') { <i class="fas fa-laptop" aria-hidden="true"></i> {{ 'FILE_MANAGER.SYNC_GUEST' | translate }} }
+          @case ('guest') { <i class="fas fa-laptop" aria-hidden="true"></i> {{ (app ? 'FILE_MANAGER.SYNC_GUEST_APP' : 'FILE_MANAGER.SYNC_GUEST') | translate }} }
           @case ('syncing') { <i class="fas fa-sync-alt fa-spin" aria-hidden="true"></i> {{ 'ACCOUNT.SYNC_SYNCING' | translate }} }
           @case ('synced') { <i class="fas fa-cloud" aria-hidden="true"></i> {{ 'ACCOUNT.SYNC_SYNCED' | translate }} }
           @case ('error') {

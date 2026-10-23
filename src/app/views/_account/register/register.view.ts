@@ -14,7 +14,6 @@ import { RouterLink } from "@angular/router";
 import { AppComponent } from "@app/app.component";
 import { AuthService } from "@core/auth/auth.service";
 import { logger } from "@core/logger/logger";
-import { ElectronService } from "@core/services";
 import { TranslatePipe } from "@ngx-translate/core";
 import { DropdownDirective } from "../../../__shared/directives/bootstrap/dropdown.directive";
 
@@ -27,7 +26,6 @@ export class RegisterView implements OnInit {
   private _document = inject<Document>(DOCUMENT);
   authService = inject(AuthService);
   app = inject(AppComponent);
-  electronService = inject(ElectronService);
   formBuilder = inject(UntypedFormBuilder);
 
   public registerForm: UntypedFormGroup;
@@ -117,6 +115,17 @@ export class RegisterView implements OnInit {
     this.showSpinner = true;
     try {
       await this.authService.GithubAuth();
+    } catch (e) {
+      logger.error(e);
+    } finally {
+      this.showSpinner = false;
+    }
+  }
+
+  public async AppleAuth(): Promise<void> {
+    this.showSpinner = true;
+    try {
+      await this.authService.AppleAuth();
     } catch (e) {
       logger.error(e);
     } finally {

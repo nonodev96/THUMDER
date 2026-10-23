@@ -49,7 +49,7 @@ service cloud.firestore {
         && (!('stack' in report) || (report.stack is string && report.stack.size() <= 4000))
         && (!('path' in report) || (report.path is string && report.path.size() <= 200))
         && report.version is string && report.version.size() <= 20
-        && report.platform in ['web', 'electron']
+        && report.platform in ['web', 'electron', 'android', 'ios']
         && (!('userAgent' in report) || (report.userAgent is string && report.userAgent.size() <= 300))
         && (!('lang' in report) || (report.lang is string && report.lang.size() <= 10))
         && report.createdAt == request.time;

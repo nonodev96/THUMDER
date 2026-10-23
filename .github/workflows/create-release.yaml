@@ -5,6 +5,10 @@ name: Build/release
 # electron-builder for the automatic updates and the notes of CHANGELOG.md (scripts/release-notes.mjs). The binaries
 # are not signed for Windows nor macOS (there are no certificates): the notes say so.
 #
+# The application of Android (AAB for Google Play and APK to install by hand) goes too when the repository has the key
+# that signs it (secrets ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, and ANDROID_KEY_PASSWORD if it differs;
+# and GOOGLE_SERVICES_JSON for the native sign-in): docs/movil.md. iOS is built in Xcode or in TestFlight (docs/movil.md).
+#
 # The supply chain (README.md, «Verificar las descargas»):
 # - Each binary has a provenance attestation (SLSA v1, in the in-toto format) and an attestation of the SBOM, signed
 #   with Sigstore through the identity of this workflow (no keys): `gh attestation verify <file> --repo nonodev96/THUMDER`.
@@ -169,3 +173,118 @@ jobs:
           gh release upload "$GITHUB_REF_NAME" "${files[@]}" --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  android:
+    name: Build And Upload Release (Android)
+    needs: create-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    env:
+      VERSION: ${{ needs.create-release.outputs.version }}
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+    steps:
+      - name: Without the key of Android
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        run: |
+          echo "::notice::No ANDROID_KEYSTORE_BASE64 secret: the application of Android is not built (docs/movil.md)"
+
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        with:
+          submodules: recursive
+
+      - uses: gradle/actions/wrapper-validation@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      # The keys of Firebase (as in the web) and, if it is there, its configuration for the native sign-in
+      - name: Production environment
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: |
+          echo "$ENVIRONMENT_PRODUCTION" | base64 --decode > src/environments/environment.production.ts
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            echo "$GOOGLE_SERVICES_JSON" | base64 --decode > src-mobile/android/app/google-services.json
+          else
+            echo "::notice::No GOOGLE_SERVICES_JSON secret: the application signs in only with email and password"
+          fi
+        env:
+          ENVIRONMENT_PRODUCTION: ${{ secrets.ANGULAR_ENVIROTMENT_PRODUCTION }}
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+      - run: pnpm install --frozen-lockfile
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: "1"
+
+      - run: pnpm run mobile:build
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # Signed with the key of the repository (src-mobile/android/app/build.gradle reads it from the environment)
+      - name: Build
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        working-directory: src-mobile/android
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/thumder.jks"
+          ANDROID_KEYSTORE_FILE="$RUNNER_TEMP/thumder.jks" ./gradlew bundleRelease assembleRelease --console=plain
+          mkdir -p ../../release
+          cp app/build/outputs/bundle/release/app-release.aab "../../release/THUMDER-v$VERSION-android.aab"
+          cp app/build/outputs/apk/release/app-release.apk "../../release/THUMDER-v$VERSION-android.apk"
+          rm "$RUNNER_TEMP/thumder.jks"
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Provenance attestation
+        id: provenance
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: release/THUMDER-v${{ env.VERSION }}-android.*
+
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        with:
+          name: sbom
+
+      - name: SBOM attestation
+        id: sbom
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: release/THUMDER-v${{ env.VERSION }}-android.*
+          sbom-path: THUMDER-v${{ env.VERSION }}-sbom.cdx.json
+
+      - name: Upload Release Assets
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        run: |
+          cp "$PROVENANCE" "release/THUMDER-v$VERSION-android-provenance.sigstore.json"
+          cp "$SBOM" "release/THUMDER-v$VERSION-android-sbom.sigstore.json"
+          gh release upload "$GITHUB_REF_NAME" --clobber \
+            "release/THUMDER-v$VERSION-android.apk" "release/THUMDER-v$VERSION-android.aab" \
+            "release/THUMDER-v$VERSION-android-provenance.sigstore.json" "release/THUMDER-v$VERSION-android-sbom.sigstore.json"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROVENANCE: ${{ steps.provenance.outputs.bundle-path }}
+          SBOM: ${{ steps.sbom.outputs.bundle-path }}

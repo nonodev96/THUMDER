@@ -25,6 +25,9 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], viewport: { width: 820, height: 1180 }, isMobile: true, hasTouch: true },
       grep: /@tableta/,
     },
+    // iOS: Safari and every application of iOS (src-mobile/ios) use WebKit, so the same tests run with it too
+    { name: "iphone", use: { ...devices["iPhone 15"] }, grep: /@movil/ },
+    { name: "ipad", use: { ...devices["iPad (gen 11)"] }, grep: /@tableta/ },
   ],
   webServer: {
     command: "pnpm exec ng serve --configuration dev --port 4200 --host 127.0.0.1",

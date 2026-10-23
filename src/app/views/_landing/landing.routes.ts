@@ -14,6 +14,8 @@ export const landingRoutes: Routes = [
       { path: "privacy", component: LegalView, data: { breadcrumb: "Privacy", page: "privacy" } },
       { path: "legal", component: LegalView, data: { breadcrumb: "Legal", page: "legal" } },
       { path: "accessibility", component: LegalView, data: { breadcrumb: "Accessibility", page: "accessibility" } },
+      // How to delete an account (Google Play asks for this address: docs/movil.md)
+      { path: "delete-account", component: LegalView, data: { breadcrumb: "Delete account", page: "delete-account" } },
       { path: "**", redirectTo: "about" },
     ],
   },

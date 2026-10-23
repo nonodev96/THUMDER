@@ -19,6 +19,7 @@ src/app/
   views/_account/    inicio de sesión (opcional: solo sincroniza los ficheros)
 src/assets/          traducciones (i18n/es.json y en.json), ejemplos DLX, ejercicios, documentación
 src-electron/        la aplicación de escritorio: proceso principal, preload y su contrato (ver el README)
+src-mobile/          los proyectos de Android e iOS (Capacitor: capacitor.config.ts y docs/movil.md)
 e2e/                 pruebas de extremo a extremo (Playwright)
 test/                pruebas de las reglas de Firestore (emulador)
 docs/                el simulador y su protocolo, el manual de WinDLX y los ejemplos
@@ -46,7 +47,7 @@ La arquitectura del simulador y el protocolo entre la página y el Web Worker es
 | `pnpm test` | Pruebas unitarias (Vitest): el motor, las conversiones, los servicios, los ficheros, los ejercicios |
 | `pnpm test:electron` | La aplicación de escritorio sin abrir Electron: ajustes, tema, menús, textos, medidas y validación |
 | `pnpm test:rules` | Las reglas de Firestore en el emulador (necesita Java) |
-| `pnpm e2e` | La aplicación web en escritorio, móvil y tableta, con axe |
+| `pnpm e2e` | La aplicación web en escritorio, móvil y tableta, con axe; móvil y tableta también con WebKit (iOS) |
 | `xvfb-run -a pnpm e2e:electron` | La aplicación de escritorio (en Linux sin pantalla, con `xvfb-run`) |
 | `pnpm run lint` | Lint y formato |
 
