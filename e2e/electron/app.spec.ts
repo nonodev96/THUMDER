@@ -1,14 +1,20 @@
-import { _electron as electron, expect, test } from "@playwright/test";
+import { _electron as electron, expect, type TestInfo, test } from "@playwright/test";
 import electronPath from "electron";
 
 // THUMDER as a desktop application: it loads dist/browser with file://, the page has no Node.js and the interface works
 // without a server
 
-test("la aplicación de escritorio arranca segura y su interfaz funciona", async () => {
+/** THUMDER with its own data in the folder of the test: the settings and the files of the developer are not touched */
+function launch(testInfo: TestInfo) {
   // This variable turns Electron into Node.js: never for the application
   const env = { ...process.env } as Record<string, string>;
   delete env.ELECTRON_RUN_AS_NODE;
-  const app = await electron.launch({ executablePath: electronPath as unknown as string, args: ["."], env });
+  const data = testInfo.outputPath("user-data");
+  return electron.launch({ executablePath: electronPath as unknown as string, args: [".", `--user-data-dir=${data}`], env });
+}
+
+test("la aplicación de escritorio arranca segura y su interfaz funciona", async ({}, testInfo) => {
+  const app = await launch(testInfo);
   const page = await app.firstWindow();
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -59,10 +65,8 @@ test("la aplicación de escritorio arranca segura y su interfaz funciona", async
   await app.close();
 });
 
-test("la ventana es de escritorio: la barra de navegación es la de título, con el tema y el menú de THUMDER", async () => {
-  const env = { ...process.env } as Record<string, string>;
-  delete env.ELECTRON_RUN_AS_NODE;
-  const app = await electron.launch({ executablePath: electronPath as unknown as string, args: ["."], env });
+test("la ventana es de escritorio: la barra de navegación es la de título, con el tema y el menú de THUMDER", async ({}, testInfo) => {
+  const app = await launch(testInfo);
   const page = await app.firstWindow();
   await page.waitForLoadState("load");
   await page.locator(".main-sidebar").waitFor();
@@ -93,6 +97,46 @@ test("la ventana es de escritorio: la barra de navegación es la de título, con
         .map((element) => element.id || element.textContent?.trim());
     });
     expect(hidden).toEqual([]);
+
+    // A card that fills the window starts under the navbar: its buttons are not under those of the window, and the
+    // navbar is still the title bar, with its menus over the card
+    await page.locator(".main-sidebar a", { hasText: /Registros|Registers/ }).first().click();
+    const card = page.locator("#registersCard");
+    await card.locator(".card-tools button:has(.fa-expand)").click();
+    await expect(card).toHaveClass(/maximized-card/);
+    const layout = () =>
+      page.evaluate(() => {
+        const rect = (selector: string) => document.querySelector(selector)?.getBoundingClientRect() ?? new DOMRect();
+        const over = (selector: string, inside: string) => {
+          const { x, y, width, height } = rect(selector);
+          return document.elementFromPoint(x + width / 2, y + height / 2)?.closest(inside) !== null;
+        };
+        const tools = [...document.querySelectorAll("#registersCard .card-tools button")].map((button) => button.getBoundingClientRect().top);
+        return {
+          navbar: rect(".main-header").bottom,
+          card: rect("#registersCard").top,
+          bottom: rect("#registersCard").bottom <= innerHeight + 1,
+          tools: Math.min(...tools),
+          windowButtons: navigator.windowControlsOverlay?.getTitlebarAreaRect?.().height ?? 0,
+          navbarOnTop: over("#dropdownTheme", ".main-header"),
+        };
+      });
+    const maximized = await layout();
+    expect(maximized.card).toBeGreaterThanOrEqual(maximized.navbar - 1);
+    expect(maximized.tools).toBeGreaterThanOrEqual(maximized.windowButtons);
+    expect(maximized.bottom).toBe(true);
+    expect(maximized.navbarOnTop).toBe(true);
+    await page.locator("#dropdownTheme").click();
+    await expect(page.locator("#theme-dark")).toBeVisible();
+    expect(
+      await page.evaluate(() => {
+        const { x, y, width, height } = document.querySelector("#theme-dark")?.getBoundingClientRect() ?? new DOMRect();
+        return document.elementFromPoint(x + width / 2, y + height / 2)?.closest(".main-header") !== null;
+      }),
+    ).toBe(true);
+    await page.keyboard.press("Escape");
+    await card.locator(".card-tools button:has(.fa-compress)").click();
+    await expect(card).not.toHaveClass(/maximized-card/);
   }
 
   // The menu of THUMDER, not the one of Electron

@@ -904,10 +904,37 @@ body .main-header .navbar-nav {
 
 // ─── The desktop application ────────────────────────────────────────────────────────────────────────────────────────
 
-// On Windows and Linux the navbar is the title bar of the window (main.ts): it moves the window (and a double click
-// maximises it), what is used with the mouse does not, and its right leaves room for the buttons of the window that
-// Electron draws over it (the Window Controls Overlay gives their place: env(titlebar-area-x) and titlebar-area-width)
+// On Windows and Linux the navbar is the title bar of the window (src-electron/main/window): it moves the window (and a
+// double click maximises it), what is used with the mouse does not, and its right leaves room for the buttons of the
+// window that Electron draws over it (the Window Controls Overlay gives their place: env(titlebar-area-x) and
+// titlebar-area-width)
 html.thumder-titlebar {
+  // The navbar measures itself (ElectronService.followTitleBar)
+  --thumder-maximized-top: var(--thumder-titlebar-height, env(titlebar-area-height, 0px));
+
+  // A card that fills the window starts under the navbar: its buttons are not under the ones of the window, the navbar
+  // is still the title bar and the controls of the simulation stay at hand. Over the sidebar (1038) and under the
+  // navbar, whose menus open over the card
+  body .card.maximized-card {
+    top: var(--thumder-maximized-top);
+    height: calc(100% - var(--thumder-maximized-top)) !important;
+    max-height: calc(100% - var(--thumder-maximized-top)) !important;
+    z-index: 1039;
+  }
+
+  body.thumder-has-dock .card.maximized-card {
+    height: calc(100% - var(--thumder-maximized-top) - var(--thumder-footer-height)) !important;
+  }
+
+  body .thumder-window:has(.maximized-card) {
+    z-index: 1039 !important;
+  }
+
+  // Under the modals all the same: their backdrop (1040) comes later in the page
+  &.maximized-card body .main-header {
+    z-index: 1040;
+  }
+
   body .main-header.navbar {
     -webkit-app-region: drag;
     padding-right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw) + 0.5rem);
@@ -1047,6 +1074,8 @@ body .main-header .nav-link {
   --thumder-navbar-height: calc(3.5rem + 1px);
   // Until the footer measures itself: its height in one line
   --thumder-footer-height: calc(3.5rem + 1px);
+  // Where a card that fills the screen starts: the top, except in the desktop application (the navbar is its title bar)
+  --thumder-maximized-top: 0px;
 }
 
 // With body, over the padding of AdminLTE for its footer of one line
