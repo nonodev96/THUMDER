@@ -1,3 +1,11 @@
+## 1.12.1 (2026-10-23)
+
+### Nuevas funciones
+
+* verifiable downloads: SLSA provenance and SBOM attested with Sigstore for every binary and every file of the web, and the actions pinned by their commit ([f6c444d](https://github.com/nonodev96/THUMDER/commit/f6c444d))
+
+
+
 ## 1.12.0 (2026-10-22)
 
 ### Nuevas funciones
