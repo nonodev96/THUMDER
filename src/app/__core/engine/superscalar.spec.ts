@@ -52,39 +52,51 @@ function run(program: AssemblyResult, parameters: Partial<SuperscalarParameters>
   while (!machine.complete && reports.length < maxCycles) {
     const report = machine.tick();
     reports.push(report);
-    expect(report.error).toBeUndefined();
-    checkInvariants(machine, report, config);
+    // Checked with plain conditions, and with expect only when they fail: a program runs thousands of cycles
+    const broken = [...(report.error === undefined ? [] : [`error: ${report.error}`]), ...brokenInvariants(machine, report, config)];
+    if (broken.length > 0) expect({ cycle: reports.length, broken }).toEqual({ cycle: reports.length, broken: [] });
   }
   expect(machine.complete).toBe(true);
   return { machine, reports, output: io.output };
 }
 
-/** What must hold in every cycle */
-function checkInvariants(machine: Superscalar, report: SuperscalarReport, config: SuperscalarConfig): void {
+/** What must hold in every cycle: the rules broken in this one (none, if all hold) */
+function brokenInvariants(machine: Superscalar, report: SuperscalarReport, config: SuperscalarConfig): string[] {
+  const broken: string[] = [];
+  const rule = (holds: boolean, description: string) => {
+    if (!holds) broken.push(description);
+  };
   const snapshot = machine.snapshot();
-  expect(snapshot.queue.length).toBeLessThanOrEqual(config.queue);
-  expect(snapshot.rob.int.entries.length).toBeLessThanOrEqual(config.rob.int);
-  expect(snapshot.rob.fp.entries.length).toBeLessThanOrEqual(config.rob.fp);
-  expect(snapshot.windows.int.length).toBeLessThanOrEqual(config.window.int);
-  expect(snapshot.windows.fp.length).toBeLessThanOrEqual(config.window.fp);
-  expect(snapshot.storeBuffer.length).toBeLessThanOrEqual(config.storeBuffer);
-  const fetched = report.events.filter((event) => event.kind === "F").length;
-  const decoded = report.events.filter((event) => event.kind === "D").length;
-  expect(fetched).toBeLessThanOrEqual(config.fetch);
-  expect(decoded).toBeLessThanOrEqual(config.decode);
-  // In order in each ROB, and never more than `commit` from each one (NOP and J commit apart)
-  for (const side of ["int", "fp"] as const) {
-    const committed = report.events.filter(
-      (event) => event.kind === "C" && event.op.info.side === side && event.op.info.kind !== "nop" && event.op.decoded?.def.mnemonic !== "J",
-    );
-    expect(committed.length).toBeLessThanOrEqual(config.commit);
-    const rows = committed.map((event) => event.op.row);
-    expect(rows).toEqual([...rows].sort((a, b) => a - b));
+  rule(snapshot.queue.length <= config.queue, `queue ${snapshot.queue.length} > ${config.queue}`);
+  rule(snapshot.rob.int.entries.length <= config.rob.int, `integer ROB ${snapshot.rob.int.entries.length} > ${config.rob.int}`);
+  rule(snapshot.rob.fp.entries.length <= config.rob.fp, `floating point ROB ${snapshot.rob.fp.entries.length} > ${config.rob.fp}`);
+  rule(snapshot.windows.int.length <= config.window.int, `integer window ${snapshot.windows.int.length} > ${config.window.int}`);
+  rule(snapshot.windows.fp.length <= config.window.fp, `floating point window ${snapshot.windows.fp.length} > ${config.window.fp}`);
+  rule(snapshot.storeBuffer.length <= config.storeBuffer, `store buffer ${snapshot.storeBuffer.length} > ${config.storeBuffer}`);
+  let fetched = 0;
+  let decoded = 0;
+  const committed = { int: [] as number[], fp: [] as number[] };
+  for (const event of report.events) {
+    if (event.kind === "F") fetched++;
+    else if (event.kind === "D") decoded++;
+    // In order in each ROB, and never more than `commit` from each one (NOP and J commit apart)
+    else if (event.kind === "C" && event.op.info.kind !== "nop" && event.op.decoded?.def.mnemonic !== "J") committed[event.op.info.side].push(event.op.row);
+    // What has committed is never squashed
+    else if (event.kind === "X") rule(event.op.cycles.commit === undefined, `row ${event.op.row} squashed after its commit`);
   }
-  // What has committed is never squashed
-  for (const event of report.events.filter((event) => event.kind === "X")) expect(event.op.cycles.commit).toBeUndefined();
+  rule(fetched <= config.fetch, `fetched ${fetched} > ${config.fetch}`);
+  rule(decoded <= config.decode, `decoded ${decoded} > ${config.decode}`);
+  for (const side of ["int", "fp"] as const) {
+    const rows = committed[side];
+    rule(rows.length <= config.commit, `${side} committed ${rows.length} > ${config.commit}`);
+    rule(
+      rows.every((row, index) => index === 0 || rows[index - 1] <= row),
+      `${side} committed out of order: ${rows.join(", ")}`,
+    );
+  }
   // The units are never busier than they are
-  for (const unit of snapshot.units) expect(unit.slots.length).toBeGreaterThan(0);
+  for (const unit of snapshot.units) rule(unit.slots.length > 0, "a unit without slots");
+  return broken;
 }
 
 const CONFIGS: [string, Partial<SuperscalarParameters>][] = [
@@ -123,7 +135,8 @@ describe("SuperDLX ends every program as the reference executor", () => {
       expect(Buffer.from(result.machine.memory.bytes).equals(Buffer.from(reference.memory.bytes))).toBe(true);
       expect(result.machine.stats.instructions).toBe(reference.instructions);
       expect(result.output).toBe(testIOOutput(program, INPUT[name]));
-    });
+      // Thousands of cycles checked one by one: slow on a busy machine (the runners of GitHub Actions)
+    }, 30_000);
   }
 });
 
