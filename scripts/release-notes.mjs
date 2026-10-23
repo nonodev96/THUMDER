@@ -22,4 +22,14 @@ console.log(`${body}
 - Linux: \`.AppImage\`.
 - Sin instalar nada: la versión web.
 
-Los binarios **no están firmados**: Windows (SmartScreen) y macOS (Gatekeeper) avisarán la primera vez. En macOS, abre la aplicación con clic derecho → Abrir. Los ficheros \`latest*.yml\` describen cada versión para las actualizaciones automáticas.`);
+Los binarios **no tienen firma de Windows ni de macOS**: SmartScreen y Gatekeeper avisarán la primera vez. En macOS, abre la aplicación con clic derecho → Abrir. Los ficheros \`latest*.yml\` describen cada versión para las actualizaciones automáticas.
+
+**Verificar una descarga**
+
+Cada binario tiene una atestación de procedencia (SLSA) y otra de su SBOM, firmadas con Sigstore por el flujo de GitHub que lo compiló. Para comprobar que un fichero salió de este repositorio, de esta versión y de ese flujo, sin cambios:
+
+\`\`\`sh
+gh attestation verify THUMDER-v${version}-linux-x86_64.AppImage --repo nonodev96/THUMDER --signer-workflow nonodev96/THUMDER/.github/workflows/create-release.yaml
+\`\`\`
+
+El SBOM (la lista de dependencias) está en \`THUMDER-v${version}-sbom.cdx.json\` (CycloneDX) y \`THUMDER-v${version}-sbom.spdx.json\` (SPDX), y los ficheros \`*.sigstore.json\` son las atestaciones de cada sistema, para comprobarlas sin conexión con \`gh attestation verify --bundle\` o con cosign. Más en el README, «Verificar las descargas».`);

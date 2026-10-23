@@ -152,9 +152,47 @@ convencionales y crea la etiqueta, y luego con `git push --follow-tags`. Los flu
 | **Flujo**             | **Cuándo**                                | **Qué hace**                                                                                              |
 | :-------------------- | :---------------------------------------- | :-------------------------------------------------------------------------------------------------------- |
 | `ci.yaml`             | cada push a `dev` y `master` y cada PR    | lint, compilación, pruebas unitarias, reglas de Firestore y e2e (Chromium y la aplicación de escritorio)  |
-| `deploy-netlify.yaml` | etiqueta `v*` o a mano (*Run workflow*)   | pruebas unitarias, compilación y despliegue en producción en Netlify                                      |
+| `deploy-netlify.yaml` | etiqueta `v*` o a mano (*Run workflow*)   | pruebas unitarias, compilación, atestaciones y SBOM de la web, y despliegue en producción en Netlify      |
 |                       | cada PR y cada push a `dev`               | vista previa en `https://pr-<número>--<sitio>.netlify.app` y `https://dev--<sitio>.netlify.app`          |
-| `create-release.yaml` | etiqueta `v*`                             | un borrador de versión con los ejecutables de Linux, Windows y macOS, los `latest*.yml` y las notas del CHANGELOG |
+| `create-release.yaml` | etiqueta `v*`                             | un borrador de versión con los ejecutables de Linux, Windows y macOS, los `latest*.yml`, las notas del CHANGELOG, el SBOM y las atestaciones de cada ejecutable |
+
+Las acciones de los flujos están fijadas por su commit (una etiqueta se puede mover; un commit, no), y Dependabot propone cada
+semana sus versiones nuevas (`.github/dependabot.yml`).
+
+### Verificar las descargas
+
+THUMDER no tiene firma de código de Windows ni de macOS (son certificados de pago): SmartScreen y Gatekeeper avisan la primera
+vez. Lo que sí tiene cada versión es su **cadena de suministro** comprobable:
+
+- **Procedencia (SLSA v1, en formato in-toto)**: cada ejecutable, y cada fichero de la web, tiene una atestación que dice de qué
+  repositorio, de qué commit y de qué flujo salió (SLSA Build nivel 2). La firma GitHub Actions con **Sigstore**, sin claves: un
+  certificado de pocos minutos emitido para la identidad del flujo, que queda en el registro público de transparencia.
+- **SBOM**: la lista de lo que lleva THUMDER, en CycloneDX y SPDX, hecha con Syft a partir de `pnpm-lock.yaml`. Incluye todo con lo
+  que se construye: las dependencias de la aplicación (Electron entre ellas, que va en los ejecutables) y las de compilación y
+  pruebas, y las acciones de los flujos. También está atestada.
+
+Un ejecutable descargado de una versión se comprueba con la [CLI de GitHub](https://cli.github.com/):
+
+```sh
+gh attestation verify THUMDER-v1.12.1-linux-x86_64.AppImage --repo nonodev96/THUMDER \
+  --signer-workflow nonodev96/THUMDER/.github/workflows/create-release.yaml
+# Su SBOM
+gh attestation verify THUMDER-v1.12.1-linux-x86_64.AppImage --repo nonodev96/THUMDER --predicate-type https://cyclonedx.org/bom
+```
+
+La versión tiene además los SBOM (`THUMDER-v<versión>-sbom.cdx.json` y `.spdx.json`) y las atestaciones de cada sistema
+(`THUMDER-v<versión>-<sistema>-provenance.sigstore.json` y `-sbom.sigstore.json`), en el formato de Sigstore: se comprueban sin
+conexión con `gh attestation verify <fichero> --bundle <atestación> --repo nonodev96/THUMDER` o con `cosign verify-blob-attestation`,
+cuya identidad es `https://github.com/nonodev96/THUMDER/.github/workflows/create-release.yaml@refs/tags/v<versión>` con el emisor
+`https://token.actions.githubusercontent.com`.
+
+La web de producción publica sus sumas SHA-256 y su SBOM en `/integrity/` (`sha256sums.txt`, `sbom.cdx.json` y `sbom.spdx.json`),
+y cada fichero tiene su atestación:
+
+```sh
+curl -O https://thumder.netlify.app/index.html
+gh attestation verify index.html --repo nonodev96/THUMDER --signer-workflow nonodev96/THUMDER/.github/workflows/deploy-netlify.yaml
+```
 
 Para desplegar en Netlify hacen falta dos secretos del repositorio:
 

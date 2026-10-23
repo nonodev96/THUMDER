@@ -8,6 +8,11 @@ name: Deploy to Netlify
 #   NETLIFY_SITE_ID                Project configuration → Project ID
 #   ANGULAR_ENVIROTMENT_PRODUCTION optional: src/environments/environment.production.ts in base64, with the Firebase
 #                                  keys. Without it THUMDER is built in local mode (no accounts, files in the browser).
+#
+# In production the web also gets its supply chain (README.md, «Verificar las descargas»): the SHA-256 of every file
+# published, with a provenance attestation (SLSA v1, in-toto) and an attestation of the SBOM for each one, signed with
+# Sigstore through the identity of this workflow; the sums and the SBOM (CycloneDX and SPDX, made with Syft) are
+# published in /integrity/. The actions are pinned by their commit (.github/dependabot.yml keeps them up to date).
 
 on:
   push:
@@ -34,20 +39,51 @@ jobs:
     runs-on: ubuntu-latest
     # Pull requests from forks and from Dependabot have no access to the secrets
     if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
+    permissions:
+      contents: read
+      # The OIDC token of the workflow, for the short-lived certificate of Sigstore that signs the attestations
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     env:
       PRODUCTION: ${{ startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.production) }}
     environment:
       name: ${{ (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.production)) && 'production' || 'preview' }}
       url: ${{ steps.deploy.outputs.url }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           # The wiki, which the build copies into assets/wiki
           submodules: recursive
 
-      - uses: pnpm/action-setup@v5
+      - name: Folder of the integrity files
+        if: env.PRODUCTION == 'true'
+        run: mkdir -p "$RUNNER_TEMP/integrity"
 
-      - uses: actions/setup-node@v5
+      # The SBOM of the web, before anything is installed: every package of pnpm-lock.yaml and the actions of the workflows
+      - name: SBOM (CycloneDX)
+        if: env.PRODUCTION == 'true'
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: ${{ runner.temp }}/integrity/sbom.cdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: SBOM (SPDX)
+        if: env.PRODUCTION == 'true'
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          path: .
+          format: spdx-json
+          output-file: ${{ runner.temp }}/integrity/sbom.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           cache: pnpm
@@ -75,6 +111,50 @@ jobs:
         run: pnpm run ng:build:production
         env:
           NODE_OPTIONS: "--max-old-space-size=4096"
+
+      # The SHA-256 of every file of the web, as sha256sum writes them (the names relative to the root of the site)
+      - name: Sums of the web
+        id: sums
+        if: env.PRODUCTION == 'true'
+        working-directory: dist/browser
+        run: |
+          find . -type f -print0 | sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > "$RUNNER_TEMP/integrity/sha256sums.txt"
+          count=$(wc -l < "$RUNNER_TEMP/integrity/sha256sums.txt")
+          echo "Files of the web: $count"
+          # An attestation takes at most 1024 subjects: with more files, the attested subject is the file of the sums
+          echo "each=$([ "$count" -le 1024 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      # Where each file comes from (SLSA build provenance), and what the web is made of (the SBOM)
+      - name: Provenance attestation
+        if: env.PRODUCTION == 'true' && steps.sums.outputs.each == 'true'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-checksums: ${{ runner.temp }}/integrity/sha256sums.txt
+
+      - name: SBOM attestation
+        if: env.PRODUCTION == 'true' && steps.sums.outputs.each == 'true'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-checksums: ${{ runner.temp }}/integrity/sha256sums.txt
+          sbom-path: ${{ runner.temp }}/integrity/sbom.cdx.json
+
+      - name: Provenance attestation (of the sums)
+        if: env.PRODUCTION == 'true' && steps.sums.outputs.each == 'false'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ runner.temp }}/integrity/sha256sums.txt
+
+      - name: SBOM attestation (of the sums)
+        if: env.PRODUCTION == 'true' && steps.sums.outputs.each == 'false'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ runner.temp }}/integrity/sha256sums.txt
+          sbom-path: ${{ runner.temp }}/integrity/sbom.cdx.json
+
+      # Published with the web: https://<site>/integrity/sha256sums.txt, sbom.cdx.json and sbom.spdx.json
+      - name: Publish the integrity files
+        if: env.PRODUCTION == 'true'
+        run: cp -r "$RUNNER_TEMP/integrity" dist/browser/integrity
 
       - run: npm install --global netlify-cli@27
 

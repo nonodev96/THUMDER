@@ -3,7 +3,14 @@ name: Build/release
 # A tag v* publishes a draft release with the desktop applications of the three systems (CI-03):
 # Linux (AppImage), Windows (installer and portable) and macOS (dmg and zip), with the latest*.yml files of
 # electron-builder for the automatic updates and the notes of CHANGELOG.md (scripts/release-notes.mjs). The binaries
-# are not signed (there are no certificates): the notes say so.
+# are not signed for Windows nor macOS (there are no certificates): the notes say so.
+#
+# The supply chain (README.md, «Verificar las descargas»):
+# - Each binary has a provenance attestation (SLSA v1, in the in-toto format) and an attestation of the SBOM, signed
+#   with Sigstore through the identity of this workflow (no keys): `gh attestation verify <file> --repo nonodev96/THUMDER`.
+# - The release has the SBOM (CycloneDX and SPDX, made with Syft) and the Sigstore bundles of the attestations, to verify
+#   them with cosign too.
+# - The actions are pinned by their commit (Dependabot proposes their new versions: .github/dependabot.yml).
 
 on:
   push:
@@ -11,44 +18,85 @@ on:
       - "v*"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       - id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      # The SBOM of THUMDER, before anything is installed: every package of pnpm-lock.yaml (the ones of the application,
+      # Electron among them, and the ones to build and test it) and the actions of the workflows
+      - name: SBOM (CycloneDX)
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: THUMDER-v${{ steps.version.outputs.version }}-sbom.cdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: SBOM (SPDX)
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          path: .
+          format: spdx-json
+          output-file: THUMDER-v${{ steps.version.outputs.version }}-sbom.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
 
       - name: Release notes
         run: node scripts/release-notes.mjs "${{ steps.version.outputs.version }}" > release-notes.md
 
       - name: Create Release
-        run: gh release create "$GITHUB_REF_NAME" --title "THUMDER $GITHUB_REF_NAME" --notes-file release-notes.md --draft
+        run: |
+          gh release create "$GITHUB_REF_NAME" --title "THUMDER $GITHUB_REF_NAME" --notes-file release-notes.md --draft \
+            "THUMDER-v$VERSION-sbom.cdx.json" "THUMDER-v$VERSION-sbom.spdx.json"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+
+      # The binaries of each system attest it
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: sbom
+          path: THUMDER-v${{ steps.version.outputs.version }}-sbom.cdx.json
+          retention-days: 7
 
   release:
     name: Build And Upload Release (${{ matrix.os }})
     needs: create-release
     runs-on: ${{ matrix.os }}
+    permissions:
+      # The assets of the release
+      contents: write
+      # The OIDC token of the workflow, for the short-lived certificate of Sigstore that signs the attestations
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+    env:
+      VERSION: ${{ needs.create-release.outputs.version }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           submodules: recursive
 
-      - uses: pnpm/action-setup@v5
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version: 22
           cache: pnpm
@@ -69,11 +117,55 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=4096"
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
 
+      - name: Binaries of this system
+        id: binaries
+        shell: bash
+        run: |
+          shopt -s nullglob
+          files=(release/*.AppImage release/*.exe release/*.dmg release/*.zip)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::error::electron-builder left no binaries in release/"
+            exit 1
+          fi
+          { echo "paths<<EOF"; printf '%s\n' "${files[@]}"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+          echo "system=$(echo "$RUNNER_OS" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      # Where each binary comes from: this repository, this commit and this workflow (SLSA build provenance)
+      - name: Provenance attestation
+        id: provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ steps.binaries.outputs.paths }}
+
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: sbom
+
+      # What each binary is made of
+      - name: SBOM attestation
+        id: sbom
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: ${{ steps.binaries.outputs.paths }}
+          sbom-path: THUMDER-v${{ env.VERSION }}-sbom.cdx.json
+
+      # The Sigstore bundles of both attestations, to verify the binaries with cosign without the CLI of GitHub
+      - name: Sigstore bundles
+        shell: bash
+        run: |
+          unix() { cygpath -u "$1" 2>/dev/null || echo "$1"; }
+          cp "$(unix "$PROVENANCE")" "release/THUMDER-v$VERSION-$SYSTEM-provenance.sigstore.json"
+          cp "$(unix "$SBOM")" "release/THUMDER-v$VERSION-$SYSTEM-sbom.sigstore.json"
+        env:
+          PROVENANCE: ${{ steps.provenance.outputs.bundle-path }}
+          SBOM: ${{ steps.sbom.outputs.bundle-path }}
+          SYSTEM: ${{ steps.binaries.outputs.system }}
+
       - name: Upload Release Assets
         shell: bash
         run: |
           shopt -s nullglob
-          files=(release/*.AppImage release/*.exe release/*.dmg release/*.zip release/*.yml release/*.blockmap)
+          files=(release/*.AppImage release/*.exe release/*.dmg release/*.zip release/*.yml release/*.blockmap release/*.sigstore.json)
           gh release upload "$GITHUB_REF_NAME" "${files[@]}" --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

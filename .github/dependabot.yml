@@ -1,0 +1,14 @@
+# Dependabot. The actions of the workflows are pinned by their commit (a tag can be moved, a commit cannot): each week
+# Dependabot proposes their new versions, with their commit and the version in the comment, in a single pull request.
+# The security updates of the npm packages are configured in the settings of the repository.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
