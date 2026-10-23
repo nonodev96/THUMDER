@@ -770,14 +770,14 @@ export class MachineService {
       this.waitingForInputSignal.set(true);
       this.sound.event("input");
     }
-    if (step.error) {
-      this.sound.event("error");
-      await this.toastProgramError(step.error);
-    }
+    if (step.error) this.sound.event("error");
 
     const complete = step.isComplete ?? false;
     // A breakpoint stops the simulation when its instruction is fetched (not again while it waits in IF)
     const breakpoint = step.isBreakpoint === true || (step.isNewInstruction && this.breakpointManager.isBreakpoint(step.line));
+    const hit = breakpoint ? (step.hit ?? { kind: "line" as const, line: step.line, stage: "IF" as const }) : null;
+    // The whole cycle reaches the views at once (the cycle, its line, the registers, the pipeline...): the notices wait
+    // for it, so no view shows a cycle while another one still shows the one before
     this.completeSignal.set(complete);
     this.breakpointSignal.set(breakpoint);
     if (!this.quiet) {
@@ -788,21 +788,19 @@ export class MachineService {
       this.canSimulateSignal.set(false);
       this.stopRunning();
       this.sound.event("complete");
-      this.processStep(step);
-      await this.toastMessage("TOAST.TITLE_END_SIMULATION", "TOAST.MESSAGE_END_SIMULATION");
-      return;
-    }
-    if (breakpoint) {
+    } else if (hit !== null) {
       this.stopRunning();
       this.sound.event("breakpoint");
-      this.hitSignal.set(step.hit ?? { kind: "line", line: step.line, stage: "IF" });
-      await this.toastBreakpoint(step.hit ?? { kind: "line", line: step.line, stage: "IF" });
+      this.hitSignal.set(hit);
     }
     this.processStep(step);
     this.writeToLog("SimulationNextStep S: {0} L: {1}", EnumLogLevel.Debug, [
       { index: 0, value: step.step },
       { index: 1, value: step.line },
     ]);
+    if (step.error) await this.toastProgramError(step.error);
+    if (complete) await this.toastMessage("TOAST.TITLE_END_SIMULATION", "TOAST.MESSAGE_END_SIMULATION");
+    else if (hit !== null) await this.toastBreakpoint(hit);
   }
 
   /** What a cycle changes: registers, memory, statistics, the pipeline and the cycle clock diagram */

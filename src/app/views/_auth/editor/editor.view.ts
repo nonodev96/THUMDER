@@ -141,6 +141,9 @@ export class EditorView implements OnInit, AfterViewInit, OnDestroy {
         this.interfaceFileItem = (this.extrasIDE?.interfaceFileItem ??
           JSON.parse(interfaceFileItem_storaged) ??
           DEFAULT_INTERFACE_FILE_ITEM) as InterfaceFileItem;
+        // A file opened from the file manager (or the documentation) comes with the navigation: from now on it is the
+        // file open, the one Load simulates (it simulated the one open before until the editor saved or closed)
+        if (this.extrasIDE?.interfaceFileItem) localStorage.setItem("interfaceFileItem", JSON.stringify(this.interfaceFileItem));
 
         this.showFile(this.interfaceFileItem);
         await this.monacoEditorComponent.setEditorFile(this.interfaceFileItem);
