@@ -1,3 +1,11 @@
+## 1.13.0 (2026-10-23)
+
+### Nuevas funciones
+
+* a desktop application that follows the dark theme of the desktop (also Cinnamon and MATE), with its own icon, the navbar as its title bar with the buttons of the window, a menu of its own in Spanish and English, a tray icon and the window remembered ([e328afe](https://github.com/nonodev96/THUMDER/commit/e328afe))
+
+
+
 ## 1.12.1 (2026-10-23)
 
 ### Nuevas funciones
