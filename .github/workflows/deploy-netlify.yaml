@@ -52,9 +52,6 @@ jobs:
       url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        with:
-          # The wiki, which the build copies into assets/wiki
-          submodules: recursive
 
       - name: Folder of the integrity files
         if: env.PRODUCTION == 'true'
