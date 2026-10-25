@@ -1,3 +1,15 @@
+## 1.16.0 (2026-10-25)
+
+### Nuevas funciones
+
+* the documentation in Spanish and English, in five simpler parts: get started, use THUMDER, learn DLX, reference and development ([03e9b98](https://github.com/nonodev96/THUMDER/commit/03e9b98))
+
+### Correcciones
+
+* the example 19-riesgos.s says F8 to go step by step (it said F10) ([593fcc8](https://github.com/nonodev96/THUMDER/commit/593fcc8))
+
+
+
 ## 1.15.0 (2026-10-23)
 
 ### Nuevas funciones
