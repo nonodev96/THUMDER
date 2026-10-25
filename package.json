@@ -51,6 +51,7 @@
     "version": "node scripts/changelog.mjs && node scripts/mobile-version.mjs",
     "lint": "biome check src/ src-electron/ e2e/ test/ vitest.rules.config.ts vitest.electron.config.ts",
     "lint:fix": "biome check --write src/ src-electron/ e2e/ test/ vitest.rules.config.ts vitest.electron.config.ts",
+    "wiki": "node scripts/wiki.mjs",
     "e2e:electron": "pnpm run build:prod && playwright test --config playwright.electron.config.ts",
     "mobile:build": "ng build --configuration mobile && cap sync",
     "mobile:android": "pnpm run mobile:build && cap run android",
