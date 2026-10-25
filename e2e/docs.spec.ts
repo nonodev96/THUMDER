@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, go, test } from "./fixtures";
 
-// The accordions of «Sobre nosotros», the documentation by parts, the highlighting of their code (Prism) and the
+// The accordions of «Sobre nosotros», the documentation by parts and in both languages, the highlighting of their code (Prism) and the
 // instruction table, which THUMDER draws from the definitions of its engine
 
 test("«Sobre nosotros»: abrir una sección cierra la otra, y el código bash se resalta", async ({ page }) => {
@@ -14,13 +14,21 @@ test("«Sobre nosotros»: abrir una sección cierra la otra, y el código bash s
   await expect.poll(() => page.locator("#collapse_readme pre code .token").count()).toBeGreaterThan(0);
 });
 
-test("documentación: tres partes, una página por enlace, y los enlaces entre páginas funcionan", async ({ page }) => {
+test("documentación: cinco partes, una página por enlace, y los enlaces entre páginas funcionan", async ({ page }) => {
   await go(page, "/auth/documentation");
-  await expect(page.locator(".docs-part-title")).toHaveText([/Usar THUMDER/, /La arquitectura DLX/, /Desarrollo/]);
+  await expect(page.locator(".docs-part-title")).toHaveText([/Empezar/, /Usar THUMDER/, /Aprender DLX/, /Referencia/, /Desarrollo/]);
   await page.locator(".docs-nav a", { hasText: "Primeros pasos" }).click();
-  await expect(page).toHaveURL(/page=start/);
+  await expect(page).toHaveURL(/page=first-steps/);
   await expect(page.locator(".docs-page-title")).toHaveText("Primeros pasos");
   await expect(page.locator(".docs-markdown")).toContainText("Carga el código");
+  const screenshot = page.locator(".docs-markdown img").first();
+  await expect(screenshot).toHaveAttribute("src", "assets/docs/guide/img/editor-stages.png");
+  await expect.poll(() => screenshot.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth)).toBeGreaterThan(0);
+
+  // The link of a page that another one replaced opens the new one
+  await go(page, "/auth/documentation?page=breakpoints#puntos-de-ruptura");
+  await expect(page).toHaveURL(/page=simulate#puntos-de-ruptura$/);
+  await expect(page.locator(".docs-page-title")).toHaveText("Simular un programa");
 
   // The search of the index
   await page.locator("#docsSearch").fill("tabla");
@@ -34,14 +42,43 @@ test("documentación: tres partes, una página por enlace, y los enlaces entre p
   await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth)).toBeGreaterThan(0);
 });
 
-test("documentación: todas las páginas cargan", async ({ page }) => {
+test("documentación en inglés: cada página sale en el idioma de la aplicación, o dice en cuál está", async ({ page }) => {
+  await go(page, "/auth/documentation?page=simulate");
+  await expect(page.locator(".docs-markdown")).toContainText("Los controles");
+  await page.locator("#dropdownSubMenuLang").click();
+  await page.locator("#changeLangToEnglish").click();
+  await expect(page.locator(".docs-page-title")).toHaveText("Simulate a program");
+  await expect(page.locator(".docs-markdown")).toContainText("The controls");
+  await expect(page.locator(".docs-page-meta a")).toHaveAttribute("href", /docs\/guide\/simular\.en\.md$/);
+  await expect(page.locator(".docs-page-meta .badge")).toHaveCount(0);
+
+  // A link between pages opens the English page, with the English screenshots
+  await page.locator(".docs-markdown a", { hasText: "The views" }).first().click();
+  await expect(page).toHaveURL(/page=views/);
+  await expect(page.locator(".docs-markdown h2").first()).toHaveText("Pipeline");
+  await expect(page.locator(".docs-markdown img").first()).toHaveAttribute("src", "assets/docs/guide/img/pipeline.en.png");
+
+  // A page written only in Spanish says so
+  await page.locator(".docs-nav a", { hasText: "The WinDLX manual" }).click();
+  await expect(page.locator(".docs-page-meta .badge")).toHaveText("Document in Spanish");
+  await expect(page.locator(".docs-nav a", { hasText: "The WinDLX manual" }).locator(".docs-lang")).toHaveText("ES");
+});
+
+test("documentación: todas las páginas cargan, en español y en inglés", async ({ page }) => {
   await go(page, "/auth/documentation");
   const ids = await page.locator("#docsSelect option").evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value).filter(Boolean));
   expect(ids.length).toBeGreaterThan(20);
-  for (const id of ids) {
-    await page.goto(`/auth/documentation?page=${id}`);
-    await expect(page.locator(".docs-markdown, thumder-instruction-table"), id).not.toBeEmpty();
-    await expect(page.locator(".docs-page [role=alert]"), id).toHaveCount(0);
+  for (const lang of ["es", "en"]) {
+    await page.evaluate((lang) => localStorage.setItem("lang", JSON.stringify(lang)), lang);
+    for (const id of ids) {
+      await page.goto(`/auth/documentation?page=${id}`);
+      await expect(page.locator(".docs-markdown, thumder-instruction-table"), `${lang} ${id}`).not.toBeEmpty();
+      await expect(page.locator(".docs-page [role=alert]"), `${lang} ${id}`).toHaveCount(0);
+      // Every image of the page loads
+      for (const image of await page.locator(".docs-markdown img").all()) {
+        await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.complete && element.naturalWidth), `${lang} ${id}`).toBeGreaterThan(0);
+      }
+    }
   }
 });
 

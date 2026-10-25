@@ -1,71 +1,98 @@
-// The documentation of THUMDER, in three parts: how to use it, the DLX architecture and how it is made. Each page is a
-// Markdown file of the repository (`path`); the build copies them to the assets (angular.json), and assetOf() gives the
-// URL of each one. The links between them, written as paths of the repository, open the page of the documentation.
+// The documentation of THUMDER, in five parts: getting started, using it, learning DLX, the reference and how it is made.
+// Each page is a Markdown file of the repository for each language it is written in (`paths`): `x.md` in Spanish and
+// `x.en.md` in English. The build copies them to the assets (angular.json), and assetOf() gives the URL of each one. The
+// links between them, written as paths of the repository, open the page of the documentation in the language shown.
+
+export type DocLang = "es" | "en";
 
 export type DocPage = {
   id: string;
   /** Its title (a text of DOCS.PAGES) */
   title: string;
-  /** Where it is in the repository */
-  path: string;
-  lang: "es" | "en";
+  /** Where it is in the repository, in each language it is written in */
+  paths: Partial<Record<DocLang, string>>;
   /** A page that THUMDER draws itself, in the language of the application, instead of its Markdown file */
   view?: "instruction-table";
-  /** The file the page is made from, for its link to GitHub (`path` if it has none) */
+  /** The file the page is made from, for its link to GitHub (its path if it has none) */
   source?: string;
+  /** The ids of the pages it replaces, so that their links still open it */
+  aliases?: string[];
 };
 
-export type DocSection = { id: "use" | "dlx" | "dev"; title: string; description: string; icon: string; pages: DocPage[] };
+export type DocSection = {
+  id: "start" | "use" | "learn" | "reference" | "dev";
+  title: string;
+  description: string;
+  icon: string;
+  pages: DocPage[];
+};
 
-const page = (id: string, path: string, lang: "es" | "en" = "es"): DocPage => ({
+const titleOf = (id: string) => `DOCS.PAGES.${id.toUpperCase().replace(/-/g, "_")}`;
+
+/** A page in Spanish (`path.md`) and in English (`path.en.md`) */
+const page = (id: string, path: string, aliases?: string[]): DocPage => ({
   id,
-  title: `DOCS.PAGES.${id.toUpperCase().replace(/-/g, "_")}`,
-  path,
-  lang,
+  title: titleOf(id),
+  paths: { es: `${path}.md`, en: `${path}.en.md` },
+  ...(aliases ? { aliases } : {}),
 });
 
+/** A page written in one language only */
+const only = (id: string, path: string, lang: DocLang): DocPage => ({ id, title: titleOf(id), paths: { [lang]: path } });
+
 export const DOC_SECTIONS: DocSection[] = [
+  {
+    id: "start",
+    title: "DOCS.SECTIONS.START",
+    description: "DOCS.SECTIONS.START_HELP",
+    icon: "fa-flag-checkered",
+    pages: [
+      page("what-is", "docs/guide/que-es-thumder"),
+      page("first-steps", "docs/guide/primeros-pasos", ["start"]),
+      page("install", "docs/guide/instalar"),
+    ],
+  },
   {
     id: "use",
     title: "DOCS.SECTIONS.USE",
     description: "DOCS.SECTIONS.USE_HELP",
     icon: "fa-play-circle",
     pages: [
-      page("start", "docs/primeros-pasos.md"),
-      page("install", "wiki/0.Installation.md"),
-      page("account", "wiki/00.Account.md"),
-      page("files", "wiki/09.FileManager.md"),
-      page("editor", "wiki/10.FileEditor.md"),
-      page("process", "wiki/07.TheExecutionProcess.md"),
-      page("breakpoints", "wiki/06.TheBreakpoints.md"),
-      page("config", "wiki/08.TheConfiguration.md"),
-      page("registers", "wiki/01.TheRegisterWindow.md"),
-      page("memory", "wiki/02.TheMemoryWindow.md"),
-      page("code", "wiki/03.TheCodeWindow.md"),
-      page("pipeline", "wiki/04.ThePipelineWindow.md"),
-      page("diagram", "wiki/04.TheClockCycleDiagramWindow.md"),
-      page("statistics", "wiki/05.TheStatisticsWindow.md"),
-      page("multiview", "wiki/11.Multiview.md"),
+      page("files", "docs/guide/ficheros-y-editor", ["editor"]),
+      page("simulate", "docs/guide/simular", ["process", "breakpoints"]),
+      page("views", "docs/guide/vistas", ["registers", "memory", "code", "diagram", "statistics", "multiview"]),
+      page("config", "docs/guide/configuracion"),
+      page("account", "docs/guide/cuenta"),
+      page("faq", "docs/guide/preguntas"),
     ],
   },
   {
-    id: "dlx",
-    title: "DOCS.SECTIONS.DLX",
-    description: "DOCS.SECTIONS.DLX_HELP",
-    icon: "fa-microchip",
+    id: "learn",
+    title: "DOCS.SECTIONS.LEARN",
+    description: "DOCS.SECTIONS.LEARN_HELP",
+    icon: "fa-graduation-cap",
     pages: [
-      page("execution", "wiki/00.TheExecutionOfInstructions.md"),
-      page("examples", "docs/ejemplos-dlx.md"),
-      page("superdlx", "docs/superdlx.md"),
-      page("windlx", "docs/manual-simulador-dlx.md"),
-      page("instruction-set", "src/assets/docs.md", "en"),
-      page("opcodes", "src/assets/dlxmap.md", "en"),
+      page("pipeline", "docs/guide/pipeline", ["execution"]),
+      page("superdlx", "docs/superdlx"),
+      page("examples", "docs/ejemplos-dlx"),
+      page("exercises", "docs/guide/ejercicios"),
+    ],
+  },
+  {
+    id: "reference",
+    title: "DOCS.SECTIONS.REFERENCE",
+    description: "DOCS.SECTIONS.REFERENCE_HELP",
+    icon: "fa-book",
+    pages: [
       // Made from the definitions of the engine: what THUMDER assembles and simulates
       {
-        ...page("instruction-table", "DLX-TABLE-Instructions.md", "en"),
+        ...only("instruction-table", "DLX-TABLE-Instructions.md", "en"),
         view: "instruction-table",
         source: "src/app/__core/engine/isa.ts",
       },
+      only("instruction-set", "src/assets/docs.md", "en"),
+      only("opcodes", "src/assets/dlxmap.md", "en"),
+      only("windlx", "docs/manual-simulador-dlx.md", "es"),
     ],
   },
   {
@@ -73,11 +100,33 @@ export const DOC_SECTIONS: DocSection[] = [
     title: "DOCS.SECTIONS.DEV",
     description: "DOCS.SECTIONS.DEV_HELP",
     icon: "fa-code",
-    pages: [page("readme", "README.md"), page("contributing", "CONTRIBUTING.md"), page("simulator", "docs/simulador.md")],
+    pages: [
+      page("readme", "README"),
+      page("contributing", "CONTRIBUTING"),
+      page("simulator", "docs/simulador"),
+      page("mobile", "docs/movil"),
+    ],
   },
 ];
 
 export const DOC_PAGES: DocPage[] = DOC_SECTIONS.flatMap((section) => section.pages);
+
+/** The page with that id, or the one that replaces it */
+export function pageById(id: string | null | undefined): DocPage | null {
+  if (!id) return null;
+  return DOC_PAGES.find((page) => page.id === id) ?? DOC_PAGES.find((page) => page.aliases?.includes(id)) ?? null;
+}
+
+/** The language a page is shown in: the one asked for if it is written in it, if not the one it has */
+export function langOf(page: DocPage, lang: string): DocLang {
+  if (lang in page.paths) return lang as DocLang;
+  return Object.keys(page.paths)[0] as DocLang;
+}
+
+/** The file of a page in a language (or in the one it has) */
+export function pathOf(page: DocPage, lang: string): string {
+  return page.paths[langOf(page, lang)] as string;
+}
 
 /** The repository, to open what is not part of the documentation (a licence, a script...) */
 export const REPOSITORY = "https://github.com/nonodev96/THUMDER/blob/dev/";
@@ -100,8 +149,6 @@ export function resolvePath(from: string, relative: string): string {
 
 /** Where the build serves a file of the repository (angular.json: assets) */
 export function assetOf(path: string): string {
-  if (path.startsWith("wiki/wiki-assets/")) return path.slice("wiki/".length);
-  if (path.startsWith("wiki/")) return `assets/${path}`;
   if (path.startsWith("docs/")) return `assets/${path}`;
   if (path.startsWith("src/assets/")) return path.slice("src/".length);
   // The images of the root folder assets/ and of its screenshots (angular.json copies their PNG files)
@@ -116,16 +163,17 @@ const ABSOLUTE = /^([a-z][a-z0-9+.-]*:|\/\/|\/|#)/i;
  * A page ready to show: its images point to where the build serves them, and its links to other pages of the
  * documentation open them (`/auth/documentation?page=…`); the other files of the repository open in GitHub
  */
-export function prepareMarkdown(markdown: string, page: DocPage): string {
+export function prepareMarkdown(markdown: string, page: DocPage, lang: string): string {
+  const from = pathOf(page, lang);
   const link = (target: string, image: boolean): string => {
     if (ABSOLUTE.test(target)) return target;
     const [file, anchor] = target.split("#");
-    const path = resolvePath(page.path, file);
+    const path = resolvePath(from, file);
     if (image) {
       const asset = assetOf(path);
       return asset.startsWith(REPOSITORY) ? `${RAW}${path}` : asset;
     }
-    const other = DOC_PAGES.find((candidate) => candidate.path === path);
+    const other = DOC_PAGES.find((candidate) => Object.values(candidate.paths).includes(path));
     if (other) return `/auth/documentation?page=${other.id}${anchor ? `#${anchor}` : ""}`;
     return `${REPOSITORY}${path}${anchor ? `#${anchor}` : ""}`;
   };

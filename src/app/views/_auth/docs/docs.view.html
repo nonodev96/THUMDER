@@ -30,7 +30,7 @@
                 <a routerLink="." [queryParams]="{ page: item.id }" [class.active]="current()?.id === item.id"
                   [attr.aria-current]="current()?.id === item.id ? 'page' : null">
                   {{ item.title | translate }}
-                  @if (foreign(item)) { <span class="docs-lang" [attr.title]="(item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate">{{ item.lang.toUpperCase() }}</span> }
+                  @if (foreign(item)) { <span class="docs-lang" [attr.title]="(shownLang(item) === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate">{{ shownLang(item).toUpperCase() }}</span> }
                 </a>
               </li>
             }
@@ -50,9 +50,9 @@
           <h1 class="docs-page-title">{{ item.title | translate }}</h1>
           <div class="docs-page-meta">
             @if (foreign(item)) {
-              <span class="badge badge-secondary">{{ (item.lang === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate }}</span>
+              <span class="badge badge-secondary">{{ (shownLang(item) === 'en' ? 'DOCS.IN_EN' : 'DOCS.IN_ES') | translate }}</span>
             }
-            <a [href]="repository + (item.source ?? item.path)" target="_blank" rel="noopener noreferrer">
+            <a [href]="sourceOf(item)" target="_blank" rel="noopener noreferrer">
               <i class="fab fa-github" aria-hidden="true"></i> {{ 'DOCS.ON_GITHUB' | translate }}
             </a>
           </div>
@@ -65,7 +65,7 @@
         } @else if (failed()) {
           <p class="text-danger" role="alert">{{ 'DOCS.FAILED' | translate }}</p>
         } @else {
-          <markdown class="docs-markdown" [data]="content()" (ready)="onReady()" [attr.lang]="item.lang"></markdown>
+          <markdown class="docs-markdown" [data]="content()" (ready)="onReady()" [attr.lang]="shownLang(item)"></markdown>
         }
 
         <footer class="docs-page-footer">
@@ -81,7 +81,7 @@
           }
         </footer>
       } @else {
-        <!-- Without a page: the three parts -->
+        <!-- Without a page: the parts -->
         <header class="docs-page-header">
           <h1 class="docs-page-title">{{ 'DOCS.TITLE' | translate }}</h1>
           <p class="text-muted mb-0">{{ 'DOCS.INTRO' | translate }}</p>

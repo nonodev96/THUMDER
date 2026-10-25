@@ -39,16 +39,6 @@
                 "output": "/"
               },
               {
-                "glob": "*.md",
-                "input": "./wiki",
-                "output": "./assets/wiki/"
-              },
-              {
-                "glob": "*.png",
-                "input": "./wiki/wiki-assets",
-                "output": "./wiki-assets/"
-              },
-              {
                 "glob": "*.png",
                 "input": "./assets/",
                 "output": "./assets/"
@@ -69,12 +59,12 @@
                 "output": "./assets/md/"
               },
               {
-                "glob": "README.md",
+                "glob": "README*.md",
                 "input": "./",
                 "output": "./assets/md/"
               },
               {
-                "glob": "CONTRIBUTING.md",
+                "glob": "CONTRIBUTING*.md",
                 "input": "./",
                 "output": "./assets/md/"
               },

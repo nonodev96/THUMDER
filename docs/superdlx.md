@@ -12,7 +12,7 @@ Un programa acaba con los mismos registros, la misma memoria y la misma salida e
 - En la **cabecera**, el botón de la arquitectura (`DLX` o `SuperDLX`). En el móvil está en el menú «Más».
 - En la **configuración**, sección «Arquitectura», donde están también los parámetros de SuperDLX.
 
-Al cambiarla, el programa se carga de nuevo en la otra máquina. Un ejercicio guiado o compartido puede fijar la arquitectura: entonces no se puede cambiar mientras esté abierto. Los ejercicios guiados de THUMDER son de DLX.
+Al cambiarla, el programa se carga de nuevo en la otra máquina. Un ejercicio guiado o compartido puede fijar la arquitectura: entonces no se puede cambiar mientras esté abierto. Los ejercicios del tema «Superescalar (SuperDLX)» fijan SuperDLX.
 
 ## La máquina
 
@@ -80,7 +80,7 @@ Las multiplicaciones y divisiones de enteros (`mult`, `div`...) usan, como en DL
 | Pipeline | La máquina en el ciclo: la cola, las ventanas con los operandos que espera cada instrucción, las unidades funcionales con los ciclos que les faltan, los dos ROB, los buffers de cargas y almacenamientos, los registros renombrados y la BTB con sus contadores |
 | Ciclos de reloj | Cada instrucción en una fila, con lo que hace en cada ciclo: F (captada), q (en la cola), D (decodificada), w (espera en la ventana), E (en su unidad), M (memoria), W (resultado), r (espera en el ROB), C (confirmada) y X (anulada). La tabla de sucesos da el ciclo de cada paso de todas las instrucciones (se exporta a CSV). Al elegir una instrucción se ve cuánto esperó en cada sitio |
 | Estadísticas | IPC y CPI, cuántos ciclos confirman 0, 1, 2... instrucciones, por qué se detienen la captación, la decodificación y la confirmación, las esperas en las ventanas (operandos o unidad), la predicción de saltos, el uso de cada unidad, la ocupación media de cada estructura y el mismo programa en DLX y en SuperDLX |
-| Registros, memoria y código | Los mismos: los registros son los confirmados; el código marca dónde está cada instrucción (la cola como IF, las ventanas como ID, las unidades como EX, la memoria como MEM y el ROB como WB) |
+| Registros, memoria y código | Los mismos: los registros son los confirmados. El código y el editor marcan el estado de cada instrucción: en la cola, en la ventana, en su unidad, espera la memoria, lee la memoria, terminada, confirmada o anulada |
 | Ruta de datos | Es la del pipeline de DLX: con SuperDLX no está en los menús |
 
 Los puntos de ruptura funcionan igual: una línea para cuando se capta una de sus instrucciones o, según la etapa elegida, cuando se decodifica (ID), empieza en su unidad (EX), accede a la memoria (MEM) o se confirma (WB). La vigilancia de la memoria, el paso atrás, la velocidad y ejecutar hasta el final sin dibujar también funcionan con SuperDLX.

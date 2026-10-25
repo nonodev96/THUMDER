@@ -1,22 +1,67 @@
 import { describe, expect, it } from "vitest";
-import { assetOf, DOC_PAGES, DOC_SECTIONS, prepareMarkdown, RAW, REPOSITORY, resolvePath, slug, withoutGitHubOnly, withoutTitle } from "./docs.catalog";
+import {
+  assetOf,
+  DOC_PAGES,
+  DOC_SECTIONS,
+  langOf,
+  pageById,
+  pathOf,
+  prepareMarkdown,
+  RAW,
+  REPOSITORY,
+  resolvePath,
+  slug,
+  withoutGitHubOnly,
+  withoutTitle,
+} from "./docs.catalog";
 
 describe("the documentation", () => {
-  const simulator = DOC_PAGES.find((page) => page.id === "simulator")!;
-  const readme = DOC_PAGES.find((page) => page.id === "readme")!;
+  const simulator = pageById("simulator")!;
+  const readme = pageById("readme")!;
+  const simulate = pageById("simulate")!;
+  const windlx = pageById("windlx")!;
 
-  it("has three parts, each page once", () => {
-    expect(DOC_SECTIONS.map((section) => section.id)).toEqual(["use", "dlx", "dev"]);
-    expect(new Set(DOC_PAGES.map((page) => page.id)).size).toBe(DOC_PAGES.length);
-    expect(new Set(DOC_PAGES.map((page) => page.path)).size).toBe(DOC_PAGES.length);
+  it("has five parts, each page and each file once", () => {
+    expect(DOC_SECTIONS.map((section) => section.id)).toEqual(["start", "use", "learn", "reference", "dev"]);
+    const ids = DOC_PAGES.flatMap((page) => [page.id, ...(page.aliases ?? [])]);
+    expect(new Set(ids).size).toBe(ids.length);
+    const paths = DOC_PAGES.flatMap((page) => Object.values(page.paths));
+    expect(new Set(paths).size).toBe(paths.length);
+  });
+
+  it("has every page in Spanish and English, except the reference written in one language", () => {
+    const single = DOC_PAGES.filter((page) => Object.keys(page.paths).length < 2).map((page) => page.id);
+    expect(single).toEqual(["instruction-table", "instruction-set", "opcodes", "windlx"]);
+    for (const page of DOC_PAGES.filter((page) => !single.includes(page.id))) {
+      expect(page.paths.en).toBe(page.paths.es?.replace(/\.md$/, ".en.md"));
+    }
+  });
+
+  it("opens the old links with the page that replaces them", () => {
+    expect(pageById("start")?.id).toBe("first-steps");
+    expect(pageById("breakpoints")?.id).toBe("simulate");
+    expect(pageById("registers")?.id).toBe("views");
+    expect(pageById("execution")?.id).toBe("pipeline");
+    expect(pageById("simulator")).toBe(simulator);
+    expect(pageById("nothing")).toBeNull();
+    expect(pageById(null)).toBeNull();
+  });
+
+  it("shows a page in the language of the application, or in the one it has", () => {
+    expect(langOf(simulate, "en")).toBe("en");
+    expect(pathOf(simulate, "en")).toBe("docs/guide/simular.en.md");
+    expect(pathOf(simulate, "es")).toBe("docs/guide/simular.md");
+    expect(langOf(windlx, "en")).toBe("es");
+    expect(pathOf(windlx, "en")).toBe("docs/manual-simulador-dlx.md");
+    expect(langOf(pageById("opcodes")!, "es")).toBe("en");
   });
 
   it("finds the files of the repository where the build serves them", () => {
     expect(resolvePath("docs/simulador.md", "../README.md")).toBe("README.md");
     expect(resolvePath("README.md", "docs/simulador.md")).toBe("docs/simulador.md");
-    expect(resolvePath("wiki/01.TheRegisterWindow.md", "./wiki-assets/a.png")).toBe("wiki/wiki-assets/a.png");
-    expect(assetOf("wiki/wiki-assets/a.png")).toBe("wiki-assets/a.png");
-    expect(assetOf("wiki/07.TheExecutionProcess.md")).toBe("assets/wiki/07.TheExecutionProcess.md");
+    expect(resolvePath("docs/guide/vistas.md", "./img/pipeline.png")).toBe("docs/guide/img/pipeline.png");
+    expect(assetOf("docs/guide/img/pipeline.en.png")).toBe("assets/docs/guide/img/pipeline.en.png");
+    expect(assetOf("README.en.md")).toBe("assets/md/README.en.md");
     expect(assetOf("docs/manual-simulador-dlx/01-iconos.png")).toBe("assets/docs/manual-simulador-dlx/01-iconos.png");
     expect(assetOf("src/assets/docs.md")).toBe("assets/docs.md");
     expect(assetOf("CONTRIBUTING.md")).toBe("assets/md/CONTRIBUTING.md");
@@ -29,6 +74,7 @@ describe("the documentation", () => {
     const text = prepareMarkdown(
       "[manual](manual-simulador-dlx.md#notas) ![x](manual-simulador-dlx/01-iconos.png \"Iconos\") [web](https://example.org) [arriba](#top) [script](../scripts/changelog.mjs) <img src=\"manual-simulador-dlx/02.jpg\">",
       simulator,
+      "es",
     );
     expect(text).toContain("[manual](/auth/documentation?page=windlx#notas)");
     expect(text).toContain('![x](assets/docs/manual-simulador-dlx/01-iconos.png "Iconos")');
@@ -37,9 +83,24 @@ describe("the documentation", () => {
     expect(text).toContain(`[script](${REPOSITORY}scripts/changelog.mjs)`);
     expect(text).toContain('<img src="assets/docs/manual-simulador-dlx/02.jpg">');
     // An image the build does not copy comes from GitHub as it is (not its page)
-    expect(prepareMarkdown("![logo](../images/logo.svg)", simulator)).toBe(`![logo](${RAW}images/logo.svg)`);
-    expect(prepareMarkdown("[c](CONTRIBUTING.md) [s](docs/simulador.md)", readme)).toBe(
+    expect(prepareMarkdown("![logo](../images/logo.svg)", simulator, "es")).toBe(`![logo](${RAW}images/logo.svg)`);
+    expect(prepareMarkdown("[c](CONTRIBUTING.md) [s](docs/simulador.md)", readme, "es")).toBe(
       "[c](/auth/documentation?page=contributing) [s](/auth/documentation?page=simulator)",
+    );
+  });
+
+  it("makes the links of a page in English open the pages too, from the folder of its file", () => {
+    expect(
+      prepareMarkdown(
+        "[v](vistas.en.md#pipeline) [s](../superdlx.en.md) [t](../../DLX-TABLE-Instructions.md) [m](../manual-simulador-dlx.md) ![p](img/pipeline.en.png)",
+        simulate,
+        "en",
+      ),
+    ).toBe(
+      "[v](/auth/documentation?page=views#pipeline) [s](/auth/documentation?page=superdlx) [t](/auth/documentation?page=instruction-table) [m](/auth/documentation?page=windlx) ![p](assets/docs/guide/img/pipeline.en.png)",
+    );
+    expect(prepareMarkdown("[c](CONTRIBUTING.en.md) <img src=\"./docs/guide/img/datapath.en.png\">", readme, "en")).toBe(
+      '[c](/auth/documentation?page=contributing) <img src="assets/docs/guide/img/datapath.en.png">',
     );
   });
 

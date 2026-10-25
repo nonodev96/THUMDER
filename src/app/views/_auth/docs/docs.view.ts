@@ -22,8 +22,12 @@ import {
   assetOf,
   DOC_PAGES,
   DOC_SECTIONS,
+  type DocLang,
   type DocPage,
   type DocSection,
+  langOf,
+  pageById,
+  pathOf,
   prepareMarkdown,
   REPOSITORY,
   sectionOf,
@@ -32,9 +36,10 @@ import {
 import { InstructionTableComponent } from "./instruction-table/instruction-table.component";
 
 /**
- * The documentation: an index by parts (how to use THUMDER, the DLX architecture and how it is made) and one page at a
- * time, chosen with `?page=` (so a page has its own link). The links between pages and to the sections of a page work
- * inside THUMDER; without a page, a summary of the three parts.
+ * The documentation: an index by parts (getting started, using THUMDER, learning DLX, the reference and how it is made)
+ * and one page at a time, chosen with `?page=` (so a page has its own link), in the language of the application when it
+ * is written in it. The links between pages and to the sections of a page work inside THUMDER; without a page, a summary
+ * of the parts.
  */
 @Component({
   selector: "view-docs",
@@ -58,7 +63,7 @@ export class DocsView {
   public readonly lang = signal(this.translate.getCurrentLang() ?? "es");
 
   private readonly pageId = toSignal(this.route.queryParamMap.pipe(map((params) => params.get("page"))), { initialValue: null });
-  public readonly current = computed(() => DOC_PAGES.find((page) => page.id === this.pageId()) ?? null);
+  public readonly current = computed(() => pageById(this.pageId()));
   public readonly section = computed(() => {
     const page = this.current();
     return page ? sectionOf(page) : null;
@@ -85,14 +90,37 @@ export class DocsView {
     this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe((event) => this.lang.set(event.lang));
     effect(() => {
       const page = this.current();
-      if (page?.view) untracked(() => this.shown());
-      else if (page) void this.load(page);
+      const lang = this.lang();
+      if (!page) return;
+      untracked(() => {
+        // The link of a page that another one replaces: the address says the page that is shown
+        if (page.id !== this.pageId()) this.replaceId(page);
+        if (page.view) this.shown();
+      });
+      if (!page.view) void this.load(page, lang);
     });
   }
 
-  /** The page is in another language than the application (the pages that THUMDER draws are in its language) */
+  /** The language the page is shown in (the pages that THUMDER draws are in the language of the application) */
+  public shownLang(page: DocPage): DocLang {
+    return langOf(page, this.lang());
+  }
+
+  /** The page is not written in the language of the application */
   public foreign(page: DocPage): boolean {
-    return !page.view && page.lang !== this.lang();
+    return !page.view && this.shownLang(page) !== this.lang();
+  }
+
+  /** Where the page is on GitHub, in the language shown */
+  public sourceOf(page: DocPage): string {
+    return this.repository + (page.source ?? pathOf(page, this.lang()));
+  }
+
+  private replaceId(page: DocPage): void {
+    const { queryParamMap, fragment } = this.route.snapshot;
+    const queryParams: Record<string, string> = { page: page.id };
+    for (const key of queryParamMap.keys) if (key !== "page") queryParams[key] = queryParamMap.get(key) as string;
+    void this.router.navigate([], { relativeTo: this.route, queryParams, fragment: fragment ?? undefined, replaceUrl: true });
   }
 
   private neighbour(step: number): DocPage | null {
@@ -101,12 +129,12 @@ export class DocsView {
     return DOC_PAGES[DOC_PAGES.indexOf(page) + step] ?? null;
   }
 
-  private async load(page: DocPage): Promise<void> {
+  private async load(page: DocPage, lang: string): Promise<void> {
     this.loading.set(true);
     this.failed.set(false);
     try {
-      const markdown = await firstValueFrom(this.http.get(assetOf(page.path), { responseType: "text" }));
-      if (this.current() === page) this.content.set(prepareMarkdown(markdown, page));
+      const markdown = await firstValueFrom(this.http.get(assetOf(pathOf(page, lang)), { responseType: "text" }));
+      if (this.current() === page && this.lang() === lang) this.content.set(prepareMarkdown(markdown, page, lang));
     } catch (error) {
       logger.error(error);
       this.failed.set(true);

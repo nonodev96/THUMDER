@@ -1,16 +1,17 @@
 import { ViewportScroller } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import { type AfterViewInit, Component, inject, type OnInit, Renderer2, signal, ViewChild } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Router, RouterLink } from "@angular/router";
 import { REGEX_IS_ABSOLUTE_HREF } from "@app/CONSTANTS";
 import { logger } from "@core/logger/logger";
 import { ElectronService } from "@core/services";
 import { ConsentService } from "@core/services/consent/consent.service";
-import { TranslatePipe } from "@ngx-translate/core";
+import { TranslatePipe, TranslateService } from "@ngx-translate/core";
 import { type MarkdownComponent, MarkdownComponent as MarkdownComponent_1 } from "ngx-markdown";
 import { firstValueFrom } from "rxjs";
 import { CollapseDirective, CollapseToggleDirective } from "../../../__shared/directives/bootstrap/collapse.directive";
-import { withoutGitHubOnly } from "../../_auth/docs/docs.catalog";
+import { assetOf, type DocPage, pageById, pathOf, prepareMarkdown } from "../../_auth/docs/docs.catalog";
 
 type LicenseInfo = { name: string; version: string; license: string; author: string; homepage: string; description: string };
 
@@ -26,12 +27,20 @@ export class AboutView implements OnInit, AfterViewInit {
   private scroller = inject(ViewportScroller);
   private renderer = inject(Renderer2);
   private httpClient = inject(HttpClient);
+  private router = inject(Router);
+  private translate = inject(TranslateService);
 
   /** The dependencies and their licences (scripts/licenses.mjs writes them when the project is installed) */
   public dependenciesData: LicenseInfo[] = [];
   public devDependenciesData: LicenseInfo[] = [];
-  /** The README, without what only makes sense on GitHub (its badges) */
+  /** The README in the language of the application, without what only makes sense on GitHub (its badges) */
   public readme = signal("");
+  /** The cards whose links are already caught */
+  private listening = new Set<string>();
+
+  constructor() {
+    this.translate.onLangChange.pipe(takeUntilDestroyed()).subscribe(() => void this.loadReadme());
+  }
 
   @ViewChild("markdownComponentID_README", { static: false })
   private markdownComponentID_README!: MarkdownComponent;
@@ -55,12 +64,20 @@ export class AboutView implements OnInit, AfterViewInit {
     });
   }
 
-  private async prepareData(): Promise<void> {
+  /** The README as the documentation shows it: its images where the build serves them and its links to the pages */
+  private async loadReadme(): Promise<void> {
+    const page = pageById("readme") as DocPage;
+    const lang = this.translate.getCurrentLang() ?? "es";
     try {
-      this.readme.set(withoutGitHubOnly(await firstValueFrom(this.httpClient.get("assets/md/README.md", { responseType: "text" }))));
+      const markdown = await firstValueFrom(this.httpClient.get(assetOf(pathOf(page, lang)), { responseType: "text" }));
+      this.readme.set(prepareMarkdown(markdown, page, lang));
     } catch (error) {
       logger.warn(error);
     }
+  }
+
+  private async prepareData(): Promise<void> {
+    await this.loadReadme();
     try {
       const licenses = await firstValueFrom(
         this.httpClient.get<{ dependencies: LicenseInfo[]; devDependencies: LicenseInfo[] }>("assets/licenses.json"),
@@ -94,11 +111,17 @@ export class AboutView implements OnInit, AfterViewInit {
       logger.error("MarkdownComponent not found for id:", id);
       return;
     }
+    if (this.listening.has(id)) return;
+    this.listening.add(id);
     this.listenObj = this.renderer.listen(markdownComponent.element.nativeElement, "click", (e: Event) => {
       if (e.target && (e.target as any).tagName === "A") {
         const el = e.target as HTMLElement;
         const linkURL = el.getAttribute?.("href");
-        if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
+        // A page of the documentation (the links of the README)
+        if (linkURL?.startsWith("/auth/documentation")) {
+          e.preventDefault();
+          void this.router.navigateByUrl(linkURL);
+        } else if (linkURL && !REGEX_IS_ABSOLUTE_HREF.test(linkURL)) {
           e.preventDefault();
           const id = linkURL.replace("#", "");
           this.scrollToAnchor(id);

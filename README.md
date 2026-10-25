@@ -15,6 +15,8 @@
 </p>
 
 <!-- github-only -->
+<p align="center"><strong>Español</strong> | <a href="README.en.md">English</a></p>
+
 <p align="center">
   <a href="https://github.com/nonodev96/THUMDER/actions/workflows/ci.yaml"><img src="https://github.com/nonodev96/THUMDER/actions/workflows/ci.yaml/badge.svg?branch=dev" alt="CI"/></a>
   <a href="https://github.com/nonodev96/THUMDER/releases"><img src="https://img.shields.io/github/v/release/nonodev96/THUMDER?include_prereleases&label=versi%C3%B3n" alt="Versión"/></a>
@@ -87,7 +89,8 @@ pantalla de inicio.
 3. Pulsa **Cargar** (<kbd>Ctrl</kbd>+<kbd>F9</kbd>) y avanza con **Paso** (<kbd>F8</kbd>), mirando el **Pipeline** y el **Diagrama de ciclos**.
 
 La aplicación de escritorio está en las [versiones](https://github.com/nonodev96/THUMDER/releases): AppImage para Linux,
-instalador y portable para Windows, y `.dmg` y `.zip` para macOS. No está firmada.
+instalador y portable para Windows, y `.dmg` y `.zip` para macOS. No está firmada. Cómo instalar cada versión, también la de
+Android: [Instalar THUMDER](docs/guide/instalar.md). Paso a paso: [Primeros pasos](docs/guide/primeros-pasos.md).
 
 ## El simulador
 
@@ -104,7 +107,7 @@ WinDLX: adelantamiento, detenciones, unidades de coma flotante configurables, tr
 Requisitos: Node.js 22 (o 20.19 o posterior) y pnpm 10. `corepack enable` instala la versión de `packageManager`.
 
 ```bash
-git clone --recurse-submodules git@github.com:nonodev96/THUMDER.git
+git clone git@github.com:nonodev96/THUMDER.git
 cd THUMDER
 pnpm install
 pnpm run ng:serve:dev   # http://localhost:4200
@@ -271,25 +274,13 @@ fichero abre el menú de compartir y el inicio de sesión con Google, GitHub y A
 
 ## Documentación
 
-La documentación está dentro de la aplicación, en **Documentación**, y como ficheros Markdown en el repositorio:
+La documentación está dentro de THUMDER (**Documentación**, en el menú lateral), en [`docs/`](docs/README.md) y en la [wiki](https://github.com/nonodev96/THUMDER/wiki), en español y en inglés:
 
-- [Primeros pasos](docs/primeros-pasos.md) y los ejemplos: [docs/ejemplos-dlx.md](docs/ejemplos-dlx.md).
-- El uso de cada ventana, en la [wiki](https://github.com/nonodev96/THUMDER/wiki):
-  - [El proceso de simulación](https://github.com/nonodev96/THUMDER/wiki/07.TheExecutionProcess)
-  - [La ventana del cauce (Pipeline)](https://github.com/nonodev96/THUMDER/wiki/04.ThePipelineWindow)
-  - [El diagrama de ciclos de reloj](https://github.com/nonodev96/THUMDER/wiki/04.TheClockCycleDiagramWindow)
-  - [Los registros](https://github.com/nonodev96/THUMDER/wiki/01.TheRegisterWindow)
-  - [La memoria](https://github.com/nonodev96/THUMDER/wiki/02.TheMemoryWindow)
-  - [El código](https://github.com/nonodev96/THUMDER/wiki/03.TheCodeWindow)
-  - [Las estadísticas](https://github.com/nonodev96/THUMDER/wiki/05.TheStatisticsWindow)
-  - [Los puntos de ruptura](https://github.com/nonodev96/THUMDER/wiki/06.TheBreakpoints)
-  - [La configuración](https://github.com/nonodev96/THUMDER/wiki/08.TheConfiguration)
-  - [El gestor de ficheros](https://github.com/nonodev96/THUMDER/wiki/09.FileManager)
-  - [El editor](https://github.com/nonodev96/THUMDER/wiki/10.FileEditor)
-  - [La vista múltiple](https://github.com/nonodev96/THUMDER/wiki/11.Multiview)
-  - [La instalación](https://github.com/nonodev96/THUMDER/wiki/0.Installation)
-  - [La cuenta](https://github.com/nonodev96/THUMDER/wiki/00.Account)
-  - [La ejecución de las instrucciones](https://github.com/nonodev96/THUMDER/wiki/00.TheExecutionOfInstructions)
+- **Empezar**: [¿Qué es THUMDER?](docs/guide/que-es-thumder.md), [Primeros pasos](docs/guide/primeros-pasos.md) e [Instalar THUMDER](docs/guide/instalar.md).
+- **Usar THUMDER**: [Ficheros y editor](docs/guide/ficheros-y-editor.md), [Simular un programa](docs/guide/simular.md), [Las vistas](docs/guide/vistas.md), [Configuración](docs/guide/configuracion.md), [Cuenta y privacidad](docs/guide/cuenta.md) y [Preguntas frecuentes](docs/guide/preguntas.md).
+- **Aprender DLX**: [El pipeline de DLX](docs/guide/pipeline.md), [SuperDLX](docs/superdlx.md), [Ejemplos comentados](docs/ejemplos-dlx.md) y [Ejercicios](docs/guide/ejercicios.md).
+- **Referencia**: la tabla de instrucciones (dentro de THUMDER), [el juego de instrucciones](src/assets/docs.md) y [los códigos de operación](src/assets/dlxmap.md), en inglés, y [el manual de WinDLX](docs/manual-simulador-dlx.md), en español.
+- **Desarrollo**: [Cómo contribuir](CONTRIBUTING.md), [El simulador por dentro](docs/simulador.md) y [Las aplicaciones de Android e iOS](docs/movil.md).
 
 ## Licencia
 

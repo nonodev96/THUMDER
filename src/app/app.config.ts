@@ -18,9 +18,6 @@ import { AppConfig } from "../environments/_environment";
 
 const escapeAttribute = (value: string) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-/** Where the animations of the wiki are (the wiki of THUMDER on GitHub) */
-export const WIKI_ASSETS_URL = "https://raw.githubusercontent.com/wiki/nonodev96/THUMDER/wiki-assets/";
-
 export function markedOptionsFactory(): MarkedOptions {
   const renderer = new MarkedRenderer({});
 
@@ -44,19 +41,6 @@ export function markedOptionsFactory(): MarkedOptions {
     // catch the clicks on the relative ones (DocsView, AboutView)
     const external = /^(https?:|mailto:)/i.test(href) ? ' target="_blank" rel="noopener noreferrer"' : "";
     return `<a href="${escapeAttribute(href)}"${safeTitle}${external}>${text}</a>`;
-  };
-
-  // The animations of the wiki (GIF, 116 MB) are not in the application (REN-06): they come from the wiki on GitHub.
-  // The methods run with the renderer of marked as `this` (it has the parser): they call the originals with it
-  const gif = (src: string) => src.replace(/^(?:\.\/)?wiki-assets\/([^/]+\.gif)$/i, (_, file) => `${WIKI_ASSETS_URL}${file}`);
-  const image = renderer.image;
-  renderer.image = function (this: MarkedRenderer, token: Tokens.Image): string {
-    return image.call(this, { ...token, href: gif(token.href ?? "") });
-  };
-  // The wiki writes them in HTML too: <img src="./wiki-assets/...gif">
-  const html = renderer.html;
-  renderer.html = function (this: MarkedRenderer, token: Tokens.HTML | Tokens.Tag): string {
-    return html.call(this, { ...token, text: token.text.replace(/src="([^"]+)"/gi, (_, src) => `src="${gif(src)}"`) });
   };
 
   return {

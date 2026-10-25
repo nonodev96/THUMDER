@@ -1,5 +1,9 @@
 # Cómo contribuir a THUMDER
 
+<!-- github-only -->
+**Español** | [English](CONTRIBUTING.en.md)
+<!-- /github-only -->
+
 Gracias por ayudar. Esta guía explica cómo está organizado el código, las convenciones que sigue y cómo se prueba y se publica. La puesta en marcha (requisitos, `pnpm install`, Firebase) está en el [README](README.md).
 
 ## Estructura
@@ -22,7 +26,8 @@ src-electron/        la aplicación de escritorio: proceso principal, preload y 
 src-mobile/          los proyectos de Android e iOS (Capacitor: capacitor.config.ts y docs/movil.md)
 e2e/                 pruebas de extremo a extremo (Playwright)
 test/                pruebas de las reglas de Firestore (emulador)
-docs/                el simulador y su protocolo, el manual de WinDLX y los ejemplos
+docs/                la documentación, en español (x.md) e inglés (x.en.md): la guía de uso (guide/), el simulador
+                     y su protocolo, SuperDLX, los ejemplos, las aplicaciones móviles y el manual de WinDLX
 ```
 
 La arquitectura del simulador y el protocolo entre la página y el Web Worker están en [docs/simulador.md](docs/simulador.md).
@@ -37,7 +42,8 @@ La arquitectura del simulador y el protocolo entre la página y el Web Worker es
 - **Textos**: todos los de la interfaz en `src/assets/i18n/es.json` y `en.json`, con las mismas claves (una prueba lo comprueba). Los botones de icono llevan `title` y `aria-label` traducidos.
 - **Accesibilidad**: cada vista pasa axe (WCAG 2.1 A y AA) en los temas claro y oscuro (`e2e/a11y.spec.ts`), sin reglas desactivadas. Contraste de 4,5:1 y nada que se distinga solo por el color.
 - **Seguridad**: la CSP de `src/index.html` no permite `eval` ni scripts en línea. La página de Electron no tiene Node.js: lo que necesita lo expone `src-electron/preload`, con los canales de `src-electron/shared/contract.ts`; el proceso principal valida todo lo que recibe.
-- **Código**: TypeScript estricto, formato y lint con Biome (`pnpm run lint:fix`). Los comentarios del código están en inglés; la documentación, en español.
+- **Código**: TypeScript estricto, formato y lint con Biome (`pnpm run lint:fix`). Los comentarios del código están en inglés.
+- **Documentación**: en español (`x.md`) y en inglés (`x.en.md`), con las mismas secciones; si cambias una, cambia la otra. Una página nueva va en `docs/guide/` y en el catálogo (`src/app/views/_auth/docs/docs.catalog.ts`), con su título en `DOCS.PAGES` de las dos traducciones. Frases cortas, los nombres de los botones tal como salen en la interfaz y enlaces relativos entre páginas: dentro de THUMDER abren la página en el idioma de la aplicación. Las capturas van en `docs/guide/img/` (`x.png` en español y `x.en.png` en inglés). La [wiki](https://github.com/nonodev96/THUMDER/wiki) se genera a partir de `docs/`: `git submodule update --init wiki` la primera vez, `pnpm run wiki`, y después commit y push dentro de `wiki/`.
 - **Commits**: [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`...), porque el CHANGELOG se genera a partir de ellos.
 
 ## Pruebas
@@ -58,7 +64,7 @@ Antes de proponer un cambio: lint sin errores, las pruebas unitarias y las e2e q
 1. `pnpm version minor` (o `patch`): sube la versión y añade al CHANGELOG los `feat`, `fix` y `perf` desde la anterior (`scripts/changelog.mjs`). Si antes escribes a mano la sección de esa versión en CHANGELOG.md, se queda la tuya.
 2. `git push --follow-tags`: la etiqueta `v*` lanza dos flujos:
    - `deploy-netlify.yaml` despliega la web;
-   - `create-release.yaml` crea un borrador de *release* con los ejecutables de Linux, Windows y macOS, los `latest*.yml` y las notas del CHANGELOG.
+   - `create-release.yaml` crea un borrador de *release* con los ejecutables de Linux, Windows y macOS (y el AAB y el APK de Android, si está su clave), los `latest*.yml` y las notas del CHANGELOG.
 3. Revisa el borrador en GitHub y publícalo.
 
 Los binarios no están firmados (no hay certificados): las notas lo avisan. Las reglas de Firestore se publican aparte: `pnpm exec firebase deploy --only firestore:rules`.
