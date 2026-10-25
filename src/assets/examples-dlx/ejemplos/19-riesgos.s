@@ -11,7 +11,7 @@
 ; riesgo para verlo en el diagrama de ciclos.
 ;
 ; Qué mirar en THUMDER:
-;   Ejecútalo paso a paso (F10) y busca en el diagrama de ciclos la
+;   Ejecútalo paso a paso (F8) y busca en el diagrama de ciclos la
 ;   instrucción con la etiqueta de cada bloque:
 ;
 ;   Etiqueta      Riesgo                            Qué se ve
